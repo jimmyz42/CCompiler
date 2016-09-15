@@ -1,4 +1,4 @@
-java-skeleton
+Decaf Sugar
 =============
 
-Java Skeleton Code for 6.035
+A scanner and parser for Decaf written in Java
