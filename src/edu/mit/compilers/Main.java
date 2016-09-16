@@ -15,7 +15,7 @@ class Main {
       PrintStream outputStream = CLI.outfile == null ? System.out : new java.io.PrintStream(new java.io.FileOutputStream(CLI.outfile));
       if (CLI.target == Action.SCAN) {
         DecafScanner scanner =
-            new DecafScanner(new DataInputStream(inputStream));
+            new DecafScanner(inputStream);
         scanner.setTrace(CLI.debug);
         Token token;
         boolean done = false;
