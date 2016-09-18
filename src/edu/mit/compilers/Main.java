@@ -31,13 +31,28 @@ class Main {
                case DecafScannerTokenTypes.ID:
                 type = " IDENTIFIER";
                 break;
+               case DecafScannerTokenTypes.CHAR_LITERAL:
+                type = " CHARLITERAL";
+                break;
+               case DecafScannerTokenTypes.INT_LITERAL:
+                type = " INTLITERAL";
+                break;
+               case DecafScannerTokenTypes.STRING_LITERAL:
+                type = " STRINGLITERAL";
+                break;
+               case DecafScannerTokenTypes.BOOL_LITERAL:
+                type = " BOOLEANLITERAL";
+                break;
               }
+              //outputStream.println(token.getType());
               outputStream.println(token.getLine() + type + " " + text);
             }
             done = true;
           } catch(Exception e) {
             // print the error:
-            System.err.println(CLI.infile + " " + e);
+            String[] path =  CLI.infile.split("/");
+            String filename = path[path.length-1];
+            System.err.println(filename + " " + e);
             scanner.consume();
           }
         }
