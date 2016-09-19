@@ -29,7 +29,6 @@ tokens
   "return";
   "sizeof";
   "void";
-  ",";
 }
 
 // Selectively turns on debug tracing mode.
@@ -68,16 +67,23 @@ RBRACKET: ']';
 COMMA: ',';
 SEMI: ';';
 POUND: '#';
+protected DASH: '-';
+protected EXCLAMATION: '!';
 
 // Note that here, the {} syntax allows you to literally command the lexer
 // to skip mark this token as skipped, or to advance to the next line
 // by directly adding Java commands.
 WS_ : (' ' | '\n' {newline();} | '\t') {_ttype = Token.SKIP; };
-SL_COMMENT : ('/''/' | '#') (~'\n')* '\n' {_ttype = Token.SKIP; newline (); };
+protected SL_COMMENT : SLASH_COMMENT | POUND_COMMENT;
+SLASH_COMMENT: '/''/' (~'\n')* '\n' {_ttype = Token.SKIP; newline (); };
+POUND_COMMENT: POUND (~'\n')* '\n' {_ttype = Token.SKIP; newline (); };
 
-protected ASSIGN_OP: '=' | COMPOUND_ASSIGN_OP;
+OPERATOR: ('=' ~'=') => "=" {_ttype = ASSIGN_OP;}
+| (COMPOUND_ASSIGN_OP) => COMPOUND_ASSIGN_OP {_ttype = COMPOUND_ASSIGN_OP;}
+| BIN_OP {_ttype = BIN_OP;};
+protected ASSIGN_OP: "=" | COMPOUND_ASSIGN_OP;
 protected COMPOUND_ASSIGN_OP: "+=" | "-=";
-BIN_OP: (ARITH_OP ~'=') => ARITH_OP | REL_OP | (. '=') => EQ_OP | COND_OP | ASSIGN_OP;
+protected BIN_OP: ARITH_OP | REL_OP | EQ_OP | COND_OP;
 protected ARITH_OP: '+' | '-' | '*' | '/' | '%';
 protected REL_OP: '<' | '>' | "<=" | ">=";
 protected EQ_OP: "==" | "!=";
