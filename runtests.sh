@@ -19,7 +19,7 @@ elif [ $1 = "parser" ]; then
   for legalnum in `seq -w 1 25`;
   do
     echo 'Testing...legal-'$legalnum
-    OUTPUT=`./run.sh -t parse tests/"$1"/legal/legal-"$legalnum"`
+    OUTPUT=`./run.sh -t parse tests/"$1"/legal/legal-"$legalnum" 2>&1`
     RESULT=`echo $?`
     if [ $RESULT = 0 ]; then
       echo 'Passed'
@@ -30,13 +30,13 @@ elif [ $1 = "parser" ]; then
 
   echo '------------------------------------'
   echo 'Running the illegal tests'
-  for illegalnum in `seq -w 1 25`;
+  for illegalnum in `seq -w 1 39`;
   do
     echo 'Testing...illegal-'$illegalnum
-    OUTPUT=`./run.sh -t parse tests/"$1"/illegal/illegal-"$illegalnum"`
+    OUTPUT=`./run.sh -t parse tests/"$1"/illegal/illegal-"$illegalnum" 2>&1`
     RESULT=`echo $?`
     if [ $RESULT = 1 ]; then
-      echo 'Passed (Failed)'
+      echo 'Passed'
     else
       echo "Failed: $OUTPUT"
     fi

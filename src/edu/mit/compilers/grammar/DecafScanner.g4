@@ -29,18 +29,19 @@ RETURN,
 SIZEOF,
 VOID
 }*/
-BOOL: 'bool';
-BREAK: 'break';
-EXTERN: 'extern';
-CONTINUE: 'continue';
-ELSE: 'else';
-FOR: 'for';
-WHILE: 'while';
-IF: 'if';
-INT: 'int';
-RETURN: 'return';
-SIZEOF: 'sizeof';
-VOID: 'void';
+
+TK_bool: 'bool';
+TK_break: 'break';
+TK_extern: 'extern';
+TK_continue: 'continue';
+TK_else: 'else';
+TK_for: 'for';
+TK_while: 'while';
+TK_if: 'if';
+TK_int: 'int';
+TK_return: 'return';
+TK_sizeof: 'sizeof';
+TK_void: 'void';
 
 LCURLY: '{';
 RCURLY : '}';
@@ -51,26 +52,24 @@ RBRACKET: ']';
 COMMA: ',';
 SEMI: ';';
 POUND: '#';
-fragment DASH: '-';
-fragment EXCLAMATION: '!';
+DASH: '-';
+EXCLAMATION: '!';
+EQUALS: '=';
 
 // Note that here, the {} syntax allows you to literally command the lexer
 // to skip mark this token as skipped, or to advance to the next line
 // by directly adding Java commands.
-WS_: (' ' | '\n' | '\t') -> skip;
+WS_: (' ' | '\r' ('\n')? | '\n' | '\t' | '') -> skip; //that looks like an empty string, but it's not!
 fragment SL_COMMENT : SLASH_COMMENT | POUND_COMMENT;
 SLASH_COMMENT: '/''/' (~'\n')* '\n' -> skip;
 POUND_COMMENT: POUND (~'\n')* '\n' -> skip;
 
-ASSIGN_OP: '=' | COMPOUND_ASSIGN_OP;
 COMPOUND_ASSIGN_OP: '+=' | '-=';
 BIN_OP: ARITH_OP | REL_OP | EQ_OP | COND_OP;
-fragment ARITH_OP: '+' | '-' | '*' | '/' | '%';
+fragment ARITH_OP: '+' | DASH | '*' | '/' | '%';
 fragment REL_OP: '<' | '>' | '<=' | '>=';
 fragment EQ_OP: '==' | '!=';
 fragment COND_OP: '&&' | '||';
-
-fragment LITERAL: INT_LITERAL | CHAR_LITERAL | BOOL_LITERAL;
 
 BOOL_LITERAL: 'true' | 'false';
 INT_LITERAL: (DECIMAL_LITERAL | HEX_LITERAL) ('ll')?;
