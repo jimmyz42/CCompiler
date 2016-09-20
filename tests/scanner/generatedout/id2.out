@@ -1,0 +1,4 @@
+2 IDENTIFIER foo
+line 2:3 token recognition error at: '.'
+id2 token recognition error at: '.'
+2 IDENTIFIER bar

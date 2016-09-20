@@ -1,0 +1,8 @@
+line 2:0 token recognition error at: '"Aren''
+string2 token recognition error at: '"Aren''
+2 IDENTIFIER t
+2 IDENTIFIER you
+2 IDENTIFIER a
+2 IDENTIFIER string
+line 2:21 token recognition error at: '"\n'
+string2 token recognition error at: '"\n'

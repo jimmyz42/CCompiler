@@ -1,0 +1,18 @@
+2 IDENTIFIER foo
+2 IDENTIFIER bar
+3 IDENTIFIER baz
+3 IDENTIFIER quux
+4 IDENTIFIER meep
+4 IDENTIFIER peem
+5 IDENTIFIER whaah
+line 5:5 token recognition error at: ''
+ws1 token recognition error at: ''
+5 IDENTIFIER boom
+6 IDENTIFIER doom
+line 9:0 token recognition error at: ''
+ws1 token recognition error at: ''
+line 9:3 token recognition error at: ''
+ws1 token recognition error at: ''
+10 IDENTIFIER gloom
+10 IDENTIFIER loom
+10 IDENTIFIER weave

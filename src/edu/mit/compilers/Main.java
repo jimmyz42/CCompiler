@@ -27,7 +27,8 @@ class Main {
           public void syntaxError(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
             String[] path =  CLI.infile.split("/");
             String filename = path[path.length-1];
-            System.err.println(filename + " " + line + ":" + charPositionInLine + " unexpected char " + e.getOffendingToken());
+            String offendingStr = msg.split("\\s")[msg.split("\\s").length-1];
+            System.err.println(filename + " " + msg);
           }
         });
         Token token;

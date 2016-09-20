@@ -71,16 +71,14 @@ fragment EQ_OP: '==' | '!=';
 fragment COND_OP: '&&' | '||';
 
 fragment LITERAL: INT_LITERAL | CHAR_LITERAL | BOOL_LITERAL;
-ID: ALPHA (ALPHA_NUM)*;
 
+BOOL_LITERAL: 'true' | 'false';
 INT_LITERAL: (DECIMAL_LITERAL | HEX_LITERAL) ('ll')?;
 fragment DECIMAL_LITERAL: (DIGIT)+;
 fragment HEX_LITERAL: '0x' (HEX_DIGIT)+;
-BOOL_LITERAL: TRUE | FALSE;
-fragment TRUE: 'true';
-fragment FALSE: 'false';
 CHAR_LITERAL: '\'' (ESC_CHAR|NOT_SPECIAL_CHAR) '\'';
 STRING_LITERAL: '"' (ESC_CHAR|NOT_SPECIAL_CHAR)* '"';
+ID: ALPHA (ALPHA_NUM)*;
 
 fragment ALPHA_NUM: ALPHA | DIGIT;
 fragment HEX_DIGIT: DIGIT | 'a'..'f' | 'A'..'F';
