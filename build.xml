@@ -56,7 +56,7 @@
   <target name="scanner" depends="init">
     <exec executable="java">
       <arg value="-jar"/>
-      <arg value="${lib}/antlr-4.5.3-complete.jar"/>
+      <arg value="${lib}/antlr.jar"/>
       <arg value="-o"/>
       <arg value="${autogen}/${base_package_dir}/grammar"/>
       <arg value="${src}/${base_package_dir}/grammar/DecafScanner.g4"/>
@@ -66,10 +66,10 @@
   <target name="parser" depends="scanner">
     <exec executable="java">
       <arg value="-jar"/>
-      <arg value="${lib}/antlr-4.5.3-complete.jar"/>
+      <arg value="${lib}/antlr.jar"/>
       <arg value="-o"/>
       <arg value="${autogen}/${base_package_dir}/grammar"/>
-      <arg value="${src}/${base_package_dir}/grammar/DecafParser.g4"/>
+      <arg value="${src}/${base_package_dir}/grammar/Decaf.g4"/>
     </exec>
   </target>
 

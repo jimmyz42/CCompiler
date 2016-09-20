@@ -1,8 +1,6 @@
 grammar Decaf;
 
-@header {
-  package edu.mit.compilers.grammar;
-}
+import DecafScanner;
 
 options
 {
@@ -19,9 +17,30 @@ tokens
   CLASS
 }
 
-// Selectively turns on debug tracing mode.
+// Java glue code that makes error reporting easier.
 // You can insert arbitrary Java code into your parser/lexer this way.
-@tracing{
+@errorreports{
+  // Do our own reporting of errors so the parser can return a non-zero status
+  // if any errors are detected.
+  /** Reports if any errors were reported during parse. */
+  private boolean error;
+
+  @Override
+  public void reportError (RecognitionException ex) {
+    // Print the error via some kind of error reporting mechanism.
+    error = true;
+  }
+  @Override
+  public void reportError (String s) {
+    // Print the error via some kind of error reporting mechanism.
+    error = true;
+  }
+  public boolean getError () {
+    return error;
+  }
+
+  // Selectively turns on debug mode.
+
   /** Whether to display debug information. */
   private boolean trace = false;
 
@@ -29,40 +48,17 @@ tokens
     trace = shouldTrace;
   }
   @Override
-  public void traceIn(String rname) throws CharStreamException {
+  public void traceIn(String rname) throws TokenStreamException {
     if (trace) {
       super.traceIn(rname);
     }
   }
   @Override
-  public void traceOut(String rname) throws CharStreamException {
+  public void traceOut(String rname) throws TokenStreamException {
     if (trace) {
       super.traceOut(rname);
     }
   }
 }
-
-LCURLY: '{';
-RCURLY: '}';
-
-ID: ('a'..'z' | 'A'..'Z')+;
-
-// Note that here, the {} syntax allows you to literally command the lexer
-// to skip mark this token as skipped, or to advance to the next line
-// by directly adding Java commands.
-WS_ : (' ' | '\n') -> skip;
-SL_COMMENT : '//' (~'\n')* '\n' -> skip;
-
-DECIMAL_LITERAL: (DIGIT)+;
-HEX_LITERAL: 'Ox' (HEX_DIGIT)+;
-BOOL_LITERAL: ('true' | 'false');
-CHAR_LITERAL: '\'' (ESC_CHAR|NOT_SPECIAL_CHAR) '\'';
-//catch [MismatchedCharException e] {System.out.println("Invalid character trying to match char");}
-STRING_LITERAL: '"' (ESC_CHAR|NOT_SPECIAL_CHAR)* '"';
-
-fragment DIGIT: '0'..'9';
-fragment HEX_DIGIT: DIGIT | 'a'..'f';
-fragment ESC_CHAR:  '\\' ('"'|'\''|'\\'|'t'|'n');
-fragment NOT_SPECIAL_CHAR: ~('\"' | '\'' | '\\' | '\t');
 
 program: CLASS ID LCURLY RCURLY EOF;

@@ -1,56 +1,82 @@
 package edu.mit.compilers;
 
 import java.io.*;
-import antlr.Token;
+import java.util.BitSet;
 import edu.mit.compilers.grammar.*;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
+
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.dfa.*;
+import org.antlr.v4.runtime.atn.*;
 
 class Main {
   public static void main(String[] args) {
     try {
       CLI.parse(args, new String[0]);
-      InputStream inputStream = args.length == 0 ?
-          System.in : new java.io.FileInputStream(CLI.infile);
+      ANTLRInputStream inputStream = args.length == 0 ?
+          new ANTLRInputStream(System.in) : new ANTLRInputStream(new java.io.FileInputStream(CLI.infile));
       PrintStream outputStream = CLI.outfile == null ? System.out : new java.io.PrintStream(new java.io.FileOutputStream(CLI.outfile));
       if (CLI.target == Action.SCAN) {
         DecafScanner scanner =
             new DecafScanner(inputStream);
-        scanner.setTrace(CLI.debug);
+        scanner.addErrorListener(new ANTLRErrorListener() {
+          public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {}
+          public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs){}
+          public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs){}
+          public void syntaxError(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+            String[] path =  CLI.infile.split("/");
+            String filename = path[path.length-1];
+            System.err.println(filename + " " + line + ":" + charPositionInLine + " unexpected char " + e.getOffendingToken());
+          }
+        });
         Token token;
         boolean done = false;
         while (!done) {
-          try {
-            for (token = scanner.nextToken();
-                 token.getType() != DecafParserTokenTypes.EOF;
-                 token = scanner.nextToken()) {
-              String type = "";
-              String text = token.getText();
-              switch (token.getType()) {
-               // TODO: add strings for the other types here...
-               case DecafScannerTokenTypes.ID:
-                type = " IDENTIFIER";
-                break;
-              }
-              outputStream.println(token.getLine() + type + " " + text);
+          for (token = scanner.nextToken();
+          token.getType() != DecafScanner.EOF;
+          token = scanner.nextToken()) {
+            String type = "";
+            String text = token.getText();
+            switch (token.getType()) {
+              // TODO: add strings for the other types here...
+              case DecafScanner.ID:
+              type = " IDENTIFIER";
+              break;
+              case DecafScanner.CHAR_LITERAL:
+              type = " CHARLITERAL";
+              break;
+              case DecafScanner.INT_LITERAL:
+              type = " INTLITERAL";
+              break;
+              case DecafScanner.STRING_LITERAL:
+              type = " STRINGLITERAL";
+              break;
+              case DecafScanner.BOOL_LITERAL:
+              type = " BOOLEANLITERAL";
+              break;
             }
-            done = true;
-          } catch(Exception e) {
-            // print the error:
-            System.err.println(CLI.infile + " " + e);
-            scanner.consume();
+            //outputStream.println(token.getType());
+            outputStream.println(token.getLine() + type + " " + text);
           }
+          done = true;
         }
       } else if (CLI.target == Action.PARSE ||
                  CLI.target == Action.DEFAULT) {
         DecafScanner scanner =
-            new DecafScanner(new DataInputStream(inputStream));
-        DecafParser parser = new DecafParser(scanner);
+            new DecafScanner(inputStream);
+        CommonTokenStream tokens = new CommonTokenStream(scanner);
+        DecafParser parser = new DecafParser(tokens);
         parser.setTrace(CLI.debug);
+        parser.addErrorListener(new ANTLRErrorListener() {
+          public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {}
+          public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs){}
+          public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs){}
+          public void syntaxError(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+            System.exit(1);
+          }
+        });
         parser.program();
-        if(parser.getError()) {
-          System.exit(1);
-        }
       }
     } catch(Exception e) {
       // print the error:
