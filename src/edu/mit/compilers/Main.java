@@ -18,19 +18,7 @@ class Main {
           new ANTLRInputStream(System.in) : new ANTLRInputStream(new java.io.FileInputStream(CLI.infile));
       PrintStream outputStream = CLI.outfile == null ? System.out : new java.io.PrintStream(new java.io.FileOutputStream(CLI.outfile));
       if (CLI.target == Action.SCAN) {
-        DecafScanner scanner =
-            new DecafScanner(inputStream);
-        scanner.addErrorListener(new ANTLRErrorListener() {
-          public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {}
-          public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs){}
-          public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs){}
-          public void syntaxError(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-            String[] path =  CLI.infile.split("/");
-            String filename = path[path.length-1];
-            String offendingStr = msg.split("\\s")[msg.split("\\s").length-1];
-            System.err.println(filename + " " + msg);
-          }
-        });
+        DecafScanner scanner = new DecafScanner(inputStream);
         Token token;
         boolean done = false;
         while (!done) {

@@ -86,4 +86,3 @@ fragment ALPHA: 'a'..'z' | 'A'..'Z' | '_';
 
 fragment ESC_CHAR:  '\\' ('"'|'\''|'\\'|'t'|'n');
 fragment NOT_SPECIAL_CHAR: (' '..'!' | '#'..'&' | '('..'[' | ']'..'~');
-fragment NOT_ALPHA_NUM: ~('a'..'z' | 'A'..'Z' | '_' | '0'..'9');
