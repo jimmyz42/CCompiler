@@ -1,0 +1,4 @@
+2 sizeof
+line 3:0 token recognition error at: '@'
+line 4:0 token recognition error at: '?'
+line 5:0 token recognition error at: ':'
