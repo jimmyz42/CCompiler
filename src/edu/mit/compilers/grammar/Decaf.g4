@@ -67,15 +67,21 @@ catch [RecognitionException ex] {
 method_name: ID;
 location: ID LBRACKET expr RBRACKET | ID;
 
-expr: (expr_terminal BIN_OP expr) | (expr_terminal DASH expr) | expr_terminal;
-expr_terminal: location
-| TK_sizeof LPAREN ID RPAREN
-| TK_sizeof LPAREN type RPAREN
-| method_call
-| DASH expr
-| EXCLAMATION expr
-| LPAREN expr RPAREN
-| literal;
+expr: location
+    | TK_sizeof LPAREN ID RPAREN
+    | TK_sizeof LPAREN type RPAREN
+    | method_call
+    | literal
+    | LPAREN expr RPAREN
+    | DASH expr
+    | EXCLAMATION expr
+    | expr MUL_OP expr
+    | expr (PLUS_OP | DASH) expr
+    | expr REL_OP expr
+    | expr EQ_OP expr
+    | expr AND_OP expr
+    | expr OR_OP expr
+    ;
 literal: INT_LITERAL | CHAR_LITERAL | BOOL_LITERAL;
 
 extern_arg: expr | STRING_LITERAL;

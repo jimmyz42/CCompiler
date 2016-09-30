@@ -65,11 +65,13 @@ SLASH_COMMENT: '/''/' (~'\n')* '\n' -> skip;
 POUND_COMMENT: POUND (~'\n')* '\n' -> skip;
 
 COMPOUND_ASSIGN_OP: '+=' | '-=';
-BIN_OP: ARITH_OP | REL_OP | EQ_OP | COND_OP;
-fragment ARITH_OP: '+' | DASH | '*' | '/' | '%';
-fragment REL_OP: '<' | '>' | '<=' | '>=';
-fragment EQ_OP: '==' | '!=';
-fragment COND_OP: '&&' | '||';
+//BIN_OP: ARITH_OP | REL_OP | EQ_OP | COND_OP;
+PLUS_OP: '+';
+MUL_OP: '*' | '/' | '%';
+REL_OP: '<' | '>' | '<=' | '>=';
+EQ_OP: '==' | '!=';
+AND_OP: '&&';
+OR_OP: '||';
 
 BOOL_LITERAL: 'true' | 'false';
 INT_LITERAL: (DECIMAL_LITERAL | HEX_LITERAL) ('ll')?;

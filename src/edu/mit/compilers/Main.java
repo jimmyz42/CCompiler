@@ -15,7 +15,7 @@ class Main {
     public static void main(String[] args) {
         try {
             CLI.parse(args, new String[0]);
-            ANTLRInputStream inputStream = args.length == 0 ?
+            ANTLRInputStream inputStream = CLI.infile == null ?
                     new ANTLRInputStream(System.in) : new ANTLRInputStream(new java.io.FileInputStream(CLI.infile));
             PrintStream outputStream = CLI.outfile == null ? System.out : new java.io.PrintStream(new java.io.FileOutputStream(CLI.outfile));
             if (CLI.target == Action.SCAN) {
