@@ -3,6 +3,7 @@ package edu.mit.compilers;
 import java.io.*;
 import java.util.BitSet;
 import edu.mit.compilers.grammar.*;
+import edu.mit.compilers.grammar.DecafParser.ProgramContext;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
 
@@ -65,7 +66,10 @@ class Main {
           System.exit(1);
           }
         });
-        parser.program();
+        ProgramContext context = parser.program();
+        if (CLI.debug) {
+          org.antlr.v4.gui.Trees.inspect(context, parser);
+        }
       }
     } catch(Exception e) {
       // print the error:

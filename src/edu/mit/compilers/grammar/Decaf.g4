@@ -11,7 +11,7 @@ options
   @SuppressWarnings("unchecked")
 }
 
-program: (extern_decl)* (field_decl)* (method_decl)* {System.exit(0);};
+program: (extern_decl)* (field_decl)* (method_decl)*;
 catch [RecognitionException ex] {
    System.out.println("completely failed to parse your garbage");
    System.exit(1);
