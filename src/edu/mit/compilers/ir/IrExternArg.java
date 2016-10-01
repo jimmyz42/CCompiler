@@ -1,0 +1,3 @@
+class IrExternArg extends Ir {
+
+}
