@@ -1,3 +1,5 @@
+package edu.mit.compilers.ir;
+
 class IrBoolLiteral extends IrLiteral {
-    private final boolean terminal;
+    private boolean terminal;
 }

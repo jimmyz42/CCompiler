@@ -67,6 +67,7 @@
     <exec executable="java">
       <arg value="-jar"/>
       <arg value="${lib}/antlr.jar"/>
+      <arg value="-visitor"/>
       <arg value="-o"/>
       <arg value="${autogen}/${base_package_dir}/grammar"/>
       <arg value="${src}/${base_package_dir}/grammar/Decaf.g4"/>

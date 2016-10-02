@@ -1,5 +1,5 @@
 package edu.mit.compilers.ir;
 
-class IrSizeofId extends IrExpression {
+class IrExternDecl extends Ir {
     private IrId id;
 }

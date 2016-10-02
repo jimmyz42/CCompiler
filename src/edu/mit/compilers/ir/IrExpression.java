@@ -1,4 +1,6 @@
+package edu.mit.compilers.ir;
+
 abstract class IrExpression extends Ir {
-    private final boolean negative;
-    private final boolean negation;
+    private boolean negative;
+    private boolean negation;
 }

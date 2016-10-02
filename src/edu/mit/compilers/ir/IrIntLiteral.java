@@ -1,3 +1,5 @@
-absctract class IrIntLiteral extends IrLiteral {
-    private final boolean longLong;
+package edu.mit.compilers.ir;
+
+abstract class IrIntLiteral extends IrLiteral {
+    private boolean longLong;
 }

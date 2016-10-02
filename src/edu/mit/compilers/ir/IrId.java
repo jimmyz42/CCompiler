@@ -1,3 +1,5 @@
+package edu.mit.compilers.ir;
+
 class IrId extends Ir {
-    private final String terminal;
+    private String terminal;
 }

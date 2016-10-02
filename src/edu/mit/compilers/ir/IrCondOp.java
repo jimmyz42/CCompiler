@@ -1,3 +1,5 @@
+package edu.mit.compilers.ir;
+
 class IrCondOp extends IrBinOp {
-    private final String terminal;
+    private String terminal;
 }

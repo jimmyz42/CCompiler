@@ -1,6 +1,6 @@
 package edu.mit.compilers.ir;
 
-class IrLocation extends IrExpression {
+class IrInitForStmt extends Ir {
     private IrId id;
     private IrExpression expression;
 }

@@ -1,3 +1,5 @@
+package edu.mit.compilers.ir;
+
 class IrStringLiteral extends IrExternArg {
-    private final String terminal;
+    private String terminal;
 }

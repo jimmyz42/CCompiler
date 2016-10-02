@@ -1,5 +1,7 @@
+package edu.mit.compilers.ir;
+
 public class IrBinOpExpr extends IrExpression {
-    private final IrBinOp operator;
-    private final IrExpression lhs;
-    private final IrExpression rhs;
+    private IrBinOp operator;
+    private IrExpression lhs;
+    private IrExpression rhs;
 }

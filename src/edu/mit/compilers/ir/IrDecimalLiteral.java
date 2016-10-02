@@ -1,3 +1,5 @@
+package edu.mit.compilers.ir;
+
 class IrDecimalLiteral extends IrIntLiteral {
-    private final float terminal;
+    private float terminal;
 }

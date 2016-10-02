@@ -1,5 +1,5 @@
 package edu.mit.compilers.ir;
 
-class IrArithOp extends IrBinOp {
+class IrMethodName extends Ir {
     private String terminal;
 }

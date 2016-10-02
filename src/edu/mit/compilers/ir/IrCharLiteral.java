@@ -1,3 +1,5 @@
+package edu.mit.compilers.ir;
+
 class IrCharLiteral extends IrLiteral {
-    private final char terminal;
+    private char terminal;
 }

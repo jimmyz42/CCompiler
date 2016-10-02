@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.BitSet;
 import edu.mit.compilers.grammar.*;
 import edu.mit.compilers.grammar.DecafParser.ProgramContext;
+import edu.mit.compilers.ir.*;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
 
@@ -70,6 +71,14 @@ class Main {
                 if (CLI.debug) {
                     org.antlr.v4.gui.Trees.inspect(context, parser);
                 }
+            } else if (CLI.target == Action.INTER) {
+                DecafScanner scanner =
+                new DecafScanner(inputStream);
+                CommonTokenStream tokens = new CommonTokenStream(scanner);
+                DecafParser parser = new DecafParser(tokens);
+                ProgramContext context = parser.program();
+                Visitor loader = new Visitor();
+                loader.visit(context);
             }
         } catch(Exception e) {
             // print the error:

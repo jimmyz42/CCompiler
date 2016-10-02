@@ -1,3 +1,5 @@
+package edu.mit.compilers.ir;
+
 class IrEqOp extends IrBinOp {
-    private final String terminal;
+    private String terminal;
 }
