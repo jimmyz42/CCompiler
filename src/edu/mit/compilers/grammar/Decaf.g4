@@ -18,8 +18,8 @@ catch [RecognitionException ex] {
    System.exit(1);
 }
 extern_decl: TK_extern ID LPAREN RPAREN SEMI;
-method_decl: (type | TK_void) ID LPAREN type ID (COMMA type ID)* RPAREN block
-| (type | TK_void) ID LPAREN RPAREN block;
+method_decl: (type | TK_void) ID LPAREN (method_argument_decl (COMMA method_argument_decl)*)? RPAREN block;
+method_argument_decl: type ID;
 catch [RecognitionException ex] {
    System.out.println("attempted and failed to parse a method");
    System.exit(1);

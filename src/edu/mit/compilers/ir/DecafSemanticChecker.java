@@ -27,7 +27,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitProgram(DecafParser.ProgramContext ctx) { return visitChildren(ctx); }
+	@Override public Object visitProgram(DecafParser.ProgramContext ctx) { return IrProgram.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

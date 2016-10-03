@@ -74,13 +74,15 @@ class Main {
                     org.antlr.v4.gui.Trees.inspect(context, parser);
                 }
             } else if (CLI.target == Action.INTER) {
-                DecafScanner scanner =
-                new DecafScanner(inputStream);
+                DecafScanner scanner = new DecafScanner(inputStream);
                 CommonTokenStream tokens = new CommonTokenStream(scanner);
                 DecafParser parser = new DecafParser(tokens);
                 ProgramContext context = parser.program();
                 DecafSemanticChecker loader = new DecafSemanticChecker();
-                loader.visit(context);
+                Ir ir = (Ir)loader.visit(context);
+                if (CLI.debug) {
+                    System.out.print(ir.toString());
+                }
             }
         } catch(Exception e) {
             // print the error:
