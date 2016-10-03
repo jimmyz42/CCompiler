@@ -43,7 +43,7 @@ catch [RecognitionException ex] {
 
 type: TK_int | TK_bool;
 statement: TK_if LPAREN expr RPAREN block (TK_else block)? #IfStmt
-| TK_for LPAREN ID EQUALS expr SEMI expr SEMI ID COMPOUND_ASSIGN_OP expr RPAREN block #ForStmt
+| TK_for LPAREN init_id=ID EQUALS init_expr=expr SEMI condition=expr SEMI update_id=ID update_op=COMPOUND_ASSIGN_OP update_expr=expr RPAREN block #ForStmt
 | TK_while LPAREN expr RPAREN block #WhileStmt
 | TK_return expr SEMI #ReturnStmt
 | TK_break SEMI #BreakStmt
