@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
-class IrCompAssignOp extends Ir {
-    private String Token;
+class IrCompAssignOp extends IrAssignOp {
+    public IrCompAssignOp(String token) {
+        super(token);
+    }
 }

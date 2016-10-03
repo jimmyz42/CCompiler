@@ -1,6 +1,9 @@
 package edu.mit.compilers.ir;
 
-class IrLocation extends IrExpression {
-    private IrId id;
-    private IrExpression expression;
+import edu.mit.compilers.grammar.DecafParser;
+
+abstract class IrLocation extends IrExpression {
+    public static IrLocation create(DecafSemanticChecker checker, DecafParser.LocationContext ctx) {
+        return (IrLocation) checker.visit(ctx);
+    }
 }

@@ -1,3 +1,4 @@
+
 grammar Decaf;
 
 import DecafScanner;
@@ -41,14 +42,15 @@ catch [RecognitionException ex] {
 }
 
 type: TK_int | TK_bool;
-statement: TK_if LPAREN expr RPAREN block (TK_else block)?
-| TK_for LPAREN ID EQUALS expr SEMI expr SEMI ID COMPOUND_ASSIGN_OP expr RPAREN block
-| TK_while LPAREN expr RPAREN block
-| TK_return expr SEMI
-| TK_break SEMI
-| TK_continue SEMI
-| method_call SEMI
-| location assign_op expr SEMI;
+statement: TK_if LPAREN expr RPAREN block (TK_else block)? #IfStmt
+| TK_for LPAREN ID EQUALS expr SEMI expr SEMI ID COMPOUND_ASSIGN_OP expr RPAREN block #ForStmt
+| TK_while LPAREN expr RPAREN block #WhileStmt
+| TK_return expr SEMI #ReturnStmt
+| TK_break SEMI #BreakStmt
+| TK_continue SEMI #ContinueStmt
+| method_call SEMI #MethodCallStmt
+| location assign_op expr SEMI #AssignStmt
+;
 catch [RecognitionException ex] {
    System.out.println(ex.toString());
    System.out.println("failed to parse statement");
@@ -65,24 +67,29 @@ catch [RecognitionException ex] {
 }
 
 method_name: ID;
-location: ID LBRACKET expr RBRACKET | ID;
+location: ID LBRACKET expr RBRACKET #ArrayLocation
+| ID #IdLocation
+;
 
-expr: location
-    | TK_sizeof LPAREN ID RPAREN
-    | TK_sizeof LPAREN type RPAREN
-    | method_call
-    | literal
-    | LPAREN expr RPAREN
-    | DASH expr
-    | EXCLAMATION expr
-    | expr MUL_OP expr
-    | expr (PLUS_OP | DASH) expr
-    | expr REL_OP expr
-    | expr EQ_OP expr
-    | expr AND_OP expr
-    | expr OR_OP expr
+expr: location #LocationExpr
+    | TK_sizeof LPAREN ID RPAREN #SizeofIdExpr
+    | TK_sizeof LPAREN type RPAREN #SizeofTypeExpr
+    | method_call #CallExpr
+    | literal #LiteralExpr
+    | LPAREN expr RPAREN #GroupExpr
+    | DASH expr #NegExpr
+    | EXCLAMATION expr #NotExpr
+    | expr MUL_OP expr #MulOpExpr
+    | expr (PLUS_OP | DASH) expr #PlusOpExpr
+    | expr REL_OP expr #RelExpr
+    | expr EQ_OP expr #EqExpr
+    | expr AND_OP expr #AndExpr
+    | expr OR_OP expr #OrExpr
     ;
-literal: INT_LITERAL | CHAR_LITERAL | BOOL_LITERAL;
+literal: INT_LITERAL #IntLiteral
+| CHAR_LITERAL #CharLiteral
+| BOOL_LITERAL #BoolLiteral
+;
 
 extern_arg: expr | STRING_LITERAL;
 catch [RecognitionException ex] {
