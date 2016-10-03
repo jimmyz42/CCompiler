@@ -10,7 +10,6 @@ class IrForStmt extends IrStatement {
     private IrBlock block;
     
     public IrForStmt(IrAssignStmt initializer, IrExpression condition, IrAssignStmt update, IrBlock block) {
-        super();
         this.initializer = initializer;
         this.condition = condition;
         this.update = update;

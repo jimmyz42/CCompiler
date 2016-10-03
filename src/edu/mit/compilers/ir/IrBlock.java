@@ -32,4 +32,10 @@ class IrBlock extends Ir {
         
         return new IrBlock(fieldDeclarations, statements);
     }
+
+    public static IrBlock empty() {
+        List<IrFieldDecl> fieldDeclarations = new ArrayList<>();
+        List<IrStatement> statements = new ArrayList<>();
+        return new IrBlock(fieldDeclarations, statements);
+    }
 }
