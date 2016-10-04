@@ -14,18 +14,18 @@ class IrIfStmt extends IrStatement {
         this.elseBlock = elseBlock;
     }
 
-    public static IrIfStmt create(DecafSemanticChecker checker, DecafParser.IfStmtContext ctx, SymbolTable symbolTable) {
+    public static IrIfStmt create(DecafSemanticChecker checker, DecafParser.IfStmtContext ctx) {
         IrExpression condition = IrExpression.create(checker, ctx.expr());
         if (condition.getExpressionType() != TypeScalar.BOOL) {
             throw new TypeMismatchException("If statement condition must be a bool");
         }
         
-        IrBlock block = IrBlock.create(checker, ctx.block(0), symbolTable);
+        IrBlock block = IrBlock.create(checker, ctx.block(0));
         IrBlock elseBlock;
         if (ctx.block().size() > 1) {
-            elseBlock = IrBlock.create(checker, ctx.block(1), symbolTable);
+            elseBlock = IrBlock.create(checker, ctx.block(1));
         } else {
-            elseBlock = IrBlock.empty(symbolTable);
+            elseBlock = IrBlock.createEmpty(checker);
         }
 
         return new IrIfStmt(condition, block, elseBlock);

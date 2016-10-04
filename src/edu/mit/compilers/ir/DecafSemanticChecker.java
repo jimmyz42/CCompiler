@@ -2,10 +2,14 @@
 
   package edu.mit.compilers.ir;
 
+import java.util.Stack;
+
 import edu.mit.compilers.grammar.*;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
+import sun.misc.Queue;
 
 /**
  * This class provides an empty implementation of {@link DecafVisitor},
@@ -17,10 +21,23 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
  */
 public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 
+    // What's this used for?
     ParseTreeProperty<Object> values = new ParseTreeProperty<Object>();
 
     private void setValue(ParseTree node, Object value) { values.put(node, value); }
     private Object getValue(ParseTree node) { return values.get(node); }
+    
+    private Stack<SymbolTable> symbolTables = new Stack<>();
+    public SymbolTable currentSymbolTable() {
+        return symbolTables.peek();
+    }
+    public SymbolTable popSybmolTable() {
+        return symbolTables.pop();
+    }
+    public void pushSymbolTable(SymbolTable symbolTable) {
+        symbolTables.push(symbolTable);
+    }
+    
     /**
 	 * {@inheritDoc}
 	 *
@@ -76,42 +93,42 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitIfStmt(DecafParser.IfStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrIfStmt visitIfStmt(DecafParser.IfStmtContext ctx) { return IrIfStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitForStmt(DecafParser.ForStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrForStmt visitForStmt(DecafParser.ForStmtContext ctx) { return IrForStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitWhileStmt(DecafParser.WhileStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrWhileStmt visitWhileStmt(DecafParser.WhileStmtContext ctx) { return IrWhileStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitReturnStmt(DecafParser.ReturnStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrReturnStmt visitReturnStmt(DecafParser.ReturnStmtContext ctx) { return IrReturnStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitBreakStmt(DecafParser.BreakStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrBreakStmt visitBreakStmt(DecafParser.BreakStmtContext ctx) { return IrBreakStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitContinueStmt(DecafParser.ContinueStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrContStmt visitContinueStmt(DecafParser.ContinueStmtContext ctx) { return IrContStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -125,7 +142,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitAssignStmt(DecafParser.AssignStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrAssignStmt visitAssignStmt(DecafParser.AssignStmtContext ctx) { return IrAssignStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

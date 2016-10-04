@@ -9,7 +9,7 @@ class IrReturnStmt extends IrStatement {
         this.expression = expression;
     }
     
-    public static IrReturnStmt create(DecafSemanticChecker checker, DecafParser.ReturnStmtContext ctx, SymbolTable symbolTable) {
+    public static IrReturnStmt create(DecafSemanticChecker checker, DecafParser.ReturnStmtContext ctx) {
         return new IrReturnStmt(IrExpression.create(checker, ctx.expr()));
     }
 }

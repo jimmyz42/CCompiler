@@ -16,7 +16,7 @@ class IrForStmt extends IrStatement {
         this.block = block;
     }
 
-    public static IrForStmt create(DecafSemanticChecker checker, DecafParser.ForStmtContext ctx, SymbolTable symbolTable) {
+    public static IrForStmt create(DecafSemanticChecker checker, DecafParser.ForStmtContext ctx) {
         IrAssignStmt initializer = new IrAssignStmt(new IrIdLocation(new IrId(ctx.init_id.getText())), "=", IrExpression.create(checker, ctx.init_expr));
         
         IrExpression condition = IrExpression.create(checker, ctx.condition);
@@ -25,7 +25,7 @@ class IrForStmt extends IrStatement {
         }
         
         IrAssignStmt update = new IrAssignStmt(new IrIdLocation(new IrId(ctx.update_id.getText())), ctx.update_op.getText(), IrExpression.create(checker, ctx.update_expr));
-        IrBlock block = IrBlock.create(checker, ctx.block(), symbolTable);
+        IrBlock block = IrBlock.create(checker, ctx.block());
 
         return new IrForStmt(initializer, condition, update, block);
     }

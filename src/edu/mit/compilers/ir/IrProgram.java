@@ -15,6 +15,7 @@ class IrProgram extends Ir {
 
     public static IrProgram create(DecafSemanticChecker checker, ProgramContext ctx) {
         GlobalSymbolTable symbolTable = new GlobalSymbolTable();
+        checker.pushSymbolTable(symbolTable);
         
         for (Extern_declContext externDecl : ctx.extern_decl()) {
             symbolTable.addFunction(new ExternDescriptor(externDecl.ID().getText()));
@@ -28,6 +29,7 @@ class IrProgram extends Ir {
             symbolTable.addFunction(MethodDescriptor.create(checker, methodDecl, symbolTable));
         }
         
+        checker.popSybmolTable();
         return new IrProgram(symbolTable);
     }
 }
