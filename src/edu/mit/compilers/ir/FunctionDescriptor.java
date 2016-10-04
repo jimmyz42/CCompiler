@@ -1,7 +1,9 @@
 package edu.mit.compilers.ir;
 
+import edu.mit.compilers.PrettyPrintable;
 
-public abstract class FunctionDescriptor {
+
+public abstract class FunctionDescriptor implements PrettyPrintable {
     private final String name;
     private final Type returnType;
     

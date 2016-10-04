@@ -1,38 +1,47 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.mit.compilers.Util;
 import edu.mit.compilers.grammar.DecafParser.Method_argument_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
 
 public class MethodDescriptor extends FunctionDescriptor {
-    private final List<Type> argumentTypes;
+    private final List<VariableDescriptor> arguments;
     private final IrBlock body;
     
-    public MethodDescriptor(String name, Type returnType, List<Type> argumentTypes, IrBlock body) {
+    public MethodDescriptor(String name, Type returnType, List<VariableDescriptor> arguments, IrBlock body) {
         super(name, returnType);
-        this.argumentTypes = Collections.unmodifiableList(argumentTypes);
+        this.arguments = Collections.unmodifiableList(arguments);
         this.body = body;
     }
 
-    public List<Type> getArgumentTypes() {
-        return argumentTypes;
+    public List<VariableDescriptor> getArguments() {
+        return arguments;
     }
 
     public static MethodDescriptor create(DecafSemanticChecker checker, Method_declContext ctx) {
-        List<Type> argumentTypes = new ArrayList<>();
-        IrBlock body = IrBlock.create(checker, ctx.block());
-        String name = ctx.ID().getText();
         Type returnType = ctx.type() == null ? TypeVoid.VOID : TypeScalar.create(checker, ctx.type());
+        String name = ctx.ID().getText();
+        LocalSymbolTable localTable = new LocalSymbolTable(checker.currentSymbolTable());
+        
+        List<VariableDescriptor> arguments = new ArrayList<>();
         for (Method_argument_declContext argumentDecl : ctx.method_argument_decl()) {
             Type type = TypeScalar.create(checker, argumentDecl.type());
             String argName = argumentDecl.ID().getText();
-            argumentTypes.add(type);
-            body.getSymbolTable().addVariable(type, argName);
+            arguments.add(localTable.addVariable(type, argName));
         }
+        IrBlock body = IrBlock.create(checker, ctx.block(), localTable);
         
-        return new MethodDescriptor(name, returnType, argumentTypes, body);
+        return new MethodDescriptor(name, returnType, arguments, body);
+    }
+    
+    @Override
+    public void println(PrintWriter pw, String prefix) {
+        pw.print(prefix + getReturnType() + " " + getName() + "(" + Util.joinStrings(arguments) + ") ");
+        body.println(pw, prefix);
     }
 }

@@ -1,19 +1,20 @@
 package edu.mit.compilers.ir;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LocalSymbolTable extends SymbolTable {
     private SymbolTable parentTable;
-    private Map<String, LocalVariableDescriptor> variables = new HashMap<>();
+    private Map<String, VariableDescriptor> variables = new HashMap<>();
     
     public LocalSymbolTable(SymbolTable parentTable) {
         this.parentTable = parentTable;
     }
     
     @Override
-    public LocalVariableDescriptor addVariable(Type type, String name) {
-        LocalVariableDescriptor descriptor = new LocalVariableDescriptor(type, name);
+    public VariableDescriptor addVariable(Type type, String name) {
+        VariableDescriptor descriptor = new LocalVariableDescriptor(type, name);
         variables.put(name, descriptor);
         return descriptor;
     }
@@ -36,5 +37,9 @@ public class LocalSymbolTable extends SymbolTable {
     @Override
     public FunctionDescriptor getFunction(String name) {
         return parentTable.getFunction(name);
+    }
+
+    public Map<String, VariableDescriptor> getVariables() {
+        return Collections.unmodifiableMap(variables);
     }
 }

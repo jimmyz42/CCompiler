@@ -13,7 +13,12 @@ public abstract class SymbolTable {
     public void addVariablesFromFieldDecl(DecafSemanticChecker checker, Field_declContext ctx) {
         Type type = TypeScalar.create(checker, ctx.type());
         for (FieldContext name : ctx.field()) {
-            addVariable(type, name.getText());
+            if (name.INT_LITERAL() == null) {
+                addVariable(type, name.ID().getText());
+            } else {
+                int size = IrIntLiteral.parseInt(name.INT_LITERAL().getText());
+                addVariable(new TypeArray(size, type), name.ID().getText());
+            }
         }
     }
 }

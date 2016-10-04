@@ -1,5 +1,6 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +21,7 @@ class IrBlock extends Ir {
         return symbolTable;
     }
 
-    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx) {
-        SymbolTable parentTable = checker.currentSymbolTable();
-        LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
+    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, LocalSymbolTable symbolTable) {
         checker.pushSymbolTable(symbolTable);
         
         List<IrStatement> statements = new ArrayList<>();
@@ -38,11 +37,28 @@ class IrBlock extends Ir {
         checker.popSybmolTable();
         return new IrBlock(symbolTable, statements);
     }
+    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx) {
+        SymbolTable parentTable = checker.currentSymbolTable();
+        LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
+        return create(checker, ctx, symbolTable);
+    }
 
     public static IrBlock createEmpty(DecafSemanticChecker checker) {
         SymbolTable parentTable = checker.currentSymbolTable();
         List<IrStatement> statements = new ArrayList<>();
         LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
         return new IrBlock(symbolTable, statements);
+    }
+    
+    @Override
+    public void println(PrintWriter pw, String prefix) {
+        pw.println(prefix + "{");
+        for (VariableDescriptor var : symbolTable.getVariables().values()) {
+            var.println(pw, prefix + "    ");
+        }
+        for (IrStatement st : statements) {
+            st.println(pw, prefix + "    ");
+        }
+        pw.println(prefix + "}");
     }
 }

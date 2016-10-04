@@ -11,8 +11,12 @@ class IrIntLiteral extends IrLiteral {
 
     public static IrIntLiteral create(DecafSemanticChecker checker, DecafParser.IntLiteralContext ctx) {
          String text = ctx.INT_LITERAL().getText();
-         Integer terminal = Integer.decode(text.replace("ll", ""));
+         Integer terminal = parseInt(text);
          return new IrIntLiteral(terminal);
+    }
+    
+    public static int parseInt(String text) {
+        return Integer.decode(text.replace("ll", ""));
     }
     
     @Override

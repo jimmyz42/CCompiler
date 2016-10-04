@@ -135,7 +135,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitMethodCallStmt(DecafParser.MethodCallStmtContext ctx) { return visitChildren(ctx); }
+	@Override public IrMethodCallStmt visitMethodCallStmt(DecafParser.MethodCallStmtContext ctx) { return IrMethodCallStmt.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -149,21 +149,21 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitMethod_call(DecafParser.Method_callContext ctx) { return visitChildren(ctx); }
+	@Override public IrMethodCallExpr visitMethod_call(DecafParser.Method_callContext ctx) { return IrMethodCallExpr.create(this, ctx); }
     /**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitArrayLocation(DecafParser.ArrayLocationContext ctx) { return visitChildren(ctx); }
+	@Override public IrArrayLocation visitArrayLocation(DecafParser.ArrayLocationContext ctx) { return IrArrayLocation.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitIdLocation(DecafParser.IdLocationContext ctx) { return visitChildren(ctx); }
+	@Override public IrIdLocation visitIdLocation(DecafParser.IdLocationContext ctx) { return IrIdLocation.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -184,7 +184,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public IrLocation visitLocationExpr(DecafParser.LocationExprContext ctx) { return IrLocation.create(this, ctx); }
+	@Override public Object visitLocationExpr(DecafParser.LocationExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -219,7 +219,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public IrExpression visitGroupExpr(DecafParser.GroupExprContext ctx) { return IrExpression.create(this, ctx); }
+	@Override public IrExpression visitGroupExpr(DecafParser.GroupExprContext ctx) { return IrExpression.create(this, ctx.expr()); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -240,14 +240,14 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public IrLiteral visitLiteralExpr(DecafParser.LiteralExprContext ctx) { return IrLiteral.create(this, ctx); }
+	@Override public IrLiteral visitLiteralExpr(DecafParser.LiteralExprContext ctx) { return IrLiteral.create(this, ctx.literal()); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public IrCallExpr visitCallExpr(DecafParser.CallExprContext ctx) { return IrCallExpr.create(this, ctx); }
+	@Override public IrMethodCallExpr visitCallExpr(DecafParser.CallExprContext ctx) { return visitMethod_call(ctx.method_call()); }
 	/**
 	 * {@inheritDoc}
 	 *

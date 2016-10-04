@@ -25,8 +25,8 @@ public class TypeScalar implements Type {
     }
     
     public static TypeScalar create(DecafSemanticChecker checker, DecafParser.TypeContext ctx) {
-        if (!ctx.TK_int().getText().isEmpty()) return INT;
-        if (!ctx.TK_bool().getText().isEmpty()) return BOOL;
+        if (ctx.TK_int() != null) return INT;
+        if (ctx.TK_bool() != null) return BOOL;
         return null; // throw an exception?
     }
 }

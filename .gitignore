@@ -7,3 +7,4 @@ classes
 .project
 /bin/
 .classpath
+hs_*.log

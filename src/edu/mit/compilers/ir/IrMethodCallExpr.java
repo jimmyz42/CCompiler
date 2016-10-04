@@ -18,7 +18,7 @@ class IrMethodCallExpr extends IrExpression {
         
         if (function instanceof MethodDescriptor) {
             MethodDescriptor method = (MethodDescriptor) function;
-            List<Type> expectedArgs = method.getArgumentTypes();
+            List<VariableDescriptor> expectedArgs = method.getArguments();
             if (arguments.size() != expectedArgs.size()) {
                 throw new MethodCallException("Expected " + expectedArgs.size() + " arguments, got " + arguments.size());
             }
@@ -27,9 +27,9 @@ class IrMethodCallExpr extends IrExpression {
                     throw new MethodCallException("Can't have string literals as method arguments");
                 }
                 IrExpression arg = (IrExpression) arguments.get(i);
-                if (arg.getExpressionType() != expectedArgs.get(i)) {
+                if (arg.getExpressionType() != expectedArgs.get(i).getType()) {
                     // 1-based indexing for arguments in error messages
-                    throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() + ", expected " + expectedArgs.get(i));
+                    throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() + ", expected " + expectedArgs.get(i).getType());
                 }
             }
         }

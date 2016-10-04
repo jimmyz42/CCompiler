@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser.Extern_declContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
@@ -31,5 +33,16 @@ class IrProgram extends Ir {
         
         checker.popSybmolTable();
         return new IrProgram(symbolTable);
+    }
+
+
+    @Override
+    public void println(PrintWriter pw, String prefix) {
+        for (VariableDescriptor var : symbolTable.getVariables().values()) {
+            var.println(pw, prefix);
+        }
+        for (FunctionDescriptor fn : symbolTable.getFunctions().values()) {
+            fn.println(pw, prefix);
+        }
     }
 }
