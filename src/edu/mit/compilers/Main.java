@@ -86,7 +86,8 @@ class Main {
             }
         } catch(Exception e) {
             // print the error:
-            System.err.println(CLI.infile+" "+e);
+            System.err.println(CLI.infile);
+            e.printStackTrace();
         }
     }
 }

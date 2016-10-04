@@ -14,4 +14,9 @@ class IrBoolLiteral extends IrLiteral {
          Boolean terminal = Boolean.valueOf(text);
          return new IrBoolLiteral(terminal);
     }
+    
+    @Override
+    public Type getType() {
+        return Type.BOOL;
+    }
 }

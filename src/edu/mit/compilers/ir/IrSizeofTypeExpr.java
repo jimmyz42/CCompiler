@@ -12,4 +12,9 @@ class IrSizeofTypeExpr extends IrExpression {
     public static IrSizeofTypeExpr create(DecafSemanticChecker checker, DecafParser.SizeofTypeExprContext ctx) {
         return new IrSizeofTypeExpr(IrType.create(checker, ctx.type()));
     }
+    
+    @Override
+    public Type getType() {
+        return Type.INT;
+    }
 }

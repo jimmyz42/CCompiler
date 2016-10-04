@@ -1,12 +1,9 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
+import exceptions.TypeMismatchException;
 
-public class IrAndOpExpr extends IrBinOpExpr {
-    private IrBinOp operator;
-    private IrExpression lhs;
-    private IrExpression rhs;
-
+public class IrAndOpExpr extends IrLogicalOpExpr {
     public IrAndOpExpr(IrBinOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
     }

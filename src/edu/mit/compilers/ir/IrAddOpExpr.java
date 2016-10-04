@@ -2,11 +2,7 @@ package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
 
-public class IrAddOpExpr extends IrBinOpExpr {
-    private IrBinOp operator;
-    private IrExpression lhs;
-    private IrExpression rhs;
-
+public class IrAddOpExpr extends IrArithmOpExpr {
     public IrAddOpExpr(IrBinOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
     }

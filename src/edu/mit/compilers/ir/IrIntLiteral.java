@@ -14,4 +14,9 @@ class IrIntLiteral extends IrLiteral {
          Integer terminal = Integer.decode(text.replace("ll", ""));
          return new IrIntLiteral(terminal);
     }
+    
+    @Override
+    public Type getType() {
+        return Type.INT;
+    }
 }

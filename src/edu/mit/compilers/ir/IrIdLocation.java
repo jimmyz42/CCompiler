@@ -13,4 +13,10 @@ class IrIdLocation extends IrLocation {
         IrId id = IrId.create(checker, ctx);
         return new IrIdLocation(id);
     }
+
+    @Override
+    public Type getType() {
+        // TODO get the type from the symbol table
+        return Type.INT;
+    }
 }

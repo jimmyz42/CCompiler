@@ -1,18 +1,18 @@
 package edu.mit.compilers.ir;
 
 public enum Type {
-    VOID(false, false),
-    INT(true, false),
-    BOOL(true, false),
-    INT_ARRAY(false, true),
-    BOOL_ARRAY(false, true);
+    VOID(false, null),
+    INT(true, null),
+    BOOL(true, null),
+    INT_ARRAY(false, INT),
+    BOOL_ARRAY(false, BOOL);
     
     public boolean isScalar;
-    public boolean isVector;
+    public Type elementType;
     
-    private Type(boolean isScalar, boolean isVector) {
+    private Type(boolean isScalar, Type elementType) {
         this.isScalar = isScalar;
-        this.isVector = isVector;
+        this.elementType = elementType;
     }
 
     boolean isScalar() {
@@ -20,10 +20,14 @@ public enum Type {
     }
     
     boolean isVector() {
-        return isVector;
+        return elementType != null;
+    }
+    
+    Type getArrayElementType() {
+        return elementType;
     }
     
     boolean isVoid() {
-        return !isScalar && !isVector;
+        return this == VOID;
     }
 }

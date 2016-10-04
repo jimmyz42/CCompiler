@@ -12,4 +12,9 @@ class IrSizeofIdExpr extends IrExpression {
     public static IrSizeofIdExpr create(DecafSemanticChecker checker, DecafParser.SizeofIdExprContext ctx) {
         return new IrSizeofIdExpr(IrId.create(checker, ctx.ID()));
     }
+    
+    @Override
+    public Type getType() {
+        return Type.INT;
+    }
 }

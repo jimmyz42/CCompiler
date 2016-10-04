@@ -2,7 +2,7 @@ package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
 
-public class IrBinOpExpr extends IrExpression {
+abstract public class IrBinOpExpr extends IrExpression {
     private IrBinOp operator;
     private IrExpression lhs;
     private IrExpression rhs;
