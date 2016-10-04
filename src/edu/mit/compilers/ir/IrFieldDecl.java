@@ -1,6 +1,6 @@
 package edu.mit.compilers.ir;
 
 class IrFieldDecl extends Ir {
-    private IrType type;
+    private Type type;
     private IrVariableFieldDecl[] arguments;
 }

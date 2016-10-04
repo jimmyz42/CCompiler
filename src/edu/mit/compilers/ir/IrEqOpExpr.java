@@ -6,8 +6,8 @@ import exceptions.TypeMismatchException;
 public class IrEqOpExpr extends IrBinOpExpr {
     public IrEqOpExpr(IrEqOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
-        if (lhs.getType() != rhs.getType() || !lhs.getType().isScalar()) {
-            throw new TypeMismatchException("Expected scalar arguments of the same");
+        if (lhs.getExpressionType() != rhs.getExpressionType() || !(lhs.getExpressionType() instanceof TypeScalar)) {
+            throw new TypeMismatchException("Expected scalar arguments of the same type");
         }
     }
 
@@ -19,7 +19,7 @@ public class IrEqOpExpr extends IrBinOpExpr {
     }
     
     @Override
-    public Type getType() {
-        return Type.BOOL;
+    public Type getExpressionType() {
+        return TypeScalar.BOOL;
     }
 }

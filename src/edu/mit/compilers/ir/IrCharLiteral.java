@@ -16,8 +16,8 @@ class IrCharLiteral extends IrLiteral {
     }
     
     @Override
-    public Type getType() {
+    public Type getExpressionType() {
         // Chars are treated as ints in decaf
-        return Type.INT;
+        return TypeScalar.INT;
     }
 }

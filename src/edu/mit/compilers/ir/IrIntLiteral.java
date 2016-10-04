@@ -16,7 +16,7 @@ class IrIntLiteral extends IrLiteral {
     }
     
     @Override
-    public Type getType() {
-        return Type.INT;
+    public Type getExpressionType() {
+        return TypeScalar.INT;
     }
 }

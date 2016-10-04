@@ -16,7 +16,7 @@ class IrBoolLiteral extends IrLiteral {
     }
     
     @Override
-    public Type getType() {
-        return Type.BOOL;
+    public Type getExpressionType() {
+        return TypeScalar.BOOL;
     }
 }

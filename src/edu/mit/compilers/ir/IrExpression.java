@@ -7,5 +7,5 @@ abstract class IrExpression extends Ir {
         return (IrExpression) checker.visit(ctx);
     }
     
-    public abstract Type getType();
+    public abstract Type getExpressionType();
 }

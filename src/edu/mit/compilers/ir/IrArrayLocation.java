@@ -11,7 +11,7 @@ class IrArrayLocation extends IrLocation {
         this.id = id;
         this.expression = expression;
         // TODO check that id is indeed an array type
-        if (expression.getType() != Type.INT) {
+        if (expression.getExpressionType() != TypeScalar.INT) {
             throw new TypeMismatchException("Array index must be an int");
         }
     }
@@ -23,8 +23,8 @@ class IrArrayLocation extends IrLocation {
     }
 
     @Override
-    public Type getType() {
+    public Type getExpressionType() {
         // TODO get the type from the symbol table
-        return Type.INT;
+        return TypeScalar.INT;
     }
 }

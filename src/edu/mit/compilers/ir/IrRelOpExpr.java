@@ -6,7 +6,7 @@ import exceptions.TypeMismatchException;
 public class IrRelOpExpr extends IrBinOpExpr {
     public IrRelOpExpr(IrBinOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
-        if (lhs.getType() != Type.INT || rhs.getType() != Type.INT) {
+        if (lhs.getExpressionType() != TypeScalar.INT || rhs.getExpressionType() != TypeScalar.INT) {
             throw new TypeMismatchException("Expected int arguments");
         }
     }
@@ -19,7 +19,7 @@ public class IrRelOpExpr extends IrBinOpExpr {
     }
     
     @Override
-    public Type getType() {
-        return Type.BOOL;
+    public Type getExpressionType() {
+        return TypeScalar.BOOL;
     }
 }

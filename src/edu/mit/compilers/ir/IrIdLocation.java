@@ -15,8 +15,8 @@ class IrIdLocation extends IrLocation {
     }
 
     @Override
-    public Type getType() {
+    public Type getExpressionType() {
         // TODO get the type from the symbol table
-        return Type.INT;
+        return TypeScalar.INT;
     }
 }

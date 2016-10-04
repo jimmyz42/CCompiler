@@ -14,7 +14,7 @@ class IrSizeofIdExpr extends IrExpression {
     }
     
     @Override
-    public Type getType() {
-        return Type.INT;
+    public Type getExpressionType() {
+        return TypeScalar.INT;
     }
 }
