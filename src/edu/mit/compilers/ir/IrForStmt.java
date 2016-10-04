@@ -1,6 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
+import exceptions.TypeMismatchException;
 
 class IrForStmt extends IrStatement {
     private IrAssignStmt initializer;
@@ -17,11 +18,15 @@ class IrForStmt extends IrStatement {
 
     public static IrForStmt create(DecafSemanticChecker checker, DecafParser.ForStmtContext ctx, SymbolTable symbolTable) {
         IrAssignStmt initializer = new IrAssignStmt(new IrIdLocation(new IrId(ctx.init_id.getText())), "=", IrExpression.create(checker, ctx.init_expr));
+        
         IrExpression condition = IrExpression.create(checker, ctx.condition);
+        if (condition.getExpressionType() != TypeScalar.BOOL) {
+            throw new TypeMismatchException("For statement condition must be a bool");
+        }
+        
         IrAssignStmt update = new IrAssignStmt(new IrIdLocation(new IrId(ctx.update_id.getText())), ctx.update_op.getText(), IrExpression.create(checker, ctx.update_expr));
         IrBlock block = IrBlock.create(checker, ctx.block(), symbolTable);
 
-        //TODO check that condition is boolean
         return new IrForStmt(initializer, condition, update, block);
     }
 }

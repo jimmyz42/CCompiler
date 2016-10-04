@@ -1,7 +1,7 @@
 package exceptions;
 
 public class TypeMismatchException extends RuntimeException {
-    // TODO you should be able to get line/pos of the decaf source at which the error occured
+    // TODO you should be able to get line/pos of the decaf source at which the error occurred
     public TypeMismatchException(String msg) {
         super(msg);
     }

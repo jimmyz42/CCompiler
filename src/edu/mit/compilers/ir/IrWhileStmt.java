@@ -1,6 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
+import exceptions.TypeMismatchException;
 
 class IrWhileStmt extends IrStatement {
     private IrExpression condition;
@@ -13,9 +14,12 @@ class IrWhileStmt extends IrStatement {
 
     public static IrWhileStmt create(DecafSemanticChecker checker, DecafParser.WhileStmtContext ctx, SymbolTable symbolTable) {
         IrExpression condition = IrExpression.create(checker, ctx.expr());
+        if (condition.getExpressionType() != TypeScalar.BOOL) {
+            throw new TypeMismatchException("While statement condition must be a bool");
+        }
+        
         IrBlock block = IrBlock.create(checker, ctx.block(), symbolTable);
 
-        //TODO check that condition is boolean
         return new IrWhileStmt(condition, block);
     }
 }

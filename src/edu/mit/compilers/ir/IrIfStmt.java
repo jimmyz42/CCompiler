@@ -1,6 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
+import exceptions.TypeMismatchException;
 
 class IrIfStmt extends IrStatement {
     private IrExpression condition;
@@ -15,6 +16,10 @@ class IrIfStmt extends IrStatement {
 
     public static IrIfStmt create(DecafSemanticChecker checker, DecafParser.IfStmtContext ctx, SymbolTable symbolTable) {
         IrExpression condition = IrExpression.create(checker, ctx.expr());
+        if (condition.getExpressionType() != TypeScalar.BOOL) {
+            throw new TypeMismatchException("If statement condition must be a bool");
+        }
+        
         IrBlock block = IrBlock.create(checker, ctx.block(0), symbolTable);
         IrBlock elseBlock;
         if (ctx.block().size() > 1) {
@@ -23,7 +28,6 @@ class IrIfStmt extends IrStatement {
             elseBlock = IrBlock.empty(symbolTable);
         }
 
-        //TODO check that condition is boolean
         return new IrIfStmt(condition, block, elseBlock);
     }
 }
