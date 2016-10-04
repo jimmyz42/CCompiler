@@ -13,14 +13,14 @@ class IrIfStmt extends IrStatement {
         this.elseBlock = elseBlock;
     }
 
-    public static IrIfStmt create(DecafSemanticChecker checker, DecafParser.IfStmtContext ctx) {
+    public static IrIfStmt create(DecafSemanticChecker checker, DecafParser.IfStmtContext ctx, SymbolTable symbolTable) {
         IrExpression condition = IrExpression.create(checker, ctx.expr());
-        IrBlock block = IrBlock.create(checker, ctx.block(0));
+        IrBlock block = IrBlock.create(checker, ctx.block(0), symbolTable);
         IrBlock elseBlock;
         if (ctx.block().size() > 1) {
-            elseBlock = IrBlock.create(checker, ctx.block(1));
+            elseBlock = IrBlock.create(checker, ctx.block(1), symbolTable);
         } else {
-            elseBlock = IrBlock.empty();
+            elseBlock = IrBlock.empty(symbolTable);
         }
 
         //TODO check that condition is boolean

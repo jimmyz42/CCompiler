@@ -11,9 +11,9 @@ class IrWhileStmt extends IrStatement {
         this.block = block;
     }
 
-    public static IrWhileStmt create(DecafSemanticChecker checker, DecafParser.WhileStmtContext ctx) {
+    public static IrWhileStmt create(DecafSemanticChecker checker, DecafParser.WhileStmtContext ctx, SymbolTable symbolTable) {
         IrExpression condition = IrExpression.create(checker, ctx.expr());
-        IrBlock block = IrBlock.create(checker, ctx.block());
+        IrBlock block = IrBlock.create(checker, ctx.block(), symbolTable);
 
         //TODO check that condition is boolean
         return new IrWhileStmt(condition, block);

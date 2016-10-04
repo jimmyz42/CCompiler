@@ -16,7 +16,7 @@ class IrAssignStmt extends IrStatement {
         }
     }
 
-    public static IrAssignStmt create(DecafSemanticChecker checker, DecafParser.AssignStmtContext ctx) {
+    public static IrAssignStmt create(DecafSemanticChecker checker, DecafParser.AssignStmtContext ctx, SymbolTable symbolTable) {
         IrLocation location = IrLocation.create(checker, ctx.location());
         IrExpression expression = IrExpression.create(checker, ctx.expr());
 

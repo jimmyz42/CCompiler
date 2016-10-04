@@ -8,34 +8,36 @@ import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.StatementContext;
 
 class IrBlock extends Ir {
-    private List<IrFieldDecl> fieldDeclarations;
+    private final LocalSymbolTable symbolTable;
     private List<IrStatement> statements;
     
-    public IrBlock(List<IrFieldDecl> fieldDeclarations, List<IrStatement> statements) {
-        this.fieldDeclarations = fieldDeclarations;
+    public IrBlock(LocalSymbolTable symbolTable, List<IrStatement> statements) {
+        this.symbolTable = symbolTable;
         this.statements = statements;
     }
+    
+    public LocalSymbolTable getSymbolTable() {
+        return symbolTable;
+    }
 
-    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx) {
-        List<IrFieldDecl> fieldDeclarations = new ArrayList<>();
+    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, SymbolTable parentTable) {
+        LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
         List<IrStatement> statements = new ArrayList<>();
         
-        for (Field_declContext field : ctx.field_decl()) {
-            //TODO Process fields
-//            fieldDeclarations.add(IrFieldDecl.create(checker, ctx));
+        for (Field_declContext fieldDecl : ctx.field_decl()) {
+            symbolTable.addVariablesFromFieldDecl(checker, fieldDecl);
         }
         
         for (StatementContext statement : ctx.statement()) {
-            //TODO Process statements
-//            statements.add(StatementContext.create(checker, ctx));
+            statements.add(IrStatement.create(checker, statement, symbolTable));
         }
         
-        return new IrBlock(fieldDeclarations, statements);
+        return new IrBlock(symbolTable, statements);
     }
 
-    public static IrBlock empty() {
-        List<IrFieldDecl> fieldDeclarations = new ArrayList<>();
+    public static IrBlock empty(SymbolTable parentTable) {
         List<IrStatement> statements = new ArrayList<>();
-        return new IrBlock(fieldDeclarations, statements);
+        LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
+        return new IrBlock(symbolTable, statements);
     }
 }

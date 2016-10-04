@@ -1,8 +1,8 @@
 package edu.mit.compilers.ir;
 
 public abstract class VariableDescriptor {
-    private Type type;
-    private String name;
+    private final Type type;
+    private final String name;
     
     public VariableDescriptor(Type type, String name) {
         this.type = type;

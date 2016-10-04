@@ -125,7 +125,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public IrAssignStmt visitAssignStmt(DecafParser.AssignStmtContext ctx) { return IrAssignStmt.create(this, ctx); }
+	@Override public Object visitAssignStmt(DecafParser.AssignStmtContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

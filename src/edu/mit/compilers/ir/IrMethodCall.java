@@ -1,7 +1,7 @@
 package edu.mit.compilers.ir;
 
 class IrMethodCall extends Ir {
-    private IrMethodName name;
+    private MethodDescriptor method;
     private IrExpression[] expressions;
     private IrExternArg[] externArgs;
 }
