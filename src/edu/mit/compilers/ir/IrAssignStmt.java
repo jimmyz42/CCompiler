@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
 
@@ -25,5 +27,14 @@ class IrAssignStmt extends IrStatement {
         IrExpression expression = IrExpression.create(checker, ctx.expr());
 
         return new IrAssignStmt(location, ctx.assign_op().getText(), expression);
+    }
+    
+    @Override
+    public void println(PrintWriter pw, String prefix) {
+        super.println(pw, prefix);
+        location.println(pw, prefix + "  ");
+        pw.println(prefix + "  =");
+        expression.println(pw, prefix + "  ");
+        pw.println(prefix + ";");
     }
 }

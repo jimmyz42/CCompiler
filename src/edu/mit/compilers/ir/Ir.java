@@ -15,6 +15,6 @@ public abstract class Ir implements PrettyPrintable {
     
     @Override
     public void println(PrintWriter pw, String prefix) {
-        pw.println(prefix + getClass().getSimpleName());
+        pw.println(prefix + "// " + getClass().getSimpleName());
     }
 }

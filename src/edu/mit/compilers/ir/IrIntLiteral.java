@@ -23,4 +23,9 @@ class IrIntLiteral extends IrLiteral {
     public Type getExpressionType() {
         return TypeScalar.INT;
     }
+    
+    @Override
+    public String toString() {
+        return Integer.toString(terminal);
+    }
 }

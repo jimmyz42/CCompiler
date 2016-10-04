@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
 import exceptions.UndeclaredVariableError;
@@ -32,5 +34,13 @@ class IrArrayLocation extends IrLocation {
     @Override
     public Type getExpressionType() {
         return ((TypeArray) array.getType()).getElementType();
+    }
+    
+    @Override
+    public void println(PrintWriter pw, String prefix) {
+        super.println(pw, prefix);
+        pw.println(prefix + array.getName() + "[");
+        index.println(pw, prefix + "  ");
+        pw.println(prefix + "] ");
     }
 }

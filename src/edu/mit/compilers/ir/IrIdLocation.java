@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
 import exceptions.UndeclaredVariableError;
@@ -26,5 +28,11 @@ class IrIdLocation extends IrLocation {
     @Override
     public Type getExpressionType() {
         return variable.getType();
+    }
+    
+    @Override
+    public void println(PrintWriter pw, String prefix) {
+        pw.print(prefix + variable.getName() + " ");
+        super.println(pw, "");
     }
 }

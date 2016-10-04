@@ -57,6 +57,7 @@ class IrBlock extends Ir {
             var.println(pw, prefix + "    ");
         }
         for (IrStatement st : statements) {
+            pw.println();
             st.println(pw, prefix + "    ");
         }
         pw.println(prefix + "}");

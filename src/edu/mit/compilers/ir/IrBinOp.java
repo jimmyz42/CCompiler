@@ -6,4 +6,9 @@ abstract class IrBinOp extends Ir {
     public IrBinOp(String terminal) {
         this.terminal = terminal;
     }
+    
+    @Override
+    public String toString() {
+        return terminal;
+    }
 }

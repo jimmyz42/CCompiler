@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 
 abstract public class IrBinOpExpr extends IrExpression {
     private IrBinOp operator;
@@ -10,5 +12,13 @@ abstract public class IrBinOpExpr extends IrExpression {
         this.operator = operator;
         this.lhs = lhs;
         this.rhs = rhs;
+    }
+    
+    @Override
+    public void println(PrintWriter pw, String prefix) {
+        super.println(pw, prefix);
+        lhs.println(pw, prefix + "  ");
+        pw.println(prefix + "  " + operator);
+        rhs.println(pw, prefix + "  ");
     }
 }

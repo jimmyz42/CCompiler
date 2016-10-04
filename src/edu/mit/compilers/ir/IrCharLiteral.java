@@ -20,4 +20,9 @@ class IrCharLiteral extends IrLiteral {
         // Chars are treated as ints in decaf
         return TypeScalar.INT;
     }
+    
+    @Override
+    public String toString() {
+        return "'" + terminal + "' /*" + (int)terminal + "*/";
+    }
 }

@@ -19,4 +19,9 @@ class IrBoolLiteral extends IrLiteral {
     public Type getExpressionType() {
         return TypeScalar.BOOL;
     }
+    
+    @Override
+    public String toString() {
+        return Boolean.toString(terminal);
+    }
 }
