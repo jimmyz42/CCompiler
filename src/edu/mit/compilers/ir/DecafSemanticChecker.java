@@ -160,105 +160,105 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitMulOpExpr(DecafParser.MulOpExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrMulOpExpr visitMulOpExpr(DecafParser.MulOpExprContext ctx) { return IrMulOpExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitAndExpr(DecafParser.AndExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrAndOpExpr visitAndOpExpr(DecafParser.AndOpExprContext ctx) { return IrAndOpExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitLocationExpr(DecafParser.LocationExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrLocation visitLocationExpr(DecafParser.LocationExprContext ctx) { return IrLocation.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitRelExpr(DecafParser.RelExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrRelOpExpr visitRelOpExpr(DecafParser.RelOpExprContext ctx) { return IrRelOpExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitNegExpr(DecafParser.NegExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrNegExpr visitNegExpr(DecafParser.NegExprContext ctx) { return IrNegExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitSizeofTypeExpr(DecafParser.SizeofTypeExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrSizeofTypeExpr visitSizeofTypeExpr(DecafParser.SizeofTypeExprContext ctx) { return IrSizeofTypeExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitOrExpr(DecafParser.OrExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrOrOpExpr visitOrOpExpr(DecafParser.OrOpExprContext ctx) { return IrOrOpExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitGroupExpr(DecafParser.GroupExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrExpression visitGroupExpr(DecafParser.GroupExprContext ctx) { return IrExpression.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitPlusOpExpr(DecafParser.PlusOpExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrAddOpExpr visitAddOpExpr(DecafParser.AddOpExprContext ctx) { return IrAddOpExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitEqExpr(DecafParser.EqExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrEqOpExpr visitEqOpExpr(DecafParser.EqOpExprContext ctx) { return IrEqOpExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitLiteralExpr(DecafParser.LiteralExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrLiteral visitLiteralExpr(DecafParser.LiteralExprContext ctx) { return IrLiteral.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitCallExpr(DecafParser.CallExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrCallExpr visitCallExpr(DecafParser.CallExprContext ctx) { return IrCallExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitNotExpr(DecafParser.NotExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrNotExpr visitNotExpr(DecafParser.NotExprContext ctx) { return IrNotExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public Object visitSizeofIdExpr(DecafParser.SizeofIdExprContext ctx) { return visitChildren(ctx); }
+	@Override public IrSizeofIdExpr visitSizeofIdExpr(DecafParser.SizeofIdExprContext ctx) { return IrSizeofIdExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-     public IrIntLiteral visitIntLiteral(DecafParser.IntLiteralContext ctx) { return IrIntLiteral.create(this, ctx); }
+    @Override public IrIntLiteral visitIntLiteral(DecafParser.IntLiteralContext ctx) { return IrIntLiteral.create(this, ctx); }
  	/**
  	 * {@inheritDoc}
  	 *
@@ -273,13 +273,15 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
  	 * {@link #visitChildren} on {@code ctx}.</p>
  	 */
  	@Override public IrBoolLiteral visitBoolLiteral(DecafParser.BoolLiteralContext ctx) { return IrBoolLiteral.create(this, ctx); }
-	/**
+
+    /**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public Object visitExtern_arg(DecafParser.Extern_argContext ctx) { return visitChildren(ctx); }
+
     /**
 	 * {@inheritDoc}
 	 *

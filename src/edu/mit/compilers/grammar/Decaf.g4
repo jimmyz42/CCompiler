@@ -80,11 +80,11 @@ expr: location #LocationExpr
     | DASH expr #NegExpr
     | EXCLAMATION expr #NotExpr
     | expr MUL_OP expr #MulOpExpr
-    | expr (PLUS_OP | DASH) expr #PlusOpExpr
-    | expr REL_OP expr #RelExpr
-    | expr EQ_OP expr #EqExpr
-    | expr AND_OP expr #AndExpr
-    | expr OR_OP expr #OrExpr
+    | expr (PLUS_OP | DASH) expr #AddOpExpr
+    | expr REL_OP expr #RelOpExpr
+    | expr EQ_OP expr #EqOpExpr
+    | expr AND_OP expr #AndOpExpr
+    | expr OR_OP expr #OrOpExpr
     ;
 literal: INT_LITERAL #IntLiteral
 | CHAR_LITERAL #CharLiteral
