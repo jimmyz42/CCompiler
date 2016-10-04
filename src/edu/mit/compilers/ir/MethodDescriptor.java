@@ -1,6 +1,7 @@
 package edu.mit.compilers.ir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.mit.compilers.grammar.DecafParser.Method_argument_declContext;
@@ -12,8 +13,12 @@ public class MethodDescriptor extends FunctionDescriptor {
     
     public MethodDescriptor(String name, Type returnType, List<Type> argumentTypes, IrBlock body) {
         super(name, returnType);
-        this.argumentTypes = argumentTypes;
+        this.argumentTypes = Collections.unmodifiableList(argumentTypes);
         this.body = body;
+    }
+
+    public List<Type> getArgumentTypes() {
+        return argumentTypes;
     }
 
     public static MethodDescriptor create(DecafSemanticChecker checker, Method_declContext ctx) {

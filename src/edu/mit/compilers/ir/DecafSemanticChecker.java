@@ -5,11 +5,9 @@
 import java.util.Stack;
 
 import edu.mit.compilers.grammar.*;
-import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
-
-import sun.misc.Queue;
 
 /**
  * This class provides an empty implementation of {@link DecafVisitor},
@@ -150,13 +148,6 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public Object visitMethod_call(DecafParser.Method_callContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public Object visitMethod_name(DecafParser.Method_nameContext ctx) { return visitChildren(ctx); }
     /**
 	 * {@inheritDoc}
 	 *

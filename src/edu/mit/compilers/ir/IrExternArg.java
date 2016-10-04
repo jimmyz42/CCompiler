@@ -1,5 +1,13 @@
 package edu.mit.compilers.ir;
 
-class IrExternArg extends Ir {
+import edu.mit.compilers.grammar.DecafParser;
 
+class IrExternArg extends Ir {
+    public static IrExternArg create(DecafSemanticChecker checker, DecafParser.Extern_argContext ctx) {
+        if (!ctx.expr().isEmpty()) {
+            return IrExpression.create(checker, ctx.expr());
+        } else {
+            return new IrStringLiteral(ctx.STRING_LITERAL().getText());
+        }
+    }
 }

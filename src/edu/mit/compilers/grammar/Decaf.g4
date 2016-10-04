@@ -19,11 +19,11 @@ catch [RecognitionException ex] {
 }
 extern_decl: TK_extern ID LPAREN RPAREN SEMI;
 method_decl: (type | TK_void) ID LPAREN (method_argument_decl (COMMA method_argument_decl)*)? RPAREN block;
-method_argument_decl: type ID;
 catch [RecognitionException ex] {
    System.out.println("attempted and failed to parse a method");
    System.exit(1);
 }
+method_argument_decl: type ID;
 
 block: LCURLY (field_decl)* (statement)* RCURLY;
 
@@ -57,16 +57,13 @@ catch [RecognitionException ex] {
    System.exit(1);
 }
 
-method_call: method_name LPAREN expr (COMMA expr)* RPAREN
-|  method_name LPAREN extern_arg (COMMA extern_arg)* RPAREN
-| method_name LPAREN RPAREN;
+method_call: ID LPAREN (extern_arg (COMMA extern_arg)*)? RPAREN;
 catch [RecognitionException ex] {
    System.out.println(ex.toString());
    System.out.println("failed to parse");
    System.exit(1);
 }
 
-method_name: ID;
 location: ID LBRACKET expr RBRACKET #ArrayLocation
 | ID #IdLocation
 ;

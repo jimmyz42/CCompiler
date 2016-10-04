@@ -1,12 +1,12 @@
 package edu.mit.compilers.ir;
 
-import exceptions.TypeMismatchException;
+import exceptions.TypeMismatchError;
 
 public abstract class IrLogicalOpExpr extends IrBinOpExpr {
     public IrLogicalOpExpr(IrBinOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
         if (lhs.getExpressionType() != TypeScalar.BOOL || rhs.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchException("Expected bool arguments");
+            throw new TypeMismatchError("Expected bool arguments");
         }
     }
 

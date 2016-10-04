@@ -1,7 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchException;
+import exceptions.TypeMismatchError;
 
 class IrNegExpr extends IrExpression {
     private IrExpression expression;
@@ -9,7 +9,7 @@ class IrNegExpr extends IrExpression {
     public IrNegExpr(IrExpression expression) {
         this.expression = expression;
         if (expression.getExpressionType() != TypeScalar.INT) {
-            throw new TypeMismatchException("Expected an int expression");
+            throw new TypeMismatchError("Expected an int expression");
         }
     }
 

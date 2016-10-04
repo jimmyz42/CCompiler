@@ -1,7 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchException;
+import exceptions.TypeMismatchError;
 
 class IrForStmt extends IrStatement {
     private IrAssignStmt initializer;
@@ -26,7 +26,7 @@ class IrForStmt extends IrStatement {
         
         IrExpression condition = IrExpression.create(checker, ctx.condition);
         if (condition.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchException("For statement condition must be a bool");
+            throw new TypeMismatchError("For statement condition must be a bool");
         }
         
         IrAssignStmt update = new IrAssignStmt(

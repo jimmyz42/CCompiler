@@ -1,7 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchException;
+import exceptions.TypeMismatchError;
 
 class IrNotExpr extends IrExpression {
     private IrExpression expression;
@@ -9,7 +9,7 @@ class IrNotExpr extends IrExpression {
     public IrNotExpr(IrExpression expression) {
         this.expression = expression;
         if (expression.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchException("Expected a bool expression");
+            throw new TypeMismatchError("Expected a bool expression");
         }
     }
 

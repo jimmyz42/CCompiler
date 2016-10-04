@@ -1,8 +1,8 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchException;
-import exceptions.UndeclaredVariableException;
+import exceptions.TypeMismatchError;
+import exceptions.UndeclaredVariableError;
 
 class IrIdLocation extends IrLocation {
     private VariableDescriptor variable;
@@ -10,10 +10,10 @@ class IrIdLocation extends IrLocation {
     public IrIdLocation(VariableDescriptor variable) {
         this.variable = variable;
         if (variable == null) {
-            throw new UndeclaredVariableException("Variable is not declared");
+            throw new UndeclaredVariableError("Variable is not declared");
         }
         if (!(variable.getType() instanceof TypeScalar)) {
-            throw new TypeMismatchException("Variable must be a scalar");
+            throw new TypeMismatchError("Variable must be a scalar");
         }
     }
 

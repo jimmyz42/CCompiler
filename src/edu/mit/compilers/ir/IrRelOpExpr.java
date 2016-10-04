@@ -1,13 +1,13 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchException;
+import exceptions.TypeMismatchError;
 
 public class IrRelOpExpr extends IrBinOpExpr {
     public IrRelOpExpr(IrBinOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
         if (lhs.getExpressionType() != TypeScalar.INT || rhs.getExpressionType() != TypeScalar.INT) {
-            throw new TypeMismatchException("Expected int arguments");
+            throw new TypeMismatchError("Expected int arguments");
         }
     }
 

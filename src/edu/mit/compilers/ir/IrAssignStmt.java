@@ -1,7 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchException;
+import exceptions.TypeMismatchError;
 
 class IrAssignStmt extends IrStatement {
     private IrLocation location;
@@ -16,7 +16,7 @@ class IrAssignStmt extends IrStatement {
             expression = new IrAddOpExpr(new IrAddOp("-"), location, expression);
         }
         if (expression.getExpressionType() != location.getExpressionType()) {
-            throw new TypeMismatchException("Two sides of an assignment should have the same type");
+            throw new TypeMismatchError("Two sides of an assignment should have the same type");
         }
     }
 

@@ -1,13 +1,13 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchException;
+import exceptions.TypeMismatchError;
 
 public class IrEqOpExpr extends IrBinOpExpr {
     public IrEqOpExpr(IrEqOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
         if (lhs.getExpressionType() != rhs.getExpressionType() || !(lhs.getExpressionType() instanceof TypeScalar)) {
-            throw new TypeMismatchException("Expected scalar arguments of the same type");
+            throw new TypeMismatchError("Expected scalar arguments of the same type");
         }
     }
 
