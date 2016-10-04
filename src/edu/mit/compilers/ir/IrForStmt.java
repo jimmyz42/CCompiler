@@ -1,6 +1,5 @@
 package edu.mit.compilers.ir;
 
-import sun.org.mozilla.javascript.ast.Assignment;
 import edu.mit.compilers.grammar.DecafParser;
 
 class IrForStmt extends IrStatement {

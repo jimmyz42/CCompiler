@@ -4,3 +4,5 @@ core
 autogen
 dist
 classes
+.project
+/bin/
