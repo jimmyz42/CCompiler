@@ -16,9 +16,9 @@ public class MethodDescriptor extends FunctionDescriptor {
         this.body = body;
     }
 
-    public static MethodDescriptor create(DecafSemanticChecker checker, Method_declContext ctx, SymbolTable symbolTable) {
+    public static MethodDescriptor create(DecafSemanticChecker checker, Method_declContext ctx) {
         List<Type> argumentTypes = new ArrayList<>();
-        IrBlock body = IrBlock.create(checker, ctx.block(), symbolTable);
+        IrBlock body = IrBlock.create(checker, ctx.block());
         String name = ctx.ID().getText();
         Type returnType = ctx.type() == null ? TypeVoid.VOID : TypeScalar.create(checker, ctx.type());
         for (Method_argument_declContext argumentDecl : ctx.method_argument_decl()) {

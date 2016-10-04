@@ -1,22 +1,30 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
+import exceptions.TypeMismatchException;
+import exceptions.UndeclaredVariableException;
 
 class IrIdLocation extends IrLocation {
-    private IrId id;
+    private VariableDescriptor variable;
 
-    public IrIdLocation(IrId id) {
-        this.id = id;
+    public IrIdLocation(VariableDescriptor variable) {
+        this.variable = variable;
+        if (variable == null) {
+            throw new UndeclaredVariableException("Variable is not declared");
+        }
+        if (!(variable.getType() instanceof TypeScalar)) {
+            throw new TypeMismatchException("Variable must be a scalar");
+        }
     }
 
     public static IrIdLocation create(DecafSemanticChecker checker, DecafParser.IdLocationContext ctx) {
-        IrId id = IrId.create(checker, ctx);
-        return new IrIdLocation(id);
+        String varName = ctx.ID().getText();
+        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName);
+        return new IrIdLocation(variable);
     }
 
     @Override
     public Type getExpressionType() {
-        // TODO get the type from the symbol table
-        return TypeScalar.INT;
+        return variable.getType();
     }
 }

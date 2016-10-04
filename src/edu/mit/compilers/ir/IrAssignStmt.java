@@ -1,6 +1,7 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
+import exceptions.TypeMismatchException;
 
 class IrAssignStmt extends IrStatement {
     private IrLocation location;
@@ -14,14 +15,15 @@ class IrAssignStmt extends IrStatement {
         } else if (assignOp.equals("-=")) {
             expression = new IrAddOpExpr(new IrAddOp("-"), location, expression);
         }
+        if (expression.getExpressionType() != location.getExpressionType()) {
+            throw new TypeMismatchException("Two sides of an assignment should have the same type");
+        }
     }
 
     public static IrAssignStmt create(DecafSemanticChecker checker, DecafParser.AssignStmtContext ctx) {
         IrLocation location = IrLocation.create(checker, ctx.location());
         IrExpression expression = IrExpression.create(checker, ctx.expr());
 
-        //TODO check that location has been declared
-        //TODO make sure the expression type is the same as the location type
         return new IrAssignStmt(location, ctx.assign_op().getText(), expression);
     }
 }

@@ -26,7 +26,7 @@ class IrProgram extends Ir {
         }
         
         for (Method_declContext methodDecl : ctx.method_decl()) {
-            symbolTable.addFunction(MethodDescriptor.create(checker, methodDecl, symbolTable));
+            symbolTable.addFunction(MethodDescriptor.create(checker, methodDecl));
         }
         
         checker.popSybmolTable();

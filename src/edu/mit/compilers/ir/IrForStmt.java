@@ -17,14 +17,22 @@ class IrForStmt extends IrStatement {
     }
 
     public static IrForStmt create(DecafSemanticChecker checker, DecafParser.ForStmtContext ctx) {
-        IrAssignStmt initializer = new IrAssignStmt(new IrIdLocation(new IrId(ctx.init_id.getText())), "=", IrExpression.create(checker, ctx.init_expr));
+        SymbolTable symbolTable = checker.currentSymbolTable();
+        
+        IrAssignStmt initializer = new IrAssignStmt(
+                new IrIdLocation(symbolTable.getVariable(ctx.init_id.getText())),
+                "=",
+                IrExpression.create(checker, ctx.init_expr));
         
         IrExpression condition = IrExpression.create(checker, ctx.condition);
         if (condition.getExpressionType() != TypeScalar.BOOL) {
             throw new TypeMismatchException("For statement condition must be a bool");
         }
         
-        IrAssignStmt update = new IrAssignStmt(new IrIdLocation(new IrId(ctx.update_id.getText())), ctx.update_op.getText(), IrExpression.create(checker, ctx.update_expr));
+        IrAssignStmt update = new IrAssignStmt(
+                new IrIdLocation(symbolTable.getVariable(ctx.update_id.getText())),
+                ctx.update_op.getText(),
+                IrExpression.create(checker, ctx.update_expr));
         IrBlock block = IrBlock.create(checker, ctx.block());
 
         return new IrForStmt(initializer, condition, update, block);

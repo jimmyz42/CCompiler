@@ -2,29 +2,35 @@ package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchException;
+import exceptions.UndeclaredVariableException;
 
 class IrArrayLocation extends IrLocation {
-    private IrId id;
-    private IrExpression expression;
+    private VariableDescriptor array;
+    private IrExpression index;
 
-    public IrArrayLocation(IrId id, IrExpression expression) {
-        this.id = id;
-        this.expression = expression;
-        // TODO check that id is indeed an array type
-        if (expression.getExpressionType() != TypeScalar.INT) {
+    public IrArrayLocation(VariableDescriptor array, IrExpression index) {
+        this.array = array;
+        this.index = index;
+        if (array == null) {
+            throw new UndeclaredVariableException("Array is not declared");
+        }
+        if (!(array.getType() instanceof TypeArray)) {
+            throw new TypeMismatchException("Can only index arrays");
+        }
+        if (index.getExpressionType() != TypeScalar.INT) {
             throw new TypeMismatchException("Array index must be an int");
         }
     }
 
     public static IrArrayLocation create(DecafSemanticChecker checker, DecafParser.ArrayLocationContext ctx) {
-         IrId id = IrId.create(checker, ctx.ID());
-         IrExpression expression = IrExpression.create(checker, ctx.expr());
-         return new IrArrayLocation(id, expression);
+        String varName = ctx.ID().getText();
+        VariableDescriptor array = checker.currentSymbolTable().getVariable(varName);
+        IrExpression index = IrExpression.create(checker, ctx.expr());
+        return new IrArrayLocation(array, index);
     }
 
     @Override
     public Type getExpressionType() {
-        // TODO get the type from the symbol table
-        return TypeScalar.INT;
+        return ((TypeArray) array.getType()).getElementType();
     }
 }
