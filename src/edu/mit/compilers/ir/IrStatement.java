@@ -1,5 +1,9 @@
 package edu.mit.compilers.ir;
 
-abstract class IrStatement extends Ir {
+import edu.mit.compilers.grammar.DecafParser;
 
+abstract class IrStatement extends Ir {
+    public static IrStatement create(DecafSemanticChecker checker, DecafParser.StatementContext ctx) {
+        return (IrStatement) checker.visit(ctx);
+    }
 }

@@ -18,8 +18,8 @@ catch [RecognitionException ex] {
    System.exit(1);
 }
 extern_decl: TK_extern ID LPAREN RPAREN SEMI;
-method_decl: (type | TK_void) ID LPAREN type ID (COMMA type ID)* RPAREN block
-| (type | TK_void) ID LPAREN RPAREN block;
+method_decl: (type | TK_void) ID LPAREN (method_argument_decl (COMMA method_argument_decl)*)? RPAREN block;
+method_argument_decl: type ID;
 catch [RecognitionException ex] {
    System.out.println("attempted and failed to parse a method");
    System.exit(1);
@@ -43,13 +43,13 @@ catch [RecognitionException ex] {
 
 type: TK_int | TK_bool;
 statement: TK_if LPAREN expr RPAREN block (TK_else block)? #IfStmt
-| TK_for LPAREN ID EQUALS expr SEMI expr SEMI ID COMPOUND_ASSIGN_OP expr RPAREN block #ForStmt
-| TK_while LPAREN expr RPAREN block #WhileStmt
-| TK_return expr SEMI #ReturnStmt
-| TK_break SEMI #BreakStmt
-| TK_continue SEMI #ContinueStmt
-| method_call SEMI #MethodCallStmt
-| location assign_op expr SEMI #AssignStmt
+         | TK_for LPAREN init_id=ID EQUALS init_expr=expr SEMI condition=expr SEMI update_id=ID update_op=COMPOUND_ASSIGN_OP update_expr=expr RPAREN block #ForStmt
+         | TK_while LPAREN expr RPAREN block #WhileStmt
+         | TK_return expr SEMI #ReturnStmt
+         | TK_break SEMI #BreakStmt
+         | TK_continue SEMI #ContinueStmt
+         | method_call SEMI #MethodCallStmt
+         | location assign_op expr SEMI #AssignStmt
 ;
 catch [RecognitionException ex] {
    System.out.println(ex.toString());

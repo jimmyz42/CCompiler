@@ -1,4 +1,4 @@
 package edu.mit.compilers.ir;
 
-class Ir {
+public abstract class Ir {
 }

@@ -12,8 +12,8 @@ class IrType extends Ir {
     }
 
     public static IrType create(DecafSemanticChecker checker, DecafParser.TypeContext ctx) {
-        Boolean boolTerminal = ctx.TK_int().getText().isEmpty();
-        Boolean intTerminal = ctx.TK_bool().getText().isEmpty();
+        Boolean boolTerminal = !ctx.TK_bool().getText().isEmpty();
+        Boolean intTerminal = !ctx.TK_int().getText().isEmpty();
         return new IrType(boolTerminal, intTerminal);
     }
 
