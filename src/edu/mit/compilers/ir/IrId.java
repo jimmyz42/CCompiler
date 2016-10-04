@@ -1,8 +1,8 @@
 package edu.mit.compilers.ir;
 
-import edu.mit.compilers.grammar.DecafParser;
-
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import edu.mit.compilers.grammar.DecafParser;
 
 class IrId extends Ir {
     private String terminal;

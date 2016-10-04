@@ -1,7 +1,6 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchError;
 
 public class IrAndOpExpr extends IrLogicalOpExpr {
     public IrAndOpExpr(IrBinOp operator, IrExpression lhs, IrExpression rhs) {

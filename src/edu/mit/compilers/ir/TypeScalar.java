@@ -1,7 +1,6 @@
 package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
-import exceptions.TypeMismatchError;
 
 public class TypeScalar implements Type {
     public final static TypeScalar INT = new TypeScalar("int", 8);

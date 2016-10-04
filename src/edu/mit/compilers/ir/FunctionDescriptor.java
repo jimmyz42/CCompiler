@@ -1,6 +1,5 @@
 package edu.mit.compilers.ir;
 
-import java.util.List;
 
 public abstract class FunctionDescriptor {
     private final String name;

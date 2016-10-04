@@ -1,6 +1,5 @@
 package edu.mit.compilers.ir;
 
-import edu.mit.compilers.grammar.DecafParser;
 
 abstract public class IrBinOpExpr extends IrExpression {
     private IrBinOp operator;

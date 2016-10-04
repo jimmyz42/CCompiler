@@ -4,10 +4,12 @@
 
 import java.util.Stack;
 
-import edu.mit.compilers.grammar.*;
-
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
+import edu.mit.compilers.grammar.DecafBaseVisitor;
+import edu.mit.compilers.grammar.DecafParser;
+import edu.mit.compilers.grammar.DecafVisitor;
 
 /**
  * This class provides an empty implementation of {@link DecafVisitor},
