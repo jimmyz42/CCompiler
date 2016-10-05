@@ -32,11 +32,11 @@ class IrAssignStmt extends IrStatement {
     }
 
     @Override
-    public void println(PrintWriter pw, String prefix) {
-        super.println(pw, prefix);
-        location.println(pw, prefix + "  ");
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        super.prettyPrint(pw, prefix);
+        location.prettyPrint(pw, prefix + "  ");
         pw.println(prefix + "  =");
-        expression.println(pw, prefix + "  ");
+        expression.prettyPrint(pw, prefix + "  ");
         pw.println(prefix + ";");
     }
 }

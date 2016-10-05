@@ -9,12 +9,12 @@ public abstract class Ir implements PrettyPrintable {
     @Override
     public String toString() {
         StringWriter sw = new StringWriter();
-        println(new PrintWriter(sw), "");
+        prettyPrint(new PrintWriter(sw), "");
         return sw.toString();
     }
     
     @Override
-    public void println(PrintWriter pw, String prefix) {
+    public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "// " + getClass().getSimpleName());
     }
 }

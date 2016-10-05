@@ -21,7 +21,7 @@ public abstract class VariableDescriptor implements PrettyPrintable {
     }
     
     @Override
-    public void println(PrintWriter pw, String prefix) {
+    public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + type + " " + name + ";");
     }
     

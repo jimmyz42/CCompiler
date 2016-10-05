@@ -39,10 +39,10 @@ class IrArrayLocation extends IrLocation {
     }
 
     @Override
-    public void println(PrintWriter pw, String prefix) {
-        super.println(pw, prefix);
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        super.prettyPrint(pw, prefix);
         pw.println(prefix + array.getName() + "[");
-        index.println(pw, prefix + "  ");
+        index.prettyPrint(pw, prefix + "  ");
         pw.println(prefix + "] ");
     }
 }

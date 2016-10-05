@@ -8,7 +8,7 @@ public class ExternDescriptor extends FunctionDescriptor {
     }
     
     @Override
-    public void println(PrintWriter pw, String prefix) {
+    public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "extern " + getName() + "();");
     }
 }
