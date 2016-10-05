@@ -15,10 +15,10 @@ abstract public class IrBinOpExpr extends IrExpression {
     }
     
     @Override
-    public void println(PrintWriter pw, String prefix) {
-        super.println(pw, prefix);
-        lhs.println(pw, prefix + "  ");
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        super.prettyPrint(pw, prefix);
+        lhs.prettyPrint(pw, prefix + "  ");
         pw.println(prefix + "  " + operator);
-        rhs.println(pw, prefix + "  ");
+        rhs.prettyPrint(pw, prefix + "  ");
     }
 }

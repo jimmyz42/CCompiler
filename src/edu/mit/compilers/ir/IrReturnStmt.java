@@ -16,10 +16,10 @@ class IrReturnStmt extends IrStatement {
     }
     
     @Override
-    public void println(PrintWriter pw, String prefix) {
-        super.println(pw, prefix);
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        super.prettyPrint(pw, prefix);
         pw.println(prefix + "return");
-        expression.println(pw, prefix + "  ");
+        expression.prettyPrint(pw, prefix + "  ");
         pw.println(prefix + ";");
     }
 }

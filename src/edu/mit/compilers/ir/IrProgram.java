@@ -57,12 +57,12 @@ class IrProgram extends Ir {
 
 
     @Override
-    public void println(PrintWriter pw, String prefix) {
+    public void prettyPrint(PrintWriter pw, String prefix) {
         for (VariableDescriptor var : symbolTable.getVariables().values()) {
-            var.println(pw, prefix);
+            var.prettyPrint(pw, prefix);
         }
         for (FunctionDescriptor fn : symbolTable.getFunctions().values()) {
-            fn.println(pw, prefix);
+            fn.prettyPrint(pw, prefix);
         }
     }
 }

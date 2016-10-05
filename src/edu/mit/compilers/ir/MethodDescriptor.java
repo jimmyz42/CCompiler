@@ -45,8 +45,8 @@ public class MethodDescriptor extends FunctionDescriptor {
     }
 
     @Override
-    public void println(PrintWriter pw, String prefix) {
+    public void prettyPrint(PrintWriter pw, String prefix) {
         pw.print(prefix + getReturnType() + " " + getName() + "(" + Util.joinStrings(arguments) + ") ");
-        body.println(pw, prefix);
+        body.prettyPrint(pw, prefix);
     }
 }
