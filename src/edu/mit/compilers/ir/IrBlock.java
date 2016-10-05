@@ -21,7 +21,7 @@ class IrBlock extends Ir {
         return symbolTable;
     }
 
-    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, LocalSymbolTable symbolTable) {
+    private static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, LocalSymbolTable symbolTable) {
         checker.pushSymbolTable(symbolTable);
         
         List<IrStatement> statements = new ArrayList<>();
@@ -40,7 +40,20 @@ class IrBlock extends Ir {
     public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx) {
         SymbolTable parentTable = checker.currentSymbolTable();
         LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
-        return create(checker, ctx, symbolTable);
+        checker.pushSymbolTable(symbolTable);
+        
+        List<IrStatement> statements = new ArrayList<>();
+        
+        for (Field_declContext fieldDecl : ctx.field_decl()) {
+            symbolTable.addVariablesFromFieldDecl(checker, fieldDecl);
+        }
+        
+        for (StatementContext statement : ctx.statement()) {
+            statements.add(IrStatement.create(checker, statement));
+        }
+        
+        checker.popSybmolTable();
+        return new IrBlock(symbolTable, statements);
     }
 
     public static IrBlock createEmpty(DecafSemanticChecker checker) {
