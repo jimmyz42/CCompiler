@@ -7,6 +7,7 @@ import java.util.List;
 import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
 import edu.mit.compilers.grammar.DecafParser.Method_callContext;
 import exceptions.MethodCallException;
+import exceptions.UndeclaredIdentifierError;
 
 class IrMethodCallExpr extends IrExpression {
     private final FunctionDescriptor function;
@@ -15,6 +16,10 @@ class IrMethodCallExpr extends IrExpression {
     public IrMethodCallExpr(FunctionDescriptor function, List<IrExternArg> arguments) {
         this.function = function;
         this.arguments = Collections.unmodifiableList(arguments);
+        
+        if (function == null) {
+            throw new UndeclaredIdentifierError("Tried to call an undeclared function");
+        }
         
         if (function instanceof MethodDescriptor) {
             MethodDescriptor method = (MethodDescriptor) function;
