@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
-import exceptions.UndeclaredVariableError;
+import exceptions.UndeclaredIdentifierError;
 
 class IrIdLocation extends IrLocation {
     private VariableDescriptor variable;
@@ -12,7 +12,7 @@ class IrIdLocation extends IrLocation {
     public IrIdLocation(VariableDescriptor variable) {
         this.variable = variable;
         if (variable == null) {
-            throw new UndeclaredVariableError("Variable is not declared");
+            throw new UndeclaredIdentifierError("Variable is not declared");
         }
         if (!(variable.getType() instanceof TypeScalar)) {
             throw new TypeMismatchError("Variable must be a scalar");

@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import exceptions.DuplicateIdentifierError;
+
 public class LocalSymbolTable extends SymbolTable {
     private SymbolTable parentTable;
     private Map<String, VariableDescriptor> variables = new HashMap<>();
@@ -14,6 +16,9 @@ public class LocalSymbolTable extends SymbolTable {
     
     @Override
     public VariableDescriptor addVariable(Type type, String name) {
+        if (variables.containsKey(name)) {
+            throw new DuplicateIdentifierError("Variable " + name + "already exists in this scope");
+        }
         VariableDescriptor descriptor = new LocalVariableDescriptor(type, name);
         variables.put(name, descriptor);
         return descriptor;

@@ -6,12 +6,29 @@ import edu.mit.compilers.grammar.DecafParser.Extern_declContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
 import edu.mit.compilers.grammar.DecafParser.ProgramContext;
+import exceptions.TypeMismatchError;
+import exceptions.UndeclaredIdentifierError;
 
 class IrProgram extends Ir {
     private final GlobalSymbolTable symbolTable;
     
     public IrProgram(GlobalSymbolTable symbolTable) {
         this.symbolTable = symbolTable;
+        
+        FunctionDescriptor fnMain = symbolTable.getFunction("main");
+        if (fnMain == null) {
+            throw new UndeclaredIdentifierError("No main method found");
+        }
+        if (!(fnMain instanceof MethodDescriptor)) {
+            throw new TypeMismatchError("Main must be a method (not an extern)");
+        }
+        MethodDescriptor main = (MethodDescriptor) fnMain;
+        if (main.getReturnType() != TypeVoid.VOID) {
+            throw new TypeMismatchError("Main must return void");
+        }
+        if (!main.getArguments().isEmpty()) {
+            throw new TypeMismatchError("Main must not take any arguments");
+        }
     }
 
 

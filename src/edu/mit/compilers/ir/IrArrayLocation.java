@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
-import exceptions.UndeclaredVariableError;
+import exceptions.UndeclaredIdentifierError;
 
 class IrArrayLocation extends IrLocation {
     private VariableDescriptor array;
@@ -14,7 +14,7 @@ class IrArrayLocation extends IrLocation {
         this.array = array;
         this.index = index;
         if (array == null) {
-            throw new UndeclaredVariableError("Array is not declared");
+            throw new UndeclaredIdentifierError("Array is not declared");
         }
         if (!(array.getType() instanceof TypeArray)) {
             throw new TypeMismatchError("Can only index arrays");
