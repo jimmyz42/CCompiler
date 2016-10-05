@@ -28,6 +28,8 @@ public class MethodDescriptor extends FunctionDescriptor {
         String name = ctx.ID().getText();
         LocalSymbolTable argTable = new LocalSymbolTable(checker.currentSymbolTable());
         
+        IrBlock body = IrBlock.createEmpty(checker);
+        
         List<VariableDescriptor> arguments = new ArrayList<>();
         for (Method_argument_declContext argumentDecl : ctx.method_argument_decl()) {
             Type type = TypeScalar.create(checker, argumentDecl.type());
@@ -35,11 +37,11 @@ public class MethodDescriptor extends FunctionDescriptor {
             arguments.add(argTable.addVariable(type, argName));
         }
         
-        checker.pushSymbolTable(argTable);
-        IrBlock body = IrBlock.create(checker, ctx.block());
-        checker.popSybmolTable();
-        
         return new MethodDescriptor(name, returnType, arguments, body);
+    }
+
+    public void loadBody(DecafSemanticChecker checker, Method_declContext ctx) {
+        body.loadBlock(checker, ctx.block());
     }
     
     @Override
