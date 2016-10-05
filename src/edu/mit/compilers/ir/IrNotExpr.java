@@ -8,13 +8,15 @@ class IrNotExpr extends IrExpression {
 
     public IrNotExpr(IrExpression expression) {
         this.expression = expression;
-        if (expression.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchError("Expected a bool expression");
-        }
     }
 
     public static IrNotExpr create(DecafSemanticChecker checker, DecafParser.NotExprContext ctx) {
-        return new IrNotExpr((IrExpression) checker.visit(ctx.expr()));
+        IrExpression expression = (IrExpression) checker.visit(ctx.expr());
+        if (expression.getExpressionType() != TypeScalar.BOOL) {
+            throw new TypeMismatchError("Expected a bool expression");
+        }
+
+        return new IrNotExpr(expression);
     }
 
     @Override

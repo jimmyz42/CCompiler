@@ -11,10 +11,32 @@ import exceptions.UndeclaredIdentifierError;
 
 class IrProgram extends Ir {
     private final GlobalSymbolTable symbolTable;
-    
+
     public IrProgram(GlobalSymbolTable symbolTable) {
         this.symbolTable = symbolTable;
-        
+    }
+
+
+    public static IrProgram create(DecafSemanticChecker checker, ProgramContext ctx) {
+        GlobalSymbolTable symbolTable = new GlobalSymbolTable();
+        checker.pushSymbolTable(symbolTable);
+
+        for (Extern_declContext externDecl : ctx.extern_decl()) {
+            symbolTable.addFunction(new ExternDescriptor(externDecl.ID().getText()));
+        }
+
+        for (Field_declContext fieldDecl : ctx.field_decl()) {
+            symbolTable.addVariablesFromFieldDecl(checker, fieldDecl);
+        }
+
+        for (Method_declContext methodDecl : ctx.method_decl()) {
+            MethodDescriptor method = MethodDescriptor.create(checker, methodDecl);
+            symbolTable.addFunction(method);
+            method.loadBody(checker, methodDecl);
+        }
+
+        checker.popSybmolTable();
+
         FunctionDescriptor fnMain = symbolTable.getFunction("main");
         if (fnMain == null) {
             throw new UndeclaredIdentifierError("No main method found");
@@ -29,28 +51,7 @@ class IrProgram extends Ir {
         if (!main.getArguments().isEmpty()) {
             throw new TypeMismatchError("Main must not take any arguments");
         }
-    }
 
-
-    public static IrProgram create(DecafSemanticChecker checker, ProgramContext ctx) {
-        GlobalSymbolTable symbolTable = new GlobalSymbolTable();
-        checker.pushSymbolTable(symbolTable);
-        
-        for (Extern_declContext externDecl : ctx.extern_decl()) {
-            symbolTable.addFunction(new ExternDescriptor(externDecl.ID().getText()));
-        }
-        
-        for (Field_declContext fieldDecl : ctx.field_decl()) {
-            symbolTable.addVariablesFromFieldDecl(checker, fieldDecl);
-        }
-        
-        for (Method_declContext methodDecl : ctx.method_decl()) {
-            MethodDescriptor method = MethodDescriptor.create(checker, methodDecl);
-            symbolTable.addFunction(method);
-            method.loadBody(checker, methodDecl);
-        }
-        
-        checker.popSybmolTable();
         return new IrProgram(symbolTable);
     }
 

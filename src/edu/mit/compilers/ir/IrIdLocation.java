@@ -11,17 +11,17 @@ class IrIdLocation extends IrLocation {
 
     public IrIdLocation(VariableDescriptor variable) {
         this.variable = variable;
-        if (variable == null) {
-            throw new UndeclaredIdentifierError("Variable is not declared");
-        }
-        if (!(variable.getType() instanceof TypeScalar)) {
-            throw new TypeMismatchError("Variable must be a scalar");
-        }
     }
 
     public static IrIdLocation create(DecafSemanticChecker checker, DecafParser.IdLocationContext ctx) {
         String varName = ctx.ID().getText();
         VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName);
+        if (variable == null) {
+            throw new UndeclaredIdentifierError("Variable ''" + varName + "' is not declared");
+        }
+        if (!(variable.getType() instanceof TypeScalar)) {
+            throw new TypeMismatchError("Variable must be a scalar");
+        }
         return new IrIdLocation(variable);
     }
 
@@ -29,7 +29,7 @@ class IrIdLocation extends IrLocation {
     public Type getExpressionType() {
         return variable.getType();
     }
-    
+
     @Override
     public void println(PrintWriter pw, String prefix) {
         pw.print(prefix + variable.getName() + " ");

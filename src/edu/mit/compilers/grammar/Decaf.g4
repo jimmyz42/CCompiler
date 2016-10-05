@@ -1,4 +1,3 @@
-
 grammar Decaf;
 
 import DecafScanner;

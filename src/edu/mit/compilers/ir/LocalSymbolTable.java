@@ -9,11 +9,11 @@ import exceptions.DuplicateIdentifierError;
 public class LocalSymbolTable extends SymbolTable {
     private SymbolTable parentTable;
     private Map<String, VariableDescriptor> variables = new HashMap<>();
-    
+
     public LocalSymbolTable(SymbolTable parentTable) {
         this.parentTable = parentTable;
     }
-    
+
     @Override
     public VariableDescriptor addVariable(Type type, String name) {
         if (variables.containsKey(name)) {

@@ -12,6 +12,13 @@ class IrAssignStmt extends IrStatement {
     public IrAssignStmt(IrLocation location, String assignOp, IrExpression expression) {
         this.location = location;
         this.expression = expression;
+    }
+
+    public static IrAssignStmt create(DecafSemanticChecker checker, DecafParser.AssignStmtContext ctx) {
+        IrLocation location = IrLocation.create(checker, ctx.location());
+        IrExpression expression = IrExpression.create(checker, ctx.expr());
+        String assignOp = ctx.assign_op().getText();
+
         if (assignOp.equals("+=")) {
             expression = new IrAddOpExpr(new IrAddOp("+"), location, expression);
         } else if (assignOp.equals("-=")) {
@@ -20,15 +27,10 @@ class IrAssignStmt extends IrStatement {
         if (expression.getExpressionType() != location.getExpressionType()) {
             throw new TypeMismatchError("Two sides of an assignment should have the same type");
         }
+
+        return new IrAssignStmt(location, assignOp, expression);
     }
 
-    public static IrAssignStmt create(DecafSemanticChecker checker, DecafParser.AssignStmtContext ctx) {
-        IrLocation location = IrLocation.create(checker, ctx.location());
-        IrExpression expression = IrExpression.create(checker, ctx.expr());
-
-        return new IrAssignStmt(location, ctx.assign_op().getText(), expression);
-    }
-    
     @Override
     public void println(PrintWriter pw, String prefix) {
         super.println(pw, prefix);

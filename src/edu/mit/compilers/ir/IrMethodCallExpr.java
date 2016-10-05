@@ -12,15 +12,30 @@ import exceptions.UndeclaredIdentifierError;
 class IrMethodCallExpr extends IrExpression {
     private final FunctionDescriptor function;
     private final List<IrExternArg> arguments;
-    
+
     public IrMethodCallExpr(FunctionDescriptor function, List<IrExternArg> arguments) {
         this.function = function;
         this.arguments = Collections.unmodifiableList(arguments);
-        
+    }
+
+    @Override
+    public Type getExpressionType() {
+        return function.getReturnType();
+    }
+
+    public static IrMethodCallExpr create(DecafSemanticChecker checker, Method_callContext ctx) {
+        String functionName = ctx.ID().getText();
+        FunctionDescriptor function = checker.currentSymbolTable().getFunction(functionName);
+
+        List<IrExternArg> arguments = new ArrayList<>();
+        for (Extern_argContext argument : ctx.extern_arg()) {
+            arguments.add(IrExternArg.create(checker, argument));
+        }
+
         if (function == null) {
             throw new UndeclaredIdentifierError("Tried to call an undeclared function");
         }
-        
+
         if (function instanceof MethodDescriptor) {
             MethodDescriptor method = (MethodDescriptor) function;
             List<VariableDescriptor> expectedArgs = method.getArguments();
@@ -38,22 +53,7 @@ class IrMethodCallExpr extends IrExpression {
                 }
             }
         }
-    }
 
-    @Override
-    public Type getExpressionType() {
-        return function.getReturnType();
-    }
-
-    public static IrMethodCallExpr create(DecafSemanticChecker checker, Method_callContext ctx) {
-        String functionName = ctx.ID().getText();
-        FunctionDescriptor function = checker.currentSymbolTable().getFunction(functionName);
-        
-        List<IrExternArg> arguments = new ArrayList<>();
-        for (Extern_argContext argument : ctx.extern_arg()) {
-            arguments.add(IrExternArg.create(checker, argument));
-        }
-        
         return new IrMethodCallExpr(function, arguments);
     }
 }

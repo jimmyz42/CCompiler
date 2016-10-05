@@ -2,7 +2,7 @@ package edu.mit.compilers.ir;
 
 import exceptions.TypeMismatchError;
 
-public abstract class IrLogicalOpExpr extends IrBinOpExpr {
+abstract public class IrLogicalOpExpr extends IrBinOpExpr {
     public IrLogicalOpExpr(IrBinOp operator, IrExpression lhs, IrExpression rhs) {
         super(operator, lhs, rhs);
         if (lhs.getExpressionType() != TypeScalar.BOOL || rhs.getExpressionType() != TypeScalar.BOOL) {

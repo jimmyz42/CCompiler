@@ -4,20 +4,22 @@ import edu.mit.compilers.grammar.DecafParser;
 import exceptions.UndeclaredIdentifierError;
 
 class IrSizeofIdExpr extends IrExpression {
-    private VariableDescriptor var;
+    private VariableDescriptor variable;
 
-    public IrSizeofIdExpr(VariableDescriptor var) {
-        this.var = var;
-        if (var == null) {
-            throw new UndeclaredIdentifierError("Attempted to apply sizeof to an undeclared variable");
-        }
+    public IrSizeofIdExpr(VariableDescriptor variable) {
+        this.variable = variable;
     }
 
     public static IrSizeofIdExpr create(DecafSemanticChecker checker, DecafParser.SizeofIdExprContext ctx) {
         String varName = ctx.ID().getText();
-        return new IrSizeofIdExpr(checker.currentSymbolTable().getVariable(varName));
+        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName);
+        if (variable == null) {
+            throw new UndeclaredIdentifierError("Attempted to apply sizeof to an undeclared variable");
+        }
+
+        return new IrSizeofIdExpr(variable);
     }
-    
+
     @Override
     public Type getExpressionType() {
         return TypeScalar.INT;

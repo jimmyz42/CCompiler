@@ -8,13 +8,15 @@ class IrNegExpr extends IrExpression {
 
     public IrNegExpr(IrExpression expression) {
         this.expression = expression;
-        if (expression.getExpressionType() != TypeScalar.INT) {
-            throw new TypeMismatchError("Expected an int expression");
-        }
     }
 
     public static IrNegExpr create(DecafSemanticChecker checker, DecafParser.NegExprContext ctx) {
-        return new IrNegExpr((IrExpression) checker.visit(ctx.expr()));
+        IrExpression expression = (IrExpression) checker.visit(ctx.expr());
+        if (expression.getExpressionType() != TypeScalar.INT) {
+            throw new TypeMismatchError("Expected an int expression");
+        }
+
+        return new IrNegExpr(expression);
     }
 
     @Override
