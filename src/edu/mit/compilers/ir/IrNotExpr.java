@@ -13,7 +13,7 @@ class IrNotExpr extends IrExpression {
     public static IrNotExpr create(DecafSemanticChecker checker, DecafParser.NotExprContext ctx) {
         IrExpression expression = (IrExpression) checker.visit(ctx.expr());
         if (expression.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchError("Expected a bool expression");
+            throw new TypeMismatchError("Expected a bool expression", ctx.expr());
         }
 
         return new IrNotExpr(expression);

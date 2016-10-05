@@ -14,7 +14,7 @@ class IrSizeofIdExpr extends IrExpression {
         String varName = ctx.ID().getText();
         VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName);
         if (variable == null) {
-            throw new UndeclaredIdentifierError("Attempted to apply sizeof to an undeclared variable");
+            throw new UndeclaredIdentifierError("Attempted to apply sizeof to an undeclared variable", ctx);
         }
 
         return new IrSizeofIdExpr(variable);

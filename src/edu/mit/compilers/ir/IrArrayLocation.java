@@ -21,13 +21,13 @@ class IrArrayLocation extends IrLocation {
         IrExpression index = IrExpression.create(checker, ctx.expr());
 
         if (array == null) {
-            throw new UndeclaredIdentifierError("Array is not declared");
+            throw new UndeclaredIdentifierError("Array is not declared", ctx);
         }
         if (!(array.getType() instanceof TypeArray)) {
-            throw new TypeMismatchError("Can only index arrays");
+            throw new TypeMismatchError("Can only index arrays", ctx);
         }
         if (index.getExpressionType() != TypeScalar.INT) {
-            throw new TypeMismatchError("Array index must be an int");
+            throw new TypeMismatchError("Array index must be an int", ctx.expr());
         }
 
         return new IrArrayLocation(array, index);

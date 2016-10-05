@@ -1,7 +1,5 @@
 package edu.mit.compilers.ir;
 
-import exceptions.BadArraySizeError;
-
 public class TypeArray implements Type {
     private final int length;
     private final Type elementType;
@@ -9,9 +7,6 @@ public class TypeArray implements Type {
     public TypeArray(int length, Type elementType) {
         this.length = length;
         this.elementType = elementType;
-        if (this.length <= 0) {
-            throw new BadArraySizeError("Array size must be positive");
-        }
     }
 
     public int getLength() {

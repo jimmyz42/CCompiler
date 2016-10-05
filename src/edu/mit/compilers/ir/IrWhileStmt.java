@@ -15,7 +15,7 @@ class IrWhileStmt extends IrStatement {
     public static IrWhileStmt create(DecafSemanticChecker checker, DecafParser.WhileStmtContext ctx) {
         IrExpression condition = IrExpression.create(checker, ctx.expr());
         if (condition.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchError("While statement condition must be a bool");
+            throw new TypeMismatchError("While condition must be a bool", ctx.expr());
         }
         
         IrBlock block = IrBlock.create(checker, ctx.block());

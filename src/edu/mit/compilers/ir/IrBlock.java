@@ -7,6 +7,7 @@ import java.util.List;
 import edu.mit.compilers.grammar.DecafParser.BlockContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.StatementContext;
+import exceptions.SemanticError;
 
 class IrBlock extends Ir {
     private final LocalSymbolTable symbolTable;
@@ -50,11 +51,19 @@ class IrBlock extends Ir {
         checker.pushSymbolTable(symbolTable);
 
         for (Field_declContext fieldDecl : ctx.field_decl()) {
-            symbolTable.addVariablesFromFieldDecl(checker, fieldDecl);
+            try {
+                symbolTable.addVariablesFromFieldDecl(checker, fieldDecl);
+            } catch (SemanticError e) {
+                checker.handleSemanticError(e);
+            }
         }
 
         for (StatementContext statement : ctx.statement()) {
-            statements.add(IrStatement.create(checker, statement));
+            try {
+                statements.add(IrStatement.create(checker, statement));
+            } catch (SemanticError e) {
+                checker.handleSemanticError(e);
+            }
         }
 
         checker.popSybmolTable();
