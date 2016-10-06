@@ -39,7 +39,7 @@ class IrForStmt extends IrStatement {
                 ctx.update_op.getText(),
                 IrExpression.create(checker, ctx.update_expr),
                 ctx);
-        IrBlock block = IrBlock.create(checker, ctx.block());
+        IrBlock block = IrBlock.create(checker, ctx.block(), true);
 
         return new IrForStmt(initializer, condition, update, block);
     }

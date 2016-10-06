@@ -29,7 +29,7 @@ public class MethodDescriptor extends FunctionDescriptor {
         String name = ctx.ID().getText();
         LocalSymbolTable argTable = new LocalSymbolTable(checker.currentSymbolTable());
 
-        IrBlock body = IrBlock.createEmpty(checker, argTable);
+        IrBlock body = IrBlock.createEmpty(argTable, false);
 
         List<VariableDescriptor> arguments = new ArrayList<>();
         for (Method_argument_declContext argumentDecl : ctx.method_argument_decl()) {
