@@ -2,6 +2,9 @@ package edu.mit.compilers.ir;
 
 import java.io.PrintWriter;
 
+import edu.mit.compilers.grammar.DecafParser.ExprContext;
+import exceptions.TypeMismatchError;
+
 
 abstract public class IrBinOpExpr extends IrExpression {
     private IrBinOp operator;

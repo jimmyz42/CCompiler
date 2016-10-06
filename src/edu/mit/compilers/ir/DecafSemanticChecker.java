@@ -2,6 +2,9 @@
 
   package edu.mit.compilers.ir;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -10,6 +13,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import edu.mit.compilers.grammar.DecafBaseVisitor;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.grammar.DecafVisitor;
+import exceptions.SemanticError;
 
 /**
  * This class provides an empty implementation of {@link DecafVisitor},
@@ -36,6 +40,14 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
     }
     public void pushSymbolTable(SymbolTable symbolTable) {
         symbolTables.push(symbolTable);
+    }
+    
+    private List<SemanticError> errors = new ArrayList<>();
+    public void handleSemanticError(SemanticError e) {
+        errors.add(e);
+    }
+    public List<SemanticError> getSemanticErrors() {
+        return Collections.unmodifiableList(errors);
     }
     
     /**
@@ -177,7 +189,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public IrLogicalOpExpr visitAndOpExpr(DecafParser.AndOpExprContext ctx) { return IrAndOpExpr.create(this, ctx); }
+	@Override public IrAndOpExpr visitAndOpExpr(DecafParser.AndOpExprContext ctx) { return IrAndOpExpr.create(this, ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

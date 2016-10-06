@@ -19,7 +19,7 @@ class IrIfStmt extends IrStatement {
     public static IrIfStmt create(DecafSemanticChecker checker, DecafParser.IfStmtContext ctx) {
         IrExpression condition = IrExpression.create(checker, ctx.expr());
         if (condition.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchError("If statement condition must be a bool");
+            throw new TypeMismatchError("If condition must be a bool", ctx.expr());
         }
         
         IrBlock block = IrBlock.create(checker, ctx.block(0));

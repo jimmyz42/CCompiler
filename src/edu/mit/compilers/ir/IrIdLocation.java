@@ -17,10 +17,10 @@ class IrIdLocation extends IrLocation {
         String varName = ctx.ID().getText();
         VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName);
         if (variable == null) {
-            throw new UndeclaredIdentifierError("Variable ''" + varName + "' is not declared");
+            throw new UndeclaredIdentifierError("Variable ''" + varName + "' is not declared", ctx);
         }
         if (!(variable.getType() instanceof TypeScalar)) {
-            throw new TypeMismatchError("Variable must be a scalar");
+            throw new TypeMismatchError("Expected a scalar variable, got " + variable.getType(), ctx);
         }
         return new IrIdLocation(variable);
     }

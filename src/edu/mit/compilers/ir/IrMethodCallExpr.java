@@ -33,23 +33,24 @@ class IrMethodCallExpr extends IrExpression {
         }
 
         if (function == null) {
-            throw new UndeclaredIdentifierError("Tried to call an undeclared function");
+            throw new UndeclaredIdentifierError("Tried to call an undeclared function", ctx);
         }
 
         if (function instanceof MethodDescriptor) {
             MethodDescriptor method = (MethodDescriptor) function;
             List<VariableDescriptor> expectedArgs = method.getArguments();
             if (arguments.size() != expectedArgs.size()) {
-                throw new MethodCallException("Expected " + expectedArgs.size() + " arguments, got " + arguments.size());
+                throw new MethodCallException("Expected " + expectedArgs.size() + " arguments, got " + arguments.size(), ctx);
             }
             for (int i = 0; i < arguments.size(); i++) {
                 if (!(arguments.get(i) instanceof IrExpression)) {
-                    throw new MethodCallException("Can't have string literals as method arguments");
+                    throw new MethodCallException("Can't have string literals as method arguments", ctx.extern_arg(i));
                 }
                 IrExpression arg = (IrExpression) arguments.get(i);
                 if (arg.getExpressionType() != expectedArgs.get(i).getType()) {
                     // 1-based indexing for arguments in error messages
-                    throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() + ", expected " + expectedArgs.get(i).getType());
+                    throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() +
+                            ", expected " + expectedArgs.get(i).getType(), ctx.extern_arg(i));
                 }
             }
         }

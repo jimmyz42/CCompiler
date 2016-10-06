@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+
 import exceptions.DuplicateIdentifierError;
 
 public class LocalSymbolTable extends SymbolTable {
@@ -15,9 +17,9 @@ public class LocalSymbolTable extends SymbolTable {
     }
 
     @Override
-    public VariableDescriptor addVariable(Type type, String name) {
+    public VariableDescriptor addVariable(Type type, String name, ParserRuleContext ctx) {
         if (variables.containsKey(name)) {
-            throw new DuplicateIdentifierError("Variable " + name + "already exists in this scope");
+            throw new DuplicateIdentifierError("Variable " + name + " already exists in this scope", ctx);
         }
         VariableDescriptor descriptor = new LocalVariableDescriptor(type, name);
         variables.put(name, descriptor);
@@ -35,8 +37,8 @@ public class LocalSymbolTable extends SymbolTable {
     }
 
     @Override
-    public FunctionDescriptor addFunction(FunctionDescriptor function) {
-        return parentTable.addFunction(function);
+    public FunctionDescriptor addFunction(FunctionDescriptor function, ParserRuleContext ctx) {
+        return parentTable.addFunction(function, ctx);
     }
 
     @Override

@@ -1,11 +1,9 @@
 package exceptions;
 
-public class BadArraySizeError extends SemanticError {
-    public BadArraySizeError(String msg) {
-        super(msg);
-    }
+import org.antlr.v4.runtime.ParserRuleContext;
 
-    public BadArraySizeError(String msg, Throwable cause) {
-        super(msg, cause);
+public class BadArraySizeError extends SemanticError {
+    public BadArraySizeError(String msg, ParserRuleContext context) {
+        super(msg, context);
     }
 }

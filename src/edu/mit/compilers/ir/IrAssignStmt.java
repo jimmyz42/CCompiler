@@ -19,13 +19,21 @@ class IrAssignStmt extends IrStatement {
         IrExpression expression = IrExpression.create(checker, ctx.expr());
         String assignOp = ctx.assign_op().getText();
 
-        if (assignOp.equals("+=")) {
-            expression = new IrAddOpExpr(new IrAddOp("+"), location, expression);
-        } else if (assignOp.equals("-=")) {
-            expression = new IrAddOpExpr(new IrAddOp("-"), location, expression);
+        if (location.getExpressionType() != expression.getExpressionType()) {
+            throw new TypeMismatchError("Two sides of an assignment should have the same type", ctx);
         }
-        if (expression.getExpressionType() != location.getExpressionType()) {
-            throw new TypeMismatchError("Two sides of an assignment should have the same type");
+        if (!(location.getExpressionType() instanceof TypeScalar)) {
+            throw new TypeMismatchError("Can only assign a scalar", ctx);
+        }
+        if (!assignOp.equals("=")) {
+            if (location.getExpressionType() != TypeScalar.INT) {
+                throw new TypeMismatchError("Can only use += and -= on ints", ctx);
+            }
+            if (assignOp.equals("+=")) {
+                expression = new IrAddOpExpr(new IrAddOp("+"), location, expression);
+            } else if (assignOp.equals("-=")) {
+                expression = new IrAddOpExpr(new IrAddOp("-"), location, expression);
+            }
         }
 
         return new IrAssignStmt(location, assignOp, expression);

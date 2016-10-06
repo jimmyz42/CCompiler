@@ -2,13 +2,15 @@ package edu.mit.compilers;
 
 import java.io.*;
 import java.util.BitSet;
+import java.util.List;
+
 import edu.mit.compilers.grammar.DecafScanner;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.grammar.DecafParser.ProgramContext;
 import edu.mit.compilers.ir.*;
-import edu.mit.compilers.ir.DecafSemanticChecker;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
+import exceptions.SemanticError;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.dfa.*;
@@ -80,8 +82,20 @@ class Main {
                 ProgramContext context = parser.program();
                 DecafSemanticChecker loader = new DecafSemanticChecker();
                 Ir ir = (Ir)loader.visit(context);
-                if (CLI.debug) {
-                    System.out.print(ir.toString());
+                List<SemanticError> errors = loader.getSemanticErrors();
+                if (errors.isEmpty()) {
+                    if (CLI.debug) {
+                        System.out.print(ir.toString());
+                    }
+                } else {
+                    for (SemanticError e : errors) {
+                        if (CLI.debug) {
+                            e.printStackTrace();
+                        } else {
+                            System.err.println(e);
+                        }
+                    }
+                    System.exit(1);
                 }
             }
         } catch(Exception e) {

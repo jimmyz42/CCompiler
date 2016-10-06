@@ -28,7 +28,7 @@ class IrForStmt extends IrStatement {
 
         IrExpression condition = IrExpression.create(checker, ctx.condition);
         if (condition.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchError("For statement condition must be a bool");
+            throw new TypeMismatchError("For condition must be a bool", ctx.condition);
         }
 
         IrAssignStmt update = new IrAssignStmt(

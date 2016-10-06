@@ -1,9 +1,12 @@
 package edu.mit.compilers.ir;
 
+<<<<<<< HEAD
 import java.io.PrintWriter;
 
 import exceptions.BadArraySizeError;
 
+=======
+>>>>>>> fe377eb91a926c0bbced958bae835c4cdb9698d0
 public class TypeArray implements Type {
     private final int length;
     private final Type elementType;
@@ -11,9 +14,6 @@ public class TypeArray implements Type {
     public TypeArray(int length, Type elementType) {
         this.length = length;
         this.elementType = elementType;
-        if (this.length <= 0) {
-            throw new BadArraySizeError("Array size must be positive");
-        }
     }
 
     public int getLength() {

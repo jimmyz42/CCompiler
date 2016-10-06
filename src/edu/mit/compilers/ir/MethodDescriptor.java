@@ -8,6 +8,7 @@ import java.util.List;
 import edu.mit.compilers.Util;
 import edu.mit.compilers.grammar.DecafParser.Method_argument_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
+import exceptions.TypeMismatchError;
 
 public class MethodDescriptor extends FunctionDescriptor {
     private final List<VariableDescriptor> arguments;
@@ -34,7 +35,16 @@ public class MethodDescriptor extends FunctionDescriptor {
         for (Method_argument_declContext argumentDecl : ctx.method_argument_decl()) {
             Type type = TypeScalar.create(checker, argumentDecl.type());
             String argName = argumentDecl.ID().getText();
-            arguments.add(argTable.addVariable(type, argName));
+            arguments.add(argTable.addVariable(type, argName, argumentDecl));
+        }
+        
+        if (name.equals("main")) {
+            if (returnType != TypeVoid.VOID) {
+                throw new TypeMismatchError("Main must return void", ctx);
+            }
+            if (!arguments.isEmpty()) {
+                throw new TypeMismatchError("Main must not take any arguments", ctx);
+            }
         }
 
         return new MethodDescriptor(name, returnType, arguments, body);

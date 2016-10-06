@@ -15,8 +15,13 @@ public class IrRelOpExpr extends IrBinOpExpr {
         IrExpression lhs = IrExpression.create(checker, ctx.expr(0));
         IrExpression rhs = IrExpression.create(checker, ctx.expr(1));
 
-        if (lhs.getExpressionType() != TypeScalar.INT || rhs.getExpressionType() != TypeScalar.INT) {
-            throw new TypeMismatchError("Expected int arguments");
+        if (lhs.getExpressionType() != TypeScalar.INT) {
+            throw new TypeMismatchError("Left argument of " + operator + " must be an int, got a " +
+                    lhs.getExpressionType(), ctx.expr(0));
+        }
+        if (rhs.getExpressionType() != TypeScalar.INT) {
+            throw new TypeMismatchError("Right argument of " + operator + " must be an int, got a " +
+                    rhs.getExpressionType(), ctx.expr(1));
         }
 
         return new IrRelOpExpr(operator, lhs, rhs);
