@@ -2,12 +2,12 @@ package edu.mit.compilers.ir;
 
 public class TypeVoid implements Type {
     public static TypeVoid VOID = new TypeVoid();
-    
+
     private TypeVoid() {
     }
-    
+
     @Override
-    public int getSize() {
+    public long getSize() {
         return 0;
     }
 

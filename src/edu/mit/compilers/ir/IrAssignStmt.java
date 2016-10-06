@@ -18,7 +18,10 @@ class IrAssignStmt extends IrStatement {
         IrLocation location = IrLocation.create(checker, ctx.location());
         IrExpression expression = IrExpression.create(checker, ctx.expr());
         String assignOp = ctx.assign_op().getText();
+        return create(location, assignOp, expression, ctx);
+    }
 
+    public static IrAssignStmt create(IrLocation location, String assignOp, IrExpression expression, DecafParser.StatementContext ctx) {
         if (location.getExpressionType() != expression.getExpressionType()) {
             throw new TypeMismatchError("Two sides of an assignment should have the same type", ctx);
         }

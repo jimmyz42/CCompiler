@@ -19,20 +19,26 @@ class IrForStmt extends IrStatement {
     public static IrForStmt create(DecafSemanticChecker checker, DecafParser.ForStmtContext ctx) {
         SymbolTable symbolTable = checker.currentSymbolTable();
 
-        IrAssignStmt initializer = new IrAssignStmt(
-                new IrIdLocation(symbolTable.getVariable(ctx.init_id.getText())),
+        IrIdLocation iterator = new IrIdLocation(symbolTable.getVariable(ctx.init_id.getText()));
+        if (iterator.getExpressionType() != TypeScalar.INT) {
+            throw new TypeMismatchError("For loop iterator must be an int", ctx);
+        }
+        IrAssignStmt initializer = IrAssignStmt.create(
+                iterator,
                 "=",
-                IrExpression.create(checker, ctx.init_expr));
+                IrExpression.create(checker, ctx.init_expr),
+                ctx);
 
         IrExpression condition = IrExpression.create(checker, ctx.condition);
         if (condition.getExpressionType() != TypeScalar.BOOL) {
-            throw new TypeMismatchError("For condition must be a bool", ctx.condition);
+            throw new TypeMismatchError("For loop condition must be a bool", ctx.condition);
         }
 
-        IrAssignStmt update = new IrAssignStmt(
+        IrAssignStmt update = IrAssignStmt.create(
                 new IrIdLocation(symbolTable.getVariable(ctx.update_id.getText())),
                 ctx.update_op.getText(),
-                IrExpression.create(checker, ctx.update_expr));
+                IrExpression.create(checker, ctx.update_expr),
+                ctx);
         IrBlock block = IrBlock.create(checker, ctx.block());
 
         return new IrForStmt(initializer, condition, update, block);

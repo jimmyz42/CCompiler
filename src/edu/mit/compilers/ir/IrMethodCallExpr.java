@@ -42,7 +42,7 @@ class IrMethodCallExpr extends IrExpression {
             if (arguments.size() != expectedArgs.size()) {
                 throw new MethodCallException("Expected " + expectedArgs.size() + " arguments, got " + arguments.size(), ctx);
             }
-            for (int i = 0; i < arguments.size(); i++) {
+            for (int i = 0; i < arguments.size() && i <= Integer.MAX_VALUE; i++) {
                 if (!(arguments.get(i) instanceof IrExpression)) {
                     throw new MethodCallException("Can't have string literals as method arguments", ctx.extern_arg(i));
                 }

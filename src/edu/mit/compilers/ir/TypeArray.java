@@ -1,15 +1,15 @@
 package edu.mit.compilers.ir;
 
 public class TypeArray implements Type {
-    private final int length;
+    private final long length;
     private final Type elementType;
-    
-    public TypeArray(int length, Type elementType) {
+
+    public TypeArray(long length, Type elementType) {
         this.length = length;
         this.elementType = elementType;
     }
 
-    public int getLength() {
+    public long getLength() {
         return length;
     }
 
@@ -18,7 +18,7 @@ public class TypeArray implements Type {
     }
 
     @Override
-    public int getSize() {
+    public long getSize() {
         return length * elementType.getSize();
     }
 

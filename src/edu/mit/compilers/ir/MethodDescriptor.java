@@ -37,7 +37,7 @@ public class MethodDescriptor extends FunctionDescriptor {
             String argName = argumentDecl.ID().getText();
             arguments.add(argTable.addVariable(type, argName, argumentDecl));
         }
-        
+
         if (name.equals("main")) {
             if (returnType != TypeVoid.VOID) {
                 throw new TypeMismatchError("Main must return void", ctx);
@@ -51,7 +51,9 @@ public class MethodDescriptor extends FunctionDescriptor {
     }
 
     public void loadBody(DecafSemanticChecker checker, Method_declContext ctx) {
+        checker.pushMethodDescriptor(this);
         body.loadBlock(checker, ctx.block());
+        checker.pushMethodDescriptor(this);
     }
 
     @Override
