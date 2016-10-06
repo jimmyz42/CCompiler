@@ -40,11 +40,16 @@ class IrForStmt extends IrStatement {
         return new IrForStmt(initializer, condition, update, block);
     }
      
-//    @Override
-//    public void prettyPrint(PrintWriter pw, String prefix) {
-//    	//TODO print context of for stmt 
-//        initializer.prettyPrint(pw, "    ");
-//        update.prettyPrint(pw, "    ");
-//        block.prettyPrint(pw, "    ");
-//    }
+    @Override
+    public void prettyPrint(PrintWriter pw, String prefix) {
+    	super.prettyPrint(pw, prefix);
+    	pw.println(prefix + "-initializer:");
+        initializer.prettyPrint(pw, prefix + "    ");
+        pw.println(prefix + "-condition:");
+        condition.prettyPrint(pw, prefix+"    ");
+        pw.println(prefix + "-update");
+        update.prettyPrint(pw, prefix +  "    ");
+        pw.println(prefix + "-forBlock:");
+        block.prettyPrint(pw, prefix + "    ");
+    }
 }

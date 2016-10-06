@@ -8,9 +8,11 @@ import exceptions.TypeMismatchError;
 class IrAssignStmt extends IrStatement {
     private IrLocation location;
     private IrExpression expression;
+    private String assignOp;
 
     public IrAssignStmt(IrLocation location, String assignOp, IrExpression expression) {
         this.location = location;
+        this.assignOp = assignOp;
         this.expression = expression;
     }
 
@@ -44,6 +46,7 @@ class IrAssignStmt extends IrStatement {
         super.prettyPrint(pw, prefix);
         pw.println(prefix + "-location:");
         location.prettyPrint(pw, prefix + "    ");
+        pw.println(prefix+ "-operator: " + assignOp);
         pw.println(prefix + "-expression:");
         expression.prettyPrint(pw, prefix + "    ");
     }

@@ -12,6 +12,6 @@ abstract class IrLiteral extends IrExpression {
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         super.prettyPrint(pw, prefix);
-    	pw.print(prefix + "-value: " + this);
+    	pw.println(prefix + "-value: " + this);
     }
 }
