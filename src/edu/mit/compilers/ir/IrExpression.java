@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 
 abstract class IrExpression extends IrExternArg {
@@ -8,4 +10,5 @@ abstract class IrExpression extends IrExternArg {
     }
     
     public abstract Type getExpressionType();
+    
 }

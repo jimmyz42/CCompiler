@@ -22,7 +22,11 @@ public abstract class VariableDescriptor implements PrettyPrintable {
     
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
-        pw.println(prefix + type + " " + name + ";");
+        pw.println(prefix + "VariableDescriptor: ");
+        pw.print(prefix + "-type: ");
+        type.prettyPrint(pw, "");
+        pw.println("\n" + prefix + "-name: " + name);
+        
     }
     
     @Override

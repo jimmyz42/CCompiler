@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 
 public class TypeScalar implements Type {
@@ -28,5 +30,10 @@ public class TypeScalar implements Type {
         if (ctx.TK_int() != null) return INT;
         if (ctx.TK_bool() != null) return BOOL;
         return null; // throw an exception?
+    }
+    
+    @Override
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        pw.print(prefix + toString());
     }
 }

@@ -32,7 +32,7 @@ class IrIdLocation extends IrLocation {
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
-        pw.print(prefix + variable.getName() + " ");
-        super.prettyPrint(pw, "");
+    	pw.println(prefix + getClass().getSimpleName());
+        pw.println(prefix + "-name: " + variable.getName());
     }
 }

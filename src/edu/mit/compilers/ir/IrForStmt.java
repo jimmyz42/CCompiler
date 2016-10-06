@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
 
@@ -43,4 +45,12 @@ class IrForStmt extends IrStatement {
 
         return new IrForStmt(initializer, condition, update, block);
     }
+     
+//    @Override
+//    public void prettyPrint(PrintWriter pw, String prefix) {
+//    	//TODO print context of for stmt 
+//        initializer.prettyPrint(pw, "    ");
+//        update.prettyPrint(pw, "    ");
+//        block.prettyPrint(pw, "    ");
+//    }
 }

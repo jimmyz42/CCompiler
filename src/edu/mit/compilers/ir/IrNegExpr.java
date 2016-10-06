@@ -2,6 +2,9 @@ package edu.mit.compilers.ir;
 
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
+import java.io.PrintWriter;
+
+import edu.mit.compilers.grammar.DecafParser;
 
 class IrNegExpr extends IrExpression {
     private IrExpression expression;
@@ -22,5 +25,12 @@ class IrNegExpr extends IrExpression {
     @Override
     public Type getExpressionType() {
         return TypeScalar.INT;
+    }
+    
+    @Override
+    public void prettyPrint(PrintWriter pw, String prefix){
+    	super.prettyPrint(pw, prefix);
+    	pw.println(prefix + "-expression:");
+    	expression.prettyPrint(pw, prefix + "    ");
     }
 }

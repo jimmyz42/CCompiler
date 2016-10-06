@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
 
@@ -29,4 +31,5 @@ public class IrRelOpExpr extends IrBinOpExpr {
     public Type getExpressionType() {
         return TypeScalar.BOOL;
     }
+    
 }

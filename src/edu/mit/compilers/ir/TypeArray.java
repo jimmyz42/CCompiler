@@ -1,5 +1,9 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
+import exceptions.BadArraySizeError;
+
 public class TypeArray implements Type {
     private final long length;
     private final Type elementType;
@@ -25,5 +29,10 @@ public class TypeArray implements Type {
     @Override
     public String toString() {
         return elementType.toString() + "[" + length + "]";
+    }
+
+    @Override
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        pw.print(prefix + toString());
     }
 }
