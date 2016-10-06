@@ -1,5 +1,7 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 import exceptions.TypeMismatchError;
 
@@ -29,5 +31,18 @@ class IrIfStmt extends IrStatement {
         }
 
         return new IrIfStmt(condition, block, elseBlock);
+    }
+    
+    @Override
+    public void prettyPrint(PrintWriter pw, String prefix) {
+    	pw.println(prefix + getClass().getSimpleName());
+    	pw.println(prefix + "-condition:");
+    	condition.prettyPrint(pw, prefix+"    ");
+    	pw.println("\n" + prefix + "-IfBlock:");
+        block.prettyPrint(pw, prefix + "    ");
+    	pw.println(prefix + "-ElseBlock:");
+        elseBlock.prettyPrint(pw, prefix + "    ");
+        
+    	pw.println(prefix + "end " + getClass().getSimpleName());
     }
 }

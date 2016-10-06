@@ -46,7 +46,17 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
-        pw.print(prefix + getReturnType() + " " + getName() + "(" + Util.joinStrings(arguments) + ") ");
-        body.prettyPrint(pw, prefix);
+        pw.println(prefix + getClass().getSimpleName());
+        pw.print(prefix + "-returnType: ");
+        getReturnType().prettyPrint(pw,"");
+        pw.println("\n" + prefix + "-name: " + getName());
+        pw.print(prefix + "-parameters:\n");
+        for(VariableDescriptor var : arguments ){
+        	var.prettyPrint(pw, prefix + "    ");
+        }
+        pw.println();
+        body.prettyPrint(pw, prefix + "    ");
+        pw.println(prefix + "end " + getName() + " " + getClass().getSimpleName());
+        pw.println();
     }
 }

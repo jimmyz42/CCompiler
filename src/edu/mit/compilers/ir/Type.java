@@ -1,5 +1,8 @@
 package edu.mit.compilers.ir;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import edu.mit.compilers.PrettyPrintable;
 
-public interface Type {
+public interface Type extends PrettyPrintable{
     int getSize();
 }

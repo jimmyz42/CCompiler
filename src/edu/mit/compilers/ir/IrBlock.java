@@ -62,14 +62,15 @@ class IrBlock extends Ir {
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
-        pw.println(prefix + "{");
+        pw.println(prefix + getClass().getSimpleName());
         for (VariableDescriptor var : symbolTable.getVariables().values()) {
             var.prettyPrint(pw, prefix + "    ");
+            pw.println();
         }
         for (IrStatement st : statements) {
-            pw.println();
             st.prettyPrint(pw, prefix + "    ");
+            pw.println();
         }
-        pw.println(prefix + "}");
+        pw.println(prefix + "end " + getClass().getSimpleName());
     }
 }

@@ -34,9 +34,9 @@ class IrAssignStmt extends IrStatement {
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         super.prettyPrint(pw, prefix);
-        location.prettyPrint(pw, prefix + "  ");
-        pw.println(prefix + "  =");
-        expression.prettyPrint(pw, prefix + "  ");
-        pw.println(prefix + ";");
+        pw.println(prefix + "-location:");
+        location.prettyPrint(pw, prefix + "    ");
+        pw.println(prefix + "-expression:");
+        expression.prettyPrint(pw, prefix + "    ");
     }
 }
