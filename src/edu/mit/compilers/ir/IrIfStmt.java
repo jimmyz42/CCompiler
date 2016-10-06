@@ -21,13 +21,13 @@ class IrIfStmt extends IrStatement {
         if (condition.getExpressionType() != TypeScalar.BOOL) {
             throw new TypeMismatchError("If condition must be a bool", ctx.expr());
         }
-        
-        IrBlock block = IrBlock.create(checker, ctx.block(0));
+
+        IrBlock block = IrBlock.create(checker, ctx.block(0), true);
         IrBlock elseBlock;
         if (ctx.block().size() > 1) {
-            elseBlock = IrBlock.create(checker, ctx.block(1));
+            elseBlock = IrBlock.create(checker, ctx.block(1), true);
         } else {
-            elseBlock = IrBlock.createEmpty(checker);
+            elseBlock = IrBlock.createEmpty(checker, true);
         }
 
         return new IrIfStmt(condition, block, elseBlock);

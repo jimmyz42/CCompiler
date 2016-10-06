@@ -30,7 +30,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
 
     private void setValue(ParseTree node, Object value) { values.put(node, value); }
     private Object getValue(ParseTree node) { return values.get(node); }
-    
+
     private Stack<SymbolTable> symbolTables = new Stack<>();
     public SymbolTable currentSymbolTable() {
         return symbolTables.peek();
@@ -41,7 +41,18 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
     public void pushSymbolTable(SymbolTable symbolTable) {
         symbolTables.push(symbolTable);
     }
-    
+
+    private Stack<MethodDescriptor> methodDescriptors = new Stack<>();
+    public MethodDescriptor currentMethodDescriptor() {
+        return methodDescriptors.peek();
+    }
+    public MethodDescriptor popMethodDescriptor() {
+        return methodDescriptors.pop();
+    }
+    public void pushMethodDescriptor(MethodDescriptor methodDescriptor) {
+        methodDescriptors.push(methodDescriptor);
+    }
+
     private List<SemanticError> errors = new ArrayList<>();
     public void handleSemanticError(SemanticError e) {
         errors.add(e);
@@ -49,7 +60,7 @@ public class DecafSemanticChecker extends DecafBaseVisitor<Object> {
     public List<SemanticError> getSemanticErrors() {
         return Collections.unmodifiableList(errors);
     }
-    
+
     /**
 	 * {@inheritDoc}
 	 *

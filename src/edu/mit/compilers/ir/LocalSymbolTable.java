@@ -16,6 +16,13 @@ public class LocalSymbolTable extends SymbolTable {
         this.parentTable = parentTable;
     }
 
+    protected void checkNamingConflicts(String name, ParserRuleContext ctx) {
+        if (variables.containsKey(name)) {
+            throw new DuplicateIdentifierError("Variable " + name + " already exists in this scope", ctx);
+        }
+        parentTable.checkNamingConflicts(name, ctx);
+    }
+
     @Override
     public VariableDescriptor addVariable(Type type, String name, ParserRuleContext ctx) {
         if (variables.containsKey(name)) {

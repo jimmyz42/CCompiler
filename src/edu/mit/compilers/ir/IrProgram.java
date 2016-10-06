@@ -51,7 +51,7 @@ class IrProgram extends Ir {
 
         FunctionDescriptor fnMain = symbolTable.getFunction("main");
         if (fnMain == null) {
-            throw new UndeclaredIdentifierError("No main method found", ctx);
+            checker.handleSemanticError(new UndeclaredIdentifierError("No main method found", ctx));
         }
 
         return new IrProgram(symbolTable);

@@ -4,5 +4,5 @@ import java.io.StringWriter;
 import edu.mit.compilers.PrettyPrintable;
 
 public interface Type extends PrettyPrintable{
-    int getSize();
+    long getSize();
 }

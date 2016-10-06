@@ -6,7 +6,7 @@ import exceptions.TypeMismatchError;
 class IrWhileStmt extends IrStatement {
     private IrExpression condition;
     private IrBlock block;
-    
+
     public IrWhileStmt(IrExpression condition, IrBlock block) {
         this.condition = condition;
         this.block = block;
@@ -17,8 +17,8 @@ class IrWhileStmt extends IrStatement {
         if (condition.getExpressionType() != TypeScalar.BOOL) {
             throw new TypeMismatchError("While condition must be a bool", ctx.expr());
         }
-        
-        IrBlock block = IrBlock.create(checker, ctx.block());
+
+        IrBlock block = IrBlock.create(checker, ctx.block(), true);
 
         return new IrWhileStmt(condition, block);
     }
