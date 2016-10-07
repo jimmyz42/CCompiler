@@ -25,7 +25,7 @@ public abstract class FunctionDescriptor implements PrettyPrintable {
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
     	pw.println("THE PRETTY PRINT OF THE FUNCTION");
-        pw.println(prefix + "// " + getClass().getSimpleName());
+        pw.println(prefix + getClass().getSimpleName());
         pw.println(prefix + "-name: " + name);
         pw.println(prefix + "-returnType: ");
         returnType.prettyPrint(pw,"");

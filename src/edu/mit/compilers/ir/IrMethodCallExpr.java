@@ -1,5 +1,6 @@
 package edu.mit.compilers.ir;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,5 +57,18 @@ class IrMethodCallExpr extends IrExpression {
         }
 
         return new IrMethodCallExpr(function, arguments);
+    }
+    
+    @Override
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        super.prettyPrint(pw, prefix);
+        pw.print(prefix + "-function descriptor: ");
+        function.getReturnType().prettyPrint(pw, "");
+        pw.print(" ");
+        pw.println(function.getName());
+    	pw.println(prefix + "-passed in arguments:");
+    	for (IrExternArg arg : arguments){
+    		arg.prettyPrint(pw, prefix+"    ");
+    	}
     }
 }
