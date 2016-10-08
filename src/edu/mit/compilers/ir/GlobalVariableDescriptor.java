@@ -1,7 +1,7 @@
 package edu.mit.compilers.ir;
 
 public class GlobalVariableDescriptor extends VariableDescriptor {
-    public GlobalVariableDescriptor(Type type, String name) {
-        super(type, name);
+    public GlobalVariableDescriptor(String name, Type type) {
+        super(name, type);
     }
 }

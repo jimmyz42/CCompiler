@@ -21,12 +21,12 @@ class IrMethodCallExpr extends IrExpression {
 
     @Override
     public Type getExpressionType() {
-        return function.getReturnType();
+        return function.getType();
     }
 
     public static IrMethodCallExpr create(DecafSemanticChecker checker, Method_callContext ctx) {
         String functionName = ctx.ID().getText();
-        FunctionDescriptor function = checker.currentSymbolTable().getFunction(functionName);
+        FunctionDescriptor function = checker.currentSymbolTable().getFunction(functionName, ctx);
 
         List<IrExternArg> arguments = new ArrayList<>();
         for (Extern_argContext argument : ctx.extern_arg()) {
@@ -58,12 +58,12 @@ class IrMethodCallExpr extends IrExpression {
 
         return new IrMethodCallExpr(function, arguments);
     }
-    
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         super.prettyPrint(pw, prefix);
         pw.print(prefix + "-function descriptor: ");
-        function.getReturnType().prettyPrint(pw, "");
+        function.getType().prettyPrint(pw, "");
         pw.print(" ");
         pw.println(function.getName());
     	pw.println(prefix + "-passed in arguments:");

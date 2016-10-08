@@ -15,40 +15,40 @@ import exceptions.ImproperEscapeError;
 class IrBlock extends Ir {
     private final LocalSymbolTable symbolTable;
     private List<IrStatement> statements;
-    private boolean allowEscapeStmts;
+    private boolean isLocalBlock;
 
-    public IrBlock(LocalSymbolTable symbolTable, List<IrStatement> statements, boolean allowEscapeStmts) {
+    public IrBlock(LocalSymbolTable symbolTable, List<IrStatement> statements, boolean isLocalBlock) {
         this.symbolTable = symbolTable;
         this.statements = statements;
-        this.allowEscapeStmts = allowEscapeStmts;
+        this.isLocalBlock = isLocalBlock;
     }
 
     public LocalSymbolTable getSymbolTable() {
         return symbolTable;
     }
 
-    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, boolean allowEscapeStmts) {
+    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, boolean isLocalBlock) {
         SymbolTable parentTable = checker.currentSymbolTable();
-        return create(checker, ctx, parentTable, allowEscapeStmts);
+        return create(checker, ctx, parentTable, isLocalBlock);
     }
 
-    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, SymbolTable parentTable, boolean allowEscapeStmts) {
-        IrBlock block = createEmpty(parentTable, allowEscapeStmts);
+    public static IrBlock create(DecafSemanticChecker checker, BlockContext ctx, SymbolTable parentTable, boolean isLocalBlock) {
+        IrBlock block = createEmpty(parentTable, isLocalBlock);
         block.loadBlock(checker, ctx);
         return block;
     }
 
-    public static IrBlock createEmpty(DecafSemanticChecker checker, boolean allowEscapeStmts) {
+    public static IrBlock createEmpty(DecafSemanticChecker checker, boolean isLocalBlock) {
         List<IrStatement> statements = new ArrayList<>();
         SymbolTable parentTable = checker.currentSymbolTable();
         LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
-        return new IrBlock(symbolTable, statements, allowEscapeStmts);
+        return new IrBlock(symbolTable, statements, isLocalBlock);
     }
 
-    public static IrBlock createEmpty(SymbolTable parentTable, boolean allowEscapeStmts) {
+    public static IrBlock createEmpty(SymbolTable parentTable, boolean isLocalBlock) {
         List<IrStatement> statements = new ArrayList<>();
         LocalSymbolTable symbolTable = new LocalSymbolTable(parentTable);
-        return new IrBlock(symbolTable, statements, allowEscapeStmts);
+        return new IrBlock(symbolTable, statements, isLocalBlock);
     }
 
     public void loadBlock(DecafSemanticChecker checker, BlockContext ctx) {
@@ -63,7 +63,7 @@ class IrBlock extends Ir {
         }
 
         for (StatementContext statement : ctx.statement()) {
-            if(!this.allowEscapeStmts) {
+            if(!this.isLocalBlock) {
                 if(statement instanceof BreakStmtContext || statement instanceof ContinueStmtContext) {
                     throw new ImproperEscapeError("Break and Continue can only be used inside loops", statement);
                 }

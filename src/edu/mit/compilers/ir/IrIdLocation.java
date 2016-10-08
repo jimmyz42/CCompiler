@@ -15,7 +15,7 @@ class IrIdLocation extends IrLocation {
 
     public static IrIdLocation create(DecafSemanticChecker checker, DecafParser.IdLocationContext ctx) {
         String varName = ctx.ID().getText();
-        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName);
+        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
         if (variable == null) {
             throw new UndeclaredIdentifierError("Variable ''" + varName + "' is not declared", ctx);
         }

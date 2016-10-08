@@ -12,7 +12,7 @@ class IrSizeofIdExpr extends IrExpression {
 
     public static IrSizeofIdExpr create(DecafSemanticChecker checker, DecafParser.SizeofIdExprContext ctx) {
         String varName = ctx.ID().getText();
-        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName);
+        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
         if (variable == null) {
             throw new UndeclaredIdentifierError("Attempted to apply sizeof to an undeclared variable", ctx);
         }

@@ -21,7 +21,7 @@ class IrForStmt extends IrStatement {
     public static IrForStmt create(DecafSemanticChecker checker, DecafParser.ForStmtContext ctx) {
         SymbolTable symbolTable = checker.currentSymbolTable();
 
-        IrIdLocation iterator = new IrIdLocation(symbolTable.getVariable(ctx.init_id.getText()));
+        IrIdLocation iterator = new IrIdLocation(symbolTable.getVariable(ctx.init_id.getText(), ctx));
         if (iterator.getExpressionType() != TypeScalar.INT) {
             throw new TypeMismatchError("For loop iterator must be an int", ctx);
         }
@@ -37,7 +37,7 @@ class IrForStmt extends IrStatement {
         }
 
         IrAssignStmt update = IrAssignStmt.create(
-                new IrIdLocation(symbolTable.getVariable(ctx.update_id.getText())),
+                new IrIdLocation(symbolTable.getVariable(ctx.update_id.getText(), ctx)),
                 ctx.update_op.getText(),
                 IrExpression.create(checker, ctx.update_expr),
                 ctx);
@@ -45,7 +45,7 @@ class IrForStmt extends IrStatement {
 
         return new IrForStmt(initializer, condition, update, block);
     }
-     
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
     	super.prettyPrint(pw, prefix);

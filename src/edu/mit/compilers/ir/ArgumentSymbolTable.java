@@ -1,4 +1,4 @@
- package edu.mit.compilers.ir;
+package edu.mit.compilers.ir;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,22 +7,18 @@ import java.util.Map;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import exceptions.DuplicateIdentifierError;
-import exceptions.TypeMismatchError;
 
-public class LocalSymbolTable extends SymbolTable {
+public class ArgumentSymbolTable extends SymbolTable {
     private SymbolTable parentTable;
     private Map<String, VariableDescriptor> variables = new HashMap<>();
 
-    public LocalSymbolTable(SymbolTable parentTable) {
+    public ArgumentSymbolTable(SymbolTable parentTable) {
         this.parentTable = parentTable;
     }
 
     protected void checkNamingConflicts(String name, ParserRuleContext ctx) {
         if (variables.containsKey(name)) {
             throw new DuplicateIdentifierError("Variable " + name + " already exists in this scope", ctx);
-        }
-        if(parentTable instanceof ArgumentSymbolTable) {
-            parentTable.checkNamingConflicts(name, ctx);
         }
     }
 
@@ -52,10 +48,6 @@ public class LocalSymbolTable extends SymbolTable {
 
     @Override
     public FunctionDescriptor getFunction(String name, ParserRuleContext ctx) {
-        VariableDescriptor descriptor = variables.get(name);
-        if (descriptor != null) {
-            throw new TypeMismatchError("Expected a function but " + name + " is not one", ctx);
-        }
         return parentTable.getFunction(name, ctx);
     }
 

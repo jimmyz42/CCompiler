@@ -17,7 +17,7 @@ class IrArrayLocation extends IrLocation {
 
     public static IrArrayLocation create(DecafSemanticChecker checker, DecafParser.ArrayLocationContext ctx) {
         String varName = ctx.ID().getText();
-        VariableDescriptor array = checker.currentSymbolTable().getVariable(varName);
+        VariableDescriptor array = checker.currentSymbolTable().getVariable(varName, ctx);
         IrExpression index = IrExpression.create(checker, ctx.expr());
 
         if (array == null) {

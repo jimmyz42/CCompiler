@@ -4,36 +4,25 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.PrettyPrintable;
 
-public abstract class VariableDescriptor implements PrettyPrintable {
-    private final Type type;
-    private final String name;
-    
-    public VariableDescriptor(Type type, String name) {
-        this.type = type;
-        this.name = name;
+public abstract class VariableDescriptor extends Descriptor {
+    public VariableDescriptor(String name, Type type) {
+        super(name, type);
     }
-    
-    public Type getType() {
-        return type;
-    }
-    public String getName() {
-        return name;
-    }
-    
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "VariableDescriptor: ");
         pw.print(prefix + "-type: ");
-        type.prettyPrint(pw, "");
-        pw.println("\n" + prefix + "-name: " + name);
-        
+        getType().prettyPrint(pw, "");
+        pw.println("\n" + prefix + "-name: " + getName());
+
     }
-    
+
     @Override
     public String toString() {
-        return type + " " + name;
+        return getType() + " " + getName();
     }
-    
+
     // TODO: add stuff about where the variable is stored in memory
     //       that part will actually be different in Local and Global versions.
 }

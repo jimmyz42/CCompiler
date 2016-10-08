@@ -49,9 +49,16 @@ class IrProgram extends Ir {
 
         checker.popSybmolTable();
 
-        FunctionDescriptor fnMain = symbolTable.getFunction("main");
+        FunctionDescriptor fnMain = null;
+        try {
+            fnMain = symbolTable.getFunction("main", ctx);
+        } catch (SemanticError e) {
+            checker.handleSemanticError(e);
+        }
         if (fnMain == null) {
             checker.handleSemanticError(new UndeclaredIdentifierError("No main method found", ctx));
+        } else if (!(fnMain.getType() instanceof TypeVoid)) {
+            checker.handleSemanticError(new UndeclaredIdentifierError("Main method must have type void", ctx));
         }
 
         return new IrProgram(symbolTable);
@@ -60,11 +67,8 @@ class IrProgram extends Ir {
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
-        for (VariableDescriptor var : symbolTable.getVariables().values()) {
-            var.prettyPrint(pw, prefix);
-        }
-        for (FunctionDescriptor fn : symbolTable.getFunctions().values()) {
-            fn.prettyPrint(pw, prefix);
+        for (Descriptor desc : symbolTable.getDescriptors().values()) {
+            desc.prettyPrint(pw, prefix);
         }
     }
 }

@@ -27,7 +27,7 @@ public class MethodDescriptor extends FunctionDescriptor {
     public static MethodDescriptor create(DecafSemanticChecker checker, Method_declContext ctx) {
         Type returnType = ctx.type() == null ? TypeVoid.VOID : TypeScalar.create(checker, ctx.type());
         String name = ctx.ID().getText();
-        LocalSymbolTable argTable = new LocalSymbolTable(checker.currentSymbolTable());
+        ArgumentSymbolTable argTable = new ArgumentSymbolTable(checker.currentSymbolTable());
 
         IrBlock body = IrBlock.createEmpty(argTable, false);
 
@@ -60,7 +60,7 @@ public class MethodDescriptor extends FunctionDescriptor {
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getClass().getSimpleName());
         pw.print(prefix + "-returnType: ");
-        getReturnType().prettyPrint(pw,"");
+        getType().prettyPrint(pw,"");
         pw.println("\n" + prefix + "-name: " + getName());
         pw.print(prefix + "-parameters:\n");
         for(VariableDescriptor var : arguments ){

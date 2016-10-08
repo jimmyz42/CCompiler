@@ -13,8 +13,15 @@ class IrReturnStmt extends IrStatement {
     }
 
     public static IrReturnStmt create(DecafSemanticChecker checker, DecafParser.ReturnStmtContext ctx) {
+        Type methodType = checker.currentMethodDescriptor().getType();
+        if(ctx.expr() == null) {
+            if(!(methodType instanceof TypeVoid)) {
+                throw new TypeMismatchError("Empty return value are only allowed in void methods", ctx);
+            }
+            return new IrReturnStmt(null);
+        }
+
         IrExpression expression = IrExpression.create(checker, ctx.expr());
-        Type methodType = checker.currentMethodDescriptor().getReturnType();
         if(expression.getExpressionType() != methodType) {
             throw new TypeMismatchError("Return type " + expression.getExpressionType() + " does not match the expected type " + methodType, ctx);
         }
@@ -25,6 +32,8 @@ class IrReturnStmt extends IrStatement {
     public void prettyPrint(PrintWriter pw, String prefix) {
         super.prettyPrint(pw, prefix);
         pw.println(prefix + "-return:");
-        expression.prettyPrint(pw, prefix + "    ");
+        if(expression != null) {
+            expression.prettyPrint(pw, prefix + "    ");
+        }
     }
 }

@@ -11,50 +11,57 @@ import java.util.Set;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import exceptions.DuplicateIdentifierError;
+import exceptions.TypeMismatchError;
 
 public class GlobalSymbolTable extends SymbolTable {
-    private Map<String, VariableDescriptor> variables = new HashMap<>();
-    private Map<String, FunctionDescriptor> functions = new HashMap<>();
+    private Map<String, Descriptor> descriptors = new HashMap<>();
 
     protected void checkNamingConflicts(String name, ParserRuleContext ctx) {
-        if (variables.containsKey(name)) {
-            throw new DuplicateIdentifierError("Variable " + name + " already exists in this scope", ctx);
-        }
-        if (functions.containsKey(name)) {
-            throw new DuplicateIdentifierError("Function " + name + " already exists", ctx);
+        if (descriptors.containsKey(name)) {
+            Descriptor descriptor =  descriptors.get(name);
+            if(descriptor instanceof VariableDescriptor) {
+                throw new DuplicateIdentifierError("Variable " + name + " already exists in this scope", ctx);
+            }
+            if(descriptor instanceof FunctionDescriptor) {
+                throw new DuplicateIdentifierError("Function " + name + " already exists", ctx);
+            }
         }
     }
 
     @Override
     public VariableDescriptor addVariable(Type type, String name, ParserRuleContext ctx) {
         checkNamingConflicts(name, ctx);
-        VariableDescriptor descriptor = new GlobalVariableDescriptor(type, name);
-        variables.put(name, descriptor);
+        VariableDescriptor descriptor = new GlobalVariableDescriptor(name, type);
+        descriptors.put(name, descriptor);
         return descriptor;
     }
 
     @Override
-    public VariableDescriptor getVariable(String name) {
-        return variables.get(name);
+    public VariableDescriptor getVariable(String name, ParserRuleContext ctx) {
+        try {
+            return (VariableDescriptor) descriptors.get(name);
+        } catch (ClassCastException e) {
+            throw new TypeMismatchError("Expected a variable but " + name + " is not one", ctx);
+        }
     }
 
     @Override
     public FunctionDescriptor addFunction(FunctionDescriptor function, ParserRuleContext ctx) {
         checkNamingConflicts(function.getName(), ctx);
-        functions.put(function.getName(), function);
+        descriptors.put(function.getName(), function);
         return function;
     }
 
     @Override
-    public FunctionDescriptor getFunction(String name) {
-        return functions.get(name);
+    public FunctionDescriptor getFunction(String name, ParserRuleContext ctx) {
+        try {
+            return (FunctionDescriptor) descriptors.get(name);
+        } catch (ClassCastException e) {
+            throw new TypeMismatchError("Expected a function but " + name + " is not one", ctx);
+        }
     }
 
-    public Map<String, VariableDescriptor> getVariables() {
-        return Collections.unmodifiableMap(variables);
-    }
-
-    public Map<String, FunctionDescriptor> getFunctions() {
-        return Collections.unmodifiableMap(functions);
+    public Map<String, Descriptor> getDescriptors() {
+        return Collections.unmodifiableMap(descriptors);
     }
 }
