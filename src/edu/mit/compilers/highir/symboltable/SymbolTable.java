@@ -11,9 +11,13 @@ import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.nodes.ArrayType;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.nodes.IntLiteral;
+
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.components.BasicBlock;
+
 import exceptions.BadArraySizeError;
 
-public abstract class SymbolTable {
+public abstract class SymbolTable implements CFGAble {
     protected abstract void checkNamingConflicts(String name, ParserRuleContext ctx);
     // ctx is used for error reporting
     public abstract VariableDescriptor addVariable(Type type, String name, ParserRuleContext ctx);
@@ -34,5 +38,10 @@ public abstract class SymbolTable {
                 addVariable(new ArrayType(size, type), name.ID().getText(), name);
             }
         }
+    }
+
+    @Override
+    public BasicBlock generateCFG() {
+        return BasicBlock.create(this);
     }
 }

@@ -9,6 +9,8 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.grammar.DecafParser.ProgramContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.nodes.Ir;
+import edu.mit.compilers.highir.nodes.Program;
+import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
 import exceptions.SemanticError;
@@ -98,6 +100,17 @@ class Main {
                     }
                     System.exit(1);
                 }
+            } else if (CLI.target == Action.CFG) {
+                DecafScanner scanner = new DecafScanner(inputStream);
+                CommonTokenStream tokens = new CommonTokenStream(scanner);
+                DecafParser parser = new DecafParser(tokens);
+                ProgramContext context = parser.program();
+                DecafSemanticChecker loader = new DecafSemanticChecker();
+                Program ir = (Program)loader.visit(context);
+                BasicBlock block = ir.generateCFG();
+                StringWriter sw = new StringWriter();
+                block.concisePrint(new PrintWriter(sw), "");
+                System.out.println(sw.toString());
             }
         } catch(Exception e) {
             // print the error:

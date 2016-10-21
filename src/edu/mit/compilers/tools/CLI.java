@@ -51,7 +51,7 @@ public class CLI {
    *        but you may wish to use it for your own purposes.
    * ASSEMBLY: produce assembly from the input.
    */
-    public enum Action {DEFAULT, ABOUT, SCAN, PARSE, INTER, ASSEMBLY};
+    public enum Action {DEFAULT, ABOUT, SCAN, PARSE, INTER, CFG, ASSEMBLY};
 
   /**
    * Array indicating which optimizations should be performed.  If
@@ -172,7 +172,7 @@ public class CLI {
             for (int k = 0; k < optnames.length; k++) {
               if (optsList[j].equals(optnames[k])) {
                 opts[j] = true;
-              } else if (optsList[j].charAt(0) == '-' || 
+              } else if (optsList[j].charAt(0) == '-' ||
                          optsList[j].substring(1).equals(optnames[k])) {
                 opts[j] = false;
               }
@@ -189,18 +189,19 @@ public class CLI {
       if (targetStr.equals("scan")) target = Action.SCAN;
       else if (targetStr.equals("parse")) target = Action.PARSE;
       else if (targetStr.equals("inter")) target = Action.INTER;
+      else if (targetStr.equals("cfg")) target = Action.CFG;
       else if (targetStr.equals("assembly")) target = Action.ASSEMBLY;
       else if (targetStr.equals("about")) {
 	  printUsage("Test run successful. Command line parameters: ");
 	  System.exit(0);
       }
- 
+
       else {
         printUsage("Invalid target: " + targetStr);
         throw new IllegalArgumentException(targetStr);
       }
     }
-  
+
     // grab infile and lose extra args
     int i = 0;
     while (infile == null && i < extras.size()) {

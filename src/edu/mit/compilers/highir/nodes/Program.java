@@ -2,17 +2,26 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 
+import java.util.ArrayList;
+
 import edu.mit.compilers.grammar.DecafParser.Extern_declContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
 import edu.mit.compilers.grammar.DecafParser.ProgramContext;
+
+import edu.mit.compilers.PrettyPrintable;
+
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.*;
 import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
+
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.components.BasicBlock;
+
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
 
-public class Program extends Ir {
+public class Program extends Ir implements PrettyPrintable, CFGAble {
     private final GlobalSymbolTable symbolTable;
 
     public Program(GlobalSymbolTable symbolTable) {
@@ -67,11 +76,23 @@ public class Program extends Ir {
         return new Program(symbolTable);
     }
 
-
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         for (Descriptor desc : symbolTable.getDescriptors().values()) {
             desc.prettyPrint(pw, prefix);
         }
+    }
+
+    @Override
+    public void concisePrint(PrintWriter pw, String prefix) {
+        symbolTable.concisePrint(pw, prefix);
+        //TODO print the other types of blocks
+    }
+
+    public BasicBlock generateCFG() {
+        ArrayList<CFGAble> components = new ArrayList<>();
+        //TODO: get fields and put them into the components
+        return symbolTable.generateCFG();
+        //TODO merge or append blocks for generated methods to the program block
     }
 }

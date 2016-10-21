@@ -3,10 +3,14 @@ package edu.mit.compilers.highir.symboltable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.PrintWriter;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import edu.mit.compilers.highir.descriptor.*;
 import edu.mit.compilers.highir.nodes.Type;
+
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.components.BasicBlock;
 
 import exceptions.DuplicateIdentifierError;
 
@@ -55,5 +59,9 @@ public class ArgumentSymbolTable extends SymbolTable {
 
     public Map<String, VariableDescriptor> getVariables() {
         return Collections.unmodifiableMap(variables);
+    }
+
+    @Override
+    public void concisePrint(PrintWriter pw, String prefix) {
     }
 }

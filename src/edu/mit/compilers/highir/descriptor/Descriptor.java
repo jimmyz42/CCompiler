@@ -3,6 +3,7 @@ package edu.mit.compilers.highir.descriptor;
 import java.io.PrintWriter;
 
 import edu.mit.compilers.PrettyPrintable;
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.highir.nodes.Type;
 
 

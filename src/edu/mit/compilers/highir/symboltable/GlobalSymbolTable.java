@@ -7,10 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.PrintWriter;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import edu.mit.compilers.highir.descriptor.*;
+import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.highir.nodes.Type;
+
+import edu.mit.compilers.cfg.CFGAble;
 
 import exceptions.DuplicateIdentifierError;
 import exceptions.TypeMismatchError;
@@ -65,5 +69,12 @@ public class GlobalSymbolTable extends SymbolTable {
 
     public Map<String, Descriptor> getDescriptors() {
         return Collections.unmodifiableMap(descriptors);
+    }
+
+    @Override
+    public void concisePrint(PrintWriter pw, String prefix) {
+        for(Descriptor desc : descriptors.values()) {
+            pw.println(prefix + desc.getType() + " " + desc.getName());
+        }
     }
 }
