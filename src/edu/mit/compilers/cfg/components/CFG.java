@@ -17,6 +17,14 @@ public class CFG implements CFGAble {
         this(block, block);
     }
 
+    public BasicBlock getEntryBlock() {
+        return entryBlock;
+    }
+
+    public BasicBlock getExitBlock() {
+        return exitBlock;
+    }
+
     @Override
     public CFG generateCFG() {
         return this;
