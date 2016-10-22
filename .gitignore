@@ -8,3 +8,5 @@ classes
 /bin/
 .classpath
 hs_*.log
+.DS_Store*
+.metadata/*

@@ -5,7 +5,7 @@ import java.io.StringWriter;
 
 import edu.mit.compilers.PrettyPrintable;
 import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 
 abstract public class Ir implements PrettyPrintable, CFGAble {
     @Override
@@ -26,7 +26,7 @@ abstract public class Ir implements PrettyPrintable, CFGAble {
         pw.println("");
     }
 
-    public BasicBlock generateCFG() {
-        return new BasicBlock(null);
+    public CFG generateCFG() {
+        return new CFG(null);
     }
 }

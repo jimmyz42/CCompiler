@@ -10,7 +10,6 @@ import edu.mit.compilers.highir.descriptor.*;
 import edu.mit.compilers.highir.nodes.Type;
 
 import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.components.BasicBlock;
 
 import exceptions.DuplicateIdentifierError;
 import exceptions.TypeMismatchError;

@@ -16,7 +16,7 @@ import edu.mit.compilers.highir.descriptor.*;
 import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
 
 import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
@@ -89,7 +89,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         //TODO print the other types of blocks
     }
 
-    public BasicBlock generateCFG() {
+    public CFG generateCFG() {
         ArrayList<CFGAble> components = new ArrayList<>();
         //TODO: get fields and put them into the components
         return symbolTable.generateCFG();

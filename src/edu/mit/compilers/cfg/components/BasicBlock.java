@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.io.PrintWriter;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.nodes.Statement;
 
 public class BasicBlock implements CFGAble {
@@ -28,8 +29,8 @@ public class BasicBlock implements CFGAble {
     }
 
     @Override
-    public BasicBlock generateCFG() {
-        return BasicBlock.create(this);
+    public CFG generateCFG() {
+        return new CFG(this);
     }
 
     @Override

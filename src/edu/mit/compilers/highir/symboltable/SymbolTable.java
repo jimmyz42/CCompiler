@@ -14,6 +14,7 @@ import edu.mit.compilers.highir.nodes.IntLiteral;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 
 import exceptions.BadArraySizeError;
 
@@ -41,7 +42,7 @@ public abstract class SymbolTable implements CFGAble {
     }
 
     @Override
-    public BasicBlock generateCFG() {
-        return BasicBlock.create(this);
+    public CFG generateCFG() {
+        return new CFG(BasicBlock.create(this));
     }
 }
