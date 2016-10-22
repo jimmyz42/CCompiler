@@ -17,6 +17,8 @@ import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.ProgramPoint;
 
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
@@ -85,14 +87,36 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
 
     @Override
     public void concisePrint(PrintWriter pw, String prefix) {
-        symbolTable.concisePrint(pw, prefix);
-        //TODO print the other types of blocks
+        //TODO: handle externs
+        for(Descriptor desc : symbolTable.getDescriptors().values()) {
+            if(desc instanceof VariableDescriptor) {
+                desc.concisePrint(pw, prefix);
+            }
+
+            //TODO: method descriptors
+        }
     }
 
     public CFG generateCFG() {
+        //TODO: handle externs
+        //
         ArrayList<CFGAble> components = new ArrayList<>();
-        //TODO: get fields and put them into the components
-        return symbolTable.generateCFG();
-        //TODO merge or append blocks for generated methods to the program block
+        for(Descriptor desc : symbolTable.getDescriptors().values()) {
+            if(desc instanceof VariableDescriptor) {
+                components.add(desc);
+            }
+        }
+        BasicBlock symbolBlock = new BasicBlock(components);
+        CFG currentCFG = symbolBlock;
+        for(Descriptor desc : symbolTable.getDescriptors().values()) {
+            if(desc instanceof MethodDescriptor) {
+                CFG nextCFG = desc.generateCFG();
+                currentCFG.setExitPoint(ProgramPoint.create(nextCFG.getExitBlock()));
+                nextCFG.setEntryPoint(ProgramPoint.create(currentCFG.getEntryBlock()));
+                currentCFG = nextCFG;
+            }
+        }
+        CFG cfg = new CFG(symbolBlock, currentCFG.getExitBlock());
+        return cfg;
     }
 }

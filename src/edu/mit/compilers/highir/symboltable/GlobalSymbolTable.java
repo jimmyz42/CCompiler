@@ -70,11 +70,4 @@ public class GlobalSymbolTable extends SymbolTable {
     public Map<String, Descriptor> getDescriptors() {
         return Collections.unmodifiableMap(descriptors);
     }
-
-    @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
-        for(Descriptor desc : descriptors.values()) {
-            pw.println(prefix + desc.getType() + " " + desc.getName());
-        }
-    }
 }

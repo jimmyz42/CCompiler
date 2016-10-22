@@ -1,7 +1,29 @@
 package edu.mit.compilers.cfg.components;
 
-public class ProgramPoint {
+import java.util.ArrayList;
 
-    public ProgramPoint() {
+public class ProgramPoint {
+    private ArrayList<BasicBlock> blocks;
+
+    public ProgramPoint(ArrayList<BasicBlock> blocks) {
+        this.blocks = blocks;
+    }
+
+    public ArrayList<BasicBlock> getBlocks() {
+        return blocks;
+    }
+
+    public static ProgramPoint create(ArrayList<BasicBlock> blocks) {
+        return new ProgramPoint(blocks);
+    }
+
+    public static ProgramPoint create (BasicBlock block) {
+        ArrayList<BasicBlock> blocks = new ArrayList<>();
+        blocks.add(block);
+        return new ProgramPoint(blocks);
+    }
+
+    public static ProgramPoint create() {
+        return new ProgramPoint(new ArrayList<BasicBlock>());
     }
 }

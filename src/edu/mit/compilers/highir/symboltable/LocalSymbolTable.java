@@ -67,9 +67,4 @@ public class LocalSymbolTable extends SymbolTable {
     public Map<String, VariableDescriptor> getVariables() {
         return Collections.unmodifiableMap(variables);
     }
-
-    @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
-
-    }
 }

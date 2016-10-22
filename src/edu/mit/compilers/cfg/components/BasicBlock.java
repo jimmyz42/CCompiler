@@ -8,18 +8,16 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.nodes.Statement;
 
-public class BasicBlock implements CFGAble {
+public class BasicBlock extends CFG {
 
     private List<CFGAble> components;
-    private ProgramPoint entryPoint;
-    private ProgramPoint exitPoint;
 
     public BasicBlock(List<CFGAble> components) {
         this.components = components;
     }
 
     public static BasicBlock create(List<CFGAble> components) {
-        return new BasicBlock(new ArrayList<>());
+        return new BasicBlock(new ArrayList<CFGAble>());
     }
 
     public static BasicBlock create(CFGAble component) {
@@ -29,8 +27,13 @@ public class BasicBlock implements CFGAble {
     }
 
     @Override
-    public CFG generateCFG() {
-        return new CFG(this);
+    public BasicBlock getEntryBlock() {
+        return this;
+    }
+
+    @Override
+    public BasicBlock getExitBlock() {
+        return this;
     }
 
     @Override

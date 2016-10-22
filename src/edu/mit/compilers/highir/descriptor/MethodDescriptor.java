@@ -14,6 +14,10 @@ import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.nodes.VoidType;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
+
+import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.components.BasicBlock;
+
 import exceptions.TypeMismatchError;
 
 public class MethodDescriptor extends FunctionDescriptor {
@@ -70,11 +74,21 @@ public class MethodDescriptor extends FunctionDescriptor {
         pw.println("\n" + prefix + "-name: " + getName());
         pw.print(prefix + "-parameters:\n");
         for(VariableDescriptor var : arguments ){
-        	var.prettyPrint(pw, prefix + "    ");
+            var.prettyPrint(pw, prefix + "    ");
         }
         pw.println();
         body.prettyPrint(pw, prefix + "    ");
         pw.println(prefix + "end " + getName() + " " + getClass().getSimpleName());
         pw.println();
+    }
+
+    @Override
+    public CFG generateCFG() {
+        return BasicBlock.create(this);
+    }
+
+    @Override
+    public void concisePrint(PrintWriter pw, String prefix) {
+        pw.println(prefix + getType() + " " + getName());
     }
 }
