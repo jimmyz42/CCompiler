@@ -1,6 +1,8 @@
 package edu.mit.compilers.cfg.components;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -18,6 +20,8 @@ public class CFG implements CFGAble {
     }
 
     public CFG() {
+        this.entryPoint = ProgramPoint.create();
+        this.exitPoint = ProgramPoint.create();
     }
 
     public void setEntryPoint(ProgramPoint entryPoint) {
@@ -44,6 +48,29 @@ public class CFG implements CFGAble {
         return exitPoint;
     }
 
+    public BasicBlock getPreviousBlock() {
+        return entryPoint.getBlocks().get(0);
+    }
+
+    public BasicBlock getNextBlock() {
+        return exitPoint.getBlocks().get(0);
+    }
+
+    public BasicBlock getNextBlock(boolean condition) {
+        if(condition)
+        return exitPoint.getBlocks().get(0);
+        else
+        return exitPoint.getBlocks().get(1);
+    }
+
+    public ArrayList<BasicBlock> getPreviousBlocks() {
+        return entryPoint.getBlocks();
+    }
+
+    public ArrayList<BasicBlock> getNextBlocks() {
+        return exitPoint.getBlocks();
+    }
+
     @Override
     public CFG generateCFG() {
         return this;
@@ -51,18 +78,6 @@ public class CFG implements CFGAble {
 
     @Override
     public void concisePrint(PrintWriter pw, String prefix) {
-        BasicBlock currentBlock = getEntryBlock();
-        do {
-            currentBlock.concisePrint(pw, prefix);
-
-            //TODO: Recurse and print path through CFG, visiting each basic block exactly once
-            // this code only looks at the first branch
-            if(getExitPoint().getBlocks().size() > 0) {
-                currentBlock = getExitPoint().getBlocks().get(0);
-            }
-            else {
-                break;
-            }
-        } while(currentBlock.getExitPoint() != null);
+        getEntryBlock().concisePrint(pw, prefix);
     }
 }

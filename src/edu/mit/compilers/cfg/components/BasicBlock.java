@@ -17,13 +17,13 @@ public class BasicBlock extends CFG {
     }
 
     public static BasicBlock create(List<CFGAble> components) {
-        return new BasicBlock(new ArrayList<CFGAble>());
+        return new BasicBlock(components);
     }
 
     public static BasicBlock create(CFGAble component) {
         ArrayList<CFGAble> components = new ArrayList<>();
         components.add(component);
-        return new BasicBlock(components);
+        return BasicBlock.create(components);
     }
 
     @Override
@@ -38,8 +38,14 @@ public class BasicBlock extends CFG {
 
     @Override
     public void concisePrint(PrintWriter pw, String prefix) {
-        for(CFGAble component : components) {
+        for(CFGAble component: components) {
             component.concisePrint(pw, prefix);
+        }
+
+        //TODO: Recurse and print path through CFG, visiting each basic block exactly once
+        // this code only looks at the first branch
+        if(getNextBlocks().size() > 0) {
+            getNextBlock().concisePrint(pw, prefix);
         }
     }
 }

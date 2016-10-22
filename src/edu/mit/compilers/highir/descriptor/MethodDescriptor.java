@@ -90,5 +90,9 @@ public class MethodDescriptor extends FunctionDescriptor {
     @Override
     public void concisePrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getType() + " " + getName());
+        for(VariableDescriptor argument: arguments) {
+            argument.concisePrint(pw, prefix + "    ");
+        }
+        body.concisePrint(pw, prefix + "    ");
     }
 }

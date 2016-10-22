@@ -89,19 +89,14 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
     public void concisePrint(PrintWriter pw, String prefix) {
         //TODO: handle externs
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
-            if(desc instanceof VariableDescriptor) {
-                desc.concisePrint(pw, prefix);
-            }
-
-            //TODO: method descriptors
+            desc.concisePrint(pw, prefix);
         }
     }
 
     public CFG generateCFG() {
-        //TODO: handle externs
-        //
+        //TODO: handle externs if necessary
         ArrayList<CFGAble> components = new ArrayList<>();
-        for(Descriptor desc : symbolTable.getDescriptors().values()) {
+        for(Descriptor desc: symbolTable.getDescriptors().values()) {
             if(desc instanceof VariableDescriptor) {
                 components.add(desc);
             }
@@ -111,12 +106,11 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
                 CFG nextCFG = desc.generateCFG();
-                currentCFG.setExitPoint(ProgramPoint.create(nextCFG.getExitBlock()));
-                nextCFG.setEntryPoint(ProgramPoint.create(currentCFG.getEntryBlock()));
+                currentCFG.setExitPoint(ProgramPoint.create(nextCFG.getEntryBlock()));
+                nextCFG.setEntryPoint(ProgramPoint.create(currentCFG.getExitBlock()));
                 currentCFG = nextCFG;
             }
         }
-        CFG cfg = new CFG(symbolBlock, currentCFG.getExitBlock());
-        return cfg;
+        return new CFG(symbolBlock, currentCFG.getExitBlock());
     }
 }

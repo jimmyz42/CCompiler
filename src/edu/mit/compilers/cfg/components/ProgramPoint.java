@@ -20,10 +20,10 @@ public class ProgramPoint {
     public static ProgramPoint create (BasicBlock block) {
         ArrayList<BasicBlock> blocks = new ArrayList<>();
         blocks.add(block);
-        return new ProgramPoint(blocks);
+        return ProgramPoint.create(blocks);
     }
 
     public static ProgramPoint create() {
-        return new ProgramPoint(new ArrayList<BasicBlock>());
+        return ProgramPoint.create(new ArrayList<>());
     }
 }
