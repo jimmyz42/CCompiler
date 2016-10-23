@@ -106,8 +106,8 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
                 CFG nextCFG = desc.generateCFG();
-                currentCFG.setExitPoint(ProgramPoint.create(nextCFG.getEntryBlock()));
-                nextCFG.setEntryPoint(ProgramPoint.create(currentCFG.getExitBlock()));
+                currentCFG.setNextBlock(nextCFG.getEntryBlock());
+                nextCFG.setPreviousBlock(currentCFG.getExitBlock());
                 currentCFG = nextCFG;
             }
         }

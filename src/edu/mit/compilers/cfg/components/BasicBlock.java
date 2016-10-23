@@ -5,15 +5,25 @@ import java.util.ArrayList;
 import java.io.PrintWriter;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.highir.nodes.Statement;
 
 public class BasicBlock extends CFG {
 
     private List<CFGAble> components;
+    private List<BasicBlock> prevBlocks;
+    private List<BasicBlock> nextBlocks;
+    private Condition branchCondition;
 
     public BasicBlock(List<CFGAble> components) {
         this.components = components;
+        this.entryBlock = entryBlock;
+        this.exitBlock = exitBlock;
+        this.prevBlocks = new ArrayList<>();
+        this.nextBlocks = new ArrayList<>();
+        this.branchCondition = new BoolLiteral(true);
     }
 
     public static BasicBlock create(List<CFGAble> components) {
@@ -25,15 +35,25 @@ public class BasicBlock extends CFG {
         components.add(component);
         return BasicBlock.create(components);
     }
-
+    
     @Override
-    public BasicBlock getEntryBlock() {
-        return this;
+    public List<BasicBlock> getPreviousBlocks() {
+    	return prevBlocks;
     }
-
+    
     @Override
-    public BasicBlock getExitBlock() {
-        return this;
+    public List<BasicBlock> getNextBlocks() {
+    	return nextBlocks;
+    }
+    
+    @Override
+    public void setPreviousBlocks(List<BasicBlock> prevBlocks) {
+    	this.prevBlocks = prevBlocks;
+    }
+    
+    @Override
+    public void setNextBlocks(List<BasicBlock> nextBlocks) {
+    	this.nextBlocks = nextBlocks;
     }
 
     @Override

@@ -2,34 +2,22 @@ package edu.mit.compilers.cfg.components;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
 public class CFG implements CFGAble {
-    private BasicBlock entryBlock;
-    private BasicBlock exitBlock;
-    private ProgramPoint entryPoint;
-    private ProgramPoint exitPoint;
+    protected BasicBlock entryBlock;
+    protected BasicBlock exitBlock;
 
     public CFG(BasicBlock entryBlock, BasicBlock exitBlock) {
         this.entryBlock = entryBlock;
         this.exitBlock = exitBlock;
-        this.entryPoint = ProgramPoint.create();
-        this.exitPoint = ProgramPoint.create();
     }
-
+    
     public CFG() {
-        this.entryPoint = ProgramPoint.create();
-        this.exitPoint = ProgramPoint.create();
-    }
-
-    public void setEntryPoint(ProgramPoint entryPoint) {
-        this.entryPoint = entryPoint;
-    }
-
-    public void setExitPoint(ProgramPoint exitPoint) {
-        this.exitPoint = exitPoint;
     }
 
     public BasicBlock getEntryBlock() {
@@ -40,35 +28,44 @@ public class CFG implements CFGAble {
         return exitBlock;
     }
 
-    public ProgramPoint getEntryPoint() {
-        return entryPoint;
-    }
-
-    public ProgramPoint getExitPoint() {
-        return exitPoint;
-    }
-
     public BasicBlock getPreviousBlock() {
-        return entryPoint.getBlocks().get(0);
+        return getPreviousBlocks().get(0);
     }
 
     public BasicBlock getNextBlock() {
-        return exitPoint.getBlocks().get(0);
+        return getNextBlocks().get(0);
     }
 
     public BasicBlock getNextBlock(boolean condition) {
-        if(condition)
-        return exitPoint.getBlocks().get(0);
-        else
-        return exitPoint.getBlocks().get(1);
+        if(condition) {
+        	return exitBlock.getNextBlocks().get(0);
+        } else {
+        	return exitBlock.getNextBlocks().get(1);
+        }
     }
 
-    public ArrayList<BasicBlock> getPreviousBlocks() {
-        return entryPoint.getBlocks();
+    public List<BasicBlock> getPreviousBlocks() {
+        return entryBlock.getPreviousBlocks();
     }
 
-    public ArrayList<BasicBlock> getNextBlocks() {
-        return exitPoint.getBlocks();
+    public List<BasicBlock> getNextBlocks() {
+        return exitBlock.getNextBlocks();
+    }
+    
+    public void setPreviousBlocks(List<BasicBlock> prevBlocks) {
+    	entryBlock.setPreviousBlocks(prevBlocks);
+    }
+    
+    public void setNextBlocks(List<BasicBlock> nextBlocks) {
+    	exitBlock.setNextBlocks(nextBlocks);
+    }
+    
+    public void setPreviousBlock(BasicBlock prevBlock) {
+    	setPreviousBlocks(Collections.singletonList(prevBlock));
+    }
+    
+    public void setNextBlock(BasicBlock nextBlock) {
+    	setNextBlocks(Collections.singletonList(nextBlock));
     }
 
     @Override

@@ -1,9 +1,13 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.List;
+
+import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.instructions.Instruction;
 
-public class BoolLiteral extends Literal {
+public class BoolLiteral extends Literal implements Condition {
     private boolean terminal;
 
     public BoolLiteral(boolean terminal) {
@@ -25,4 +29,10 @@ public class BoolLiteral extends Literal {
     public String toString() {
         return Boolean.toString(terminal);
     }
+
+	@Override
+	public List<Instruction> generateAssembly() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
