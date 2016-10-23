@@ -15,6 +15,7 @@ import edu.mit.compilers.highir.nodes.VoidType;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
 
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -84,15 +85,23 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public CFG generateCFG() {
-        return BasicBlock.create(this);
+        ArrayList<CFGAble> components = new ArrayList<>();
+        for(VariableDescriptor argument: arguments) {
+            components.add(argument);
+        }
+        BasicBlock symbolBlock = BasicBlock.create(components);
+        BasicBlock methodBlock = BasicBlock.create(this);
+        CFG bodyCFG = body.generateCFG();
+        methodBlock.setNextBlock(symbolBlock);
+        symbolBlock.setPreviousBlock(methodBlock);
+        symbolBlock.setNextBlock(bodyCFG.getEntryBlock());
+        bodyCFG.setPreviousBlock(symbolBlock);
+
+        return new CFG(methodBlock, bodyCFG.getExitBlock());
     }
 
     @Override
     public void concisePrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getType() + " " + getName());
-        for(VariableDescriptor argument: arguments) {
-            argument.concisePrint(pw, prefix + "    ");
-        }
-        body.concisePrint(pw, prefix + "    ");
     }
 }

@@ -13,6 +13,11 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.symboltable.SymbolTable;
 import edu.mit.compilers.highir.symboltable.LocalSymbolTable;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.components.BasicBlock;
+
 import exceptions.SemanticError;
 import exceptions.ImproperEscapeError;
 
@@ -85,7 +90,7 @@ public class Block extends Ir {
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getClass().getSimpleName());
-        for (VariableDescriptor var : symbolTable.getVariables().values()) {
+        for (VariableDescriptor var : symbolTable.getDescriptors().values()) {
             var.prettyPrint(pw, prefix + "    ");
             pw.println();
         }
@@ -94,5 +99,23 @@ public class Block extends Ir {
             pw.println();
         }
         pw.println(prefix + "end " + getClass().getSimpleName());
+    }
+
+    @Override
+    public CFG generateCFG() {
+        ArrayList<CFGAble> components = new ArrayList<>();
+        for(VariableDescriptor desc: symbolTable.getDescriptors().values()) {
+            components.add(desc);
+        }
+        BasicBlock symbolBlock = BasicBlock.create(components);
+        CFG currentCFG = symbolBlock;
+        for(Statement statement: statements) {
+            CFG nextCFG = statement.generateCFG();
+            currentCFG.setNextBlock(nextCFG.getEntryBlock());
+            nextCFG.setPreviousBlock(currentCFG.getExitBlock());
+            currentCFG = nextCFG;
+        }
+
+        return new CFG(symbolBlock, currentCFG.getExitBlock());
     }
 }

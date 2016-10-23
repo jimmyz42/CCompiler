@@ -4,6 +4,10 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+
+import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.components.BasicBlock;
+
 import exceptions.TypeMismatchError;
 
 public class AssignStmt extends Statement {
@@ -53,5 +57,17 @@ public class AssignStmt extends Statement {
         pw.println(prefix+ "-operator: " + assignOp);
         pw.println(prefix + "-expression:");
         expression.prettyPrint(pw, prefix + "    ");
+    }
+
+    //TODO: After the Expression generateCFG() functions have been written
+    //write a generateCFG function that eveluates the expression into a BasicBlock
+    // and concats that with a BasicBlock containing this class
+
+    @Override
+    public void concisePrint(PrintWriter pw, String prefix) {
+        pw.print(prefix);
+        location.concisePrint(pw,"");
+        pw.print(" " + assignOp);
+        expression.concisePrint(pw," ");
     }
 }

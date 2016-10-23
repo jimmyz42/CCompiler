@@ -16,7 +16,7 @@ public class CFG implements CFGAble {
         this.entryBlock = entryBlock;
         this.exitBlock = exitBlock;
     }
-    
+
     public CFG() {
     }
 
@@ -28,15 +28,13 @@ public class CFG implements CFGAble {
         return exitBlock;
     }
 
-    public BasicBlock getPreviousBlock() {
-        return getPreviousBlocks().get(0);
-    }
-
     public BasicBlock getNextBlock() {
-        return getNextBlocks().get(0);
+        return getNextBlock(true);
     }
 
     public BasicBlock getNextBlock(boolean condition) {
+        if(getNextBlocks().size() == 0)
+        return null;
         if(condition) {
         	return exitBlock.getNextBlocks().get(0);
         } else {
@@ -45,25 +43,27 @@ public class CFG implements CFGAble {
     }
 
     public List<BasicBlock> getPreviousBlocks() {
+        if(getPreviousBlocks().size() == 0)
+        return null;
         return entryBlock.getPreviousBlocks();
     }
 
     public List<BasicBlock> getNextBlocks() {
         return exitBlock.getNextBlocks();
     }
-    
+
     public void setPreviousBlocks(List<BasicBlock> prevBlocks) {
     	entryBlock.setPreviousBlocks(prevBlocks);
     }
-    
+
     public void setNextBlocks(List<BasicBlock> nextBlocks) {
     	exitBlock.setNextBlocks(nextBlocks);
     }
-    
+
     public void setPreviousBlock(BasicBlock prevBlock) {
     	setPreviousBlocks(Collections.singletonList(prevBlock));
     }
-    
+
     public void setNextBlock(BasicBlock nextBlock) {
     	setNextBlocks(Collections.singletonList(nextBlock));
     }

@@ -56,7 +56,7 @@ public class ArgumentSymbolTable extends SymbolTable {
         return parentTable.getFunction(name, ctx);
     }
 
-    public Map<String, VariableDescriptor> getVariables() {
+    public Map<String, VariableDescriptor> getDescriptors() {
         return Collections.unmodifiableMap(variables);
     }
 }

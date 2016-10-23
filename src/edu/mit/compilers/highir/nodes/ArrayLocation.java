@@ -9,42 +9,48 @@ import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
 
 public class ArrayLocation extends Location {
-    private VariableDescriptor array;
     private Expression index;
 
-    public ArrayLocation(VariableDescriptor array, Expression index) {
-        this.array = array;
+    public ArrayLocation(VariableDescriptor variable, Expression index) {
+        super(variable);
         this.index = index;
     }
 
     public static ArrayLocation create(DecafSemanticChecker checker, DecafParser.ArrayLocationContext ctx) {
         String varName = ctx.ID().getText();
-        VariableDescriptor array = checker.currentSymbolTable().getVariable(varName, ctx);
+        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
         Expression index = Expression.create(checker, ctx.expr());
 
-        if (array == null) {
+        if (variable == null) {
             throw new UndeclaredIdentifierError("Array is not declared", ctx);
         }
-        if (!(array.getType() instanceof ArrayType)) {
-            throw new TypeMismatchError("Can only index arrays", ctx);
+        if (!(variable.getType() instanceof ArrayType)) {
+            throw new TypeMismatchError("Can only index variables", ctx);
         }
         if (index.getExpressionType() != ScalarType.INT) {
             throw new TypeMismatchError("Array index must be an int", ctx.expr());
         }
 
-        return new ArrayLocation(array, index);
+        return new ArrayLocation(variable, index);
     }
 
     @Override
     public Type getExpressionType() {
-        return ((ArrayType) array.getType()).getElementType();
+        return ((ArrayType) getVariable().getType()).getElementType();
     }
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         super.prettyPrint(pw, prefix);
-        pw.println(prefix + array.getName() + "[");
+        pw.println(prefix + getVariable().getName() + "[");
         index.prettyPrint(pw, prefix + "  ");
         pw.println(prefix + "] ");
+    }
+
+    @Override
+    public void concisePrint(PrintWriter pw, String prefix) {
+        pw.print(prefix + getVariable().getName() + "[");
+        index.concisePrint(pw,"");
+        pw.println("]");
     }
 }

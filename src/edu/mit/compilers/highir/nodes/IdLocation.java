@@ -9,10 +9,9 @@ import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
 
 public class IdLocation extends Location {
-    private VariableDescriptor variable;
 
     public IdLocation(VariableDescriptor variable) {
-        this.variable = variable;
+        super(variable);
     }
 
     public static IdLocation create(DecafSemanticChecker checker, DecafParser.IdLocationContext ctx) {
@@ -28,13 +27,13 @@ public class IdLocation extends Location {
     }
 
     @Override
-    public Type getExpressionType() {
-        return variable.getType();
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        pw.println(prefix + getClass().getSimpleName());
+        pw.println(prefix + "-name: " + getVariable().getName());
     }
 
     @Override
-    public void prettyPrint(PrintWriter pw, String prefix) {
-    	pw.println(prefix + getClass().getSimpleName());
-        pw.println(prefix + "-name: " + variable.getName());
+    public void concisePrint(PrintWriter pw, String prefix) {
+        pw.print(prefix + getVariable().getName());
     }
 }

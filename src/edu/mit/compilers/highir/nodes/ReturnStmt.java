@@ -37,4 +37,9 @@ public class ReturnStmt extends Statement {
             expression.prettyPrint(pw, prefix + "    ");
         }
     }
+
+    @Override
+    public void concisePrint(PrintWriter pw, String prefix) {
+        pw.println(prefix + "return");
+    }
 }

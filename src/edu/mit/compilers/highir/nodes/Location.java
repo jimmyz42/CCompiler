@@ -2,10 +2,25 @@ package edu.mit.compilers.highir.nodes;
 
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 
 abstract public class Location extends Expression {
+    private VariableDescriptor variable;
+
+    Location(VariableDescriptor variable) {
+        this.variable = variable;
+    }
 
     public static Location create(DecafSemanticChecker checker, LocationContext ctx) {
         return (Location) checker.visit(ctx);
+    }
+
+    public VariableDescriptor getVariable() {
+        return variable;
+    }
+
+    @Override
+    public Type getExpressionType() {
+        return variable.getType();
     }
 }

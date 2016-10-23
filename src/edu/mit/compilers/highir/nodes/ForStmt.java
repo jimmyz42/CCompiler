@@ -2,10 +2,17 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 
+import java.util.ArrayList;
+
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.symboltable.SymbolTable;
+
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.components.BasicBlock;
+
 import exceptions.TypeMismatchError;
 
 public class ForStmt extends Statement {
@@ -60,5 +67,35 @@ public class ForStmt extends Statement {
         update.prettyPrint(pw, prefix +  "    ");
         pw.println(prefix + "-forBlock:");
         block.prettyPrint(pw, prefix + "    ");
+    }
+
+    @Override
+    public CFG generateCFG() {
+        CFG initializerCFG = initializer.generateCFG();
+        CFG conditionCFG = condition.generateCFG();
+        CFG trueBranch = block.generateCFG();
+        CFG updateCFG = update.generateCFG();
+        BasicBlock escapeBlock = BasicBlock.create();
+
+        initializerCFG.setNextBlock(conditionCFG.getEntryBlock());
+        conditionCFG.setPreviousBlock(initializerCFG.getExitBlock());
+
+        ArrayList<BasicBlock> entryBranches = new ArrayList<>();
+        entryBranches.add(trueBranch.getEntryBlock());
+        entryBranches.add(escapeBlock);
+
+        conditionCFG.setNextBlocks(entryBranches);
+
+        trueBranch.setPreviousBlock(conditionCFG.getExitBlock());
+        trueBranch.setNextBlock(updateCFG.getEntryBlock());
+        updateCFG.setPreviousBlock(trueBranch.getExitBlock());
+        updateCFG.setNextBlock(conditionCFG.getEntryBlock());
+
+        ArrayList<BasicBlock> exitBranches = new ArrayList<>();
+        exitBranches.add(trueBranch.getExitBlock());
+        exitBranches.add(conditionCFG.getExitBlock());
+        escapeBlock.setPreviousBlocks(exitBranches);
+
+        return new CFG(initializerCFG.getEntryBlock(), escapeBlock);
     }
 }

@@ -18,7 +18,6 @@ import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
-import edu.mit.compilers.cfg.components.ProgramPoint;
 
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
@@ -101,7 +100,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
                 components.add(desc);
             }
         }
-        BasicBlock symbolBlock = new BasicBlock(components);
+        BasicBlock symbolBlock = BasicBlock.create(components);
         CFG currentCFG = symbolBlock;
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
