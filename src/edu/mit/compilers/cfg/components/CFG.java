@@ -59,7 +59,7 @@ public class CFG implements CFGAble {
     public void setNextBlocks(List<BasicBlock> nextBlocks) {
     	exitBlock.setNextBlocks(nextBlocks);
     }
-    
+       
     public void setPreviousBlock(BasicBlock prevBlock) {
     	setPreviousBlocks(Collections.singletonList(prevBlock));
     }

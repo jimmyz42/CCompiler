@@ -3,11 +3,13 @@ package edu.mit.compilers.highir.nodes;
 import java.util.List;
 
 import edu.mit.compilers.cfg.Condition;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.instructions.Instruction;
 
-public class BoolLiteral extends Literal implements Condition {
+public class BoolLiteral extends Literal {
     private boolean terminal;
 
     public BoolLiteral(boolean terminal) {
@@ -29,10 +31,9 @@ public class BoolLiteral extends Literal implements Condition {
     public String toString() {
         return Boolean.toString(terminal);
     }
-
-	@Override
-	public List<Instruction> generateAssembly() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
+    @Override
+    public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
+    	return (terminal ? trueBranch : falseBranch).getEntryBlock();
+    }
 }

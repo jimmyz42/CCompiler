@@ -1,5 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import exceptions.TypeMismatchError;
@@ -24,5 +26,10 @@ public class NotExpr extends Expression {
     public Type getExpressionType() {
         // TODO Auto-generated method stub
         return ScalarType.BOOL;
+    }
+    
+    @Override
+    public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
+    	return expression.shortCircuit(falseBranch, trueBranch);
     }
 }

@@ -7,9 +7,9 @@ import exceptions.TypeMismatchError;
 
 
 abstract public class BinOpExpr extends Expression {
-    private BinOp operator;
-    private Expression lhs;
-    private Expression rhs;
+    protected BinOp operator;
+    protected Expression lhs;
+    protected Expression rhs;
 
     public BinOpExpr(BinOp operator, Expression lhs, Expression rhs) {
         this.operator = operator;

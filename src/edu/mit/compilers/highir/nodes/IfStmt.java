@@ -1,12 +1,16 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import exceptions.TypeMismatchError;
 
-public class IfStmt extends Statement {
+public class IfStmt extends Statement implements CFGAble {
     private Expression condition;
     private Block block;
     private Block elseBlock;
@@ -32,6 +36,17 @@ public class IfStmt extends Statement {
         }
 
         return new IfStmt(condition, block, elseBlock);
+    }
+    
+    @Override
+    public CFG generateCFG() {
+    	CFG ifCFG = block.generateCFG();
+    	CFG elseCFG = elseBlock.generateCFG();
+    	BasicBlock nop = BasicBlock.createEmpty();
+    	ifCFG.setNextBlock(nop);
+    	elseCFG.setNextBlock(nop);
+    	nop.setPreviousBlocks(Arrays.asList(ifCFG.getExitBlock(), elseCFG.getExitBlock()));
+    	return new CFG(condition.shortCircuit(ifCFG, elseCFG), nop);
     }
     
     @Override

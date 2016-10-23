@@ -23,7 +23,7 @@ public class BasicBlock extends CFG {
         this.exitBlock = exitBlock;
         this.prevBlocks = new ArrayList<>();
         this.nextBlocks = new ArrayList<>();
-        this.branchCondition = new BoolLiteral(true);
+        this.branchCondition = null; // Unconditional jump
     }
 
     public static BasicBlock create(List<CFGAble> components) {
@@ -34,6 +34,21 @@ public class BasicBlock extends CFG {
         ArrayList<CFGAble> components = new ArrayList<>();
         components.add(component);
         return BasicBlock.create(components);
+    }
+    
+    public static BasicBlock createEmpty() {
+    	return BasicBlock.create(new ArrayList<>());
+    }
+    
+    public static BasicBlock createWithCondition(Condition condition) {
+    	BasicBlock block = BasicBlock.createEmpty();
+    	block.branchCondition = condition;
+    	return block;
+    }
+    
+    // For detecting NOPs
+    public boolean isEmpty() {
+    	return components.size() == 0 && branchCondition == null;
     }
     
     @Override

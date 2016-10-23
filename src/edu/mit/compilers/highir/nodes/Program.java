@@ -18,7 +18,6 @@ import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
-import edu.mit.compilers.cfg.components.ProgramPoint;
 
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
