@@ -72,15 +72,15 @@ public class ForStmt extends Statement {
     
     @Override
     public CFG generateCFG(CFGContext context) {
-    	CFG initializerCFG = initializer.generateCFG();   
-    	CFG updateCFG = update.generateCFG();
+    	CFG initializerCFG = initializer.generateCFG(context);   
+    	CFG updateCFG = update.generateCFG(context);
     	BasicBlock escapeBlock = BasicBlock.createEmpty();
     	
     	// Note: Need to push this BEFORE calling block.generateCFG()
     	// so that any break/continue statements are taken care of
     	context.pushLoopCFG(new CFG(updateCFG.getEntryBlock(), escapeBlock));
     	
-    	CFG trueBranch = block.generateCFG();
+    	CFG trueBranch = block.generateCFG(context);
     	BasicBlock startCondition = condition.shortCircuit(trueBranch, escapeBlock);
       
     	initializerCFG.setNextBlock(startCondition);

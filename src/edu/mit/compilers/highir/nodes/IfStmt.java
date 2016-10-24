@@ -9,6 +9,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -43,9 +44,9 @@ public class IfStmt extends Statement {
     }
 
      @Override
-     public CFG generateCFG() {
-     	CFG trueBranch = block.generateCFG();
-     	CFG falseBranch = elseBlock.generateCFG();
+     public CFG generateCFG(CFGContext context) {
+     	CFG trueBranch = block.generateCFG(context);
+     	CFG falseBranch = elseBlock.generateCFG(context);
      	BasicBlock escapeBlock = BasicBlock.createEmpty();
      	trueBranch.setNextBlock(escapeBlock);
      	falseBranch.setNextBlock(escapeBlock);

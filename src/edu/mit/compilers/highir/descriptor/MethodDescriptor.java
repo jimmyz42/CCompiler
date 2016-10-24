@@ -92,7 +92,7 @@ public class MethodDescriptor extends FunctionDescriptor {
         }
         BasicBlock symbolBlock = BasicBlock.create(components);
         BasicBlock methodBlock = BasicBlock.create(this);
-        CFG bodyCFG = body.generateCFG();
+        CFG bodyCFG = body.generateCFG(context);
         methodBlock.setNextBlock(symbolBlock);
         symbolBlock.setPreviousBlock(methodBlock);
         symbolBlock.setNextBlock(bodyCFG.getEntryBlock());

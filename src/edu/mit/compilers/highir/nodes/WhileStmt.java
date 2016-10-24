@@ -43,7 +43,7 @@ public class WhileStmt extends Statement {
     	// so that any break/continue statements are taken care of
     	context.pushLoopCFG(new CFG(startBlock, escapeBlock));
     	
-        CFG trueBranch = block.generateCFG();
+        CFG trueBranch = block.generateCFG(context);
         BasicBlock startCondition = condition.shortCircuit(trueBranch, escapeBlock);
         startBlock.setNextBlock(startCondition);
         startCondition.addPreviousBlock(startBlock);

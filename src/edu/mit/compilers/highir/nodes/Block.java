@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.grammar.DecafParser.BlockContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.StatementContext;
@@ -103,7 +104,7 @@ public class Block extends Ir {
     }
 
     @Override
-    public CFG generateCFG() {
+    public CFG generateCFG(CFGContext context) {
         ArrayList<CFGAble> components = new ArrayList<>();
         for(VariableDescriptor desc: symbolTable.getDescriptors().values()) {
             components.add(desc);
@@ -111,7 +112,7 @@ public class Block extends Ir {
         BasicBlock symbolBlock = BasicBlock.create(components);
         CFG currentCFG = symbolBlock;
         for(Statement statement: statements) {
-            CFG nextCFG = statement.generateCFG();
+            CFG nextCFG = statement.generateCFG(context);
             currentCFG.setNextBlock(nextCFG.getEntryBlock());
             nextCFG.setPreviousBlock(currentCFG.getExitBlock());
             currentCFG = nextCFG;
