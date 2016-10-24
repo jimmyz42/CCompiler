@@ -6,6 +6,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -32,14 +33,25 @@ public class WhileStmt extends Statement {
     }
 
     @Override
-    public CFG generateCFG() {
-    	// TODO push CFG onto stack (pop at end of method)
-    	// Need entry to be startCondition and exit to be escapeBlock
-        CFG trueBranch = block.generateCFG();
+    public CFG generateCFG(CFGContext context) {
+    	// startBlock is NOP for allowing continue; statements
+    	// because startCondition has to be evaluated after block.generateCFG()
+    	BasicBlock startBlock = BasicBlock.createEmpty();
         BasicBlock escapeBlock = BasicBlock.createEmpty();
+        
+    	// Note: Need to push this BEFORE calling block.generateCFG()
+    	// so that any break/continue statements are taken care of
+    	context.pushLoopCFG(new CFG(startBlock, escapeBlock));
+    	
+        CFG trueBranch = block.generateCFG();
         BasicBlock startCondition = condition.shortCircuit(trueBranch, escapeBlock);
+        startBlock.setNextBlock(startCondition);
+        startCondition.addPreviousBlock(startBlock);
         trueBranch.setNextBlock(startCondition);
         startCondition.addPreviousBlock(trueBranch.getEntryBlock());
+        
+        context.popLoopCFG();
+        
         return new CFG(startCondition, escapeBlock);
     }
 }
