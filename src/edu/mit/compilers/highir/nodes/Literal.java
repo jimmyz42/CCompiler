@@ -15,4 +15,9 @@ abstract public class Literal extends Expression {
         super.prettyPrint(pw, prefix);
     	pw.println(prefix + "-value: " + this);
     }
+    
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+    	pw.print(prefix + this);
+    }
 }

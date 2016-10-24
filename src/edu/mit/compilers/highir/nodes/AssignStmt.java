@@ -69,5 +69,6 @@ public class AssignStmt extends Statement {
         location.cfgPrint(pw,"");
         pw.print(" " + assignOp);
         expression.cfgPrint(pw," ");
+        pw.println();
     }
 }

@@ -1,8 +1,16 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.ExprContext;
+import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.MethodDescriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import exceptions.TypeMismatchError;
 
 
@@ -26,4 +34,17 @@ abstract public class BinOpExpr extends Expression {
         pw.println(prefix + "-rhs:");
         rhs.prettyPrint(pw, prefix + "    ");
     }
+    
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+    	pw.print(prefix);
+    	lhs.cfgPrint(pw, prefix);
+    	operator.cfgPrint(pw, " ");
+    	rhs.cfgPrint(pw, prefix);
+    }
+
+//    @Override
+//    public CFG generateCFG(CFGContext context) {
+//
+//    }
 }
