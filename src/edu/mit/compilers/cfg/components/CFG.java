@@ -24,8 +24,6 @@ public class CFG implements CFGAble {
     // to link to, note that entry and exit block are not linked
     // when creating the actual interior CFG link to the NOPs appropriately
     public CFG() {
-    	this.entryBlock = BasicBlock.createEmpty();
-    	this.exitBlock = BasicBlock.createEmpty();
     }
 
     public BasicBlock getEntryBlock() {
@@ -77,14 +75,14 @@ public class CFG implements CFGAble {
     public void setNextBlock(BasicBlock nextBlock) {
         setNextBlocks(Collections.singletonList(nextBlock));
     }
-    
+
     public void addPreviousBlocks(List<BasicBlock> prevBlocks) {
     	List<BasicBlock> blocks = new ArrayList<>();
     	blocks.addAll(getPreviousBlocks());
     	blocks.addAll(prevBlocks);
     	setPreviousBlocks(blocks);
     }
-    
+
     public void addPreviousBlock(BasicBlock prevBlock) {
     	addPreviousBlocks(Collections.singletonList(prevBlock));
     }
