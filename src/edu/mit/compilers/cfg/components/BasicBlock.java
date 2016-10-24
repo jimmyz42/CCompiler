@@ -24,7 +24,7 @@ public class BasicBlock extends CFG {
         this.exitBlock = this;
         this.prevBlocks = new ArrayList<>();
         this.nextBlocks = new ArrayList<>();
-        this.branchCondition = new BoolLiteral(true);
+        this.branchCondition = null;
     }
 
     public static BasicBlock create(List<CFGAble> components) {
