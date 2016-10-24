@@ -10,6 +10,7 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.symboltable.SymbolTable;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -68,34 +69,26 @@ public class ForStmt extends Statement {
         pw.println(prefix + "-forBlock:");
         block.prettyPrint(pw, prefix + "    ");
     }
-
+    
     @Override
     public CFG generateCFG() {
-        CFG initializerCFG = initializer.generateCFG();
-        CFG conditionCFG = condition.generateCFG();
-        CFG trueBranch = block.generateCFG();
-        CFG updateCFG = update.generateCFG();
-        BasicBlock escapeBlock = BasicBlock.createEmpty();
-
-        initializerCFG.setNextBlock(conditionCFG.getEntryBlock());
-        conditionCFG.setPreviousBlock(initializerCFG.getExitBlock());
-
-        ArrayList<BasicBlock> entryBranches = new ArrayList<>();
-        entryBranches.add(trueBranch.getEntryBlock());
-        entryBranches.add(escapeBlock);
-
-        conditionCFG.setNextBlocks(entryBranches);
-
-        trueBranch.setPreviousBlock(conditionCFG.getExitBlock());
-        trueBranch.setNextBlock(updateCFG.getEntryBlock());
-        updateCFG.setPreviousBlock(trueBranch.getExitBlock());
-        updateCFG.setNextBlock(conditionCFG.getEntryBlock());
-
-        ArrayList<BasicBlock> exitBranches = new ArrayList<>();
-        exitBranches.add(trueBranch.getExitBlock());
-        exitBranches.add(conditionCFG.getExitBlock());
-        escapeBlock.setPreviousBlocks(exitBranches);
-
-        return new CFG(initializerCFG.getEntryBlock(), escapeBlock);
+    	// TODO push CFG onto stack (pop at end of method)
+    	// Need entry to be updateCFG.entryBlock() and exit to be escapeBlock
+    	CFG initializerCFG = initializer.generateCFG();   
+    	CFG trueBranch = block.generateCFG();
+    	CFG updateCFG = update.generateCFG();
+    	BasicBlock escapeBlock = BasicBlock.createEmpty();
+    	BasicBlock startCondition = condition.shortCircuit(trueBranch, escapeBlock);
+      
+    	initializerCFG.setNextBlock(startCondition);
+    	startCondition.addPreviousBlock(initializerCFG.getExitBlock());  
+      
+    	trueBranch.setNextBlock(updateCFG.getEntryBlock());
+    	updateCFG.setPreviousBlock(trueBranch.getExitBlock());
+    	
+    	updateCFG.setNextBlock(startCondition);
+    	startCondition.addPreviousBlock(updateCFG.getExitBlock());
+    	
+    	return new CFG(initializerCFG.getEntryBlock(), escapeBlock);
     }
 }

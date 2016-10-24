@@ -42,16 +42,17 @@ public class IfStmt extends Statement {
         return new IfStmt(condition, block, elseBlock);
     }
 
-    // @Override
-    // public CFG generateCFG() {
-    // 	CFG ifCFG = block.generateCFG();
-    // 	CFG elseCFG = elseBlock.generateCFG();
-    // 	BasicBlock nop = BasicBlock.createEmpty();
-    // 	ifCFG.setNextBlock(nop);
-    // 	elseCFG.setNextBlock(nop);
-    // 	nop.setPreviousBlocks(Arrays.asList(ifCFG.getExitBlock(), elseCFG.getExitBlock()));
-    // 	return new CFG(condition.shortCircuit(ifCFG, elseCFG), nop);
-    // }
+     @Override
+     public CFG generateCFG() {
+     	CFG trueBranch = block.generateCFG();
+     	CFG falseBranch = elseBlock.generateCFG();
+     	BasicBlock escapeBlock = BasicBlock.createEmpty();
+     	trueBranch.setNextBlock(escapeBlock);
+     	falseBranch.setNextBlock(escapeBlock);
+     	escapeBlock.addPreviousBlocks(Arrays.asList(trueBranch.getExitBlock(), falseBranch.getExitBlock()));
+     	BasicBlock startCondition = condition.shortCircuit(trueBranch, falseBranch);
+     	return new CFG(startCondition, escapeBlock);
+     }
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
@@ -64,24 +65,5 @@ public class IfStmt extends Statement {
         elseBlock.prettyPrint(pw, prefix + "    ");
 
         pw.println(prefix + "end " + getClass().getSimpleName());
-    }
-
-    @Override
-    public CFG generateCFG() {
-        CFG conditionCFG = condition.generateCFG();
-        CFG trueBranch = block.generateCFG();
-        CFG falseBranch = elseBlock.generateCFG();
-        BasicBlock nop = BasicBlock.createEmpty();
-
-        conditionCFG.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
-        trueBranch.setPreviousBlock(conditionCFG.getExitBlock());
-        falseBranch.setPreviousBlock(conditionCFG.getExitBlock());
-
-        trueBranch.setNextBlock(nop);
-        falseBranch.setNextBlock(nop);
-
-        nop.setPreviousBlocks(Arrays.asList(trueBranch.getExitBlock(), falseBranch.getExitBlock()));
-
-        return new CFG(conditionCFG.getEntryBlock(), nop);
     }
 }

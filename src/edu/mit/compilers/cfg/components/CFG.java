@@ -49,8 +49,6 @@ public class CFG implements CFGAble {
     }
 
     public List<BasicBlock> getPreviousBlocks() {
-        if(getPreviousBlocks().size() == 0)
-        return null;
         return entryBlock.getPreviousBlocks();
     }
 
@@ -72,6 +70,17 @@ public class CFG implements CFGAble {
 
     public void setNextBlock(BasicBlock nextBlock) {
         setNextBlocks(Collections.singletonList(nextBlock));
+    }
+    
+    public void addPreviousBlocks(List<BasicBlock> prevBlocks) {
+    	List<BasicBlock> blocks = new ArrayList<>();
+    	blocks.addAll(getPreviousBlocks());
+    	blocks.addAll(prevBlocks);
+    	setPreviousBlocks(blocks);
+    }
+    
+    public void addPreviousBlock(BasicBlock prevBlock) {
+    	addPreviousBlocks(Collections.singletonList(prevBlock));
     }
 
     @Override

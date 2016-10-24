@@ -22,7 +22,7 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import exceptions.SemanticError;
 import exceptions.ImproperEscapeError;
 
-public class Block extends Ir implements CFGAble {
+public class Block extends Ir {
     private final LocalSymbolTable symbolTable;
     private List<Statement> statements;
     private boolean isLocalBlock;
