@@ -10,6 +10,7 @@ import edu.mit.compilers.grammar.DecafParser.ProgramContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.highir.nodes.Program;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
@@ -107,7 +108,8 @@ class Main {
                 ProgramContext context = parser.program();
                 DecafSemanticChecker loader = new DecafSemanticChecker();
                 Program ir = (Program)loader.visit(context);
-                CFG cfg = ir.generateCFG();
+                CFGContext ctx = new CFGContext();
+                CFG cfg = ir.generateCFG(ctx);
                 StringWriter sw = new StringWriter();
                 cfg.cfgPrint(new PrintWriter(sw), "");
                 System.out.println(sw.toString());

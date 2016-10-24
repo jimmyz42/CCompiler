@@ -16,6 +16,7 @@ import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -84,7 +85,7 @@ public class MethodDescriptor extends FunctionDescriptor {
     }
 
     @Override
-    public CFG generateCFG() {
+    public CFG generateCFG(CFGContext context) {
         ArrayList<CFGAble> components = new ArrayList<>();
         for(VariableDescriptor argument: arguments) {
             components.add(argument);

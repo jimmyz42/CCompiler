@@ -4,6 +4,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
 abstract public class Statement extends Ir {
@@ -12,7 +13,7 @@ abstract public class Statement extends Ir {
     }
 
     @Override
-    public CFG generateCFG() {
+    public CFG generateCFG(CFGContext context) {
         return BasicBlock.create(this);
     }
 }

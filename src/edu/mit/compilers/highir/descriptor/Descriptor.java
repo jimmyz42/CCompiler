@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.PrettyPrintable;
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.highir.nodes.Type;
 
 import edu.mit.compilers.cfg.CFGAble;
@@ -28,7 +29,7 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
     }
 
     @Override
-    public CFG generateCFG() {
+    public CFG generateCFG(CFGContext context) {
         return BasicBlock.create(this);
     }
 

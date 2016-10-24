@@ -16,6 +16,7 @@ import edu.mit.compilers.highir.descriptor.*;
 import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -92,7 +93,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         }
     }
 
-    public CFG generateCFG() {
+    public CFG generateCFG(CFGContext context) {
         //TODO: handle externs if necessary
         ArrayList<CFGAble> components = new ArrayList<>();
         for(Descriptor desc: symbolTable.getDescriptors().values()) {
@@ -104,7 +105,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         CFG currentCFG = symbolBlock;
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
-                CFG nextCFG = desc.generateCFG();
+                CFG nextCFG = desc.generateCFG(context);
                 currentCFG.setNextBlock(nextCFG.getEntryBlock());
                 nextCFG.setPreviousBlock(currentCFG.getExitBlock());
                 currentCFG = nextCFG;

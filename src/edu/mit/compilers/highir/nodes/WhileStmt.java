@@ -6,6 +6,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -32,7 +33,7 @@ public class WhileStmt extends Statement {
     }
 
     @Override
-    public CFG generateCFG() {
+    public CFG generateCFG(CFGContext context) {
     	// TODO push CFG onto stack (pop at end of method)
     	// Need entry to be startCondition and exit to be escapeBlock
         CFG trueBranch = block.generateCFG();

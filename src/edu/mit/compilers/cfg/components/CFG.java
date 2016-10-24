@@ -8,6 +8,7 @@ import java.util.Stack;
 import java.util.HashSet;
 
 import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
 public class CFG implements CFGAble {
@@ -84,7 +85,7 @@ public class CFG implements CFGAble {
     }
 
     @Override
-    public CFG generateCFG() {
+    public CFG generateCFG(CFGContext context) {
         return this;
     }
 
