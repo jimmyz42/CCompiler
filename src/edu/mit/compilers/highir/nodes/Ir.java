@@ -29,6 +29,6 @@ abstract public class Ir implements PrettyPrintable, CFGAble {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-        return BasicBlock.createEmpty();
+        return BasicBlock.create(this);
     }
 }

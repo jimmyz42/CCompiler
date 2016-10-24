@@ -20,7 +20,12 @@ public class CFG implements CFGAble {
         this.exitBlock = exitBlock;
     }
 
+    // For purposes of creating a NOP start and a NOP end
+    // to link to, note that entry and exit block are not linked
+    // when creating the actual interior CFG link to the NOPs appropriately
     public CFG() {
+    	this.entryBlock = BasicBlock.createEmpty();
+    	this.exitBlock = BasicBlock.createEmpty();
     }
 
     public BasicBlock getEntryBlock() {

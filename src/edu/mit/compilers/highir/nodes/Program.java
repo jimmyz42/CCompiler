@@ -94,7 +94,9 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
     }
 
     public CFG generateCFG(CFGContext context) {
-        //TODO: handle externs if necessary
+        // TODO: handle externs if necessary
+    	// Either add externs to CFGContext (and create a CFG for each extern)
+    	// Or handle externs differently in MethodCallExpr
         ArrayList<CFGAble> components = new ArrayList<>();
         for(Descriptor desc: symbolTable.getDescriptors().values()) {
             if(desc instanceof VariableDescriptor) {
@@ -105,6 +107,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         CFG currentCFG = symbolBlock;
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
+            	context.addMethodCFG((MethodDescriptor)desc, new CFG());
                 CFG nextCFG = desc.generateCFG(context);
                 currentCFG.setNextBlock(nextCFG.getEntryBlock());
                 nextCFG.setPreviousBlock(currentCFG.getExitBlock());

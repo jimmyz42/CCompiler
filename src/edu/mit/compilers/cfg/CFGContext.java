@@ -1,20 +1,23 @@
 package edu.mit.compilers.cfg;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import edu.mit.compilers.cfg.components.CFG;
-
+import edu.mit.compilers.highir.descriptor.FunctionDescriptor;
 
 public class CFGContext {
 	private Stack<CFG> loops;
-	private Stack<CFG> methods;
+	private Map<FunctionDescriptor, CFG> methods;
+	private CFG currentMethod;
 
 	public CFGContext() {
 		this.loops = new Stack<>();
-		this.methods = new Stack<>();
+		this.methods = new HashMap<>();
+		currentMethod = null;
 	}
 	
 	public CFG currentLoopCFG() {
-		if(loops.isEmpty()) return null;
 		return loops.peek();
 	}
 	
@@ -27,15 +30,15 @@ public class CFGContext {
 	}
 	
 	public CFG currentMethodCFG() {
-		if(methods.isEmpty()) return null;
-		return methods.peek();
+		return currentMethod;
 	}
 	
-	public void pushMethodCFG(CFG cfg) {
-		methods.push(cfg);
+	public void addMethodCFG(FunctionDescriptor desc, CFG cfg) {
+		currentMethod = cfg;
+		methods.put(desc, cfg);
 	}
 	
-	public void popMethodCFG() {
-		methods.pop();
+	public CFG getMethodCFG(FunctionDescriptor desc) {
+		return methods.get(desc);
 	}
 }
