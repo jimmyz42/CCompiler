@@ -85,10 +85,10 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
     }
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
+    public void cfgPrint(PrintWriter pw, String prefix) {
         //TODO: handle externs
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
-            desc.concisePrint(pw, prefix);
+            desc.cfgPrint(pw, prefix);
         }
     }
 

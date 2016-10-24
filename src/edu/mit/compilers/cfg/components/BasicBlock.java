@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.Condition;
-import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.*;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.highir.nodes.Statement;
 
@@ -24,7 +22,7 @@ public class BasicBlock extends CFG {
         this.exitBlock = this;
         this.prevBlocks = new ArrayList<>();
         this.nextBlocks = new ArrayList<>();
-        this.branchCondition = new BoolLiteral(true);
+        this.branchCondition = null;
     }
 
     public static BasicBlock create(List<CFGAble> components) {
@@ -42,46 +40,45 @@ public class BasicBlock extends CFG {
     }
 
     public static BasicBlock createWithCondition(Condition condition) {
-    	BasicBlock block = BasicBlock.createEmpty();
-    	block.branchCondition = condition;
-    	return block;
+        BasicBlock block = BasicBlock.createEmpty();
+        block.branchCondition = condition;
+        return block;
     }
 
     // For detecting NOPs
     public boolean isEmpty() {
-    	return components.size() == 0 && branchCondition == null;
+        return components.size() == 0 && branchCondition == null;
     }
 
     @Override
     public List<BasicBlock> getPreviousBlocks() {
-    	return prevBlocks;
+        return prevBlocks;
     }
 
     @Override
     public List<BasicBlock> getNextBlocks() {
-    	return nextBlocks;
+        return nextBlocks;
     }
 
     @Override
     public void setPreviousBlocks(List<BasicBlock> prevBlocks) {
-    	this.prevBlocks = prevBlocks;
+        this.prevBlocks = prevBlocks;
     }
 
     @Override
     public void setNextBlocks(List<BasicBlock> nextBlocks) {
-    	this.nextBlocks = nextBlocks;
+        this.nextBlocks = nextBlocks;
     }
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
+    public void cfgPrint(PrintWriter pw, String prefix) {
         for(CFGAble component: components) {
-            component.concisePrint(pw, prefix);
+            component.cfgPrint(pw, prefix);
         }
+    }
 
-        //TODO: Recurse and print path through CFG, visiting each basic block exactly once
-        // this code only looks at the first branch
-        if(getNextBlock() != null) {
-            getNextBlock().concisePrint(pw, prefix);
-        }
+    public static BasicBlock merge(BasicBlock b1, BasicBlock b2) {
+        //TODO: merge these
+        return b1;
     }
 }

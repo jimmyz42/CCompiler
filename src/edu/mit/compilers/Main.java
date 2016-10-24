@@ -109,7 +109,7 @@ class Main {
                 Program ir = (Program)loader.visit(context);
                 CFG cfg = ir.generateCFG();
                 StringWriter sw = new StringWriter();
-                cfg.concisePrint(new PrintWriter(sw), "");
+                cfg.cfgPrint(new PrintWriter(sw), "");
                 System.out.println(sw.toString());
             }
         } catch(Exception e) {

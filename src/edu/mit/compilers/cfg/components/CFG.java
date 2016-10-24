@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
+import java.util.HashSet;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -40,9 +42,9 @@ public class CFG implements CFGAble {
         if(getNextBlocks().size() == 0)
         return null;
         if(condition) {
-        	return exitBlock.getNextBlocks().get(0);
+            return exitBlock.getNextBlocks().get(0);
         } else {
-        	return exitBlock.getNextBlocks().get(1);
+            return exitBlock.getNextBlocks().get(1);
         }
     }
 
@@ -57,19 +59,19 @@ public class CFG implements CFGAble {
     }
 
     public void setPreviousBlocks(List<BasicBlock> prevBlocks) {
-    	entryBlock.setPreviousBlocks(prevBlocks);
+        entryBlock.setPreviousBlocks(prevBlocks);
     }
 
     public void setNextBlocks(List<BasicBlock> nextBlocks) {
-    	exitBlock.setNextBlocks(nextBlocks);
+        exitBlock.setNextBlocks(nextBlocks);
     }
 
     public void setPreviousBlock(BasicBlock prevBlock) {
-    	setPreviousBlocks(Collections.singletonList(prevBlock));
+        setPreviousBlocks(Collections.singletonList(prevBlock));
     }
 
     public void setNextBlock(BasicBlock nextBlock) {
-    	setNextBlocks(Collections.singletonList(nextBlock));
+        setNextBlocks(Collections.singletonList(nextBlock));
     }
 
     @Override
@@ -78,7 +80,25 @@ public class CFG implements CFGAble {
     }
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
-        getEntryBlock().concisePrint(pw, prefix);
+    public void cfgPrint(PrintWriter pw, String prefix) {
+        HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        Stack<BasicBlock> blockStack = new Stack<>();
+        blockStack.push(getEntryBlock());
+
+        while(!blockStack.empty()) {
+            BasicBlock currentBlock = blockStack.pop();
+            if(visited.contains(currentBlock)) continue;
+            else visited.add(currentBlock);
+
+            currentBlock.cfgPrint(pw, prefix + "    ");
+
+            //push blocks in reverse order to pop in correct order
+            if(currentBlock.getNextBlocks().size() > 1) {
+                blockStack.push(currentBlock.getNextBlock(false));
+            }
+            if(currentBlock.getNextBlocks().size() > 0){
+                blockStack.push(currentBlock.getNextBlock(true));
+            }
+        }
     }
 }

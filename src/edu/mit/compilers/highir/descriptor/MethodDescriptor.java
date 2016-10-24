@@ -101,7 +101,7 @@ public class MethodDescriptor extends FunctionDescriptor {
     }
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
-        pw.println(prefix + getType() + " " + getName());
+    public void cfgPrint(PrintWriter pw, String prefix) {
+        pw.println(getType() + " " + getName());
     }
 }

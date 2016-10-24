@@ -22,7 +22,7 @@ abstract public class Ir implements PrettyPrintable, CFGAble {
     }
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
+    public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println("");
     }
 

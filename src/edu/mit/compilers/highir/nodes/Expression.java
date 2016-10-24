@@ -12,9 +12,9 @@ abstract public class Expression extends ExternArg {
     public static Expression create(DecafSemanticChecker checker, DecafParser.ExprContext ctx) {
         return (Expression) checker.visit(ctx);
     }
-    
+
     public abstract Type getExpressionType();
-    
+
     // For bool expressions, returns entry block
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
     	// Bool expressions will override to return short circuit CFG

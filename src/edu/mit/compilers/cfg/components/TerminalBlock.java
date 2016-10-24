@@ -27,6 +27,6 @@ public class TerminalBlock extends BasicBlock {
     }
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
+    public void cfgPrint(PrintWriter pw, String prefix) {
     }
 }

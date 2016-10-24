@@ -11,7 +11,7 @@ public class BreakStmt extends Statement {
     }
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
+    public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "break");
     }
 }

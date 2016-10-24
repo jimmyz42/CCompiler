@@ -64,10 +64,10 @@ public class AssignStmt extends Statement {
     // and concats that with a BasicBlock containing this class
 
     @Override
-    public void concisePrint(PrintWriter pw, String prefix) {
+    public void cfgPrint(PrintWriter pw, String prefix) {
         pw.print(prefix);
-        location.concisePrint(pw,"");
+        location.cfgPrint(pw,"");
         pw.print(" " + assignOp);
-        expression.concisePrint(pw," ");
+        expression.cfgPrint(pw," ");
     }
 }

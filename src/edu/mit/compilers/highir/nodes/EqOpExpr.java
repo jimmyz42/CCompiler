@@ -2,6 +2,7 @@ package edu.mit.compilers.highir.nodes;
 
 import java.util.Arrays;
 import java.util.List;
+import java.io.PrintWriter;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -32,19 +33,19 @@ public class EqOpExpr extends BinOpExpr implements Condition {
     public Type getExpressionType() {
         return ScalarType.BOOL;
     }
-    
+
     @Override
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
-    	BasicBlock block = BasicBlock.createWithCondition(this);
-    	block.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
-    	trueBranch.setPreviousBlock(block);
-    	falseBranch.setPreviousBlock(block);
-    	return block;
+        BasicBlock block = BasicBlock.createWithCondition(this);
+        block.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
+        trueBranch.setPreviousBlock(block);
+        falseBranch.setPreviousBlock(block);
+        return block;
     }
 
-	@Override
-	public List<Instruction> generateAssembly() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<Instruction> generateAssembly() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
