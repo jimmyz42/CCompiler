@@ -34,13 +34,24 @@ public class WhileStmt extends Statement {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-    	// TODO push CFG onto stack (pop at end of method)
-    	// Need entry to be startCondition and exit to be escapeBlock
-        CFG trueBranch = block.generateCFG();
+    	// startBlock is NOP for allowing continue; statements
+    	// because startCondition has to be evaluated after block.generateCFG()
+    	BasicBlock startBlock = BasicBlock.createEmpty();
         BasicBlock escapeBlock = BasicBlock.createEmpty();
+        
+    	// Note: Need to push this BEFORE calling block.generateCFG()
+    	// so that any break/continue statements are taken care of
+    	context.pushLoopCFG(new CFG(startBlock, escapeBlock));
+    	
+        CFG trueBranch = block.generateCFG();
         BasicBlock startCondition = condition.shortCircuit(trueBranch, escapeBlock);
+        startBlock.setNextBlock(startCondition);
+        startCondition.addPreviousBlock(startBlock);
         trueBranch.setNextBlock(startCondition);
         startCondition.addPreviousBlock(trueBranch.getEntryBlock());
+        
+        context.popLoopCFG();
+        
         return new CFG(startCondition, escapeBlock);
     }
 }

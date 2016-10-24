@@ -71,13 +71,16 @@ public class ForStmt extends Statement {
     }
     
     @Override
-    public CFG generateCFG() {
-    	// TODO push CFG onto stack (pop at end of method)
-    	// Need entry to be updateCFG.entryBlock() and exit to be escapeBlock
+    public CFG generateCFG(CFGContext context) {
     	CFG initializerCFG = initializer.generateCFG();   
-    	CFG trueBranch = block.generateCFG();
     	CFG updateCFG = update.generateCFG();
     	BasicBlock escapeBlock = BasicBlock.createEmpty();
+    	
+    	// Note: Need to push this BEFORE calling block.generateCFG()
+    	// so that any break/continue statements are taken care of
+    	context.pushLoopCFG(new CFG(updateCFG.getEntryBlock(), escapeBlock));
+    	
+    	CFG trueBranch = block.generateCFG();
     	BasicBlock startCondition = condition.shortCircuit(trueBranch, escapeBlock);
       
     	initializerCFG.setNextBlock(startCondition);
@@ -88,6 +91,8 @@ public class ForStmt extends Statement {
     	
     	updateCFG.setNextBlock(startCondition);
     	startCondition.addPreviousBlock(updateCFG.getExitBlock());
+    	
+    	context.popLoopCFG();
     	
     	return new CFG(initializerCFG.getEntryBlock(), escapeBlock);
     }
