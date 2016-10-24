@@ -1,10 +1,17 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.Arrays;
+import java.util.List;
+
+import edu.mit.compilers.cfg.Condition;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
-public class EqOpExpr extends BinOpExpr {
+public class EqOpExpr extends BinOpExpr implements Condition {
     public EqOpExpr(EqOp operator, Expression lhs, Expression rhs) {
         super(operator, lhs, rhs);
     }
@@ -25,4 +32,19 @@ public class EqOpExpr extends BinOpExpr {
     public Type getExpressionType() {
         return ScalarType.BOOL;
     }
+    
+    @Override
+    public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
+    	BasicBlock block = BasicBlock.createWithCondition(this);
+    	block.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
+    	trueBranch.setPreviousBlock(block);
+    	falseBranch.setPreviousBlock(block);
+    	return block;
+    }
+
+	@Override
+	public List<Instruction> generateAssembly() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

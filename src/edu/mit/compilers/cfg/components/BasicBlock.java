@@ -37,8 +37,19 @@ public class BasicBlock extends CFG {
         return BasicBlock.create(components);
     }
 
-    public static BasicBlock create() {
+    public static BasicBlock createEmpty() {
         return new BasicBlock(new ArrayList<CFGAble>());
+    }
+
+    public static BasicBlock createWithCondition(Condition condition) {
+    	BasicBlock block = BasicBlock.createEmpty();
+    	block.branchCondition = condition;
+    	return block;
+    }
+
+    // For detecting NOPs
+    public boolean isEmpty() {
+    	return components.size() == 0 && branchCondition == null;
     }
 
     @Override
@@ -70,9 +81,6 @@ public class BasicBlock extends CFG {
         //TODO: Recurse and print path through CFG, visiting each basic block exactly once
         // this code only looks at the first branch
         if(getNextBlock() != null) {
-            System.out.println("new block");
-            System.out.println(getNextBlock());
-            System.out.println(this);
             getNextBlock().concisePrint(pw, prefix);
         }
     }

@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.grammar.DecafParser.BlockContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.StatementContext;
@@ -21,7 +22,7 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import exceptions.SemanticError;
 import exceptions.ImproperEscapeError;
 
-public class Block extends Ir {
+public class Block extends Ir implements CFGAble {
     private final LocalSymbolTable symbolTable;
     private List<Statement> statements;
     private boolean isLocalBlock;

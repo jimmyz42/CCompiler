@@ -1,5 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import exceptions.TypeMismatchError;
@@ -29,5 +31,11 @@ public class OrOpExpr extends BinOpExpr {
     @Override
     public Type getExpressionType() {
         return ScalarType.BOOL;
+    }
+    
+    @Override
+    public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
+    	CFG temp = rhs.shortCircuit(trueBranch, falseBranch);
+    	return lhs.shortCircuit(trueBranch, temp);
     }
 }

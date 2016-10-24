@@ -28,6 +28,10 @@ public class CFG implements CFGAble {
         return exitBlock;
     }
 
+    public BasicBlock getPreviousBlock() {
+        return getPreviousBlocks().get(0);
+    }
+
     public BasicBlock getNextBlock() {
         return getNextBlock(true);
     }

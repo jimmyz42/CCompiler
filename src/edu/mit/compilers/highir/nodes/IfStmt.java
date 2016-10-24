@@ -3,6 +3,7 @@ package edu.mit.compilers.highir.nodes;
 import java.io.PrintWriter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
@@ -41,6 +42,17 @@ public class IfStmt extends Statement {
         return new IfStmt(condition, block, elseBlock);
     }
 
+    // @Override
+    // public CFG generateCFG() {
+    // 	CFG ifCFG = block.generateCFG();
+    // 	CFG elseCFG = elseBlock.generateCFG();
+    // 	BasicBlock nop = BasicBlock.createEmpty();
+    // 	ifCFG.setNextBlock(nop);
+    // 	elseCFG.setNextBlock(nop);
+    // 	nop.setPreviousBlocks(Arrays.asList(ifCFG.getExitBlock(), elseCFG.getExitBlock()));
+    // 	return new CFG(condition.shortCircuit(ifCFG, elseCFG), nop);
+    // }
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getClass().getSimpleName());
@@ -56,26 +68,20 @@ public class IfStmt extends Statement {
 
     @Override
     public CFG generateCFG() {
-        ArrayList<BasicBlock> entryBranches = new ArrayList<>();
+        CFG conditionCFG = condition.generateCFG();
         CFG trueBranch = block.generateCFG();
         CFG falseBranch = elseBlock.generateCFG();
-        entryBranches.add(trueBranch.getEntryBlock());
-        entryBranches.add(falseBranch.getEntryBlock());
+        BasicBlock nop = BasicBlock.createEmpty();
 
-        CFG conditionCFG = condition.generateCFG();
-        conditionCFG.setNextBlocks(entryBranches);
+        conditionCFG.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
         trueBranch.setPreviousBlock(conditionCFG.getExitBlock());
         falseBranch.setPreviousBlock(conditionCFG.getExitBlock());
 
-        BasicBlock escapeBlock = BasicBlock.create();
-        trueBranch.setNextBlock(escapeBlock);
-        falseBranch.setNextBlock(escapeBlock);
+        trueBranch.setNextBlock(nop);
+        falseBranch.setNextBlock(nop);
 
-        ArrayList<BasicBlock> exitBranches = new ArrayList<>();
-        exitBranches.add(trueBranch.getExitBlock());
-        exitBranches.add(falseBranch.getExitBlock());
-        escapeBlock.setPreviousBlocks(exitBranches);
+        nop.setPreviousBlocks(Arrays.asList(trueBranch.getExitBlock(), falseBranch.getExitBlock()));
 
-        return new CFG(conditionCFG.getEntryBlock(), escapeBlock);
+        return new CFG(conditionCFG.getEntryBlock(), nop);
     }
 }

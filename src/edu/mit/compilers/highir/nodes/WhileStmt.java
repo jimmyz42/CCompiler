@@ -35,7 +35,7 @@ public class WhileStmt extends Statement {
     public CFG generateCFG() {
         ArrayList<BasicBlock> entryBranches = new ArrayList<>();
         CFG trueBranch = block.generateCFG();
-        BasicBlock escapeBlock = BasicBlock.create();
+        BasicBlock escapeBlock = BasicBlock.createEmpty();
         entryBranches.add(trueBranch.getEntryBlock());
         entryBranches.add(escapeBlock);
 

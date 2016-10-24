@@ -75,7 +75,7 @@ public class ForStmt extends Statement {
         CFG conditionCFG = condition.generateCFG();
         CFG trueBranch = block.generateCFG();
         CFG updateCFG = update.generateCFG();
-        BasicBlock escapeBlock = BasicBlock.create();
+        BasicBlock escapeBlock = BasicBlock.createEmpty();
 
         initializerCFG.setNextBlock(conditionCFG.getEntryBlock());
         conditionCFG.setPreviousBlock(initializerCFG.getExitBlock());
