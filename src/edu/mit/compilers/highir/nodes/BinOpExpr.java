@@ -43,8 +43,13 @@ abstract public class BinOpExpr extends Expression {
     	rhs.cfgPrint(pw, prefix);
     }
 
-//    @Override
-//    public CFG generateCFG(CFGContext context) {
-//
-//    }
+    @Override
+    public CFG generateCFG(CFGContext context) {
+        ArrayList<CFGAble> components = new ArrayList<>();
+        components.add(lhs);
+        components.add(operator);
+        components.add(rhs);
+        BasicBlock expressionBlock = BasicBlock.create(components);
+        return expressionBlock;
+    }
 }
