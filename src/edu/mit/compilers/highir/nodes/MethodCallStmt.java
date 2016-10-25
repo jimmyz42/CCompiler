@@ -20,4 +20,10 @@ public class MethodCallStmt extends Statement {
         super.prettyPrint(pw, prefix);
         methodCall.prettyPrint(pw, prefix+"    ");
     }
+
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+        methodCall.cfgPrint(pw, prefix);
+        pw.println();
+    }
 }

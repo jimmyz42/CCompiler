@@ -3,6 +3,7 @@ package edu.mit.compilers.highir.nodes;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
@@ -53,7 +54,7 @@ public class MethodCallExpr extends Expression {
                 if (arg.getExpressionType() != expectedArgs.get(i).getType()) {
                     // 1-based indexing for arguments in error messages
                     throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() +
-                            ", expected " + expectedArgs.get(i).getType(), ctx.extern_arg(i));
+                    ", expected " + expectedArgs.get(i).getType(), ctx.extern_arg(i));
                 }
             }
         }
@@ -68,9 +69,21 @@ public class MethodCallExpr extends Expression {
         function.getType().prettyPrint(pw, "");
         pw.print(" ");
         pw.println(function.getName());
-    	pw.println(prefix + "-passed in arguments:");
-    	for (ExternArg arg : arguments){
-    		arg.prettyPrint(pw, prefix+"    ");
-    	}
+        pw.println(prefix + "-passed in arguments:");
+        for (ExternArg arg : arguments){
+            arg.prettyPrint(pw, prefix+"    ");
+        }
+    }
+
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+        pw.print(prefix + function.getName() + "(");
+        for(Iterator<ExternArg> it = arguments.iterator(); it.hasNext();) {
+            it.next().cfgPrint(pw, "");
+            if (it.hasNext()) {
+                pw.print(", ");
+            }
+        }
+        pw.print(")");
     }
 }

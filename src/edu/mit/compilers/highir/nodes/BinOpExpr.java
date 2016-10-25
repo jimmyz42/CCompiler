@@ -24,7 +24,7 @@ abstract public class BinOpExpr extends Expression {
         this.lhs = lhs;
         this.rhs = rhs;
     }
-    
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getClass().getSimpleName());
@@ -34,27 +34,27 @@ abstract public class BinOpExpr extends Expression {
         pw.println(prefix + "-rhs:");
         rhs.prettyPrint(pw, prefix + "    ");
     }
-    
+
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
     	pw.print(prefix);
-    	lhs.cfgPrint(pw, prefix);
+    	lhs.cfgPrint(pw, "");
     	operator.cfgPrint(pw, " ");
-    	rhs.cfgPrint(pw, prefix);
+    	rhs.cfgPrint(pw, " ");
     }
 
     @Override
     public CFG generateCFG(CFGContext context) {
         CFG lhsCFG = lhs.generateCFG(context);
         CFG operatorCFG = operator.generateCFG(context);
-        
+
         lhsCFG.setNextBlock(operatorCFG.getEntryBlock());
         operatorCFG.setPreviousBlock(lhsCFG.getExitBlock());
-        
+
         CFG rhsCFG = rhs.generateCFG(context);
         operatorCFG.setNextBlock(rhsCFG.getEntryBlock());
         rhsCFG.setPreviousBlock(operatorCFG.getExitBlock());
-        
+
         return new CFG (lhsCFG.getEntryBlock(), rhsCFG.getExitBlock());
     }
 }

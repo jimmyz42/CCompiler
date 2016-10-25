@@ -1,5 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
@@ -25,5 +27,10 @@ public class SizeofIdExpr extends Expression {
     @Override
     public Type getExpressionType() {
         return ScalarType.INT;
+    }
+
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+    	pw.print(prefix + "sizeof(" + variable.getName() + ")");
     }
 }
