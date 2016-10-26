@@ -1,5 +1,6 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.io.PrintWriter;
@@ -9,6 +10,8 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
@@ -44,8 +47,13 @@ public class EqOpExpr extends BinOpExpr implements Condition {
     }
 
     @Override
-    public List<Instruction> generateAssembly() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Instruction> generateAssembly(){
+    	//TODO: figure out which registers store what values 
+    	//TODO: operator.toString is "==" : cmove
+    	//TODO: operator.toString is "!=" : cmovne
+    	Register dest = new Register(lhs);
+    	Register src = new Register(rhs);
+    	Instruction cmp = new Cmp(src, dest);
+    	return new ArrayList<Instruction>(Arrays.asList(cmp));
     }
 }

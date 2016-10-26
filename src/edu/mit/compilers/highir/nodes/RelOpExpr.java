@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,6 +10,9 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Add;
+import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
@@ -48,9 +52,18 @@ public class RelOpExpr extends BinOpExpr implements Condition {
     	return block;
     }
 
-	@Override
-	public List<Instruction> generateAssembly() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<Instruction> generateAssembly(){
+    	//TODO: figure out which registers store what values 
+    	//depending on the operation: 
+    	//RelOp.toString is "==" : cmove
+    	//RelOp.toString is ">": cmovg
+    	//RelOp.toString is "<": cmovl
+    	//RelOp.toString is ">=": cmovge
+    	//RelOp.toString is "<=": cmovle
+    	Register dest = new Register(lhs);
+    	Register src = new Register(rhs);
+    	Instruction cmp = new Cmp(src, dest);
+    	return new ArrayList<Instruction>(Arrays.asList(cmp));
+    }
 }

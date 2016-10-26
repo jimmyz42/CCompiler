@@ -1,9 +1,17 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Add;
+import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Or;
 import exceptions.TypeMismatchError;
 
 public class OrOpExpr extends BinOpExpr {
@@ -37,5 +45,15 @@ public class OrOpExpr extends BinOpExpr {
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
     	CFG temp = rhs.shortCircuit(trueBranch, falseBranch);
     	return lhs.shortCircuit(trueBranch, temp);
+    }
+    
+    @Override
+    public List<Instruction> generateAssembly(){
+    	//TODO: figure out which registers store what values 
+    	//TODO: if complicated, figure out how to simplify 
+    	Register dest = new Register(lhs);
+    	Register src = new Register(rhs);
+    	Instruction add = new Or(src, dest);
+    	return new ArrayList<Instruction>(Arrays.asList(add));
     }
 }
