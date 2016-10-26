@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import edu.mit.compilers.cfg.*;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.highir.nodes.Statement;
+import edu.mit.compilers.lowir.instructions.Instruction;
 
 public class BasicBlock extends CFG {
 
@@ -69,6 +70,14 @@ public class BasicBlock extends CFG {
     public void setNextBlocks(List<BasicBlock> nextBlocks) {
         this.nextBlocks = nextBlocks;
     }
+    
+    public void setCondition(Condition branchCondition) {
+    	this.branchCondition = branchCondition;
+    }
+    
+    public Condition getCondition() {
+    	return branchCondition;
+    }
 
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
@@ -76,9 +85,24 @@ public class BasicBlock extends CFG {
             component.cfgPrint(pw, prefix);
         }
     }
+    
+    @Override
+    public List<Instruction> generateAssembly() {
+    	// TODO generate label, generate assembly for each component,
+    	// generate conditional jump (CMP, then JMP)
+    	return null;
+    }
 
+    // Precondition: b1.getNextBlocks() = [b2], b2.getPreviousBlocks() = [b1]
+    // Aka b1 only points to b2, b2 is only pointed to by b1
     public static BasicBlock merge(BasicBlock b1, BasicBlock b2) {
-        //TODO: merge these
-        return b1;
+    	List<CFGAble> both = new ArrayList<>();
+    	both.addAll(b1.components);
+    	both.addAll(b2.components);
+    	BasicBlock combined = BasicBlock.create(both);
+    	combined.setPreviousBlocks(b1.getPreviousBlocks());
+    	combined.setNextBlocks(b2.getNextBlocks());
+    	combined.setCondition(b2.getCondition());
+        return combined;
     }
 }

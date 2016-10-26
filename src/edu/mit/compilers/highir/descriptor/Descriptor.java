@@ -1,12 +1,13 @@
 package edu.mit.compilers.highir.descriptor;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 import edu.mit.compilers.PrettyPrintable;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.highir.nodes.Type;
-
+import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -36,5 +37,11 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getType() + " " + getName());
+    }
+    
+    @Override
+    public List<Instruction> generateAssembly() {
+    	//TODO
+    	return null;
     }
 }

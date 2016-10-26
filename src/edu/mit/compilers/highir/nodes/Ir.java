@@ -2,11 +2,14 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.mit.compilers.PrettyPrintable;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
 abstract public class Ir implements PrettyPrintable, CFGAble {
@@ -30,5 +33,10 @@ abstract public class Ir implements PrettyPrintable, CFGAble {
     @Override
     public CFG generateCFG(CFGContext context) {
         return BasicBlock.create(this);
+    }
+    
+    @Override
+    public List<Instruction> generateAssembly() {
+    	return new ArrayList<>();
     }
 }
