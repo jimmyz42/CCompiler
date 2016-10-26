@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Add;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
@@ -39,11 +40,14 @@ public class AddOpExpr extends BinOpExpr {
     
     @Override
     public List<Instruction> generateAssembly(){
-    	if (type(lhs) == Literal){
-    		
-    	}
-    	Location src;
-    	Location dest;
+    	//TODO: figure out which registers store what values 
+    	//right now i want to evaluate left-to-right 
+    	//so 1+1+2 becomes
+    	//mov 1 into r?
+    	//add(1,r?)
+    	//add(2,r?)
+    	Register dest = new Register(lhs);
+    	Register src = new Register(rhs);
     	Instruction add = new Add(src, dest);
     	return new ArrayList<Instruction>(Arrays.asList(add));
     }
