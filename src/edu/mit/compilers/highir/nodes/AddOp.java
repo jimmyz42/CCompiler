@@ -1,7 +1,10 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.List;
+
 import org.antlr.v4.runtime.tree.TerminalNode;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 
 public class AddOp extends BinOp {

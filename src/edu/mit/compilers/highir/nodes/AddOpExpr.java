@@ -1,7 +1,13 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.instructions.Add;
+import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
 public class AddOpExpr extends BinOpExpr {
@@ -29,5 +35,16 @@ public class AddOpExpr extends BinOpExpr {
     @Override
     public Type getExpressionType() {
         return ScalarType.INT;
+    }
+    
+    @Override
+    public List<Instruction> generateAssembly(){
+    	if (type(lhs) == Literal){
+    		
+    	}
+    	Location src;
+    	Location dest;
+    	Instruction add = new Add(src, dest);
+    	return new ArrayList<Instruction>(Arrays.asList(add));
     }
 }

@@ -2,6 +2,8 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
@@ -11,6 +13,7 @@ import edu.mit.compilers.grammar.DecafParser.ExprContext;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.MethodDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
 
@@ -42,19 +45,18 @@ abstract public class BinOpExpr extends Expression {
     	operator.cfgPrint(pw, " ");
     	rhs.cfgPrint(pw, " ");
     }
-
+    
     @Override
-    public CFG generateCFG(CFGContext context) {
-        CFG lhsCFG = lhs.generateCFG(context);
-        CFG operatorCFG = operator.generateCFG(context);
-
-        lhsCFG.setNextBlock(operatorCFG.getEntryBlock());
-        operatorCFG.setPreviousBlock(lhsCFG.getExitBlock());
-
-        CFG rhsCFG = rhs.generateCFG(context);
-        operatorCFG.setNextBlock(rhsCFG.getEntryBlock());
-        rhsCFG.setPreviousBlock(operatorCFG.getExitBlock());
-
-        return new CFG (lhsCFG.getEntryBlock(), rhsCFG.getExitBlock());
+    public List<Instruction> generateAssembly() {
+    	List<Instruction> lhsInst = lhs.generateAssembly();
+    	List<Instruction> opInst = operator.generateAssembly();
+    	List<Instruction> rhsInst = rhs.generateAssembly();
+    	
+    	List<Instruction> expression = new ArrayList<>();
+    	expression.addAll(lhsInst);
+    	expression.addAll(opInst);
+    	expression.addAll(rhsInst);
+    	
+    	return expression;
     }
 }
