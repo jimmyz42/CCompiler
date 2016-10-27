@@ -36,8 +36,8 @@ public class WhileStmt extends Statement {
     public CFG generateCFG(CFGContext context) {
     	// startBlock is NOP for allowing continue; statements
     	// because startCondition has to be evaluated after block.generateCFG()
-    	BasicBlock startBlock = BasicBlock.createEmpty();
-        BasicBlock escapeBlock = BasicBlock.createEmpty();
+    	BasicBlock startBlock = BasicBlock.createEmpty("while start");
+        BasicBlock escapeBlock = BasicBlock.createEmpty("while escape");
         
     	// Note: Need to push this BEFORE calling block.generateCFG()
     	// so that any break/continue statements are taken care of
@@ -52,7 +52,7 @@ public class WhileStmt extends Statement {
         
         context.popLoopCFG();
         
-        return new CFG(startCondition, escapeBlock);
+        return new CFG(startBlock, escapeBlock);
     }
 }
 

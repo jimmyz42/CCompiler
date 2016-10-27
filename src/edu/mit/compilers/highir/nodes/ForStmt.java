@@ -74,7 +74,7 @@ public class ForStmt extends Statement {
     public CFG generateCFG(CFGContext context) {
     	CFG initializerCFG = initializer.generateCFG(context);   
     	CFG updateCFG = update.generateCFG(context);
-    	BasicBlock escapeBlock = BasicBlock.createEmpty();
+    	BasicBlock escapeBlock = BasicBlock.createEmpty("for escape");
     	
     	// Note: Need to push this BEFORE calling block.generateCFG()
     	// so that any break/continue statements are taken care of
