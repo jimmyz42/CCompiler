@@ -93,6 +93,9 @@ public class BasicBlock extends CFG {
         for(CFGAble component: components) {
             component.cfgPrint(pw, prefix);
         }
+        if (branchCondition != null){
+            branchCondition.cfgPrint(pw,prefix);
+        }
     }
     
     @Override

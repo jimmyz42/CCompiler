@@ -44,6 +44,7 @@ abstract public class BinOpExpr extends Expression {
     	lhs.cfgPrint(pw, "");
     	operator.cfgPrint(pw, " ");
     	rhs.cfgPrint(pw, " ");
+    	pw.println();
     }
     
     @Override

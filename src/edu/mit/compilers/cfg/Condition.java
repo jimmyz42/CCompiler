@@ -1,5 +1,6 @@
 package edu.mit.compilers.cfg;
 
+import java.io.PrintWriter;
 import java.util.List;
 
 import edu.mit.compilers.lowir.instructions.Instruction;
@@ -10,4 +11,5 @@ public interface Condition {
 	// BoolLiteral also implements this TODO generate unconditional jump
 	
 	public List<Instruction> generateAssembly();
+	public void cfgPrint(PrintWriter pw, String prefix);
 }
