@@ -15,7 +15,7 @@ digraph G {
   13 [ label="13: " ];
   14 [ label="14: A[j]\ \<=\ x\l" ];
   15 [ label="15: " ];
-  16 [ label="16: " ];
+  16 [ label="16: break\l" ];
   17 [ label="17: " ];
   18 [ label="18: j\ =\ j\ -\ 1\l\l" ];
   19 [ label="19: a\ +=\ a\ +\ 1\l\l" ];
@@ -27,7 +27,7 @@ digraph G {
   25 [ label="25: A[a]\ \>=\ x\l" ];
   26 [ label="26: " ];
   27 [ label="27: i\ =\ a\l" ];
-  28 [ label="28: " ];
+  28 [ label="28: break\l" ];
   29 [ label="29: " ];
   30 [ label="30: a\ +=\ a\ +\ 1\l\l" ];
   31 [ label="31: " ];
