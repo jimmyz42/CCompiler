@@ -20,7 +20,7 @@ public class ContStmt extends Statement {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-    	BasicBlock block = BasicBlock.createEmpty();
+    	BasicBlock block = BasicBlock.create(this);
     	BasicBlock loopEnter = context.currentLoopCFG().getEntryBlock();
     	block.setNextBlock(loopEnter);
     	loopEnter.addPreviousBlock(block);

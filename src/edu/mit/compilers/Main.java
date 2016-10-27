@@ -115,6 +115,10 @@ class Main {
                 StringWriter sw = new StringWriter();
                 cfg.cfgPrint(new PrintWriter(sw), "");
                 System.out.println(sw.toString());
+                if(CLI.debug){
+                    //pretty graphics!
+                	cfg.exportDOT("foo.dot");
+                }
             } else if (CLI.target == Action.ASSEMBLY) {
                 DecafScanner scanner = new DecafScanner(inputStream);
                 CommonTokenStream tokens = new CommonTokenStream(scanner);

@@ -20,7 +20,7 @@ public class BreakStmt extends Statement {
     
     @Override
     public CFG generateCFG(CFGContext context) {
-    	BasicBlock block = BasicBlock.createEmpty();
+    	BasicBlock block = BasicBlock.create(this);
     	BasicBlock loopExit = context.currentLoopCFG().getExitBlock();
     	block.setNextBlock(loopExit);
     	loopExit.addPreviousBlock(block);

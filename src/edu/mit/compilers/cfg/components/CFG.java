@@ -1,6 +1,9 @@
 package edu.mit.compilers.cfg.components;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +15,15 @@ import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
+
+import org.jgrapht.ext.DOTExporter;
+import org.jgrapht.ext.StringEdgeNameProvider;
+import org.jgrapht.ext.StringNameProvider;
+import org.jgrapht.graph.DefaultEdge; 
+import org.jgrapht.graph.DirectedPseudograph;
+import org.jgrapht.ext.VertexNameProvider;
+import org.jgrapht.ext.EdgeNameProvider;
+
 
 public class CFG implements CFGAble {
     protected BasicBlock entryBlock;
@@ -94,19 +106,122 @@ public class CFG implements CFGAble {
         return this;
     }
 
+    private void giveAllBlocksIds(){
+    	 HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+         Stack<BasicBlock> blockStack = new Stack<>();
+         blockStack.push(getEntryBlock());
+         int blockNum = 0;
+         
+         //step 1: give every BasicBlock an ID
+         while(!blockStack.empty()) {
+             BasicBlock currentBlock = blockStack.pop();
+             if(visited.contains(currentBlock)) continue;
+             else visited.add(currentBlock);
+             
+             currentBlock.setID(blockNum);
+             blockNum++;
+             //push blocks in reverse order to pop in correct order
+             if(currentBlock.getNextBlocks().size() > 1) {
+                 blockStack.push(currentBlock.getNextBlock(false));
+             }
+             if(currentBlock.getNextBlocks().size() > 0){
+                 blockStack.push(currentBlock.getNextBlock(true));
+             }
+         }
+    }
+    
+    public void exportDOT(String fileName){
+        DOTExporter<BasicBlock, DefaultEdge> exporter =
+            new DOTExporter<BasicBlock, DefaultEdge>(
+                new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
+                    @Override
+                    public String getVertexName(BasicBlock bb) {
+                        return Integer.toString(bb.getID());
+                    }
+                },
+                new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
+                    @Override
+                    public String getVertexName(BasicBlock bb) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        bb.cfgPrint(pw, "");
+                        String s = sw.toString();
+                        
+                        s = s.replace("\\", "\\\\");
+                        s = s.replace("\r\n", "\\l");
+                        s = s.replace("\n", "\\l");
+                        s = s.replace("\"", "\\\"");
+                        s = s.replace("{", "\\{");
+                        s = s.replace("}", "\\}");
+                        s = s.replace("|", "\\|");
+                        s = s.replace("|", "\\|");
+                        s = s.replace("<", "\\<");
+                        s = s.replace(">", "\\>");
+                        s = s.replace("(", "\\(");
+                        s = s.replace(")", "\\)");
+                        s = s.replace(",", "\\,");
+                        s = s.replace(";", "\\;");
+                        s = s.replace(":", "\\:");
+                        s = s.replace(" ", "\\ ");
+                        
+                        return Integer.toString(bb.getID()) + ": " + s;
+                    }
+                },
+                null);
+
+        
+        DirectedPseudograph<BasicBlock, DefaultEdge> jgraphtGraph = createJGraphT();
+
+        try {
+			exporter.export(new FileWriter(fileName), jgraphtGraph);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public DirectedPseudograph<BasicBlock, DefaultEdge> createJGraphT() {
+    	DirectedPseudograph<BasicBlock, DefaultEdge> g = new DirectedPseudograph<>(DefaultEdge.class);
+    	return createJGraphT_Sub(null, getEntryBlock(), g);
+    }
+
+    public DirectedPseudograph<BasicBlock, DefaultEdge> createJGraphT_Sub(BasicBlock pred, BasicBlock bb, DirectedPseudograph<BasicBlock, DefaultEdge> g) {
+    	boolean visited = !g.addVertex(bb);
+    	if (!(pred == null))
+    		g.addEdge(pred, bb);
+
+    	if (visited)
+    		return g;
+    	
+    	for (BasicBlock succ : bb.getNextBlocks())
+    		g = createJGraphT_Sub(bb, succ, g);
+    	
+    	return g;
+    }
+    
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-
+        
+        //step 1: give every BasicBlock an ID
+        giveAllBlocksIds();
+        
+        //step 2: print stuff
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-
+            
+            pw.println(prefix + "BasicBlock " + currentBlock.getID() + ":");
             currentBlock.cfgPrint(pw, prefix + "    ");
-
+            pw.println(prefix + currentBlock.getID() + " points to:");
+            
+            for(BasicBlock block : currentBlock.getNextBlocks()){
+            	pw.println(prefix + "    " + block.getID());
+            }
+            
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
                 blockStack.push(currentBlock.getNextBlock(false));

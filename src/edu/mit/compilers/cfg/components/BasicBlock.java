@@ -17,6 +17,8 @@ public class BasicBlock extends CFG {
     private List<BasicBlock> prevBlocks;
     private List<BasicBlock> nextBlocks;
     private Condition branchCondition;
+    private int id;
+    private String description;
 
     public BasicBlock(List<CFGAble> components) {
         this.components = components;
@@ -25,6 +27,7 @@ public class BasicBlock extends CFG {
         this.prevBlocks = new ArrayList<>();
         this.nextBlocks = new ArrayList<>();
         this.branchCondition = null;
+        this.description = "";
     }
 
     public static BasicBlock create(List<CFGAble> components) {
@@ -36,7 +39,29 @@ public class BasicBlock extends CFG {
         components.add(component);
         return BasicBlock.create(components);
     }
-
+    
+    public void setID(int id){
+    	this.id = id;
+    }
+    
+    public int getID(){
+    	return this.id;
+    }
+    
+    public void setDescription(String description) {
+    	this.description = description;
+    }
+    
+    public String getDescription() {
+    	return this.description;
+    }
+    
+    public static BasicBlock createEmpty(String description) {
+        BasicBlock block = new BasicBlock(new ArrayList<CFGAble>());
+        block.setDescription(description);
+        return block;
+    }
+    
     public static BasicBlock createEmpty() {
         return new BasicBlock(new ArrayList<CFGAble>());
     }
@@ -82,8 +107,14 @@ public class BasicBlock extends CFG {
 
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
+    	if(description.length() > 0) {
+    		pw.println(description);
+    	}
         for(CFGAble component: components) {
             component.cfgPrint(pw, prefix);
+        }
+        if (branchCondition != null){
+            branchCondition.cfgPrint(pw,prefix);
         }
     }
 
