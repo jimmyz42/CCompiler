@@ -163,7 +163,7 @@ public class CFG implements CFGAble {
                         s = s.replace(":", "\\:");
                         s = s.replace(" ", "\\ ");
                         
-                        return s;
+                        return Integer.toString(bb.getID()) + ": " + s;
                     }
                 },
                 null);
