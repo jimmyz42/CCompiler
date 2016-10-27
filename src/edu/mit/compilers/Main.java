@@ -131,7 +131,9 @@ class Main {
                 AssemblyContext actx = new AssemblyContext();
                 List<Instruction> instructions = cfg.generateAssembly(actx);
                 StringWriter sw = new StringWriter();
-                //instructions.print(new PrintWriter(sw), "");
+                for(Instruction instruction: instructions) {
+                    instruction.print(new PrintWriter(sw), "");
+                }
                 System.out.println(sw.toString());
             }
         } catch(Exception e) {

@@ -1,5 +1,7 @@
 package edu.mit.compilers.lowir.instructions;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.lowir.Location;
 
 public class Mov extends Instruction {
@@ -13,4 +15,10 @@ public class Mov extends Instruction {
     public static Mov create(Location src, Location dest) {
         return new Mov(src.getName(), dest.getName());
     }
+
+	@Override
+	public void print(PrintWriter pw, String prefix) {
+		// TODO Auto-generated method stub
+		
+	}
 }
