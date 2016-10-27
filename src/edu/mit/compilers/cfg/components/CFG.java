@@ -135,7 +135,7 @@ public class CFG implements CFGAble {
                 new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
                     @Override
                     public String getVertexName(BasicBlock bb) {
-                        return Integer.toString(System.identityHashCode(bb));
+                        return Integer.toString(bb.getID());
                     }
                 },
                 new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
@@ -145,63 +145,31 @@ public class CFG implements CFGAble {
                         PrintWriter pw = new PrintWriter(sw);
                         bb.cfgPrint(pw, "");
                         String s = sw.toString();
-                        s = s.replace("\n", "\\l");
-                        return s;
                         
-                        //return "BB";
+                        s = s.replace("\\", "\\\\");
+                        s = s.replace("\r\n", "\\l");
+                        s = s.replace("\n", "\\l");
+                        s = s.replace("\"", "\\\"");
+                        s = s.replace("{", "\\{");
+                        s = s.replace("}", "\\}");
+                        s = s.replace("|", "\\|");
+                        s = s.replace("|", "\\|");
+                        s = s.replace("<", "\\<");
+                        s = s.replace(">", "\\>");
+                        s = s.replace("(", "\\(");
+                        s = s.replace(")", "\\)");
+                        s = s.replace(",", "\\,");
+                        s = s.replace(";", "\\;");
+                        s = s.replace(":", "\\:");
+                        s = s.replace(" ", "\\ ");
+                        
+                        return s;
                     }
                 },
                 null);
 
-        SimpleDirectedGraph<BasicBlock, DefaultEdge> jgraphtGraph = new SimpleDirectedGraph<>(DefaultEdge.class);
-
-        // add vertices
-        {
-            HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-            Stack<BasicBlock> blockStack = new Stack<>();
-            blockStack.push(getEntryBlock());
-
-            while(!blockStack.empty()) {
-                BasicBlock currentBlock = blockStack.pop();
-                if(visited.contains(currentBlock)) continue;
-                else visited.add(currentBlock);
-
-                jgraphtGraph.addVertex(currentBlock);
-
-                //push blocks in reverse order to pop in correct order
-                if(currentBlock.getNextBlocks().size() > 1) {
-                    blockStack.push(currentBlock.getNextBlock(false));
-                }
-                if(currentBlock.getNextBlocks().size() > 0){
-                    blockStack.push(currentBlock.getNextBlock(true));
-                }
-            }
-        }
-
-        // add edges
-        {
-            HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-            Stack<BasicBlock> blockStack = new Stack<>();
-            blockStack.push(getEntryBlock());
-
-            while(!blockStack.empty()) {
-                BasicBlock currentBlock = blockStack.pop();
-                if(visited.contains(currentBlock)) continue;
-                else visited.add(currentBlock);
-
-                //push blocks in reverse order to pop in correct order
-                if(currentBlock.getNextBlocks().size() > 1) {
-                    BasicBlock bb = currentBlock.getNextBlock(false);
-                    jgraphtGraph.addEdge(currentBlock, bb);
-                    blockStack.push(bb);
-                }
-                if(currentBlock.getNextBlocks().size() > 0){
-                    BasicBlock bb = currentBlock.getNextBlock(true);
-                    jgraphtGraph.addEdge(currentBlock, bb);
-                    blockStack.push(bb);
-                }
-            }
-        }
+        
+        SimpleDirectedGraph<BasicBlock, DefaultEdge> jgraphtGraph = createJGraphT();
 
         try {
 			exporter.export(new FileWriter(fileName), jgraphtGraph);
@@ -209,6 +177,24 @@ public class CFG implements CFGAble {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    }
+    
+    public SimpleDirectedGraph<BasicBlock, DefaultEdge> createJGraphT() {
+    	SimpleDirectedGraph<BasicBlock, DefaultEdge> g = new SimpleDirectedGraph<>(DefaultEdge.class);
+    	return createJGraphT_Sub(null, getEntryBlock(), g);
+    }
+
+    public SimpleDirectedGraph<BasicBlock, DefaultEdge> createJGraphT_Sub(BasicBlock pred, BasicBlock bb, SimpleDirectedGraph<BasicBlock, DefaultEdge> g) {
+    	if (!g.addVertex(bb))
+    		return g;
+    	
+    	if (!(pred == null))
+    		g.addEdge(pred, bb);
+    	
+    	for (BasicBlock succ : bb.getNextBlocks())
+    		g = createJGraphT_Sub(bb, succ, g);
+    	
+    	return g;
     }
     
     @Override
