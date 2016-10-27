@@ -11,7 +11,11 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Cmp;
+import edu.mit.compilers.lowir.instructions.Cmove;
+import edu.mit.compilers.lowir.instructions.Cmovne;
+import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
@@ -47,13 +51,28 @@ public class EqOpExpr extends BinOpExpr implements Condition {
     }
 
     @Override
-    public List<Instruction> generateAssembly(){
-    	//TODO: figure out which registers store what values 
-    	//TODO: operator.toString is "==" : cmove
-    	//TODO: operator.toString is "!=" : cmovne
-    	Register dest = new Register(lhs);
-    	Register src = new Register(rhs);
-    	Instruction cmp = new Cmp(src, dest);
-    	return new ArrayList<Instruction>(Arrays.asList(cmp));
+    public List<Instruction> generateAssembly(AssemblyContext ctx){
+        List<Instruction> lhsInst = lhs.generateAssembly(ctx);
+        List<Instruction> rhsInst = rhs.generateAssembly(ctx);
+        List<Instruction> expression = new ArrayList<>();
+        expression.addAll(lhsInst);
+        expression.addAll(rhsInst);
+
+        Register src = ctx.allocateRegister(rhs);
+        Register dest = ctx.allocateRegister(lhs);
+        Instruction opInstruction = new Cmp(src, dest);
+        expression.add(opInstruction);
+
+        if(operator.getTerminal().equals("==")) {
+            expression.add(Mov.create(false, dest));
+            expression.add(Cmove.create(true, dest));
+        } else {
+            expression.add(Mov.create(false, dest));
+            expression.add(Cmovne.create(true, dest));
+        }
+
+        ctx.setRegister(this, dest);
+
+        return expression;
     }
 }

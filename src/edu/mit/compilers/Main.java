@@ -12,6 +12,8 @@ import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.highir.nodes.Program;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
 import exceptions.SemanticError;
@@ -112,6 +114,20 @@ class Main {
                 CFG cfg = ir.generateCFG(ctx);
                 StringWriter sw = new StringWriter();
                 cfg.cfgPrint(new PrintWriter(sw), "");
+                System.out.println(sw.toString());
+            } else if (CLI.target == Action.ASSEMBLY) {
+                DecafScanner scanner = new DecafScanner(inputStream);
+                CommonTokenStream tokens = new CommonTokenStream(scanner);
+                DecafParser parser = new DecafParser(tokens);
+                ProgramContext context = parser.program();
+                DecafSemanticChecker loader = new DecafSemanticChecker();
+                Program ir = (Program)loader.visit(context);
+                CFGContext ctx = new CFGContext();
+                CFG cfg = ir.generateCFG(ctx);
+                AssemblyContext actx = new AssemblyContext();
+                List<Instruction> instructions = cfg.generateAssembly(actx);
+                StringWriter sw = new StringWriter();
+                //instructions.print(new PrintWriter(sw), "");
                 System.out.println(sw.toString());
             }
         } catch(Exception e) {

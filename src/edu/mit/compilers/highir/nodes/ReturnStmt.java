@@ -1,9 +1,14 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Collections;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Ret;
 import exceptions.TypeMismatchError;
 
 public class ReturnStmt extends Statement {
@@ -41,5 +46,10 @@ public class ReturnStmt extends Statement {
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "return");
+    }
+
+    @Override
+    public List<Instruction> generateAssembly(AssemblyContext ctx) {
+        return Collections.singletonList(Ret.create());
     }
 }

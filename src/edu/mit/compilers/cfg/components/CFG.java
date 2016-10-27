@@ -10,6 +10,7 @@ import java.util.HashSet;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
 
 public class CFG implements CFGAble {
@@ -115,9 +116,9 @@ public class CFG implements CFGAble {
             }
         }
     }
-    
+
     @Override
-    public List<Instruction> generateAssembly() {
+    public List<Instruction> generateAssembly(AssemblyContext ctx) {
     	// TODO walk through CFG visit each basic block once,
     	// generate list of instructions
     	return null;

@@ -9,6 +9,11 @@ abstract public class BinOp extends Ir {
         this.terminal = terminal;
     }
 
+    public String getTerminal()
+    {
+        return terminal;
+    }
+
     @Override
     public String toString() {
         return terminal;
@@ -16,11 +21,11 @@ abstract public class BinOp extends Ir {
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
-    	pw.println(prefix + terminal);
+        pw.println(prefix + terminal);
     }
-    
+
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
-    	pw.print(prefix + terminal);
+        pw.print(prefix + terminal);
     }
 }

@@ -9,6 +9,7 @@ import edu.mit.compilers.PrettyPrintable;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.cfg.components.BasicBlock;
 
@@ -34,9 +35,9 @@ abstract public class Ir implements PrettyPrintable, CFGAble {
     public CFG generateCFG(CFGContext context) {
         return BasicBlock.create(this);
     }
-    
+
     @Override
-    public List<Instruction> generateAssembly() {
+    public List<Instruction> generateAssembly(AssemblyContext ctx) {
     	return new ArrayList<>();
     }
 }

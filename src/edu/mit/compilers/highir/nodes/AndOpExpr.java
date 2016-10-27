@@ -8,8 +8,9 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.instructions.Add;
+import edu.mit.compilers.lowir.instructions.And;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
@@ -31,7 +32,7 @@ public class AndOpExpr extends BinOpExpr {
             throw new TypeMismatchError("Right argument of && must be an bool, got a " +
                     rhs.getExpressionType(), ctx.expr(1));
         }
-        
+
         return new AndOpExpr(operator, lhs, rhs);
     }
 
@@ -39,21 +40,28 @@ public class AndOpExpr extends BinOpExpr {
     public Type getExpressionType() {
         return ScalarType.BOOL;
     }
-    
+
     @Override
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
     	CFG temp = rhs.shortCircuit(trueBranch, falseBranch);
     	return lhs.shortCircuit(temp, falseBranch);
     }
-    
+
     @Override
-    public List<Instruction> generateAssembly(){
-    	//TODO: figure out which registers store what values 
-    	//end goal: r? is 1 if lhs and rhs are 1
-    	//and $r_rhs, $r_dest
-    	Register dest = new Register(lhs);
-    	Register src = new Register(rhs);
-    	Instruction add = new Add(src, dest);
-    	return new ArrayList<Instruction>(Arrays.asList(add));
+    public List<Instruction> generateAssembly(AssemblyContext ctx){
+        List<Instruction> lhsInst = lhs.generateAssembly(ctx);
+        List<Instruction> rhsInst = rhs.generateAssembly(ctx);
+        List<Instruction> expression = new ArrayList<>();
+        expression.addAll(lhsInst);
+        expression.addAll(rhsInst);
+
+        Register src = ctx.allocateRegister(rhs);
+        Register dest = ctx.allocateRegister(lhs);
+        Instruction opInstruction = new And(src, dest);
+        expression.add(opInstruction);
+
+        ctx.setRegister(this, dest);
+
+        return expression;
     }
 }

@@ -2,7 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import edu.mit.compilers.lowir.Location;
 
-public class Idiv extends Instruction {
-    public Idiv(Location divisor) {
+public class Xor extends Instruction {
+    public Xor(Location src, Location dest) {
     }
 }

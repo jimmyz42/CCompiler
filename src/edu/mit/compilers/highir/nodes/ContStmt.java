@@ -17,7 +17,7 @@ public class ContStmt extends Statement {
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "continue");
     }
-    
+
     @Override
     public CFG generateCFG(CFGContext context) {
     	BasicBlock block = BasicBlock.createEmpty();

@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import edu.mit.compilers.cfg.*;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.highir.nodes.Statement;
+import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
 
 public class BasicBlock extends CFG {
@@ -70,11 +71,11 @@ public class BasicBlock extends CFG {
     public void setNextBlocks(List<BasicBlock> nextBlocks) {
         this.nextBlocks = nextBlocks;
     }
-    
+
     public void setCondition(Condition branchCondition) {
     	this.branchCondition = branchCondition;
     }
-    
+
     public Condition getCondition() {
     	return branchCondition;
     }
@@ -85,9 +86,9 @@ public class BasicBlock extends CFG {
             component.cfgPrint(pw, prefix);
         }
     }
-    
+
     @Override
-    public List<Instruction> generateAssembly() {
+    public List<Instruction> generateAssembly(AssemblyContext ctx) {
     	// TODO generate label, generate assembly for each component,
     	// generate conditional jump (CMP, then JMP)
     	return null;

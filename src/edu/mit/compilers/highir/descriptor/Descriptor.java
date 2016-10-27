@@ -4,13 +4,14 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import edu.mit.compilers.PrettyPrintable;
+import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.highir.nodes.Type;
-import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.instructions.Instruction;
 
 public abstract class Descriptor implements PrettyPrintable, CFGAble {
     private final String name;
@@ -38,9 +39,9 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getType() + " " + getName());
     }
-    
+
     @Override
-    public List<Instruction> generateAssembly() {
+    public List<Instruction> generateAssembly(AssemblyContext ctx) {
     	//TODO
     	return null;
     }
