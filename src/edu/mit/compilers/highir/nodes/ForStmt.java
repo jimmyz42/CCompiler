@@ -94,6 +94,7 @@ public class ForStmt extends Statement {
     	
     	context.popLoopCFG();
     	
+    	initializerCFG.getEntryBlock().setDescription("for start");
     	return new CFG(initializerCFG.getEntryBlock(), escapeBlock);
     }
 }

@@ -110,6 +110,7 @@ public class Block extends Ir {
             components.add(desc);
         }
         BasicBlock symbolBlock = BasicBlock.create(components);
+        symbolBlock.setDescription("variables");
         CFG currentCFG = symbolBlock;
         for(Statement statement: statements) {
             CFG nextCFG = statement.generateCFG(context);

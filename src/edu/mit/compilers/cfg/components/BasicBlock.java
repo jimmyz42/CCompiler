@@ -108,7 +108,7 @@ public class BasicBlock extends CFG {
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
     	if(description.length() > 0) {
-    		pw.println(description);
+    		pw.println("*"+description+"*");
     	}
         for(CFGAble component: components) {
             component.cfgPrint(pw, prefix);

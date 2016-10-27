@@ -46,7 +46,10 @@ public class IfStmt extends Statement {
      @Override
      public CFG generateCFG(CFGContext context) {
      	CFG trueBranch = block.generateCFG(context);
+     	trueBranch.getEntryBlock().setDescription("if block");
      	CFG falseBranch = elseBlock.generateCFG(context);
+     	falseBranch.getEntryBlock().setDescription("else block");
+     	
      	BasicBlock escapeBlock = BasicBlock.createEmpty("if escape");
      	trueBranch.setNextBlock(escapeBlock);
      	falseBranch.setNextBlock(escapeBlock);
