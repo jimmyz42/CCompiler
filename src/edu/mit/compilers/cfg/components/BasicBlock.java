@@ -16,6 +16,7 @@ public class BasicBlock extends CFG {
     private List<BasicBlock> prevBlocks;
     private List<BasicBlock> nextBlocks;
     private Condition branchCondition;
+    private int id;
 
     public BasicBlock(List<CFGAble> components) {
         this.components = components;
@@ -35,7 +36,15 @@ public class BasicBlock extends CFG {
         components.add(component);
         return BasicBlock.create(components);
     }
-
+    
+    public void setID(int id){
+    	this.id = id;
+    }
+    
+    public int getID(){
+    	return this.id;
+    }
+    
     public static BasicBlock createEmpty() {
         return new BasicBlock(new ArrayList<CFGAble>());
     }

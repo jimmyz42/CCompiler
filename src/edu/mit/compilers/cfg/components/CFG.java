@@ -1,6 +1,9 @@
 package edu.mit.compilers.cfg.components;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +14,15 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.instructions.Instruction;
+
+import org.jgrapht.ext.DOTExporter;
+import org.jgrapht.ext.StringEdgeNameProvider;
+import org.jgrapht.ext.StringNameProvider;
+import org.jgrapht.graph.DefaultEdge; 
+import org.jgrapht.graph.SimpleDirectedGraph;
+import org.jgrapht.ext.VertexNameProvider;
+import org.jgrapht.ext.EdgeNameProvider;
+
 
 public class CFG implements CFGAble {
     protected BasicBlock entryBlock;
@@ -93,19 +105,135 @@ public class CFG implements CFGAble {
         return this;
     }
 
+    private void giveAllBlocksIds(){
+    	 HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+         Stack<BasicBlock> blockStack = new Stack<>();
+         blockStack.push(getEntryBlock());
+         int blockNum = 0;
+         
+         //step 1: give every BasicBlock an ID
+         while(!blockStack.empty()) {
+             BasicBlock currentBlock = blockStack.pop();
+             if(visited.contains(currentBlock)) continue;
+             else visited.add(currentBlock);
+             
+             currentBlock.setID(blockNum);
+             blockNum++;
+             //push blocks in reverse order to pop in correct order
+             if(currentBlock.getNextBlocks().size() > 1) {
+                 blockStack.push(currentBlock.getNextBlock(false));
+             }
+             if(currentBlock.getNextBlocks().size() > 0){
+                 blockStack.push(currentBlock.getNextBlock(true));
+             }
+         }
+    }
+    
+    public void exportDOT(String fileName){
+        DOTExporter<BasicBlock, DefaultEdge> exporter =
+            new DOTExporter<BasicBlock, DefaultEdge>(
+                new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
+                    @Override
+                    public String getVertexName(BasicBlock bb) {
+                        return Integer.toString(System.identityHashCode(bb));
+                    }
+                },
+                new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
+                    @Override
+                    public String getVertexName(BasicBlock bb) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        bb.cfgPrint(pw, "");
+                        String s = sw.toString();
+                        s = s.replace("\n", "\\l");
+                        return s;
+                        
+                        //return "BB";
+                    }
+                },
+                null);
+
+        SimpleDirectedGraph<BasicBlock, DefaultEdge> jgraphtGraph = new SimpleDirectedGraph<>(DefaultEdge.class);
+
+        // add vertices
+        {
+            HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+            Stack<BasicBlock> blockStack = new Stack<>();
+            blockStack.push(getEntryBlock());
+
+            while(!blockStack.empty()) {
+                BasicBlock currentBlock = blockStack.pop();
+                if(visited.contains(currentBlock)) continue;
+                else visited.add(currentBlock);
+
+                jgraphtGraph.addVertex(currentBlock);
+
+                //push blocks in reverse order to pop in correct order
+                if(currentBlock.getNextBlocks().size() > 1) {
+                    blockStack.push(currentBlock.getNextBlock(false));
+                }
+                if(currentBlock.getNextBlocks().size() > 0){
+                    blockStack.push(currentBlock.getNextBlock(true));
+                }
+            }
+        }
+
+        // add edges
+        {
+            HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+            Stack<BasicBlock> blockStack = new Stack<>();
+            blockStack.push(getEntryBlock());
+
+            while(!blockStack.empty()) {
+                BasicBlock currentBlock = blockStack.pop();
+                if(visited.contains(currentBlock)) continue;
+                else visited.add(currentBlock);
+
+                //push blocks in reverse order to pop in correct order
+                if(currentBlock.getNextBlocks().size() > 1) {
+                    BasicBlock bb = currentBlock.getNextBlock(false);
+                    jgraphtGraph.addEdge(currentBlock, bb);
+                    blockStack.push(bb);
+                }
+                if(currentBlock.getNextBlocks().size() > 0){
+                    BasicBlock bb = currentBlock.getNextBlock(true);
+                    jgraphtGraph.addEdge(currentBlock, bb);
+                    blockStack.push(bb);
+                }
+            }
+        }
+
+        try {
+			exporter.export(new FileWriter(fileName), jgraphtGraph);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-
+        
+        //step 1: give every BasicBlock an ID
+        giveAllBlocksIds();
+        
+        //step 2: print stuff
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-
+            
+            pw.println(prefix + "BasicBlock " + currentBlock.getID() + ":");
             currentBlock.cfgPrint(pw, prefix + "    ");
-
+            pw.println(prefix + currentBlock.getID() + " points to:");
+            
+            for(BasicBlock block : currentBlock.getNextBlocks()){
+            	pw.println(prefix + "    " + block.getID());
+            }
+            
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
                 blockStack.push(currentBlock.getNextBlock(false));
