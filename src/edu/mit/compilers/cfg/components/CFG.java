@@ -19,7 +19,7 @@ import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.StringEdgeNameProvider;
 import org.jgrapht.ext.StringNameProvider;
 import org.jgrapht.graph.DefaultEdge; 
-import org.jgrapht.graph.SimpleDirectedGraph;
+import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.ext.VertexNameProvider;
 import org.jgrapht.ext.EdgeNameProvider;
 
@@ -169,7 +169,7 @@ public class CFG implements CFGAble {
                 null);
 
         
-        SimpleDirectedGraph<BasicBlock, DefaultEdge> jgraphtGraph = createJGraphT();
+        DirectedPseudograph<BasicBlock, DefaultEdge> jgraphtGraph = createJGraphT();
 
         try {
 			exporter.export(new FileWriter(fileName), jgraphtGraph);
@@ -179,17 +179,18 @@ public class CFG implements CFGAble {
 		}
     }
     
-    public SimpleDirectedGraph<BasicBlock, DefaultEdge> createJGraphT() {
-    	SimpleDirectedGraph<BasicBlock, DefaultEdge> g = new SimpleDirectedGraph<>(DefaultEdge.class);
+    public DirectedPseudograph<BasicBlock, DefaultEdge> createJGraphT() {
+    	DirectedPseudograph<BasicBlock, DefaultEdge> g = new DirectedPseudograph<>(DefaultEdge.class);
     	return createJGraphT_Sub(null, getEntryBlock(), g);
     }
 
-    public SimpleDirectedGraph<BasicBlock, DefaultEdge> createJGraphT_Sub(BasicBlock pred, BasicBlock bb, SimpleDirectedGraph<BasicBlock, DefaultEdge> g) {
-    	if (!g.addVertex(bb))
-    		return g;
-    	
+    public DirectedPseudograph<BasicBlock, DefaultEdge> createJGraphT_Sub(BasicBlock pred, BasicBlock bb, DirectedPseudograph<BasicBlock, DefaultEdge> g) {
+    	boolean visited = !g.addVertex(bb);
     	if (!(pred == null))
     		g.addEdge(pred, bb);
+
+    	if (visited)
+    		return g;
     	
     	for (BasicBlock succ : bb.getNextBlocks())
     		g = createJGraphT_Sub(bb, succ, g);
