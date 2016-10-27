@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
 import edu.mit.compilers.grammar.DecafParser.Method_callContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
@@ -73,6 +76,21 @@ public class MethodCallExpr extends Expression {
         for (ExternArg arg : arguments){
             arg.prettyPrint(pw, prefix+"    ");
         }
+    }
+    
+    @Override
+    public CFG generateCFG(CFGContext context) {
+    	BasicBlock call = BasicBlock.createEmpty("call func");
+    	BasicBlock ret = BasicBlock.createEmpty("ret from func");
+    	BasicBlock methodStart = context.getMethodCFG(function).getEntryBlock();
+    	call.setNextBlock(methodStart);
+    	methodStart.addPreviousBlock(call);
+    	
+    	BasicBlock methodEnd = context.getMethodCFG(function).getExitBlock();
+    	methodEnd.addNextBlock(ret);
+    	ret.addPreviousBlock(methodEnd);
+    	
+    	return new CFG(call, ret);
     }
 
     @Override

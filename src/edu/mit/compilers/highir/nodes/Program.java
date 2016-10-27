@@ -93,10 +93,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         }
     }
 
-    public CFG generateCFG(CFGContext context) {
-        // TODO: handle externs if necessary
-    	// Either add externs to CFGContext (and create a CFG for each extern)
-    	// Or handle externs differently in MethodCallExpr
+    public CFG generateCFG(CFGContext context) {    	
         ArrayList<CFGAble> components = new ArrayList<>();
         for(Descriptor desc: symbolTable.getDescriptors().values()) {
             if(desc instanceof VariableDescriptor) {
@@ -105,15 +102,36 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         }
         BasicBlock symbolBlock = BasicBlock.create(components);
         CFG currentCFG = symbolBlock;
+        
+    	for(Descriptor desc: symbolTable.getDescriptors().values()) {
+    		if(desc instanceof ExternDescriptor) {
+    			context.addMethodCFG((ExternDescriptor)desc, desc.generateCFG(context));
+    		}
+    	}
+        
+//    	CFG mainCFG = null;
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
-            	context.addMethodCFG((MethodDescriptor)desc, new CFG());
-                CFG nextCFG = desc.generateCFG(context);
-                currentCFG.setNextBlock(nextCFG.getEntryBlock());
-                nextCFG.setPreviousBlock(currentCFG.getExitBlock());
-                currentCFG = nextCFG;
+            	BasicBlock start = BasicBlock.createEmpty("method start");
+            	BasicBlock end = BasicBlock.createEmpty("method end");
+            	CFG methodCFG = new CFG(start, end);
+            	context.addMethodCFG((MethodDescriptor)desc, methodCFG);
+            	
+                CFG innerCFG = desc.generateCFG(context);
+                start.setNextBlock(innerCFG.getEntryBlock());
+                innerCFG.addPreviousBlock(start);
+                innerCFG.setNextBlock(end);
+                end.addPreviousBlock(innerCFG.getExitBlock());
+                
+                currentCFG.setNextBlock(methodCFG.getEntryBlock());
+                methodCFG.setPreviousBlock(currentCFG.getExitBlock());
+                currentCFG = methodCFG;
+//                if(desc.getName().equals("main")) mainCFG = methodCFG;
             }
         }
+//        symbolBlock.setNextBlock(mainCFG.getEntryBlock());
+//    	mainCFG.addPreviousBlock(symbolBlock);
+//        return new CFG(symbolBlock, mainCFG.getExitBlock());
         return new CFG(symbolBlock, currentCFG.getExitBlock());
     }
 }

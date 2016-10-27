@@ -94,7 +94,7 @@ public class BasicBlock extends CFG {
 
     @Override
     public void setNextBlocks(List<BasicBlock> nextBlocks) {
-        this.nextBlocks = nextBlocks;
+    	if(this.nextBlocks.size() == 0) this.nextBlocks = nextBlocks;
     }
 
     public void setCondition(Condition branchCondition) {

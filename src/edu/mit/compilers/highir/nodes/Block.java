@@ -115,7 +115,7 @@ public class Block extends Ir {
         for(Statement statement: statements) {
             CFG nextCFG = statement.generateCFG(context);
             currentCFG.setNextBlock(nextCFG.getEntryBlock());
-            nextCFG.setPreviousBlock(currentCFG.getExitBlock());
+            nextCFG.addPreviousBlock(currentCFG.getExitBlock());
             currentCFG = nextCFG;
         }
 

@@ -87,7 +87,7 @@ public class ForStmt extends Statement {
     	startCondition.addPreviousBlock(initializerCFG.getExitBlock());  
       
     	trueBranch.setNextBlock(updateCFG.getEntryBlock());
-    	updateCFG.setPreviousBlock(trueBranch.getExitBlock());
+    	updateCFG.addPreviousBlock(trueBranch.getExitBlock());
     	
     	updateCFG.setNextBlock(startCondition);
     	startCondition.addPreviousBlock(updateCFG.getExitBlock());

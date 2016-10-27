@@ -45,8 +45,8 @@ public class EqOpExpr extends BinOpExpr implements Condition {
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
         BasicBlock block = BasicBlock.createWithCondition(this);
         block.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
-        trueBranch.setPreviousBlock(block);
-        falseBranch.setPreviousBlock(block);
+        trueBranch.addPreviousBlock(block);
+        falseBranch.addPreviousBlock(block);
         return block;
     }
 

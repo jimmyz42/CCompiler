@@ -4,6 +4,9 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Collections;
 
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
@@ -47,6 +50,15 @@ public class ReturnStmt extends Statement {
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "return ");
         expression.cfgPrint(pw, prefix);
+    }
+    
+    @Override
+    public CFG generateCFG(CFGContext context) {
+    	BasicBlock block = BasicBlock.createEmpty("return");
+    	BasicBlock methodEnd = context.currentMethodCFG().getExitBlock();
+    	block.setNextBlock(methodEnd);
+    	methodEnd.addPreviousBlock(block);
+    	return block;
     }
 
     @Override

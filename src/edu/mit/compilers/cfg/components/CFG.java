@@ -100,6 +100,17 @@ public class CFG implements CFGAble {
     public void addPreviousBlock(BasicBlock prevBlock) {
     	addPreviousBlocks(Collections.singletonList(prevBlock));
     }
+    
+    public void addNextBlocks(List<BasicBlock> nextBlocks) {
+    	List<BasicBlock> blocks = new ArrayList<>();
+    	blocks.addAll(getNextBlocks());
+    	blocks.addAll(nextBlocks);
+    	setNextBlocks(blocks);
+    }
+    
+    public void addNextBlock(BasicBlock nextBlock) {
+    	addNextBlocks(Collections.singletonList(nextBlock));
+    }
 
     @Override
     public CFG generateCFG(CFGContext context) {
