@@ -10,8 +10,12 @@ public class Pop extends Instruction {
     	this.dest = dest;
     }
 
+    public static Pop create(Storage dest){
+    	return new Pop(dest);
+    }
+    
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "pop " + dest.toString());		
+		pw.println(prefix + "pop " + dest);		
 	}
 }

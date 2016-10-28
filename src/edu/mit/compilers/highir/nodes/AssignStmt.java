@@ -81,19 +81,15 @@ public class AssignStmt extends Statement {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx){
-        List<Instruction> exprInst = expression.generateAssembly(ctx);
-        List<Instruction> instructions = new ArrayList<>();
-        instructions.addAll(exprInst);
+    public void generateAssembly(AssemblyContext ctx){
+        expression.generateAssembly(ctx);
 
         Storage src = expression.allocateLocation(ctx);
         Storage dest = location.allocateLocation(ctx);
-        instructions.add(new Mov(src, dest));
+        ctx.addInstruction(new Mov(src, dest));
 
         ctx.pushStack(this, dest);
         expression.deallocateLocation(ctx);
         location.deallocateLocation(ctx);
-
-        return instructions;
     }
 }

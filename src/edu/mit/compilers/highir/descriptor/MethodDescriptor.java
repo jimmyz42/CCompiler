@@ -110,7 +110,9 @@ public class MethodDescriptor extends FunctionDescriptor {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx) {
-        return Collections.singletonList(Label.create(getName()));
+    public void generateAssembly(AssemblyContext ctx) {
+    	//TODO: enter instruction
+        ctx.addInstruction(Label.create(getName()));
+    	//TODO: leave instruction
     }
 }

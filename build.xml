@@ -86,13 +86,15 @@
       <manifest>
         <attribute name="Main-Class" value="${base_package_name}.Main" />
         <!-- ANTLR runtime is needed for parsing! -->
-        <attribute name="Class-Path" value="antlr.jar" />
+        <attribute name="Class-Path" value="antlr.jar jgrapht.jar" />
       </manifest>
     </jar>
     <!-- Third party libraries can only be found by java -jar if they
     reside in the same dir but we don't a billion copies floating around,
     so use symlinks instead. -->
     <symlink link="${dist}/antlr.jar" resource="${lib}/antlr.jar"
+      overwrite="true" />
+    <symlink link="${dist}/jgrapht.jar" resource="${lib}/jgrapht-ext-1.0.0-uber.jar"
       overwrite="true" />
     </target>
 

@@ -49,22 +49,17 @@ public class AndOpExpr extends BinOpExpr {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx){
-        List<Instruction> lhsInst = lhs.generateAssembly(ctx);
-        List<Instruction> rhsInst = rhs.generateAssembly(ctx);
-        List<Instruction> expression = new ArrayList<>();
-        expression.addAll(lhsInst);
-        expression.addAll(rhsInst);
+    public void generateAssembly(AssemblyContext ctx){
+        lhs.generateAssembly(ctx);
+        rhs.generateAssembly(ctx);
 
         Storage src = rhs.allocateLocation(ctx);
         Storage dest = lhs.allocateLocation(ctx);
         Instruction opInstruction = new And(src, dest);
-        expression.add(opInstruction);
+        ctx.addInstruction(opInstruction);
 
         ctx.pushStack(this, dest);
         rhs.deallocateLocation(ctx);
         lhs.deallocateLocation(ctx);
-
-        return expression;
     }
 }

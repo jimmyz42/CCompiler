@@ -121,12 +121,10 @@ public class BasicBlock extends CFG {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx) {
-    	List<Instruction> assemblyInstructions = new ArrayList<Instruction>();
+    public void generateAssembly(AssemblyContext ctx) {
     	for(CFGAble component: components) {
-    		assemblyInstructions.addAll(component.generateAssembly(ctx));
+    		component.generateAssembly(ctx);
     	}
-    	return assemblyInstructions;
     }
 
     // Checks for merging precondition

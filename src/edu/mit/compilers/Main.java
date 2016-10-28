@@ -142,7 +142,8 @@ class Main {
                 cfg.eliminateEmptyBlocks();
                 
                 AssemblyContext actx = new AssemblyContext();
-                List<Instruction> instructions = cfg.generateAssembly(actx);
+                cfg.generateAssembly(actx);
+                List<Instruction> instructions = actx.getInstructions();
                 StringWriter sw = new StringWriter();
                 for(Instruction instruction: instructions) {
                     instruction.printAssembly(new PrintWriter(sw), "    ");
@@ -167,6 +168,7 @@ class Main {
                 assemblyWriter.write(sw.toString());
                 assemblyWriter.close();
                 System.out.println("Assembly file is at " + outputAssemblyPath);
+                System.out.println(sw.toString());
             }
         } catch(Exception e) {
             // print the error:
