@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import edu.mit.compilers.lowir.Location;
 
 public class Mov extends Instruction {
+	Object src, dest;
     public Mov(Object src, Object dest) {
+    	this.src = src;
+    	this.dest = dest;
     }
 
     public static Mov create(Boolean src, Location dest) {
@@ -18,7 +21,6 @@ public class Mov extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		// TODO Auto-generated method stub
-		
+		pw.println(prefix + "mov " + src.toString() + ", " + dest.toString());		
 	}
 }

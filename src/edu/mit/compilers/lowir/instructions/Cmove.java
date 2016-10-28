@@ -22,6 +22,6 @@ public class Cmove extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "cmove " + src.toString() + ", " + dest.toString());		
+        pw.println(prefix + "cmove " + src.toString() + ", " + dest.toString());		
 	}
 }

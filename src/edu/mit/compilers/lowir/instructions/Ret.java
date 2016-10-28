@@ -12,7 +12,6 @@ public class Ret extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		// TODO Auto-generated method stub
-		
+		pw.println(prefix + "ret");		
 	}
 }
