@@ -157,7 +157,12 @@ class Main {
                 String outputAssemblyPath = CLI.infile;
                 int extension = outputAssemblyPath.lastIndexOf(".");
                 outputAssemblyPath = outputAssemblyPath.substring(0,extension +1) + "s";
+                
+                //if -o outputfile given, write to that. Else, use standard output
+                outputAssemblyPath= CLI.outfile == null ? outputAssemblyPath : CLI.outfile;
+                
                 File assemblyFile = new File(outputAssemblyPath);
+                
                 FileWriter assemblyWriter = new FileWriter(assemblyFile, false); // true to append, false to overwrite.
                 assemblyWriter.write(sw.toString());
                 assemblyWriter.close();
