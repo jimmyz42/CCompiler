@@ -60,7 +60,9 @@ public class AndOpExpr extends BinOpExpr {
         Instruction opInstruction = new And(src, dest);
         expression.add(opInstruction);
 
-        ctx.setRegister(this, dest);
+        ctx.pushStack(this, dest);
+        ctx.deallocateRegister(rhs);
+        ctx.deallocateRegister(lhs);
 
         return expression;
     }

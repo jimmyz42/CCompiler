@@ -38,31 +38,34 @@ public class AssemblyContext {
         return stack.remove(stack.size() - 1);
     }
 
-    public void pushStack(Ir node, Object item) {
-        stack.add(item);
-        stackLocations.put(node, stack.size() - 1);
+    public void pushStack(Ir node, Location loc) {
+    	if(stackLocations.containsKey(node)) {
+    		stack.set(stackLocations.get(node), loc);
+    	} else {
+            stack.add(loc);
+            stackLocations.put(node, stack.size() - 1);
+    	}
     }
 
     //return a register for use
     public Register allocateRegister(Ir node) {
+    	if(!stackLocations.containsKey(node)) {
+    		pushStack(node, ImmediateValue.create(0));
+    	}
         if(registerLocations.get(node) != null) {
             return registerLocations.get(node);
         }
 
-        //TODO: make sure to handle the case where no registers are available
-        //and an instruction to push a register onto the stack must be created
-        //in that case make sure to delete the taken register from the registerLocations map
-        Register register = registers.pop();
-        registerLocations.put(node, register);
-        return register;
-    }
-
-    public void setRegister(Ir node, Register register) {
-        registerLocations.put(node, register);
+        Register reg = registers.pop();
+        registerLocations.put(node, reg);
+        reg.setValue(stack.get(stackLocations.get(node)));
+        return reg;
     }
 
     //release a register back into the pool
-    public void deallocateRegister(Register reg) {
+    public void deallocateRegister(Ir node) {
+    	Register reg = registerLocations.remove(node);
         registers.push(reg);
+        stack.set(stackLocations.get(node), reg.getValue());
     }
 }

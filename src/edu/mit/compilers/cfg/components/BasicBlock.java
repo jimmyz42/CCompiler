@@ -122,8 +122,6 @@ public class BasicBlock extends CFG {
     public List<Instruction> generateAssembly(AssemblyContext ctx) {
     	List<Instruction> assemblyInstructions = new ArrayList<Instruction>();
     	for(CFGAble component: components) {
-    		System.out.println(component);
-    		System.out.println(component.generateAssembly(ctx));
     		assemblyInstructions.addAll(component.generateAssembly(ctx));
     	}
     	

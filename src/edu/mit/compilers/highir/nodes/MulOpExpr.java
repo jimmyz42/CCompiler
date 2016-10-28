@@ -64,7 +64,9 @@ public class MulOpExpr extends BinOpExpr {
             expression.add(new Mov(rax, src));
         }
 
-        ctx.setRegister(this, src);
+        ctx.pushStack(this, src);
+        ctx.deallocateRegister(rhs);
+        ctx.deallocateRegister(lhs);
 
         return expression;
     }

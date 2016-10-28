@@ -58,7 +58,9 @@ public class AddOpExpr extends BinOpExpr {
         }
         expression.add(opInstruction);
 
-        ctx.setRegister(this, dest);
+        ctx.pushStack(this, dest);
+        ctx.deallocateRegister(rhs);
+        ctx.deallocateRegister(lhs);
 
         return expression;
     }

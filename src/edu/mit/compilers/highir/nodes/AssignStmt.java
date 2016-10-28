@@ -90,7 +90,9 @@ public class AssignStmt extends Statement {
         Instruction opInstruction;
         instructions.add(new Mov(src, dest));
 
-        ctx.setRegister(this, src);
+        ctx.pushStack(this, dest);
+        ctx.deallocateRegister(expression);
+        ctx.deallocateRegister(location);
 
         return instructions;
     }

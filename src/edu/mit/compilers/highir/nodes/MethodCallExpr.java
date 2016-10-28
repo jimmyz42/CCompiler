@@ -104,4 +104,6 @@ public class MethodCallExpr extends Expression {
         }
         pw.print(")");
     }
+    
+    //TODO: In generateAssembly method push arguments onto the stack
 }

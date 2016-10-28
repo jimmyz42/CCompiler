@@ -71,7 +71,9 @@ public class EqOpExpr extends BinOpExpr implements Condition {
             expression.add(Cmovne.create(true, dest));
         }
 
-        ctx.setRegister(this, dest);
+        ctx.pushStack(this, dest);
+        ctx.deallocateRegister(rhs);
+        ctx.deallocateRegister(lhs);
 
         return expression;
     }
