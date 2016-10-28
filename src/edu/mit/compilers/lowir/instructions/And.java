@@ -8,11 +8,15 @@ import edu.mit.compilers.lowir.Location;
  * represents AND %src, %dest
  */
 public class And extends Instruction {
+	Location src, dest;
+	
     public And(Location src, Location dest) {
+    	this.src = src; 
+    	this.dest = dest;
     }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		// TODO Auto-generated method stub
+        pw.print(prefix + "add " + src + ", " + dest);
 	}
 }

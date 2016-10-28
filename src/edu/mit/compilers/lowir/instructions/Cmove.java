@@ -5,7 +5,11 @@ import java.io.PrintWriter;
 import edu.mit.compilers.lowir.Location;
 
 public class Cmove extends Instruction {
+	Object src, dest;
+	
     public Cmove(Object src, Object dest) {
+    	this.src = src;
+    	this.dest = dest;
     }
 
     public static Cmove create(Boolean src, Location dest) {
@@ -18,7 +22,6 @@ public class Cmove extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		// TODO Auto-generated method stub
-		
+        pw.print(prefix + "cmove " + src.toString() + ", " + dest.toString());		
 	}
 }

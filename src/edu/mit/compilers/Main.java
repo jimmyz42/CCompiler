@@ -139,7 +139,7 @@ class Main {
                 List<Instruction> instructions = cfg.generateAssembly(actx);
                 StringWriter sw = new StringWriter();
                 for(Instruction instruction: instructions) {
-                    instruction.print(new PrintWriter(sw), "");
+                    instruction.printAssembly(new PrintWriter(sw), "");
                 }
                 System.out.println(sw.toString());
             }

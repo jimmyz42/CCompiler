@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import edu.mit.compilers.lowir.Location;
 
 public class Cmp extends Instruction {
+	Location src, dest;
     public Cmp(Location src, Location dest) {
+    	this.src = src;
+    	this.dest = dest;
     }
 
     public static Cmp create(Location src, Location dest) {
@@ -14,7 +17,6 @@ public class Cmp extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		// TODO Auto-generated method stub
-		
+		pw.print(prefix + "cmp " + src.toString() + ", " + dest.toString());
 	}
 }
