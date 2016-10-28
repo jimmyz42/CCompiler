@@ -11,6 +11,6 @@ public interface Condition {
 	// TODO generate corresponding jump statements
 	// BoolLiteral also implements this TODO generate unconditional jump
 	
-	public List<Instruction> generateAssembly(AssemblyContext ctx);
+	public void generateAssembly(AssemblyContext ctx);
 	public void cfgPrint(PrintWriter pw, String prefix);
 }

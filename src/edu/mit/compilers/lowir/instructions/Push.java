@@ -9,9 +9,13 @@ public class Push extends Instruction {
     public Push(Storage src) {
     	this.src = src;
     }
+    
+    public static Push create(Storage src) {
+    	return new Push(src);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "push " + src.toString());		
+		pw.println(prefix + "push " + src);		
 	}
 }

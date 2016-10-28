@@ -11,14 +11,6 @@ public class Register extends Storage {
         super(name);
     }
 
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public Object getValue() {
-        return this.value;
-    }
-
     public static Register create(String name) {
         return new Register(name);
     }

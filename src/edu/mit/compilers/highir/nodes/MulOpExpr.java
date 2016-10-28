@@ -44,16 +44,13 @@ public class MulOpExpr extends BinOpExpr {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx){
-        List<Instruction> lhsInst = lhs.generateAssembly(ctx);
-        List<Instruction> rhsInst = rhs.generateAssembly(ctx);
+    public void generateAssembly(AssemblyContext ctx){
+        lhs.generateAssembly(ctx);
+        rhs.generateAssembly(ctx);
         List<Instruction> expression = new ArrayList<>();
-        expression.addAll(lhsInst);
-        expression.addAll(rhsInst);
 
         Storage src = rhs.allocateLocation(ctx);
         Storage dest = lhs.allocateLocation(ctx);
-        Instruction opInstruction;
         if(operator.getTerminal().equals("*")) {
             expression.add(new Imul(src, dest));
         } else {
@@ -64,11 +61,10 @@ public class MulOpExpr extends BinOpExpr {
             expression.add(new Idiv(dest));
             expression.add(new Mov(rax, src));
         }
-
+        ctx.addInstructions(expression);
+        
         ctx.pushStack(this, src);
         rhs.deallocateLocation(ctx);
         lhs.deallocateLocation(ctx);
-
-        return expression;
     }
 }

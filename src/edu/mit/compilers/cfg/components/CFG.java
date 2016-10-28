@@ -362,12 +362,10 @@ public class CFG implements CFGAble {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx) {
+    public void generateAssembly(AssemblyContext ctx) {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-
-        List<Instruction> assemblyInstructions = new ArrayList<Instruction>();
         
         giveAllBlocksIds();
 
@@ -376,20 +374,18 @@ public class CFG implements CFGAble {
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
-        	assemblyInstructions.add(Label.create(currentBlock.getID()));
-            assemblyInstructions.addAll(currentBlock.generateAssembly(ctx));
+        	ctx.addInstruction(Label.create(currentBlock.getID()));
+            currentBlock.generateAssembly(ctx);
 
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
                 blockStack.push(currentBlock.getNextBlock(false));
                 blockStack.push(currentBlock.getNextBlock(true));
-                assemblyInstructions.add(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
+                ctx.addInstruction(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
             } else if(currentBlock.getNextBlocks().size() > 0){
                 blockStack.push(currentBlock.getNextBlock(true));
             }
         }
-
-        return assemblyInstructions;
     }
 
     @Override

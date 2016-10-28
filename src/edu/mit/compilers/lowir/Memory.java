@@ -9,6 +9,13 @@ public class Memory extends Storage {
     public Memory(String name) {
     	super(name);
     }
+
+    public void setValue(Object value) {
+    }
+
+    public Object getValue() {
+    	return getName();
+    }
     
     public static Memory create(String name) {
     	return new Memory(name);

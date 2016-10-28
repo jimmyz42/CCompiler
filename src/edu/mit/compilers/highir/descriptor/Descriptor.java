@@ -49,7 +49,6 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx) {
-        return new ArrayList<>();
+    public void generateAssembly(AssemblyContext ctx) {
     }
 }

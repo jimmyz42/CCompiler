@@ -62,7 +62,7 @@ public class ReturnStmt extends Statement {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx) {
-        return Collections.singletonList(Ret.create());
+    public void generateAssembly(AssemblyContext ctx) {
+        ctx.addInstruction(Ret.create());
     }
 }

@@ -59,18 +59,15 @@ public class RelOpExpr extends BinOpExpr implements Condition {
     }
 
     @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx) {
+    public void generateAssembly(AssemblyContext ctx) {
         //TODO: figure out which registers store what values
-        List<Instruction> lhsInst = lhs.generateAssembly(ctx);
-        List<Instruction> rhsInst = rhs.generateAssembly(ctx);
+        lhs.generateAssembly(ctx);
+        rhs.generateAssembly(ctx);
         List<Instruction> expression = new ArrayList<>();
-        expression.addAll(lhsInst);
-        expression.addAll(rhsInst);
 
         Storage src = rhs.allocateLocation(ctx);
         Storage dest = lhs.allocateLocation(ctx);
-        Instruction opInstruction = new Cmp(src, dest);
-        expression.add(opInstruction);
+        expression.add(new Cmp(src, dest));
 
         switch(operator.getTerminal()){
 
@@ -87,11 +84,10 @@ public class RelOpExpr extends BinOpExpr implements Condition {
             expression.add(Mov.create(false, dest));
             expression.add(Cmovle.create(true, dest));
         }
+        ctx.addInstructions(expression);
 
         ctx.pushStack(this, dest);
         rhs.deallocateLocation(ctx);
         lhs.deallocateLocation(ctx);
-
-        return expression;
     }
 }
