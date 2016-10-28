@@ -10,6 +10,8 @@ import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.highir.nodes.Statement;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Jmp;
+import edu.mit.compilers.lowir.instructions.Label;
 
 public class BasicBlock extends CFG {
 
@@ -17,7 +19,7 @@ public class BasicBlock extends CFG {
     private List<BasicBlock> prevBlocks;
     private List<BasicBlock> nextBlocks;
     private Condition branchCondition;
-    private int id;
+    private String id;
     private String description;
 
     public BasicBlock(List<CFGAble> components) {
@@ -39,29 +41,29 @@ public class BasicBlock extends CFG {
         components.add(component);
         return BasicBlock.create(components);
     }
-    
-    public void setID(int id){
+
+    public void setID(String id){
     	this.id = id;
     }
-    
-    public int getID(){
+
+    public String getID(){
     	return this.id;
     }
-    
+
     public void setDescription(String description) {
     	this.description = description;
     }
-    
+
     public String getDescription() {
     	return this.description;
     }
-    
+
     public static BasicBlock createEmpty(String description) {
         BasicBlock block = new BasicBlock(new ArrayList<CFGAble>());
         block.setDescription(description);
         return block;
     }
-    
+
     public static BasicBlock createEmpty() {
         return new BasicBlock(new ArrayList<CFGAble>());
     }
@@ -124,7 +126,6 @@ public class BasicBlock extends CFG {
     	for(CFGAble component: components) {
     		assemblyInstructions.addAll(component.generateAssembly(ctx));
     	}
-    	
     	return assemblyInstructions;
     }
 
@@ -136,7 +137,7 @@ public class BasicBlock extends CFG {
     	if(b2.getPreviousBlock() != b1) return false;
     	return true;
     }
-    
+
     // Precondition: b1.getNextBlocks() = [b2], b2.getPreviousBlocks() = [b1]
     // Aka b1 only points to b2, b2 is only pointed to by b1
     public static BasicBlock merge(BasicBlock b1, BasicBlock b2) {

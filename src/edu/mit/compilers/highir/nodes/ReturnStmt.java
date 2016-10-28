@@ -51,7 +51,7 @@ public class ReturnStmt extends Statement {
         pw.println(prefix + "return ");
         expression.cfgPrint(pw, prefix);
     }
-    
+
     @Override
     public CFG generateCFG(CFGContext context) {
     	BasicBlock block = BasicBlock.createEmpty("return");

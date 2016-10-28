@@ -135,6 +135,12 @@ class Main {
                 Program ir = (Program)loader.visit(context);
                 CFGContext ctx = new CFGContext();
                 CFG cfg = ir.generateCFG(ctx);
+                
+                cfg.clearPrevBlocks();
+                cfg.genPrevBlocks();
+                cfg.mergeBasicBlocks();
+                cfg.eliminateEmptyBlocks();
+                
                 AssemblyContext actx = new AssemblyContext();
                 List<Instruction> instructions = cfg.generateAssembly(actx);
                 StringWriter sw = new StringWriter();

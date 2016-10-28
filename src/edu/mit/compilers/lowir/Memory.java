@@ -5,8 +5,12 @@ package edu.mit.compilers.lowir;
  * for instructions
  */
 public class Memory extends Location {
-    //TODO: what goes in a register
-    public Memory(Object data) {
 
+    public Memory(String name) {
+    	super(name);
+    }
+    
+    public static Memory create(String name) {
+    	return new Memory(name);
     }
 }

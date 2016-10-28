@@ -10,6 +10,10 @@ public class Jne extends Instruction {
     	this.target = target;
     }
 
+    public static Jne create(Memory target) {
+    	return new Jne(target);
+    }
+    
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
 		pw.println(prefix + "jne " + target.toString());		

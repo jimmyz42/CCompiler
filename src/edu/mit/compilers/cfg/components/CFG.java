@@ -16,11 +16,15 @@ import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Jmp;
+import edu.mit.compilers.lowir.instructions.Jne;
+import edu.mit.compilers.lowir.instructions.Label;
+import edu.mit.compilers.lowir.Memory;
 
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.StringEdgeNameProvider;
 import org.jgrapht.ext.StringNameProvider;
-import org.jgrapht.graph.DefaultEdge; 
+import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.ext.VertexNameProvider;
 import org.jgrapht.ext.EdgeNameProvider;
@@ -101,14 +105,14 @@ public class CFG implements CFGAble {
     public void addPreviousBlock(BasicBlock prevBlock) {
     	addPreviousBlocks(Collections.singletonList(prevBlock));
     }
-    
+
     public void addNextBlocks(List<BasicBlock> nextBlocks) {
     	List<BasicBlock> blocks = new ArrayList<>();
     	blocks.addAll(getNextBlocks());
     	blocks.addAll(nextBlocks);
     	setNextBlocks(blocks);
     }
-    
+
     public void addNextBlock(BasicBlock nextBlock) {
     	addNextBlocks(Collections.singletonList(nextBlock));
     }
@@ -123,14 +127,14 @@ public class CFG implements CFGAble {
          Stack<BasicBlock> blockStack = new Stack<>();
          blockStack.push(getEntryBlock());
          int blockNum = 0;
-         
+
          //step 1: give every BasicBlock an ID
          while(!blockStack.empty()) {
              BasicBlock currentBlock = blockStack.pop();
              if(visited.contains(currentBlock)) continue;
              else visited.add(currentBlock);
-             
-             currentBlock.setID(blockNum);
+
+             currentBlock.setID("block" +  blockNum);
              blockNum++;
              //push blocks in reverse order to pop in correct order
              if(currentBlock.getNextBlocks().size() > 1) {
@@ -141,17 +145,17 @@ public class CFG implements CFGAble {
              }
          }
     }
-    
+
     public void clearPrevBlocks(){
    	 	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-        
+
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-            
+
             currentBlock.setPreviousBlocks(new ArrayList<BasicBlock>());
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
@@ -162,17 +166,17 @@ public class CFG implements CFGAble {
             }
         }
    }
-    
+
     public void genPrevBlocks(){
    	 	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-        
+
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-            
+
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
             	currentBlock.getNextBlock(false).addPreviousBlock(currentBlock);
@@ -184,20 +188,20 @@ public class CFG implements CFGAble {
             }
         }
    }
-    
+
     // Merge basic blocks optimization
     public void mergeBasicBlocks(){
     	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-    
+
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-            
-            
-            if(currentBlock.getNextBlocks().size() > 0 && 
+
+
+            if(currentBlock.getNextBlocks().size() > 0 &&
             		BasicBlock.canMerge(currentBlock, currentBlock.getNextBlock())) {
             	BasicBlock b1 = currentBlock, b2 = currentBlock.getNextBlock();
             	BasicBlock merged = BasicBlock.merge(b1, b2);
@@ -224,19 +228,19 @@ public class CFG implements CFGAble {
             }
         }
    }
-    
+
     public void eliminateEmptyBlocks(){
     	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-    
+
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-            
+
             if(currentBlock.isEmpty() && currentBlock.getNextBlocks().size() > 0) {
-        		BasicBlock next = currentBlock.getNextBlock();          				
+        		BasicBlock next = currentBlock.getNextBlock();
             	for(BasicBlock block: currentBlock.getPreviousBlocks()) {
             		List<BasicBlock> list = block.getNextBlocks();
             		list.set(list.indexOf(currentBlock), next);
@@ -254,14 +258,14 @@ public class CFG implements CFGAble {
             }
         }
    }
-    
+
     public void exportDOT(String fileName){
         DOTExporter<BasicBlock, DefaultEdge> exporter =
             new DOTExporter<BasicBlock, DefaultEdge>(
                 new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
                     @Override
                     public String getVertexName(BasicBlock bb) {
-                        return Integer.toString(bb.getID());
+                        return bb.getID();
                     }
                 },
                 new org.jgrapht.ext.VertexNameProvider<BasicBlock>() {
@@ -271,7 +275,7 @@ public class CFG implements CFGAble {
                         PrintWriter pw = new PrintWriter(sw);
                         bb.cfgPrint(pw, "");
                         String s = sw.toString();
-                        
+
                         s = s.replace("\\", "\\\\");
                         s = s.replace("\r\n", "\\l");
                         s = s.replace("\n", "\\l");
@@ -288,13 +292,13 @@ public class CFG implements CFGAble {
                         s = s.replace(";", "\\;");
                         s = s.replace(":", "\\:");
                         s = s.replace(" ", "\\ ");
-                        
-                        return Integer.toString(bb.getID()) + ": " + s;
+
+                        return bb.getID() + ": " + s;
                     }
                 },
                 null);
 
-        
+
         DirectedPseudograph<BasicBlock, DefaultEdge> jgraphtGraph = createJGraphT();
 
         try {
@@ -304,7 +308,7 @@ public class CFG implements CFGAble {
 			e.printStackTrace();
 		}
     }
-    
+
     public DirectedPseudograph<BasicBlock, DefaultEdge> createJGraphT() {
     	DirectedPseudograph<BasicBlock, DefaultEdge> g = new DirectedPseudograph<>(DefaultEdge.class);
     	return createJGraphT_Sub(null, getEntryBlock(), g);
@@ -317,36 +321,36 @@ public class CFG implements CFGAble {
 
     	if (visited)
     		return g;
-    	
+
     	for (BasicBlock succ : bb.getNextBlocks())
     		g = createJGraphT_Sub(bb, succ, g);
-    	
+
     	return g;
     }
-    
+
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-        
+
         //step 1: give every BasicBlock an ID
         giveAllBlocksIds();
-        
+
         //step 2: print stuff
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-            
+
             pw.println(prefix + "BasicBlock " + currentBlock.getID() + ":");
             currentBlock.cfgPrint(pw, prefix + "    ");
             pw.println(prefix + currentBlock.getID() + " points to:");
-            
+
             for(BasicBlock block : currentBlock.getNextBlocks()){
             	pw.println(prefix + "    " + block.getID());
             }
-            
+
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
                 blockStack.push(currentBlock.getNextBlock(false));
@@ -362,28 +366,32 @@ public class CFG implements CFGAble {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Stack<BasicBlock> blockStack = new Stack<>();
         blockStack.push(getEntryBlock());
-        
+
         List<Instruction> assemblyInstructions = new ArrayList<Instruction>();
         
+        giveAllBlocksIds();
+
         while(!blockStack.empty()) {
             BasicBlock currentBlock = blockStack.pop();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
-            
+
+        	assemblyInstructions.add(Label.create(currentBlock.getID()));
             assemblyInstructions.addAll(currentBlock.generateAssembly(ctx));
-            
+
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
                 blockStack.push(currentBlock.getNextBlock(false));
-            }
-            if(currentBlock.getNextBlocks().size() > 0){
+                blockStack.push(currentBlock.getNextBlock(true));
+                assemblyInstructions.add(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
+            } else if(currentBlock.getNextBlocks().size() > 0){
                 blockStack.push(currentBlock.getNextBlock(true));
             }
         }
-        
+
         return assemblyInstructions;
     }
-    
+
     @Override
     public String toString() {
     	StringWriter sw = new StringWriter();

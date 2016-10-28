@@ -10,6 +10,10 @@ public class Jmp extends Instruction {
     	this.target = target;
     }
 
+    public static Jmp create(Memory target) {
+    	return new Jmp(target);
+    }
+    
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
 		pw.println(prefix + "jmp " + target.toString());		

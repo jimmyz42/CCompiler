@@ -10,6 +10,10 @@ public class Je extends Instruction {
     	this.target = target;
     }
 
+    public static Je create(Memory target) {
+    	return new Je(target);
+    }
+    
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
 		pw.println(prefix + "je " + target.toString());		
