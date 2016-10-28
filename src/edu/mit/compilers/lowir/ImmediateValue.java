@@ -5,8 +5,9 @@ package edu.mit.compilers.lowir;
  * for instructions
  */
 public class ImmediateValue extends Storage {
-    public ImmediateValue(String value) {
-    	super(value);
+    String value;
+	public ImmediateValue(String value) {
+    	this.value = value;
     }
     
     public static ImmediateValue create(Long value) {
@@ -23,5 +24,10 @@ public class ImmediateValue extends Storage {
 
     public static ImmediateValue create(String value) {
     	return new ImmediateValue(value);
+    }
+    
+    @Override
+    public String toString(){
+    	return "$" + value; 
     }
 }
