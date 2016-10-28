@@ -113,6 +113,6 @@ public class MethodDescriptor extends FunctionDescriptor {
     public void generateAssembly(AssemblyContext ctx) {
     	//TODO: enter instruction
         ctx.addInstruction(Label.create(getName()));
-    	//TODO: leave instruction
+    	//TODO: enter instruction
     }
 }
