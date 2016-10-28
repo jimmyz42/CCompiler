@@ -14,7 +14,7 @@ public class Imul extends Instruction {
     }
 
 	@Override
-	public void print(PrintWriter pw, String prefix) {
+	public void printAssembly(PrintWriter pw, String prefix) {
 		// TODO Auto-generated method stub
 		
 	}

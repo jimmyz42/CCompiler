@@ -9,7 +9,7 @@ public class Add extends Instruction {
     }
 
     @Override
-    public void print(PrintWriter pw, String prefix) {
+    public void printAssembly(PrintWriter pw, String prefix) {
         pw.print(prefix + toString());
     }
 }

@@ -17,6 +17,7 @@ abstract public class Instruction implements PrettyPrintable {
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getClass().getSimpleName());
     }
+    
 
-    abstract public void print(PrintWriter pw, String prefix);
+    abstract public void printAssembly(PrintWriter pw, String prefix);
 }
