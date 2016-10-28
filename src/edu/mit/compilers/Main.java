@@ -147,7 +147,19 @@ class Main {
                 for(Instruction instruction: instructions) {
                     instruction.printAssembly(new PrintWriter(sw), "    ");
                 }
-                System.out.println(sw.toString());
+                
+                if (CLI.debug){
+                	//if debug is on, print output to console
+                	System.out.println(sw.toString());
+                }
+                String outputAssemblyPath = CLI.infile;
+                int extension = outputAssemblyPath.lastIndexOf(".");
+                outputAssemblyPath = outputAssemblyPath.substring(0,extension +1) + "s";
+                File assemblyFile = new File(outputAssemblyPath);
+                FileWriter assemblyWriter = new FileWriter(assemblyFile, false); // true to append, false to overwrite.
+                assemblyWriter.write(sw.toString());
+                assemblyWriter.close();
+                System.out.println("Assembly file is at " + outputAssemblyPath);
             }
         } catch(Exception e) {
             // print the error:
