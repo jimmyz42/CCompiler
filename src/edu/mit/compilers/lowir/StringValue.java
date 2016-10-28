@@ -8,6 +8,10 @@ public class StringValue extends Storage{
 		super(name);
 	}
 	
+	public static StringValue create(String name){
+		return new StringValue(name);
+	}
+	
 	@Override 
 	public void printAssembly(PrintWriter pw, String prefix){
 		pw.println("." + "stringlabel:"); //TODO: get unique labels 
