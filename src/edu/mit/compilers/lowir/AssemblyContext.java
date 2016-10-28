@@ -10,6 +10,7 @@ import java.util.List;
 import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Pop;
 import edu.mit.compilers.lowir.instructions.Push;
 
@@ -19,7 +20,7 @@ import edu.mit.compilers.lowir.instructions.Push;
  */
 public class AssemblyContext {
 	private ArrayList<Object> stack = new ArrayList<>();
-	private HashMap<Ir, Integer> stackLocations = new HashMap<>();
+	private HashMap<Ir, Integer> stackPositions = new HashMap<>();
 	private Stack<Register> registers = new Stack<>();
 	private HashMap<Ir, Register> registerLocations = new HashMap<>();
 	private List<Instruction> instructions = new ArrayList<>();
@@ -39,25 +40,25 @@ public class AssemblyContext {
 	}
 
 	public void popStack(Storage loc) {
-		stackLocations.values().remove(stack.size() - 1);
+		stackPositions.values().remove(stack.size() - 1);
 		Object value = stack.remove(stack.size() - 1);
 		loc.setValue(value);
 		addInstruction(Pop.create(loc));
 	}
 
 	public void pushStack(Ir node, Storage loc) {
-		if (stackLocations.containsKey(node)) {
-			stack.set(stackLocations.get(node), loc);
+		if (stackPositions.containsKey(node)) {
+			stack.set(stackPositions.get(node), loc);
 		} else {
 			stack.add(loc);
-			stackLocations.put(node, stack.size() - 1);
+			stackPositions.put(node, stack.size() - 1);
 		}
 		addInstruction(Push.create(loc));
 	}
 
 	// return a register for use
 	public Register allocateRegister(Ir node) {
-		if (!stackLocations.containsKey(node)) {
+		if (!stackPositions.containsKey(node)) {
 			pushStack(node, ImmediateValue.create(0));
 		}
 		if (registerLocations.get(node) != null) {
@@ -65,18 +66,25 @@ public class AssemblyContext {
 		}
 
 		Register reg = registers.pop();
+		Memory stackLocation = getStackLocation(node);
+		addInstruction(Mov.create(stackLocation, reg));
 		registerLocations.put(node, reg);
-		//Memory stackPosition = getStackPosition(node); //TODO: get the text position in relation to the break pointer
-		//and then create a mov instruction from stack to register
-		reg.setValue(stack.get(stackLocations.get(node)));
+		reg.setValue(stack.get(stackPositions.get(node)));
 		return reg;
+	}
+	
+	public Memory getStackLocation(Ir node) {
+		String name = "-" + (8*(stackPositions.get(node)+1)) + "(%rbp)";
+		return Memory.create(name);
 	}
 
 	// release a register back into the pool
 	public void deallocateRegister(Ir node) {
 		Register reg = registerLocations.remove(node);
+		Memory stackLocation = getStackLocation(node);
+		addInstruction(Mov.create(reg, stackLocation));
 		registers.push(reg);
-		stack.set(stackLocations.get(node), reg.getValue());
+		stack.set(stackPositions.get(node), reg.getValue());
 	}
 
 	public void addInstructions(List<Instruction> instructions) {
