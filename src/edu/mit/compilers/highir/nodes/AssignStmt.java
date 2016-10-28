@@ -1,13 +1,20 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Idiv;
+import edu.mit.compilers.lowir.instructions.Imul;
+import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Xor;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
-
 import exceptions.TypeMismatchError;
 
 public class AssignStmt extends Statement {
@@ -46,7 +53,7 @@ public class AssignStmt extends Statement {
             }
         }
 
-        return new AssignStmt(location, assignOp, expression);
+        return new AssignStmt(location, "=", expression);
     }
 
     @Override
@@ -70,5 +77,21 @@ public class AssignStmt extends Statement {
         pw.print(" " + assignOp);
         expression.cfgPrint(pw," ");
         pw.println();
+    }
+
+    @Override
+    public List<Instruction> generateAssembly(AssemblyContext ctx){
+        List<Instruction> exprInst = expression.generateAssembly(ctx);
+        List<Instruction> instructions = new ArrayList<>();
+        instructions.addAll(exprInst);
+
+        Register src = ctx.allocateRegister(expression);
+        Register dest = ctx.allocateRegister(location);
+        Instruction opInstruction;
+        instructions.add(new Mov(src, dest));
+
+        ctx.setRegister(this, src);
+
+        return instructions;
     }
 }

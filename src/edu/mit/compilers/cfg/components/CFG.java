@@ -359,9 +359,29 @@ public class CFG implements CFGAble {
 
     @Override
     public List<Instruction> generateAssembly(AssemblyContext ctx) {
-    	// TODO walk through CFG visit each basic block once,
-    	// generate list of instructions
-    	return null;
+        HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        Stack<BasicBlock> blockStack = new Stack<>();
+        blockStack.push(getEntryBlock());
+        
+        List<Instruction> assemblyInstructions = new ArrayList<Instruction>();
+        
+        while(!blockStack.empty()) {
+            BasicBlock currentBlock = blockStack.pop();
+            if(visited.contains(currentBlock)) continue;
+            else visited.add(currentBlock);
+            
+            assemblyInstructions.addAll(currentBlock.generateAssembly(ctx));
+            
+            //push blocks in reverse order to pop in correct order
+            if(currentBlock.getNextBlocks().size() > 1) {
+                blockStack.push(currentBlock.getNextBlock(false));
+            }
+            if(currentBlock.getNextBlocks().size() > 0){
+                blockStack.push(currentBlock.getNextBlock(true));
+            }
+        }
+        
+        return assemblyInstructions;
     }
     
     @Override

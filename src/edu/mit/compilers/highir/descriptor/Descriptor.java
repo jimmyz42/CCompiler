@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.descriptor;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.mit.compilers.PrettyPrintable;
@@ -11,7 +12,14 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Cmovg;
+import edu.mit.compilers.lowir.instructions.Cmovge;
+import edu.mit.compilers.lowir.instructions.Cmovl;
+import edu.mit.compilers.lowir.instructions.Cmovle;
+import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Mov;
 
 public abstract class Descriptor implements PrettyPrintable, CFGAble {
     private final String name;
@@ -42,7 +50,6 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
 
     @Override
     public List<Instruction> generateAssembly(AssemblyContext ctx) {
-    	//TODO
-    	return null;
+        return new ArrayList<>();
     }
 }

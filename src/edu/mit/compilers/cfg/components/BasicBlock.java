@@ -120,9 +120,14 @@ public class BasicBlock extends CFG {
 
     @Override
     public List<Instruction> generateAssembly(AssemblyContext ctx) {
-    	// TODO generate label, generate assembly for each component,
-    	// generate conditional jump (CMP, then JMP)
-    	return null;
+    	List<Instruction> assemblyInstructions = new ArrayList<Instruction>();
+    	for(CFGAble component: components) {
+    		System.out.println(component);
+    		System.out.println(component.generateAssembly(ctx));
+    		assemblyInstructions.addAll(component.generateAssembly(ctx));
+    	}
+    	
+    	return assemblyInstructions;
     }
 
     // Checks for merging precondition
