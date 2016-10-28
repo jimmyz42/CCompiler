@@ -38,6 +38,11 @@ public class StringLiteral extends ExternArg {
     }
     
     @Override
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        pw.println(prefix + getClass().getSimpleName() + ": " + terminal);
+    }
+
+    @Override
     public void generateAssembly(AssemblyContext ctx) {
 
         Instruction stringInstruction = new StringInstruction( //TODO make less gross
