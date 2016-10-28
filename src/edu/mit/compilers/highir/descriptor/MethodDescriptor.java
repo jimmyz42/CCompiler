@@ -14,12 +14,14 @@ import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.nodes.VoidType;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
-
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Label;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
-
 import exceptions.TypeMismatchError;
 
 public class MethodDescriptor extends FunctionDescriptor {
@@ -105,5 +107,10 @@ public class MethodDescriptor extends FunctionDescriptor {
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(getType() + " " + getName());
+    }
+
+    @Override
+    public List<Instruction> generateAssembly(AssemblyContext ctx) {
+        return Collections.singletonList(Label.create(getName()));
     }
 }
