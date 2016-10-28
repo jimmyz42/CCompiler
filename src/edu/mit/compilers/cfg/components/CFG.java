@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -83,11 +84,11 @@ public class CFG implements CFGAble {
     }
 
     public void setPreviousBlock(BasicBlock prevBlock) {
-        setPreviousBlocks(Collections.singletonList(prevBlock));
+        setPreviousBlocks(Arrays.asList(prevBlock));
     }
 
     public void setNextBlock(BasicBlock nextBlock) {
-        setNextBlocks(Collections.singletonList(nextBlock));
+        setNextBlocks(Arrays.asList(nextBlock));
     }
 
     public void addPreviousBlocks(List<BasicBlock> prevBlocks) {
@@ -140,6 +141,119 @@ public class CFG implements CFGAble {
              }
          }
     }
+    
+    public void clearPrevBlocks(){
+   	 	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        Stack<BasicBlock> blockStack = new Stack<>();
+        blockStack.push(getEntryBlock());
+        
+        while(!blockStack.empty()) {
+            BasicBlock currentBlock = blockStack.pop();
+            if(visited.contains(currentBlock)) continue;
+            else visited.add(currentBlock);
+            
+            currentBlock.setPreviousBlocks(new ArrayList<BasicBlock>());
+            //push blocks in reverse order to pop in correct order
+            if(currentBlock.getNextBlocks().size() > 1) {
+                blockStack.push(currentBlock.getNextBlock(false));
+            }
+            if(currentBlock.getNextBlocks().size() > 0){
+                blockStack.push(currentBlock.getNextBlock(true));
+            }
+        }
+   }
+    
+    public void genPrevBlocks(){
+   	 	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        Stack<BasicBlock> blockStack = new Stack<>();
+        blockStack.push(getEntryBlock());
+        
+        while(!blockStack.empty()) {
+            BasicBlock currentBlock = blockStack.pop();
+            if(visited.contains(currentBlock)) continue;
+            else visited.add(currentBlock);
+            
+            //push blocks in reverse order to pop in correct order
+            if(currentBlock.getNextBlocks().size() > 1) {
+            	currentBlock.getNextBlock(false).addPreviousBlock(currentBlock);
+                blockStack.push(currentBlock.getNextBlock(false));
+            }
+            if(currentBlock.getNextBlocks().size() > 0){
+            	currentBlock.getNextBlock(true).addPreviousBlock(currentBlock);
+                blockStack.push(currentBlock.getNextBlock(true));
+            }
+        }
+   }
+    
+    // Merge basic blocks optimization
+    public void mergeBasicBlocks(){
+    	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        Stack<BasicBlock> blockStack = new Stack<>();
+        blockStack.push(getEntryBlock());
+    
+        while(!blockStack.empty()) {
+            BasicBlock currentBlock = blockStack.pop();
+            if(visited.contains(currentBlock)) continue;
+            else visited.add(currentBlock);
+            
+            
+            if(currentBlock.getNextBlocks().size() > 0 && 
+            		BasicBlock.canMerge(currentBlock, currentBlock.getNextBlock())) {
+            	BasicBlock b1 = currentBlock, b2 = currentBlock.getNextBlock();
+            	BasicBlock merged = BasicBlock.merge(b1, b2);
+            	if(b1 == entryBlock) entryBlock = merged;
+            	if(b2 == exitBlock) exitBlock = merged;
+
+            	for(BasicBlock block: merged.getPreviousBlocks()) {
+            		List<BasicBlock> list = block.getNextBlocks();
+            		list.set(list.indexOf(b1), merged);
+            	}
+            	for(BasicBlock block: merged.getNextBlocks()) {
+            		List<BasicBlock> list = block.getPreviousBlocks();
+            		list.set(list.indexOf(b2), merged);
+            	}
+            	blockStack.push(merged);
+            } else {
+            	//push blocks in reverse order to pop in correct order
+            	if(currentBlock.getNextBlocks().size() > 1) {
+                    blockStack.push(currentBlock.getNextBlock(false));
+                }
+                if(currentBlock.getNextBlocks().size() > 0){
+                    blockStack.push(currentBlock.getNextBlock(true));
+                }
+            }
+        }
+   }
+    
+    public void eliminateEmptyBlocks(){
+    	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        Stack<BasicBlock> blockStack = new Stack<>();
+        blockStack.push(getEntryBlock());
+    
+        while(!blockStack.empty()) {
+            BasicBlock currentBlock = blockStack.pop();
+            if(visited.contains(currentBlock)) continue;
+            else visited.add(currentBlock);
+            
+            if(currentBlock.isEmpty() && currentBlock.getNextBlocks().size() > 0) {
+        		BasicBlock next = currentBlock.getNextBlock();          				
+            	for(BasicBlock block: currentBlock.getPreviousBlocks()) {
+            		List<BasicBlock> list = block.getNextBlocks();
+            		list.set(list.indexOf(currentBlock), next);
+            	}
+            	next.setPreviousBlocks(currentBlock.getPreviousBlocks());
+            	blockStack.push(next);
+            } else {
+            	//push blocks in reverse order to pop in correct order
+            	if(currentBlock.getNextBlocks().size() > 1) {
+                    blockStack.push(currentBlock.getNextBlock(false));
+                }
+                if(currentBlock.getNextBlocks().size() > 0){
+                    blockStack.push(currentBlock.getNextBlock(true));
+                }
+            }
+        }
+   }
     
     public void exportDOT(String fileName){
         DOTExporter<BasicBlock, DefaultEdge> exporter =
@@ -248,5 +362,12 @@ public class CFG implements CFGAble {
     	// TODO walk through CFG visit each basic block once,
     	// generate list of instructions
     	return null;
+    }
+    
+    @Override
+    public String toString() {
+    	StringWriter sw = new StringWriter();
+    	cfgPrint(new PrintWriter(sw), "");
+    	return sw.toString();
     }
 }

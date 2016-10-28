@@ -112,6 +112,13 @@ class Main {
                 Program ir = (Program)loader.visit(context);
                 CFGContext ctx = new CFGContext();
                 CFG cfg = ir.generateCFG(ctx);
+                
+                //Comment out this if you don't want to use the optimization
+                cfg.clearPrevBlocks();
+                cfg.genPrevBlocks();
+                cfg.mergeBasicBlocks();
+                cfg.eliminateEmptyBlocks();
+                
                 StringWriter sw = new StringWriter();
                 cfg.cfgPrint(new PrintWriter(sw), "");
                 System.out.println(sw.toString());

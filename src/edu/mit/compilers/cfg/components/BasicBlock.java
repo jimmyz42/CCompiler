@@ -125,6 +125,15 @@ public class BasicBlock extends CFG {
     	return null;
     }
 
+    // Checks for merging precondition
+    public static boolean canMerge(BasicBlock b1, BasicBlock b2) {
+    	if(b1.getNextBlocks().size() != 1) return false;
+    	if(b2.getPreviousBlocks().size() != 1) return false;
+    	if(b1.getNextBlock() != b2) return false;
+    	if(b2.getPreviousBlock() != b1) return false;
+    	return true;
+    }
+    
     // Precondition: b1.getNextBlocks() = [b2], b2.getPreviousBlocks() = [b1]
     // Aka b1 only points to b2, b2 is only pointed to by b1
     public static BasicBlock merge(BasicBlock b1, BasicBlock b2) {
