@@ -12,6 +12,8 @@ public class Shr extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "shr " + reg.toString());		
+        pw.print(prefix + "mov");
+        reg.printAssembly(pw, " ");
+        pw.println();		
 	}
 }

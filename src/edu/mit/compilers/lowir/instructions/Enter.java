@@ -9,6 +9,6 @@ public class Enter extends Instruction {
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
 		// TODO Auto-generated method stub
-		
+		pw.println("IMPLEMENT ENTER");
 	}
 }

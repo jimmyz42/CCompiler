@@ -17,6 +17,9 @@ public class And extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.println(prefix + "and " + src + ", " + dest);
+        pw.print(prefix + "and");
+        src.printAssembly(pw, " ");
+        dest.printAssembly(pw, ", ");
+        pw.println();
 	}
 }

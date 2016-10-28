@@ -12,6 +12,8 @@ public class Idiv extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "idiv " + divisor.toString());		
-	}
+        pw.print(prefix + "idiv");
+        divisor.printAssembly(pw, " ");
+        pw.println();
+    }
 }

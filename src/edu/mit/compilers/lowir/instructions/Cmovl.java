@@ -5,22 +5,25 @@ import java.io.PrintWriter;
 import edu.mit.compilers.lowir.Storage;
 
 public class Cmovl extends Instruction {
-	Object src, dest;
-    public Cmovl(Object src, Object dest) {
+	Storage src, dest;
+    public Cmovl(Storage src, Storage dest) {
     	this.src = src; 
     	this.dest = dest;
     }
 
-    public static Cmovl create(Boolean src, Storage dest) {
-        return new Cmovl(src, dest.getName());
-    }
-
-    public static Cmovl create(Storage src, Storage dest) {
-        return new Cmovl(src.getName(), dest.getName());
-    }
+//    public static Cmovl create(Boolean src, Storage dest) {
+//        return new Cmovl(src, dest.getName());
+//    }
+//
+//    public static Cmovl create(Storage src, Storage dest) {
+//        return new Cmovl(src.getName(), dest.getName());
+//    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.println(prefix + "cmovl " + src.toString() + ", " + dest.toString());				
+        pw.print(prefix + "cmovl");
+        src.printAssembly(pw, " ");
+        dest.printAssembly(pw, ", ");
+        pw.println();
 	}
 }

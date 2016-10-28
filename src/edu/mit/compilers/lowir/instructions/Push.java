@@ -16,6 +16,8 @@ public class Push extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "push " + src);		
+		pw.print(prefix + "push");
+		src.printAssembly(pw, " ");
+		pw.println();
 	}
 }

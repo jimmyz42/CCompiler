@@ -16,6 +16,8 @@ public class Pop extends Instruction {
     
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "pop " + dest);		
+		pw.print(prefix + "pop");
+		dest.printAssembly(pw, " ");
+		pw.println();
 	}
 }

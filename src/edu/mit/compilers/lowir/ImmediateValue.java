@@ -1,13 +1,14 @@
 package edu.mit.compilers.lowir;
 
+import java.io.PrintWriter;
+
 /**
  * Manages the value stored in registers and de/allocates register space
  * for instructions
  */
 public class ImmediateValue extends Storage {
-    String value;
 	public ImmediateValue(String value) {
-    	this.value = value;
+    	super(value);
     }
     
     public static ImmediateValue create(Long value) {
@@ -27,7 +28,7 @@ public class ImmediateValue extends Storage {
     }
     
     @Override
-    public String toString(){
-    	return "$" + value; 
+    public void printAssembly(PrintWriter pw, String prefix){
+    	pw.print(prefix + "$" + super.getName()); 
     }
 }

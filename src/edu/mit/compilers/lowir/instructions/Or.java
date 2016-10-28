@@ -16,6 +16,9 @@ public class Or extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "or " + src.toString() + ", " + dest.toString());		
+        pw.print(prefix + "or");
+        src.printAssembly(pw, " ");
+        dest.printAssembly(pw, ", ");
+        pw.println();
 	}
 }

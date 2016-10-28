@@ -16,6 +16,8 @@ public class Jmp extends Instruction {
     
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "jmp " + target.toString());		
+        pw.print(prefix + "jmp");
+        target.printAssembly(pw, " ");
+        pw.println();
 	}
 }

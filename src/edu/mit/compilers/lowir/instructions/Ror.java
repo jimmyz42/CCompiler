@@ -13,6 +13,9 @@ public class Ror extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "ror " + src.toString() + ", " + dest.toString());		
+        pw.print(prefix + "ror");
+        src.printAssembly(pw, " ");
+        dest.printAssembly(pw, ", ");
+        pw.println();
 	}
 }

@@ -18,6 +18,9 @@ public class Imul extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "imul " + src.toString() + ", " + dest.toString());		
+        pw.print(prefix + "imul");
+        src.printAssembly(pw, " ");
+        dest.printAssembly(pw, ", ");
+        pw.println();
 	}
 }

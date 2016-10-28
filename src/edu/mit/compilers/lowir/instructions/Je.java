@@ -16,6 +16,8 @@ public class Je extends Instruction {
     
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "je " + target.toString());		
+        pw.print(prefix + "je");
+        target.printAssembly(pw, " ");
+        pw.println();
 	}
 }

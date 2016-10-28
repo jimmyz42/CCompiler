@@ -13,6 +13,9 @@ public class Sub extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "sub " + src + ", " + dest);		
-	}
+        pw.print(prefix + "sub");
+        src.printAssembly(pw, " ");
+        dest.printAssembly(pw, ", ");
+        pw.println();
+    }
 }

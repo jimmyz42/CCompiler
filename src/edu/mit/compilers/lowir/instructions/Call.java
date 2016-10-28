@@ -12,6 +12,8 @@ public class Call extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.println(prefix + "call " + target);		
+        pw.print(prefix + "call");
+        target.printAssembly(pw, " ");
+        pw.println();
 	}
 }

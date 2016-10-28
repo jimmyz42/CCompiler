@@ -16,6 +16,8 @@ public class Jne extends Instruction {
     
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(prefix + "jne " + target.toString());		
+        pw.print(prefix + "jne");
+        target.printAssembly(pw, " ");
+        pw.println();
 	}
 }
