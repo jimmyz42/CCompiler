@@ -2,7 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Cmove extends Instruction {
 	Object src, dest;
@@ -12,11 +12,11 @@ public class Cmove extends Instruction {
     	this.dest = dest;
     }
 
-    public static Cmove create(Boolean src, Location dest) {
+    public static Cmove create(Boolean src, Storage dest) {
         return new Cmove(src, dest.getName());
     }
 
-    public static Cmove create(Location src, Location dest) {
+    public static Cmove create(Storage src, Storage dest) {
         return new Cmove(src.getName(), dest.getName());
     }
 

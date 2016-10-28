@@ -10,6 +10,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.And;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
@@ -55,14 +56,14 @@ public class AndOpExpr extends BinOpExpr {
         expression.addAll(lhsInst);
         expression.addAll(rhsInst);
 
-        Register src = ctx.allocateRegister(rhs);
-        Register dest = ctx.allocateRegister(lhs);
+        Storage src = rhs.allocateLocation(ctx);
+        Storage dest = lhs.allocateLocation(ctx);
         Instruction opInstruction = new And(src, dest);
         expression.add(opInstruction);
 
         ctx.pushStack(this, dest);
-        ctx.deallocateRegister(rhs);
-        ctx.deallocateRegister(lhs);
+        rhs.deallocateLocation(ctx);
+        lhs.deallocateLocation(ctx);
 
         return expression;
     }

@@ -7,6 +7,9 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Instruction;
 
 public class BoolLiteral extends Literal {
@@ -35,5 +38,9 @@ public class BoolLiteral extends Literal {
     @Override
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
     	return (terminal ? trueBranch : falseBranch).getEntryBlock();
+    }
+    
+    public Storage allocateLocation(AssemblyContext ctx) {
+    	return ImmediateValue.create(terminal);
     }
 }

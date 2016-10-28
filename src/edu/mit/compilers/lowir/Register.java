@@ -4,7 +4,7 @@ package edu.mit.compilers.lowir;
  * Manages the value stored in registers and de/allocates register space
  * for instructions
  */
-public class Register extends Location {
+public class Register extends Storage {
     private Object value;
 
     public Register(String name) {

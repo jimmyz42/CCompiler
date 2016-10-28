@@ -8,60 +8,62 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Add;
 import edu.mit.compilers.lowir.instructions.Sub;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
 public class AddOpExpr extends BinOpExpr {
-    public AddOpExpr(BinOp operator, Expression lhs, Expression rhs) {
-        super(operator, lhs, rhs);
-    }
+	public AddOpExpr(BinOp operator, Expression lhs, Expression rhs) {
+		super(operator, lhs, rhs);
+	}
 
-    public static AddOpExpr create(DecafSemanticChecker checker, DecafParser.AddOpExprContext ctx) {
-        AddOp operator = ctx.PLUS_OP() != null ? AddOp.create(checker, ctx.PLUS_OP()) : AddOp.create(checker, ctx.DASH());
-        Expression lhs = Expression.create(checker, ctx.expr(0));
-        Expression rhs = Expression.create(checker, ctx.expr(1));
+	public static AddOpExpr create(DecafSemanticChecker checker, DecafParser.AddOpExprContext ctx) {
+		AddOp operator = ctx.PLUS_OP() != null ? AddOp.create(checker, ctx.PLUS_OP())
+				: AddOp.create(checker, ctx.DASH());
+		Expression lhs = Expression.create(checker, ctx.expr(0));
+		Expression rhs = Expression.create(checker, ctx.expr(1));
 
-        if (lhs.getExpressionType() != ScalarType.INT) {
-            throw new TypeMismatchError("Left argument of + must be an int, got a " +
-            lhs.getExpressionType(), ctx.expr(0));
-        }
-        if (rhs.getExpressionType() != ScalarType.INT) {
-            throw new TypeMismatchError("Right argument of + must be an int, got a " +
-            rhs.getExpressionType(), ctx.expr(1));
-        }
+		if (lhs.getExpressionType() != ScalarType.INT) {
+			throw new TypeMismatchError("Left argument of + must be an int, got a " + lhs.getExpressionType(),
+					ctx.expr(0));
+		}
+		if (rhs.getExpressionType() != ScalarType.INT) {
+			throw new TypeMismatchError("Right argument of + must be an int, got a " + rhs.getExpressionType(),
+					ctx.expr(1));
+		}
 
-        return new AddOpExpr(operator, lhs, rhs);
-    }
+		return new AddOpExpr(operator, lhs, rhs);
+	}
 
-    @Override
-    public Type getExpressionType() {
-        return ScalarType.INT;
-    }
+	@Override
+	public Type getExpressionType() {
+		return ScalarType.INT;
+	}
 
-    @Override
-    public List<Instruction> generateAssembly(AssemblyContext ctx) {
-        List<Instruction> lhsInst = lhs.generateAssembly(ctx);
-        List<Instruction> rhsInst = rhs.generateAssembly(ctx);
-        List<Instruction> expression = new ArrayList<>();
-        expression.addAll(lhsInst);
-        expression.addAll(rhsInst);
+	@Override
+	public List<Instruction> generateAssembly(AssemblyContext ctx) {
+		List<Instruction> lhsInst = lhs.generateAssembly(ctx);
+		List<Instruction> rhsInst = rhs.generateAssembly(ctx);
+		List<Instruction> expression = new ArrayList<>();
+		expression.addAll(lhsInst);
+		expression.addAll(rhsInst);
 
-        Register src = ctx.allocateRegister(rhs);
-        Register dest = ctx.allocateRegister(lhs);
-        Instruction opInstruction;
-        if(operator.getTerminal().equals("+")) {
-            opInstruction = new Add(src, dest);
-        } else {
-            opInstruction = new Sub(src, dest);
-        }
-        expression.add(opInstruction);
+		Storage src = rhs.allocateLocation(ctx);
+		Storage dest = lhs.allocateLocation(ctx);
+		Instruction opInstruction;
+		if (operator.getTerminal().equals("+")) {
+			opInstruction = new Add(src, dest);
+		} else {
+			opInstruction = new Sub(src, dest);
+		}
+		expression.add(opInstruction);
 
-        ctx.pushStack(this, dest);
-        ctx.deallocateRegister(rhs);
-        ctx.deallocateRegister(lhs);
+		ctx.pushStack(this, dest);
+		rhs.deallocateLocation(ctx);
+		lhs.deallocateLocation(ctx);
 
-        return expression;
-    }
+		return expression;
+	}
 }

@@ -2,7 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Label extends Instruction {
 	String name;

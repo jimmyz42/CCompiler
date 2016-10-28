@@ -2,11 +2,11 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Ror extends Instruction {
-	Location src, dest;
-    public Ror(Location src, Location dest) {
+	Storage src, dest;
+    public Ror(Storage src, Storage dest) {
     	this.src = src; 
     	this.dest = dest;
     }

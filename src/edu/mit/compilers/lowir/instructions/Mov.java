@@ -2,7 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Mov extends Instruction {
 	Object src, dest;
@@ -11,11 +11,11 @@ public class Mov extends Instruction {
     	this.dest = dest;
     }
 
-    public static Mov create(Boolean src, Location dest) {
+    public static Mov create(Boolean src, Storage dest) {
         return new Mov(src, dest.getName());
     }
 
-    public static Mov create(Location src, Location dest) {
+    public static Mov create(Storage src, Storage dest) {
         return new Mov(src.getName(), dest.getName());
     }
 

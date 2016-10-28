@@ -2,11 +2,11 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Pop extends Instruction {
-	Location dest;
-    public Pop(Location dest) {
+	Storage dest;
+    public Pop(Storage dest) {
     	this.dest = dest;
     }
 

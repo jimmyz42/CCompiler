@@ -2,7 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 /*
  * represent IMUL %src, %dest
@@ -10,8 +10,8 @@ import edu.mit.compilers.lowir.Location;
  * multiplies dest by src
  */
 public class Imul extends Instruction {
-	Location src, dest;
-    public Imul(Location src, Location dest) {
+	Storage src, dest;
+    public Imul(Storage src, Storage dest) {
     	this.src = src;
     	this.dest = dest;
     }

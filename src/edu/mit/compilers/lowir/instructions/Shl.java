@@ -2,11 +2,11 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Shl extends Instruction {
-	Location reg;
-    public Shl(Location reg) {
+	Storage reg;
+    public Shl(Storage reg) {
     	this.reg = reg;
     }
 

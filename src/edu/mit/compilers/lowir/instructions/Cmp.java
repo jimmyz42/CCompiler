@@ -2,16 +2,16 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Cmp extends Instruction {
-	Location src, dest;
-    public Cmp(Location src, Location dest) {
+	Storage src, dest;
+    public Cmp(Storage src, Storage dest) {
     	this.src = src;
     	this.dest = dest;
     }
 
-    public static Cmp create(Location src, Location dest) {
+    public static Cmp create(Storage src, Storage dest) {
         return new Cmp(src, dest);
     }
 

@@ -4,14 +4,14 @@ package edu.mit.compilers.lowir;
  * Manages the value stored in registers and de/allocates register space
  * for instructions
  */
-abstract public class Location {
+abstract public class Storage {
     private String name;
 
-    public Location(String name) {
+    public Storage(String name) {
         this.name = name;
     }
     
-    public Location() {
+    public Storage() {
     	
     }
 

@@ -38,7 +38,7 @@ public class AssemblyContext {
 		return stack.remove(stack.size() - 1);
 	}
 
-	public void pushStack(Ir node, Location loc) {
+	public void pushStack(Ir node, Storage loc) {
 		if (stackLocations.containsKey(node)) {
 			stack.set(stackLocations.get(node), loc);
 		} else {

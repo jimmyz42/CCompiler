@@ -4,7 +4,7 @@ package edu.mit.compilers.lowir;
  * Manages the value stored in registers and de/allocates register space
  * for instructions
  */
-public class ImmediateValue extends Location {
+public class ImmediateValue extends Storage {
     public ImmediateValue(String value) {
     	super(value);
     }

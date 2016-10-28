@@ -2,15 +2,15 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 /*
  * represents AND %src, %dest
  */
 public class And extends Instruction {
-	Location src, dest;
+	Storage src, dest;
 	
-    public And(Location src, Location dest) {
+    public And(Storage src, Storage dest) {
     	this.src = src; 
     	this.dest = dest;
     }

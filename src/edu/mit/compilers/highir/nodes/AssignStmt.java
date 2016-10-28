@@ -8,6 +8,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Idiv;
 import edu.mit.compilers.lowir.instructions.Imul;
 import edu.mit.compilers.lowir.instructions.Instruction;
@@ -85,14 +86,13 @@ public class AssignStmt extends Statement {
         List<Instruction> instructions = new ArrayList<>();
         instructions.addAll(exprInst);
 
-        Register src = ctx.allocateRegister(expression);
-        Register dest = ctx.allocateRegister(location);
-        Instruction opInstruction;
+        Storage src = expression.allocateLocation(ctx);
+        Storage dest = location.allocateLocation(ctx);
         instructions.add(new Mov(src, dest));
 
         ctx.pushStack(this, dest);
-        ctx.deallocateRegister(expression);
-        ctx.deallocateRegister(location);
+        expression.deallocateLocation(ctx);
+        location.deallocateLocation(ctx);
 
         return instructions;
     }

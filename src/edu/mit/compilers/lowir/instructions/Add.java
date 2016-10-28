@@ -2,13 +2,13 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Location;
+import edu.mit.compilers.lowir.Storage;
 
 public class Add extends Instruction {
-	Location src;
-	Location dest;
+	Storage src;
+	Storage dest;
 	
-    public Add(Location src, Location dest) {
+    public Add(Storage src, Storage dest) {
     	this.src = src; 
     	this.dest = dest;
     }

@@ -7,6 +7,7 @@ import java.util.List;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Imul;
 import edu.mit.compilers.lowir.instructions.Idiv;
@@ -50,8 +51,8 @@ public class MulOpExpr extends BinOpExpr {
         expression.addAll(lhsInst);
         expression.addAll(rhsInst);
 
-        Register src = ctx.allocateRegister(rhs);
-        Register dest = ctx.allocateRegister(lhs);
+        Storage src = rhs.allocateLocation(ctx);
+        Storage dest = lhs.allocateLocation(ctx);
         Instruction opInstruction;
         if(operator.getTerminal().equals("*")) {
             expression.add(new Imul(src, dest));
@@ -65,8 +66,8 @@ public class MulOpExpr extends BinOpExpr {
         }
 
         ctx.pushStack(this, src);
-        ctx.deallocateRegister(rhs);
-        ctx.deallocateRegister(lhs);
+        rhs.deallocateLocation(ctx);
+        lhs.deallocateLocation(ctx);
 
         return expression;
     }
