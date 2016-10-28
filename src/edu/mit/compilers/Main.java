@@ -152,6 +152,8 @@ class Main {
                 	//if debug is on, print output to console
                 	System.out.println(sw.toString());
                 }
+                
+                //write to .s file
                 String outputAssemblyPath = CLI.infile;
                 int extension = outputAssemblyPath.lastIndexOf(".");
                 outputAssemblyPath = outputAssemblyPath.substring(0,extension +1) + "s";
