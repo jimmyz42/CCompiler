@@ -1,5 +1,7 @@
 package edu.mit.compilers.lowir.instructions;
 
+import java.io.PrintWriter;
+
 import edu.mit.compilers.lowir.Location;
 
 public class Cmovl extends Instruction {
@@ -13,4 +15,10 @@ public class Cmovl extends Instruction {
     public static Cmovl create(Location src, Location dest) {
         return new Cmovl(src.getName(), dest.getName());
     }
+
+	@Override
+	public void print(PrintWriter pw, String prefix) {
+		// TODO Auto-generated method stub
+		
+	}
 }
