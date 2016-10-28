@@ -2,6 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
+import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.Storage;
 
 public class Mov extends Instruction {
@@ -11,13 +12,13 @@ public class Mov extends Instruction {
     	this.dest = dest;
     }
 
-//    public static Mov create(Boolean src, Storage dest) {
-//        return new Mov(src, dest.getName());
-//    }
-//
-//    public static Mov create(Storage src, Storage dest) {
-//        return new Mov(src.getName(), dest.getName());
-//    }
+    public static Mov create(BoolValue src, Storage dest) {
+        return new Mov(src, dest);
+    }
+
+    public static Mov create(Storage src, Storage dest) {
+        return new Mov(src, dest);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {

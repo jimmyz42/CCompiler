@@ -2,6 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
+import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.Storage;
 
 public class Cmovne extends Instruction {
@@ -11,13 +12,13 @@ public class Cmovne extends Instruction {
     	this.dest = dest;
     }
 
-//    public static Cmovne create(Boolean src, Storage dest) {
-//        return new Cmovne(src, dest.getName());
-//    }
-//
-//    public static Cmovne create(Storage src, Storage dest) {
-//        return new Cmovne(src.getName(), dest.getName());
-//    }
+    public static Cmovne create(BoolValue src, Storage dest) {
+        return new Cmovne(src, dest);
+    }
+
+    public static Cmovne create(Storage src, Storage dest) {
+        return new Cmovne(src, dest);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {

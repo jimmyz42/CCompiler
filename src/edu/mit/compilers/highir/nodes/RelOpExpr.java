@@ -13,6 +13,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Cmovg;
@@ -69,20 +70,23 @@ public class RelOpExpr extends BinOpExpr implements Condition {
         Storage dest = lhs.allocateLocation(ctx);
         expression.add(new Cmp(src, dest));
 
+    	Storage btrue = new BoolValue("true");
+    	Storage bfalse = new BoolValue("flase");
+    	
         switch(operator.getTerminal()){
 
             case ">":
-            expression.add(Mov.create(false, dest));
-            expression.add(Cmovg.create(true, dest));
+            expression.add(Mov.create(bfalse, dest));
+            expression.add(Cmovg.create(btrue, dest));
             case "<":
-            expression.add(Mov.create(false, dest));
-            expression.add(Cmovl.create(true, dest));
+            expression.add(Mov.create(bfalse, dest));
+            expression.add(Cmovl.create(btrue, dest));
             case ">=":
-            expression.add(Mov.create(false, dest));
-            expression.add(Cmovge.create(true, dest));
+            expression.add(Mov.create(bfalse, dest));
+            expression.add(Cmovge.create(btrue, dest));
             case "<=":
-            expression.add(Mov.create(false, dest));
-            expression.add(Cmovle.create(true, dest));
+            expression.add(Mov.create(bfalse, dest));
+            expression.add(Cmovle.create(btrue, dest));
         }
         ctx.addInstructions(expression);
 

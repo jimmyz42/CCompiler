@@ -13,6 +13,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Cmove;
 import edu.mit.compilers.lowir.instructions.Cmovne;
@@ -62,13 +63,16 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         List<Instruction> expression = new ArrayList<>();
         Instruction opInstruction = new Cmp(src, dest);
         expression.add(opInstruction);
+        
+    	Storage btrue = new BoolValue("true");
+    	Storage bfalse = new BoolValue("flase");
 
         if(operator.getTerminal().equals("==")) {
-            expression.add(Mov.create(false, dest));
-            expression.add(Cmove.create(true, dest));
+            expression.add(Mov.create(bfalse, dest));
+            expression.add(Cmove.create(btrue, dest));
         } else {
-            expression.add(Mov.create(false, dest));
-            expression.add(Cmovne.create(true, dest));
+            expression.add(Mov.create(bfalse, dest));
+            expression.add(Cmovne.create(btrue, dest));
         }
 
         ctx.addInstructions(expression);

@@ -66,7 +66,7 @@ public class AssemblyContext {
 
 		Register reg = registers.pop();
 		registerLocations.put(node, reg);
-		Memory stackPosition = getStackPosition(node); //TODO: get the text position in relation to the break pointer
+		//Memory stackPosition = getStackPosition(node); //TODO: get the text position in relation to the break pointer
 		//and then create a mov instruction from stack to register
 		reg.setValue(stack.get(stackLocations.get(node)));
 		return reg;

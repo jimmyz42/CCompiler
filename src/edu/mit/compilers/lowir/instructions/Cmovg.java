@@ -2,6 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
+import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.Storage;
 
 public class Cmovg extends Instruction {
@@ -12,13 +13,13 @@ public class Cmovg extends Instruction {
     	this.dest = dest;
     }
 
-//    public static Cmovg create(Boolean src, Storage dest) {
-//        return new Cmovg(src, dest.getName());
-//    }
-//
-//    public static Cmovg create(Storage src, Storage dest) {
-//        return new Cmovg(src.getName(), dest.getName());
-//    }
+    public static Cmovg create(BoolValue src, Storage dest) {
+        return new Cmovg(src, dest);
+    }
+
+    public static Cmovg create(Storage src, Storage dest) {
+        return new Cmovg(src, dest);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {

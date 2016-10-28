@@ -2,6 +2,7 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
+import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.Storage;
 
 public class Cmovge extends Instruction {
@@ -10,14 +11,14 @@ public class Cmovge extends Instruction {
     	this.src = src;
     	this.dest = dest;
     }
-//
-//    public static Cmovge create(Boolean src, Storage dest) {
-//        return new Cmovge(src, dest.getName());
-//    }
-//
-//    public static Cmovge create(Storage src, Storage dest) {
-//        return new Cmovge(src.getName(), dest.getName());
-//    }
+
+    public static Cmovge create(BoolValue src, Storage dest) {
+        return new Cmovge(src, dest);
+    }
+
+    public static Cmovge create(Storage src, Storage dest) {
+        return new Cmovge(src, dest);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
