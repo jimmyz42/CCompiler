@@ -10,12 +10,14 @@ import edu.mit.compilers.grammar.DecafParser.Method_argument_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.nodes.Block;
+import edu.mit.compilers.highir.nodes.ReturnStmt;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.nodes.VoidType;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.instructions.Enter;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Label;
 import edu.mit.compilers.cfg.CFGAble;
@@ -96,12 +98,16 @@ public class MethodDescriptor extends FunctionDescriptor {
         symbolBlock.setDescription("arguments");
         BasicBlock methodBlock = BasicBlock.create(this);
         CFG bodyCFG = body.generateCFG(context);
+        BasicBlock returnBlock = BasicBlock.create(ReturnStmt.create());
+        
         methodBlock.setNextBlock(symbolBlock);
         symbolBlock.addPreviousBlock(methodBlock);
         symbolBlock.setNextBlock(bodyCFG.getEntryBlock());
         bodyCFG.addPreviousBlock(symbolBlock);
-
-        return new CFG(methodBlock, bodyCFG.getExitBlock());
+        bodyCFG.addNextBlock(returnBlock);
+        returnBlock.setPreviousBlock(bodyCFG.getExitBlock());
+        
+        return new CFG(methodBlock, returnBlock);
     }
 
     @Override
@@ -111,8 +117,8 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	//TODO: enter instruction
         ctx.addInstruction(Label.create(getName()));
-    	//TODO: enter instruction
+        ctx.addInstruction(Enter.create(arguments.size()));
+        //TODO: push arguments onto the stack
     }
 }

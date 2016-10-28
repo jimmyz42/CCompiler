@@ -10,7 +10,11 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Memory;
+import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Leave;
+import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Ret;
 import exceptions.TypeMismatchError;
 
@@ -36,6 +40,10 @@ public class ReturnStmt extends Statement {
         }
         return new ReturnStmt(expression);
     }
+    
+    public static ReturnStmt create() {
+        return new ReturnStmt(null);
+    }
 
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
@@ -54,15 +62,20 @@ public class ReturnStmt extends Statement {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-    	BasicBlock block = BasicBlock.createEmpty("return");
-    	BasicBlock methodEnd = context.currentMethodCFG().getExitBlock();
-    	block.setNextBlock(methodEnd);
-    	methodEnd.addPreviousBlock(block);
-    	return block;
+        BasicBlock block = BasicBlock.createEmpty("return");
+        BasicBlock methodEnd = context.currentMethodCFG().getExitBlock();
+        block.setNextBlock(methodEnd);
+        methodEnd.addPreviousBlock(block);
+        return block;
     }
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
+        if(expression != null) {
+        	Memory returnValue = ctx.getStackLocation(expression);
+        	ctx.addInstruction(Mov.create(returnValue, Register.create("%rax")));
+        }
+        ctx.addInstruction(Leave.create());
         ctx.addInstruction(Ret.create());
     }
 }

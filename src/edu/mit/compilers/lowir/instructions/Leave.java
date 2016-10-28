@@ -6,6 +6,10 @@ public class Leave extends Instruction {
     public Leave() {
     }
 
+    public static Leave create() {
+    	return new Leave();
+    }
+    
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
 		pw.println(prefix + "leave");		
