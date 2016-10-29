@@ -57,7 +57,9 @@ public class ReturnStmt extends Statement {
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "return ");
-        expression.cfgPrint(pw, prefix);
+        if(expression != null) {
+        	expression.cfgPrint(pw, prefix);
+        }
     }
 
     @Override
