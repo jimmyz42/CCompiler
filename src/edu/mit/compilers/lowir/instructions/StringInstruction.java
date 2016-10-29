@@ -13,8 +13,8 @@ public class StringInstruction extends Instruction{
 	
 	@Override 
 	public void printAssembly(PrintWriter pw, String prefix){
-		pw.println("." + this.label + ":");
-		pw.println("    " + ".string " + "\"" + this.text + "\"" );
+		pw.println("." + label + ":");
+		pw.println(prefix + ".string " + text);
 	}
 
 }

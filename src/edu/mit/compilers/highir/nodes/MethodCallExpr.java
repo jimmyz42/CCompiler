@@ -114,36 +114,38 @@ public class MethodCallExpr extends Expression {
 	public void generateAssembly(AssemblyContext ctx) {
 		List<Instruction> instructions = new ArrayList<>();
 		for(int i = 0; i < arguments.size(); i++) {
-			Ir node = arguments.get(i);
+			ExternArg node = arguments.get(i);
+			node.generateAssembly(ctx);
 			switch(i) {
 			case 0:
-				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rdi")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdi")));
 				break;
 			case 1:
-				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rsi")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rsi")));
 				break;
 			case 2:
-				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rdx")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdx")));
 				break;
 			case 3:
-				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rdx")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdx")));
 				break;
 			case 4:
-				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rcx")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rcx")));
 				break;
 			case 5:
-				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%r8")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r8")));
 				break;
 			case 6:
-				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%r9")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r9")));
 				break;
 			}
 		}
-		for(int i = arguments.size(); i > 0; i--) {
-			Ir node = arguments.get(i);
-			instructions.add(Push.create(ctx.getStackLocation(node)));
+		for(int i = arguments.size()-1; i > 6; i--) {
+			ExternArg node = arguments.get(i);
+			node.generateAssembly(ctx);
+			instructions.add(Push.create(node.getLocation(ctx)));
 		}
-		
+
 		ctx.addInstructions(instructions);
 	}
 }

@@ -40,7 +40,7 @@ public class ReturnStmt extends Statement {
         }
         return new ReturnStmt(expression);
     }
-    
+
     public static ReturnStmt create() {
         return new ReturnStmt(null);
     }
@@ -72,7 +72,7 @@ public class ReturnStmt extends Statement {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         if(expression != null) {
-        	Memory returnValue = ctx.getStackLocation(expression);
+        	Memory returnValue = expression.getLocation(ctx);
         	ctx.addInstruction(Mov.create(returnValue, Register.create("%rax")));
         }
         ctx.leave();

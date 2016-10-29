@@ -22,11 +22,11 @@ abstract public class Expression extends ExternArg {
     	// Bool expressions will override to return short circuit CFG
     	return null;
     }
-    
+
     public Storage allocateLocation(AssemblyContext ctx) {
     	return ctx.allocateRegister(this);
     }
-    
+
     public void deallocateLocation(AssemblyContext ctx) {
     	ctx.deallocateRegister(this);
     }
