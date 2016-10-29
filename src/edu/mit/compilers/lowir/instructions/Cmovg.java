@@ -18,7 +18,7 @@ public class Cmovg extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "cmovg");
+        pw.print(prefix + "cmovgq");
         src.printAssembly(pw, " ");
         dest.printAssembly(pw, ", ");
         pw.println();

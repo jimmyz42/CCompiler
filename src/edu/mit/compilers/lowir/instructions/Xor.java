@@ -13,7 +13,7 @@ public class Xor extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "xor");
+        pw.print(prefix + "xorq");
         src.printAssembly(pw, " ");
         dest.printAssembly(pw, ", ");
         pw.println();		

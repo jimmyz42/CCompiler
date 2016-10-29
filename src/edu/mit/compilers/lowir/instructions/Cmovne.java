@@ -17,7 +17,7 @@ public class Cmovne extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "cmovne");
+        pw.print(prefix + "cmovneq");
         src.printAssembly(pw, " ");
         dest.printAssembly(pw, ", ");
         pw.println();

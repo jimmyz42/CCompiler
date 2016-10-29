@@ -15,7 +15,7 @@ public class Add extends Instruction {
 
     @Override
     public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "add");
+        pw.print(prefix + "addq");
         src.printAssembly(pw, " ");
         dest.printAssembly(pw, ", ");
         pw.println();

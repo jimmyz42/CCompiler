@@ -17,7 +17,7 @@ public class Lea extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "lea");
+        pw.print(prefix + "leaq");
         src.printAssembly(pw, " ");
         dest.printAssembly(pw, ", ");	
         pw.println();

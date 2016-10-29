@@ -12,7 +12,7 @@ public class Idiv extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "idiv");
+        pw.print(prefix + "idivq");
         divisor.printAssembly(pw, " ");
         pw.println();
     }

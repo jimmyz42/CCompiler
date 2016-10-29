@@ -17,7 +17,7 @@ public class Cmp extends Instruction {
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "cmp");
+        pw.print(prefix + "cmpq");
         src.printAssembly(pw, " ");
         dest.printAssembly(pw, ", ");
         pw.println();
