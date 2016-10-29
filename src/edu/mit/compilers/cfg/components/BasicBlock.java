@@ -125,7 +125,9 @@ public class BasicBlock extends CFG {
     	for(CFGAble component: components) {
     		component.generateAssembly(ctx);
     	}
-    	branchCondition.generateAssembly(ctx);
+    	if(branchCondition != null) {
+    		branchCondition.generateAssembly(ctx);
+    	}
     }
 
     // Checks for merging precondition
