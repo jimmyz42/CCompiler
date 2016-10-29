@@ -19,4 +19,5 @@ public abstract class FunctionDescriptor extends Descriptor {
         getType().prettyPrint(pw,"");
     }
 
+    abstract public String getExpressionName();
 }

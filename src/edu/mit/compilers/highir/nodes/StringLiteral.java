@@ -1,25 +1,13 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Storage;
-import edu.mit.compilers.lowir.StringValue;
-import edu.mit.compilers.lowir.instructions.Cmove;
-import edu.mit.compilers.lowir.instructions.Cmovg;
-import edu.mit.compilers.lowir.instructions.Cmovge;
-import edu.mit.compilers.lowir.instructions.Cmovl;
-import edu.mit.compilers.lowir.instructions.Cmovle;
-import edu.mit.compilers.lowir.instructions.Cmovne;
-import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.StringInstruction;
 
 public class StringLiteral extends ExternArg {
@@ -38,7 +26,7 @@ public class StringLiteral extends ExternArg {
     }
 
     public Storage allocateLocation(AssemblyContext ctx) {
-    	return StringValue.create(terminal);
+    	return ImmediateValue.create(terminal);
     }
 
     @Override
@@ -50,11 +38,11 @@ public class StringLiteral extends ExternArg {
     public void generateAssembly(AssemblyContext ctx) {
         Instruction stringInstruction = new StringInstruction(label, terminal);
 
-        ctx.addInstruction(stringInstruction);
+        ctx.addFooterInstruction(stringInstruction);
     }
 
     @Override
     public Memory getLocation(AssemblyContext ctx) {
-        return Memory.create("$"+label);
+        return Memory.create("."+label+"(%rip)");
     }
 }

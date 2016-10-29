@@ -2,8 +2,6 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.StringValue;
-
 public class StringInstruction extends Instruction{
 	String label, text;
 	public StringInstruction(String label, String text) {

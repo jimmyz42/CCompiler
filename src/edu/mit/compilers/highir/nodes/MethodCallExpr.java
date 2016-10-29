@@ -6,17 +6,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.cfg.components.BasicBlock;
-import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
 import edu.mit.compilers.grammar.DecafParser.Method_callContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.*;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Call;
 import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Lea;
 import edu.mit.compilers.lowir.instructions.Push;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
@@ -83,21 +82,6 @@ public class MethodCallExpr extends Expression {
 		}
 	}
 
-//	@Override
-//	public CFG generateCFG(CFGContext context) {
-//		BasicBlock call = BasicBlock.createEmpty("call func");
-//		BasicBlock ret = BasicBlock.createEmpty("ret from func");
-//		BasicBlock methodStart = context.getMethodCFG(function).getEntryBlock();
-//		call.setNextBlock(methodStart);
-//		methodStart.addPreviousBlock(call);
-//
-//		BasicBlock methodEnd = context.getMethodCFG(function).getExitBlock();
-//		methodEnd.addNextBlock(ret);
-//		ret.addPreviousBlock(methodEnd);
-//
-//		return new CFG(call, ret);
-//	}
-
 	@Override
 	public void cfgPrint(PrintWriter pw, String prefix) {
 		pw.print(prefix + function.getName() + "(");
@@ -108,6 +92,7 @@ public class MethodCallExpr extends Expression {
 			}
 		}
 		pw.print(")");
+        pw.println();
 	}
 
 	@Override
@@ -118,25 +103,25 @@ public class MethodCallExpr extends Expression {
 			node.generateAssembly(ctx);
 			switch(i) {
 			case 0:
-				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdi")));
+				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rdi")));
 				break;
 			case 1:
-				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rsi")));
+				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rsi")));
 				break;
 			case 2:
-				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdx")));
+				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rdx")));
 				break;
 			case 3:
-				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdx")));
+				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rdx")));
 				break;
 			case 4:
-				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rcx")));
+				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rcx")));
 				break;
 			case 5:
-				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r8")));
+				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%r8")));
 				break;
 			case 6:
-				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r9")));
+				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%r9")));
 				break;
 			}
 		}
@@ -145,7 +130,7 @@ public class MethodCallExpr extends Expression {
 			node.generateAssembly(ctx);
 			instructions.add(Push.create(node.getLocation(ctx)));
 		}
-
 		ctx.addInstructions(instructions);
+		ctx.addInstruction(Call.create(Memory.create(function.getExpressionName())));
 	}
 }

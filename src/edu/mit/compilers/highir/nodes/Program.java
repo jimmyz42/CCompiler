@@ -85,14 +85,6 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         }
     }
 
-    @Override
-    public void cfgPrint(PrintWriter pw, String prefix) {
-        //TODO: handle externs
-        for(Descriptor desc : symbolTable.getDescriptors().values()) {
-            desc.cfgPrint(pw, prefix);
-        }
-    }
-
     public CFG generateCFG(CFGContext context) {    	
         ArrayList<CFGAble> components = new ArrayList<>();
         for(Descriptor desc: symbolTable.getDescriptors().values()) {
@@ -103,13 +95,6 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         BasicBlock symbolBlock = BasicBlock.create(components);
         CFG currentCFG = symbolBlock;
         
-    	for(Descriptor desc: symbolTable.getDescriptors().values()) {
-    		if(desc instanceof ExternDescriptor) {
-    			context.addMethodCFG((ExternDescriptor)desc, desc.generateCFG(context));
-    		}
-    	}
-        
-//    	CFG mainCFG = null;
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
             	BasicBlock start = BasicBlock.createEmpty("method start");
@@ -126,12 +111,8 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
                 currentCFG.setNextBlock(methodCFG.getEntryBlock());
                 methodCFG.setPreviousBlock(currentCFG.getExitBlock());
                 currentCFG = methodCFG;
-//                if(desc.getName().equals("main")) mainCFG = methodCFG;
             }
         }
-//        symbolBlock.setNextBlock(mainCFG.getEntryBlock());
-//    	mainCFG.addPreviousBlock(symbolBlock);
-//        return new CFG(symbolBlock, mainCFG.getExitBlock());
         return new CFG(symbolBlock, currentCFG.getExitBlock());
     }
 }

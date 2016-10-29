@@ -9,6 +9,10 @@ public class Call extends Instruction {
     public Call(Storage target) {
     	this.target = target;
     }
+    
+    public static Call create(Storage target) {
+    	return new Call(target);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {

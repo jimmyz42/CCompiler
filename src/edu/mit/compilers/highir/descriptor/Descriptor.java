@@ -51,6 +51,6 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	//ctx.pushStack(this, ImmediateValue.create(0));
+    	ctx.pushStack(this, ImmediateValue.create(0));
     }
 }

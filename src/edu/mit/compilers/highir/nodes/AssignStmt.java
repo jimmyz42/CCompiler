@@ -67,10 +67,6 @@ public class AssignStmt extends Statement {
         expression.prettyPrint(pw, prefix + "    ");
     }
 
-    //TODO: After the Expression generateCFG() functions have been written
-    //write a generateCFG function that eveluates the expression into a BasicBlock
-    // and concats that with a BasicBlock containing this class
-
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.print(prefix);

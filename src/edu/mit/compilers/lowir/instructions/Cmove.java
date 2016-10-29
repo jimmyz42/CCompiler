@@ -2,7 +2,6 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.BoolValue;
 import edu.mit.compilers.lowir.Storage;
 
 public class Cmove extends Instruction {
@@ -11,10 +10,6 @@ public class Cmove extends Instruction {
     public Cmove(Storage src, Storage dest) {
     	this.src = src;
     	this.dest = dest;
-    }
-
-    public static Cmove create(BoolValue src, Storage dest) {
-        return new Cmove(src, dest);
     }
 
     public static Cmove create(Storage src, Storage dest) {

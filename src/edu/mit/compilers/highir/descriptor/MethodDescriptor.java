@@ -19,6 +19,7 @@ import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Directive;
 import edu.mit.compilers.lowir.instructions.Enter;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Label;
@@ -42,6 +43,11 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     public List<VariableDescriptor> getArguments() {
         return arguments;
+    }
+    
+    @Override
+    public String getExpressionName() {
+    	return getName();
     }
 
     public static MethodDescriptor create(DecafSemanticChecker checker, Method_declContext ctx) {
@@ -121,6 +127,8 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
+        ctx.addInstruction(Directive.create(".globl " + getName()));
+        ctx.addInstruction(Directive.create(".type " + getName() + " @function"));
         ctx.addInstruction(Label.create(getName()));
         ctx.enter();
         

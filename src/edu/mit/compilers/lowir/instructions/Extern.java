@@ -4,19 +4,19 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.lowir.Storage;
 
-public class Label extends Instruction {
+public class Extern extends Instruction {
 	String name;
 	
-    public Label(String name) {
+    public Extern(String name) {
     	this.name = name;
     }
 
-    public static Label create(String name) {
-        return new Label(name);
+    public static Extern create(String name) {
+        return new Extern(name);
     }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-		pw.println(name + ":");		
+		pw.println("extern " + name + ":proc");		
 	}
 }

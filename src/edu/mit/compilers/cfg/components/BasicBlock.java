@@ -117,6 +117,8 @@ public class BasicBlock extends CFG {
         }
         if (branchCondition != null){
             branchCondition.cfgPrint(pw,prefix);
+        } else {
+        	pw.println();
         }
     }
 

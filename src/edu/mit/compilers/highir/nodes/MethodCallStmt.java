@@ -2,6 +2,9 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.MethodCallStmtContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
@@ -23,13 +26,7 @@ public class MethodCallStmt extends Statement {
     }
 
     @Override
-    public void cfgPrint(PrintWriter pw, String prefix) {
-        methodCall.cfgPrint(pw, prefix);
-        pw.println();
-    }
-    
-    @Override
-    public void generateAssembly(AssemblyContext ctx) {
-    	methodCall.generateAssembly(ctx);
+    public CFG generateCFG(CFGContext context) {
+        return BasicBlock.create(methodCall);
     }
 }

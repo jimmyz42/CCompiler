@@ -4,6 +4,7 @@ import edu.mit.compilers.grammar.DecafParser.LocationContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Memory;
 
 abstract public class Location extends Expression {
     private VariableDescriptor variable;
@@ -28,5 +29,9 @@ abstract public class Location extends Expression {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
     	variable.generateAssembly(ctx);
+    }
+    
+    public Memory getLocation(AssemblyContext ctx) {
+    	return ctx.getStackLocation(variable);
     }
 }

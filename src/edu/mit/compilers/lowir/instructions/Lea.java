@@ -4,22 +4,22 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.lowir.Storage;
 
-public class Cmovne extends Instruction {
+public class Lea extends Instruction {
 	Storage src, dest;
-    public Cmovne(Storage src, Storage dest) {
+    public Lea(Storage src, Storage dest) {
     	this.src = src;
     	this.dest = dest;
     }
-
-    public static Cmovne create(Storage src, Storage dest) {
-        return new Cmovne(src, dest);
+    
+    public static Lea create(Storage src, Storage dest) {
+        return new Lea(src, dest);
     }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {
-        pw.print(prefix + "cmovne");
+        pw.print(prefix + "lea");
         src.printAssembly(pw, " ");
-        dest.printAssembly(pw, ", ");
+        dest.printAssembly(pw, ", ");	
         pw.println();
 	}
 }

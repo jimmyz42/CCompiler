@@ -13,7 +13,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.BoolValue;
+import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Cmovg;
@@ -70,8 +70,8 @@ public class RelOpExpr extends BinOpExpr implements Condition {
         Storage dest = lhs.allocateLocation(ctx);
         expression.add(new Cmp(src, dest));
 
-    	Storage btrue = new BoolValue("true");
-    	Storage bfalse = new BoolValue("flase");
+    	Storage btrue = ImmediateValue.create(true);
+    	Storage bfalse = ImmediateValue.create(false);
     	
         switch(operator.getTerminal()){
 

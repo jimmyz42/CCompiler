@@ -29,8 +29,9 @@ public class AssemblyContext {
 	
 	private Stack<Integer> breakPointerStack = new Stack<>();
 	private Stack<Stack<Register>> registersStack = new Stack<>();
-	
+
 	private List<Instruction> instructions = new ArrayList<>();
+	private List<Instruction> footerInstructions = new ArrayList<>();
 
 	private int breakPointer;
 
@@ -91,7 +92,7 @@ public class AssemblyContext {
 	}
 
 	public Memory getStackLocation(CFGAble node) {
-		String name = (-8*(breakPointer - stackPositions.get(node)+1)) + "(%rbp)";
+		String name = (-8*(stackPositions.get(node)+1 - breakPointer)) + "(%rbp)";
 		return Memory.create(name);
 	}
 
@@ -135,7 +136,14 @@ public class AssemblyContext {
 		this.instructions.add(instruction);
 	}
 
+	public void addFooterInstruction(Instruction instruction) {
+		this.footerInstructions.add(instruction);
+	}
+
 	public List<Instruction> getInstructions() {
-		return instructions;
+		List<Instruction> completeList = new ArrayList<>();
+		completeList.addAll(instructions);
+		completeList.addAll(footerInstructions);
+		return completeList;
 	}
 }
