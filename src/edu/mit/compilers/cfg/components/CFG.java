@@ -382,8 +382,10 @@ public class CFG implements CFGAble {
                 blockStack.push(currentBlock.getNextBlock(false));
                 blockStack.push(currentBlock.getNextBlock(true));
                 ctx.addInstruction(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
+                ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
             } else if(currentBlock.getNextBlocks().size() > 0){
                 blockStack.push(currentBlock.getNextBlock(true));
+                ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
             }
         }
     }
