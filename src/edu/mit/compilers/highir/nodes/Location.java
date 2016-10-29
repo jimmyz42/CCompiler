@@ -3,6 +3,7 @@ package edu.mit.compilers.highir.nodes;
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.lowir.AssemblyContext;
 
 abstract public class Location extends Expression {
     private VariableDescriptor variable;
@@ -22,5 +23,10 @@ abstract public class Location extends Expression {
     @Override
     public Type getExpressionType() {
         return variable.getType();
+    }
+    
+    @Override
+    public void generateAssembly(AssemblyContext ctx) {
+    	variable.generateAssembly(ctx);
     }
 }

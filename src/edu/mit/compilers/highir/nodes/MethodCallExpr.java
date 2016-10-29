@@ -13,97 +13,137 @@ import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
 import edu.mit.compilers.grammar.DecafParser.Method_callContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.*;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Push;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
 
 public class MethodCallExpr extends Expression {
-    private final FunctionDescriptor function;
-    private final List<ExternArg> arguments;
+	private final FunctionDescriptor function;
+	private final List<ExternArg> arguments;
 
-    public MethodCallExpr(FunctionDescriptor function, List<ExternArg> arguments) {
-        this.function = function;
-        this.arguments = Collections.unmodifiableList(arguments);
-    }
+	public MethodCallExpr(FunctionDescriptor function, List<ExternArg> arguments) {
+		this.function = function;
+		this.arguments = Collections.unmodifiableList(arguments);
+	}
 
-    @Override
-    public Type getExpressionType() {
-        return function.getType();
-    }
+	@Override
+	public Type getExpressionType() {
+		return function.getType();
+	}
 
-    public static MethodCallExpr create(DecafSemanticChecker checker, Method_callContext ctx) {
-        String functionName = ctx.ID().getText();
-        FunctionDescriptor function = checker.currentSymbolTable().getFunction(functionName, ctx);
+	public static MethodCallExpr create(DecafSemanticChecker checker, Method_callContext ctx) {
+		String functionName = ctx.ID().getText();
+		FunctionDescriptor function = checker.currentSymbolTable().getFunction(functionName, ctx);
 
-        List<ExternArg> arguments = new ArrayList<>();
-        for (Extern_argContext argument : ctx.extern_arg()) {
-            arguments.add(ExternArg.create(checker, argument));
-        }
+		List<ExternArg> arguments = new ArrayList<>();
+		for (Extern_argContext argument : ctx.extern_arg()) {
+			arguments.add(ExternArg.create(checker, argument));
+		}
 
-        if (function == null) {
-            throw new UndeclaredIdentifierError("Tried to call an undeclared function", ctx);
-        }
+		if (function == null) {
+			throw new UndeclaredIdentifierError("Tried to call an undeclared function", ctx);
+		}
 
-        if (function instanceof MethodDescriptor) {
-            MethodDescriptor method = (MethodDescriptor) function;
-            List<VariableDescriptor> expectedArgs = method.getArguments();
-            if (arguments.size() != expectedArgs.size()) {
-                throw new MethodCallException("Expected " + expectedArgs.size() + " arguments, got " + arguments.size(), ctx);
-            }
-            for (int i = 0; i < arguments.size() && i <= Integer.MAX_VALUE; i++) {
-                if (!(arguments.get(i) instanceof Expression)) {
-                    throw new MethodCallException("Can't have string literals as method arguments", ctx.extern_arg(i));
-                }
-                Expression arg = (Expression) arguments.get(i);
-                if (arg.getExpressionType() != expectedArgs.get(i).getType()) {
-                    // 1-based indexing for arguments in error messages
-                    throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() +
-                    ", expected " + expectedArgs.get(i).getType(), ctx.extern_arg(i));
-                }
-            }
-        }
+		if (function instanceof MethodDescriptor) {
+			MethodDescriptor method = (MethodDescriptor) function;
+			List<VariableDescriptor> expectedArgs = method.getArguments();
+			if (arguments.size() != expectedArgs.size()) {
+				throw new MethodCallException("Expected " + expectedArgs.size() + " arguments, got " + arguments.size(), ctx);
+			}
+			for (int i = 0; i < arguments.size() && i <= Integer.MAX_VALUE; i++) {
+				if (!(arguments.get(i) instanceof Expression)) {
+					throw new MethodCallException("Can't have string literals as method arguments", ctx.extern_arg(i));
+				}
+				Expression arg = (Expression) arguments.get(i);
+				if (arg.getExpressionType() != expectedArgs.get(i).getType()) {
+					// 1-based indexing for arguments in error messages
+					throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() +
+							", expected " + expectedArgs.get(i).getType(), ctx.extern_arg(i));
+				}
+			}
+		}
 
-        return new MethodCallExpr(function, arguments);
-    }
+		return new MethodCallExpr(function, arguments);
+	}
 
-    @Override
-    public void prettyPrint(PrintWriter pw, String prefix) {
-        super.prettyPrint(pw, prefix);
-        pw.print(prefix + "-function descriptor: ");
-        function.getType().prettyPrint(pw, "");
-        pw.print(" ");
-        pw.println(function.getName());
-        pw.println(prefix + "-passed in arguments:");
-        for (ExternArg arg : arguments){
-            arg.prettyPrint(pw, prefix+"    ");
-        }
-    }
-    
-    @Override
-    public CFG generateCFG(CFGContext context) {
-    	BasicBlock call = BasicBlock.createEmpty("call func");
-    	BasicBlock ret = BasicBlock.createEmpty("ret from func");
-    	BasicBlock methodStart = context.getMethodCFG(function).getEntryBlock();
-    	call.setNextBlock(methodStart);
-    	methodStart.addPreviousBlock(call);
-    	
-    	BasicBlock methodEnd = context.getMethodCFG(function).getExitBlock();
-    	methodEnd.addNextBlock(ret);
-    	ret.addPreviousBlock(methodEnd);
-    	
-    	return new CFG(call, ret);
-    }
+	@Override
+	public void prettyPrint(PrintWriter pw, String prefix) {
+		super.prettyPrint(pw, prefix);
+		pw.print(prefix + "-function descriptor: ");
+		function.getType().prettyPrint(pw, "");
+		pw.print(" ");
+		pw.println(function.getName());
+		pw.println(prefix + "-passed in arguments:");
+		for (ExternArg arg : arguments){
+			arg.prettyPrint(pw, prefix+"    ");
+		}
+	}
 
-    @Override
-    public void cfgPrint(PrintWriter pw, String prefix) {
-        pw.print(prefix + function.getName() + "(");
-        for(Iterator<ExternArg> it = arguments.iterator(); it.hasNext();) {
-            it.next().cfgPrint(pw, "");
-            if (it.hasNext()) {
-                pw.print(", ");
-            }
-        }
-        pw.print(")");
-    }
-    
-    //TODO: In generateAssembly method push arguments onto the stack
+	@Override
+	public CFG generateCFG(CFGContext context) {
+		BasicBlock call = BasicBlock.createEmpty("call func");
+		BasicBlock ret = BasicBlock.createEmpty("ret from func");
+		BasicBlock methodStart = context.getMethodCFG(function).getEntryBlock();
+		call.setNextBlock(methodStart);
+		methodStart.addPreviousBlock(call);
+
+		BasicBlock methodEnd = context.getMethodCFG(function).getExitBlock();
+		methodEnd.addNextBlock(ret);
+		ret.addPreviousBlock(methodEnd);
+
+		return new CFG(call, ret);
+	}
+
+	@Override
+	public void cfgPrint(PrintWriter pw, String prefix) {
+		pw.print(prefix + function.getName() + "(");
+		for(Iterator<ExternArg> it = arguments.iterator(); it.hasNext();) {
+			it.next().cfgPrint(pw, "");
+			if (it.hasNext()) {
+				pw.print(", ");
+			}
+		}
+		pw.print(")");
+	}
+
+	@Override
+	public void generateAssembly(AssemblyContext ctx) {
+		List<Instruction> instructions = new ArrayList<>();
+		for(int i = 0; i < arguments.size(); i++) {
+			Ir node = arguments.get(i);
+			switch(i) {
+			case 0:
+				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rdi")));
+				break;
+			case 1:
+				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rsi")));
+				break;
+			case 2:
+				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rdx")));
+				break;
+			case 3:
+				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rdx")));
+				break;
+			case 4:
+				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%rcx")));
+				break;
+			case 5:
+				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%r8")));
+				break;
+			case 6:
+				instructions.add(Mov.create(ctx.getStackLocation(node), Register.create("%r9")));
+				break;
+			}
+		}
+		for(int i = arguments.size(); i > 0; i--) {
+			Ir node = arguments.get(i);
+			instructions.add(Push.create(ctx.getStackLocation(node)));
+		}
+		
+		ctx.addInstructions(instructions);
+	}
 }

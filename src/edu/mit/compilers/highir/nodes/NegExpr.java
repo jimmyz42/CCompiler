@@ -35,4 +35,6 @@ public class NegExpr extends Expression {
     	pw.println(prefix + "-expression:");
     	expression.prettyPrint(pw, prefix + "    ");
     }
+
+    //TODO generateAssembly
 }

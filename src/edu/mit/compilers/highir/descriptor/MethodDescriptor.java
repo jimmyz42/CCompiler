@@ -10,6 +10,7 @@ import edu.mit.compilers.grammar.DecafParser.Method_argument_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.nodes.Block;
+import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.highir.nodes.ReturnStmt;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.nodes.VoidType;
@@ -17,9 +18,12 @@ import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Enter;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Label;
+import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Push;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
@@ -118,7 +122,37 @@ public class MethodDescriptor extends FunctionDescriptor {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         ctx.addInstruction(Label.create(getName()));
-        ctx.addInstruction(Enter.create(arguments.size()));
-        //TODO: push arguments onto the stack
+        ctx.enter();
+        
+		for(int i = 0; i < arguments.size(); i++) {
+			VariableDescriptor node = arguments.get(i);
+			switch(i) {
+			case 0:
+				ctx.pushStack(node, Register.create("%rdi"));
+				break;
+			case 1:
+				ctx.pushStack(node, Register.create("%rsi"));
+				break;
+			case 2:
+				ctx.pushStack(node, Register.create("%rdx"));
+				break;
+			case 3:
+				ctx.pushStack(node, Register.create("%rdx"));
+				break;
+			case 4:
+				ctx.pushStack(node, Register.create("%rcx"));
+				break;
+			case 5:
+				ctx.pushStack(node, Register.create("%r8"));
+				break;
+			case 6:
+				ctx.pushStack(node, Register.create("%r9"));
+				break;
+			}
+		}
+		for(int i = 6; i < arguments.size(); i++) {
+			VariableDescriptor node = arguments.get(i);
+			ctx.setStackPosition(node, i);
+		}
     }
 }

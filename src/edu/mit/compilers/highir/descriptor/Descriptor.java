@@ -12,6 +12,7 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Cmovg;
 import edu.mit.compilers.lowir.instructions.Cmovge;
@@ -50,5 +51,6 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
+    	//ctx.pushStack(this, ImmediateValue.create(0));
     }
 }

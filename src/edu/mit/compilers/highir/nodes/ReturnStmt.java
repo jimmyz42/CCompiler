@@ -75,7 +75,7 @@ public class ReturnStmt extends Statement {
         	Memory returnValue = ctx.getStackLocation(expression);
         	ctx.addInstruction(Mov.create(returnValue, Register.create("%rax")));
         }
-        ctx.addInstruction(Leave.create());
+        ctx.leave();
         ctx.addInstruction(Ret.create());
     }
 }

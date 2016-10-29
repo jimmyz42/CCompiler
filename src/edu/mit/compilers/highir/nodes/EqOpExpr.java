@@ -59,11 +59,11 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 
         Storage src = rhs.allocateLocation(ctx);
         Storage dest = lhs.allocateLocation(ctx);
-        
+
         List<Instruction> expression = new ArrayList<>();
         Instruction opInstruction = new Cmp(src, dest);
         expression.add(opInstruction);
-        
+
     	Storage btrue = new BoolValue("true");
     	Storage bfalse = new BoolValue("flase");
 
@@ -77,7 +77,6 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 
         ctx.addInstructions(expression);
 
-        ctx.pushStack(this, dest);
         rhs.deallocateLocation(ctx);
         lhs.deallocateLocation(ctx);
     }
