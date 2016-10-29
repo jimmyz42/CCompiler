@@ -16,7 +16,7 @@ public class BoolValue extends Storage{
 	
 	@Override 
 	public void printAssembly(PrintWriter pw, String prefix){
-		pw.print(super.getValue());
+		pw.print(prefix + getValue());
 	}
 
 

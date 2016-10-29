@@ -15,7 +15,7 @@ public class StringValue extends Storage{
 	@Override 
 	public void printAssembly(PrintWriter pw, String prefix){
 		pw.println("." + "stringlabel:"); //TODO: get unique labels 
-		pw.println("    " + ".string " + "\"" + this.getName() + "\"" );
+		pw.println(prefix + ".string " + "\"" + this.getName() + "\"" );
 	}
 
 }
