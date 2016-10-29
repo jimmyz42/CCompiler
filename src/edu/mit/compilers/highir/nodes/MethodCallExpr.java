@@ -83,20 +83,20 @@ public class MethodCallExpr extends Expression {
 		}
 	}
 
-	@Override
-	public CFG generateCFG(CFGContext context) {
-		BasicBlock call = BasicBlock.createEmpty("call func");
-		BasicBlock ret = BasicBlock.createEmpty("ret from func");
-		BasicBlock methodStart = context.getMethodCFG(function).getEntryBlock();
-		call.setNextBlock(methodStart);
-		methodStart.addPreviousBlock(call);
-
-		BasicBlock methodEnd = context.getMethodCFG(function).getExitBlock();
-		methodEnd.addNextBlock(ret);
-		ret.addPreviousBlock(methodEnd);
-
-		return new CFG(call, ret);
-	}
+//	@Override
+//	public CFG generateCFG(CFGContext context) {
+//		BasicBlock call = BasicBlock.createEmpty("call func");
+//		BasicBlock ret = BasicBlock.createEmpty("ret from func");
+//		BasicBlock methodStart = context.getMethodCFG(function).getEntryBlock();
+//		call.setNextBlock(methodStart);
+//		methodStart.addPreviousBlock(call);
+//
+//		BasicBlock methodEnd = context.getMethodCFG(function).getExitBlock();
+//		methodEnd.addNextBlock(ret);
+//		ret.addPreviousBlock(methodEnd);
+//
+//		return new CFG(call, ret);
+//	}
 
 	@Override
 	public void cfgPrint(PrintWriter pw, String prefix) {
