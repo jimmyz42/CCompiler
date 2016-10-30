@@ -1,5 +1,9 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.Arrays;
+
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
@@ -24,6 +28,12 @@ abstract public class Location extends Expression {
     @Override
     public Type getExpressionType() {
         return variable.getType();
+    }
+    
+    @Override
+    public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
+    	EqOpExpr expr = new EqOpExpr(new EqOp("=="), this, new BoolLiteral(true));
+        return expr.shortCircuit(trueBranch, falseBranch);
     }
     
     @Override
