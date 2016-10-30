@@ -26,7 +26,7 @@ public class AssemblyContext {
 	private HashMap<CFGAble, Integer> stackPositions = new HashMap<>();
 	private Stack<Register> registers = new Stack<>();
 	private HashMap<CFGAble, Register> registerLocations = new HashMap<>();
-	
+
 	private Stack<Integer> breakPointerStack = new Stack<>();
 	private Stack<Stack<Register>> registersStack = new Stack<>();
 
@@ -104,26 +104,26 @@ public class AssemblyContext {
 		registers.push(reg);
 		stack.set(stackPositions.get(node), reg.getValue());
 	}
-	
+
 	public void enter() {
         breakPointerStack.push(breakPointer);
         breakPointer = stackPositions.size();
         addInstruction(Enter.create(0));
-        
+
         registersStack.push(registers);
 		for (int i = 10; i <= 15; i++) {
     		addInstruction(Push.create(Register.create("%r" + i)));
 		}
 	}
-	
+
 	public void leave() {
 		//TODO this code might break when dealing with multiple return statements in a function
 		//in the case we shouldn't pop till all paths are taken
         registers = registersStack.pop();
-		for (int i = 10; i <= 15; i++) {
+		for (int i = 15; i >= 10; i--) {
     		addInstruction(Pop.create(Register.create("%r" + i)));
 		}
-		
+
         breakPointer = breakPointerStack.pop();
         addInstruction(Leave.create());
 	}
