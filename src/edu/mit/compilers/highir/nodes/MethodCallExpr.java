@@ -98,7 +98,7 @@ public class MethodCallExpr extends Expression {
 	@Override
 	public void generateAssembly(AssemblyContext ctx) {
 		List<Instruction> instructions = new ArrayList<>();
-		for(int i = 0; i < arguments.size(); i++) {
+		for(int i = 0; i < arguments.size() && i < 6; i++) {
 			ExternArg node = arguments.get(i);
 			node.generateAssembly(ctx);
 			switch(i) {
@@ -112,20 +112,17 @@ public class MethodCallExpr extends Expression {
 				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rdx")));
 				break;
 			case 3:
-				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rdx")));
-				break;
-			case 4:
 				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rcx")));
 				break;
-			case 5:
+			case 4:
 				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%r8")));
 				break;
-			case 6:
+			case 5:
 				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%r9")));
 				break;
 			}
 		}
-		for(int i = arguments.size()-1; i > 6; i--) {
+		for(int i = arguments.size()-1; i >= 6; i--) {
 			ExternArg node = arguments.get(i);
 			node.generateAssembly(ctx);
 			instructions.add(Push.create(node.getLocation(ctx)));

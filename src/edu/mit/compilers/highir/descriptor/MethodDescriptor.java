@@ -132,7 +132,7 @@ public class MethodDescriptor extends FunctionDescriptor {
         ctx.addInstruction(Label.create(getName()));
         ctx.enter();
         
-		for(int i = 0; i < arguments.size(); i++) {
+		for(int i = 0; i < arguments.size() && i < 6; i++) {
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
 			case 0:
@@ -145,15 +145,12 @@ public class MethodDescriptor extends FunctionDescriptor {
 				ctx.pushStack(node, Register.create("%rdx"));
 				break;
 			case 3:
-				ctx.pushStack(node, Register.create("%rdx"));
-				break;
-			case 4:
 				ctx.pushStack(node, Register.create("%rcx"));
 				break;
-			case 5:
+			case 4:
 				ctx.pushStack(node, Register.create("%r8"));
 				break;
-			case 6:
+			case 5:
 				ctx.pushStack(node, Register.create("%r9"));
 				break;
 			}

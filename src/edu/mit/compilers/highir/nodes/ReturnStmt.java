@@ -64,7 +64,7 @@ public class ReturnStmt extends Statement {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-        BasicBlock block = BasicBlock.createEmpty("return");
+        BasicBlock block = BasicBlock.create(this);
         BasicBlock methodEnd = context.currentMethodCFG().getExitBlock();
         block.setNextBlock(methodEnd);
         methodEnd.addPreviousBlock(block);
