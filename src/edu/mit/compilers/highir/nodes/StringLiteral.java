@@ -27,10 +27,6 @@ public class StringLiteral extends ExternArg {
         pw.print(prefix + terminal);
     }
 
-    public ImmediateValue allocateRegister(AssemblyContext ctx) {
-    	return ImmediateValue.create(terminal);
-    }
-
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getClass().getSimpleName() + ": " + terminal);
