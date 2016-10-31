@@ -50,9 +50,11 @@ public class MulOpExpr extends BinOpExpr {
         List<Instruction> expression = new ArrayList<>();
 
         Storage src = rhs.allocateRegister(ctx);
-        Storage dest = lhs.allocateRegister(ctx);
+        //Storage dest = lhs.allocateRegister(ctx);
+        Storage result = ctx.allocateRegister(this);
+        expression.add(Mov.create(lhs.getLocation(ctx), result));
         if(operator.getTerminal().equals("*")) {
-            expression.add(new Imul(src, dest));
+            expression.add(new Imul(src, result));
         } else {
             Register rdx = Register.create("%rdx");
             Register rax = Register.create("%rax");
@@ -63,7 +65,7 @@ public class MulOpExpr extends BinOpExpr {
         }
         ctx.addInstructions(expression);
 
-        ctx.pushStack(this, dest);
+        ctx.pushStack(this, src);
         rhs.deallocateRegister(ctx);
         lhs.deallocateRegister(ctx);
     }
