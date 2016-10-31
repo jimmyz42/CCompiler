@@ -60,33 +60,37 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         List<Instruction> expression = new ArrayList<>();
 
         Storage src = rhs.allocateRegister(ctx);
-        Storage dest = lhs.allocateRegister(ctx);
+        //Storage dest = lhs.allocateRegister(ctx);
+        Storage result = ctx.allocateRegister(this);
+        expression.add(Mov.create(lhs.getLocation(ctx), result));
 
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
 
     	//compare lhs to rhs
-        Instruction opInstruction = new Cmp(src, dest);
+        Instruction opInstruction = new Cmp(src, result);
         expression.add(opInstruction);
     	
-    	//move 0 into dest
-    	expression.add(Mov.create(bfalse, dest));
+    	//move 0 into result
+    	expression.add(Mov.create(bfalse, result));
 
-    	//move 1 into src
-    	expression.add(Mov.create(btrue, src));
+    	//move 1 into temp
+    	Storage temp = Register.create("%rax");
+    	expression.add(Mov.create(btrue, temp));
     	
+    	//if expression is true, put temp (1) into result
         if(operator.getTerminal().equals("==")) {
-            expression.add(Cmove.create(src, dest));
+            expression.add(Cmove.create(temp, result));
         } else {
-            expression.add(Cmovne.create(src, dest));
+            expression.add(Cmovne.create(temp, result));
         }        
 
         ctx.addInstructions(expression);
         
-        //dest = 0 or 1
+        //result = 0 or 1
         //	0: expression evaluated to false
         //	1: expression evaluated to true
-        ctx.pushStack(this, dest);
+        ctx.pushStack(this, result);
         
         rhs.deallocateRegister(ctx);
         lhs.deallocateRegister(ctx);
