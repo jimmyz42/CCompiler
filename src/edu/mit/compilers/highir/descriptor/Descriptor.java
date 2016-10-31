@@ -55,17 +55,17 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
     public void generateAssembly(AssemblyContext ctx) {
     	ctx.pushStack(this, ImmediateValue.create(0));
     }
-    
+
     @Override
     public Storage getLocation(AssemblyContext ctx) {
     	return ctx.getStackLocation(this);
     }
-    
+
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
     	return ctx.allocateRegister(this);
     }
-    
+
     @Override
     public void deallocateRegister(AssemblyContext ctx) {
     	ctx.deallocateRegister(this);
