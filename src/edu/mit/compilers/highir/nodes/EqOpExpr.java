@@ -84,6 +84,8 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 
         ctx.addInstructions(expression);
         
+        ctx.pushStack(this, dest);
+        
         //deallocate temp
         ctx.deallocateRegister(this);
         
