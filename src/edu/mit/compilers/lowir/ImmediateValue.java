@@ -20,7 +20,7 @@ public class ImmediateValue extends Storage {
     }
     
     public static ImmediateValue create(Boolean value) {
-    	return new ImmediateValue(value.toString());
+    	return new ImmediateValue(value ? "1" : "0");
     }
 
     public static ImmediateValue create(String value) {

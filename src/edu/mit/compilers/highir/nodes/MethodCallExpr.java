@@ -3,10 +3,13 @@ package edu.mit.compilers.highir.nodes;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
 import edu.mit.compilers.grammar.DecafParser.Method_callContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
@@ -70,6 +73,12 @@ public class MethodCallExpr extends Expression {
 
 		return new MethodCallExpr(function, arguments);
 	}
+	
+    @Override
+    public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
+    	EqOpExpr expr = new EqOpExpr(new EqOp("=="), this, new BoolLiteral(true));
+        return expr.shortCircuit(trueBranch, falseBranch);
+    }
 
 	@Override
 	public void prettyPrint(PrintWriter pw, String prefix) {
