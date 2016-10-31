@@ -63,7 +63,7 @@ public class MulOpExpr extends BinOpExpr {
         }
         ctx.addInstructions(expression);
 
-        ctx.pushStack(this, dest);
+        ctx.pushStack(this, src);
         rhs.deallocateRegister(ctx);
         lhs.deallocateRegister(ctx);
     }
