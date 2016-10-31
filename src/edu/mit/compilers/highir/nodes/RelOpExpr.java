@@ -68,38 +68,42 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 
         Storage src = rhs.allocateRegister(ctx);
         Storage dest = lhs.allocateRegister(ctx);
-
+        Storage result = ctx.allocateRegister(this);
+        expression.add(Mov.create(lhs.allocateRegister(ctx), result));
+        
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
-    	
-    	//move 0 into dest
-    	expression.add(Mov.create(bfalse, dest));
-
-    	//move 1 into src
-    	expression.add(Mov.create(btrue, src));
     	
     	//compare lhs to rhs
         Instruction opInstruction = new Cmp(src, dest);
         expression.add(opInstruction);
+        
+    	//move 0 into result
+    	expression.add(Mov.create(bfalse, result));
+
+    	//move 1 into temp
+    	Storage temp = Register.create("%rax");
+    	expression.add(Mov.create(btrue, temp));
     	
         switch(operator.getTerminal()){
 
             case ">":
-            expression.add(Cmovg.create(src, dest));
+            expression.add(Cmovg.create(temp, dest));
             case "<":
-            expression.add(Cmovl.create(src, dest));
+            expression.add(Cmovl.create(temp, dest));
             case ">=":
-            expression.add(Cmovge.create(src, dest));
+            expression.add(Cmovge.create(temp, dest));
             case "<=":
-            expression.add(Cmovle.create(src, dest));
+            expression.add(Cmovle.create(temp, dest));
         }
         ctx.addInstructions(expression);
 
-        //dest = 0 or 1
+        //result = 0 or 1
         //	0: expression evaluated to false
         //	1: expression evaluated to true
         ctx.pushStack(this, dest);
         
+        ctx.deallocateRegister(this);
         rhs.deallocateRegister(ctx);
         lhs.deallocateRegister(ctx);
     }

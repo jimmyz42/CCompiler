@@ -13,6 +13,7 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.And;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Mov;
 import exceptions.TypeMismatchError;
 
 public class AndOpExpr extends BinOpExpr {
@@ -54,11 +55,15 @@ public class AndOpExpr extends BinOpExpr {
         rhs.generateAssembly(ctx);
 
         Storage src = rhs.allocateRegister(ctx);
-        Storage dest = lhs.allocateRegister(ctx);
-        Instruction opInstruction = new And(src, dest);
+        //Storage dest = lhs.allocateRegister(ctx);
+        Storage result = ctx.allocateRegister(this);
+        ctx.addInstruction(Mov.create(lhs.getLocation(ctx), result));
+        Instruction opInstruction = new And(src, result);
         ctx.addInstruction(opInstruction);
 
-        ctx.pushStack(this, dest);
+        ctx.pushStack(this, result);
+        
+        ctx.deallocateRegister(this);
         rhs.deallocateRegister(ctx);
         lhs.deallocateRegister(ctx);
     }
