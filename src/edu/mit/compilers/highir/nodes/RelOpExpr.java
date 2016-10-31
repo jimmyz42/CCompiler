@@ -66,8 +66,8 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 
         List<Instruction> expression = new ArrayList<>();
 
-        Storage src = ctx.allocateRegister(rhs);
-        Storage dest = ctx.allocateRegister(lhs);
+        Storage src = rhs.allocateRegister(ctx);
+        Storage dest = lhs.allocateRegister(ctx);
 
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
@@ -104,7 +104,7 @@ public class RelOpExpr extends BinOpExpr implements Condition {
         //deallocate temp
         ctx.deallocateRegister(this);
 
-        ctx.deallocateRegister(rhs);
-        ctx.deallocateRegister(lhs);
+        rhs.deallocateRegister(ctx);
+        lhs.deallocateRegister(ctx);
     }
 }

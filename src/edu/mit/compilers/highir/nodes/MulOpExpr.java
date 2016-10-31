@@ -49,8 +49,8 @@ public class MulOpExpr extends BinOpExpr {
         rhs.generateAssembly(ctx);
         List<Instruction> expression = new ArrayList<>();
 
-        Storage src = ctx.allocateRegister(rhs);
-        Storage dest = ctx.allocateRegister(lhs);
+        Storage src = rhs.allocateRegister(ctx);
+        Storage dest = lhs.allocateRegister(ctx);
         if(operator.getTerminal().equals("*")) {
             expression.add(new Imul(src, dest));
         } else {
@@ -64,7 +64,7 @@ public class MulOpExpr extends BinOpExpr {
         ctx.addInstructions(expression);
         
         ctx.pushStack(this, src);
-        ctx.deallocateRegister(rhs);
-        ctx.deallocateRegister(lhs);
+        rhs.deallocateRegister(ctx);
+        lhs.deallocateRegister(ctx);
     }
 }
