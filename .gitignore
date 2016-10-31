@@ -12,3 +12,4 @@ hs_*.log
 .metadata/*
 *.c
 *.s
+tests/codegen/test.sh
