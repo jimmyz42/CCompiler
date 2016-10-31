@@ -399,6 +399,7 @@ public class CFG implements CFGAble {
                 ctx.addInstruction(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
                 //else, go down TRUE branch
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
+                ctx.deallocateRegister((Expression)currentBlock.getCondition());
             } else if(currentBlock.getNextBlocks().size() > 0){
                 blockStack.push(currentBlock.getNextBlock(true));
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
