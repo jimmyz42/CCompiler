@@ -57,26 +57,36 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         lhs.generateAssembly(ctx);
         rhs.generateAssembly(ctx);
 
+        List<Instruction> expression = new ArrayList<>();
+
         Storage src = rhs.allocateLocation(ctx);
         Storage dest = lhs.allocateLocation(ctx);
-
-        List<Instruction> expression = new ArrayList<>();
-        Instruction opInstruction = new Cmp(src, dest);
-        expression.add(opInstruction);
 
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
 
+    	//move 0 into dest
+    	expression.add(Mov.create(bfalse, dest));
+
+    	//move 1 into temp
+    	Storage temp = ctx.allocateRegister(this);
+    	expression.add(Mov.create(btrue, temp));
+    	
+    	//compare lhs to rhs
+        Instruction opInstruction = new Cmp(src, dest);
+        expression.add(opInstruction);
+    	
         if(operator.getTerminal().equals("==")) {
-            expression.add(Mov.create(bfalse, dest));
-            expression.add(Cmove.create(btrue, dest));
+            expression.add(Cmove.create(temp, dest));
         } else {
-            expression.add(Mov.create(bfalse, dest));
-            expression.add(Cmovne.create(btrue, dest));
-        }
+            expression.add(Cmovne.create(temp, dest));
+        }        
 
         ctx.addInstructions(expression);
-
+        
+        //deallocate temp
+        ctx.deallocateRegister(this);
+        
         rhs.deallocateLocation(ctx);
         lhs.deallocateLocation(ctx);
     }

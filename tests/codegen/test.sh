@@ -6,22 +6,23 @@ runcompiler() {
 
 fail=0
 
-if ! gcc -v 2>&1 |grep -q '^Target: x86_64-linux-gnu'; then
-  echo "Refusing to run cross-compilation on non-64-bit architechure."
-  exit 0;
-fi
+#if ! gcc -v 2>&1 |grep -q '^Target: x86_64-linux-gnu'; then
+#  echo "Refusing to run cross-compilation on non-64-bit architechure."
+#  exit 0;
+#fi
 
 for file in `dirname $0`/input/*.dcf; do
   echo "Running file $file"
-  asm=`tempfile --suffix=.s`
+#  asm=`tempfile --suffix=.s`
+  asm=`mktemp XXXXX.s`
   msg=""
   if runcompiler $file $asm 2>&1 >/dev/null; then
-    binary=`tempfile`
+    binary=`mktemp tmp1.XXXXX`
     if gcc -o $binary -L `dirname $0`/lib -l6035 $asm 2>&1 >/dev/null; then
-      output=`tempfile`
+      output=`mktemp tmp2.XXXXX`
       $binary > $output
       exitcode=$?
-      diffout=`tempfile`
+      diffout=`mktemp tmp3.XXXXX`
       if [ -f `dirname $0`/error/`basename $file`.err ]; then
         val=$(<`dirname $0`/error/`basename $file`.err)
         if [ "$val" != "$exitcode" ]; then

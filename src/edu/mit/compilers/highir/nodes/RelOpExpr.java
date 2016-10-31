@@ -61,36 +61,46 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-        //TODO: figure out which registers store what values
         lhs.generateAssembly(ctx);
         rhs.generateAssembly(ctx);
+
         List<Instruction> expression = new ArrayList<>();
 
         Storage src = rhs.allocateLocation(ctx);
         Storage dest = lhs.allocateLocation(ctx);
-        expression.add(new Cmp(src, dest));
 
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
+
+    	//move 0 into dest
+    	expression.add(Mov.create(bfalse, dest));
+
+    	//move 1 into temp
+    	Storage temp = ctx.allocateRegister(this);
+    	expression.add(Mov.create(btrue, temp));
+    	
+    	//compare lhs to rhs
+        Instruction opInstruction = new Cmp(src, dest);
+        expression.add(opInstruction);
     	
         switch(operator.getTerminal()){
 
             case ">":
-            expression.add(Mov.create(bfalse, dest));
-            expression.add(Cmovg.create(btrue, dest));
+            expression.add(Cmovg.create(temp, dest));
             case "<":
-            expression.add(Mov.create(bfalse, dest));
-            expression.add(Cmovl.create(btrue, dest));
+            expression.add(Cmovl.create(temp, dest));
             case ">=":
-            expression.add(Mov.create(bfalse, dest));
-            expression.add(Cmovge.create(btrue, dest));
+            expression.add(Cmovge.create(temp, dest));
             case "<=":
-            expression.add(Mov.create(bfalse, dest));
-            expression.add(Cmovle.create(btrue, dest));
+            expression.add(Cmovle.create(temp, dest));
         }
         ctx.addInstructions(expression);
 
         ctx.pushStack(this, dest);
+        
+        //deallocate temp
+        ctx.deallocateRegister(this);
+        
         rhs.deallocateLocation(ctx);
         lhs.deallocateLocation(ctx);
     }
