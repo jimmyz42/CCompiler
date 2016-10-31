@@ -57,8 +57,8 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         lhs.generateAssembly(ctx);
         rhs.generateAssembly(ctx);
 
-        Storage src = rhs.allocateLocation(ctx);
-        Storage dest = lhs.allocateLocation(ctx);
+        Storage src = ctx.allocateRegister(rhs);
+        Storage dest = ctx.allocateRegister(lhs);
 
         List<Instruction> expression = new ArrayList<>();
         Instruction opInstruction = new Cmp(src, dest);
@@ -77,7 +77,7 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 
         ctx.addInstructions(expression);
 
-        rhs.deallocateLocation(ctx);
-        lhs.deallocateLocation(ctx);
+        ctx.deallocateRegister(rhs);
+        ctx.deallocateRegister(lhs);
     }
 }

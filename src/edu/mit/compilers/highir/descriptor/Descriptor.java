@@ -14,6 +14,8 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storable;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Cmovg;
 import edu.mit.compilers.lowir.instructions.Cmovge;
 import edu.mit.compilers.lowir.instructions.Cmovl;
@@ -22,7 +24,7 @@ import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
 
-public abstract class Descriptor implements PrettyPrintable, CFGAble {
+public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
     private final String name;
     private final Type returnType;
 
@@ -52,5 +54,10 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
     	ctx.pushStack(this, ImmediateValue.create(0));
+    }
+    
+    @Override
+    public Storage getLocation(AssemblyContext ctx) {
+    	return ctx.getStackLocation(this);
     }
 }

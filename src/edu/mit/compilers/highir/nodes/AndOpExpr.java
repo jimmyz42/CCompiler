@@ -53,13 +53,13 @@ public class AndOpExpr extends BinOpExpr {
         lhs.generateAssembly(ctx);
         rhs.generateAssembly(ctx);
 
-        Storage src = rhs.allocateLocation(ctx);
-        Storage dest = lhs.allocateLocation(ctx);
+        Storage src = ctx.allocateRegister(rhs);
+        Storage dest = ctx.allocateRegister(lhs);
         Instruction opInstruction = new And(src, dest);
         ctx.addInstruction(opInstruction);
 
         ctx.pushStack(this, dest);
-        rhs.deallocateLocation(ctx);
-        lhs.deallocateLocation(ctx);
+        ctx.deallocateRegister(rhs);
+        ctx.deallocateRegister(lhs);
     }
 }

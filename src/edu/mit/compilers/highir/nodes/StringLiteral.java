@@ -6,8 +6,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
+import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Lea;
 import edu.mit.compilers.lowir.instructions.StringInstruction;
 
 public class StringLiteral extends ExternArg {
@@ -25,7 +27,7 @@ public class StringLiteral extends ExternArg {
         pw.print(prefix + terminal);
     }
 
-    public Storage allocateLocation(AssemblyContext ctx) {
+    public ImmediateValue allocateRegister(AssemblyContext ctx) {
     	return ImmediateValue.create(terminal);
     }
 
@@ -37,12 +39,14 @@ public class StringLiteral extends ExternArg {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         Instruction stringInstruction = new StringInstruction(label, terminal);
-
+        ctx.addInstruction(Lea.create(Memory.create("."+label+"(%rip)"), Register.create("%rdx")));
+        ctx.pushStack(this, Register.create("%rdx"));
+        System.out.println(this);
         ctx.addFooterInstruction(stringInstruction);
     }
-
-    @Override
-    public Memory getLocation(AssemblyContext ctx) {
-        return Memory.create("."+label+"(%rip)");
-    }
+//    
+//    @Override
+//    public Memory getLocation(AssemblyContext ctx) {
+//        return Memory.create("."+label+"(%rip)");
+//    }
 }
