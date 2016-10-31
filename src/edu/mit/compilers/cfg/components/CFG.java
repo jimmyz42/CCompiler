@@ -381,7 +381,14 @@ public class CFG implements CFGAble {
             if(currentBlock.getNextBlocks().size() > 1) {
                 blockStack.push(currentBlock.getNextBlock(false));
                 blockStack.push(currentBlock.getNextBlock(true));
+                
+                //get conditional value
+                
+                //compare to 1 
+                
+                //if its != 1, go down FALSE branch
                 ctx.addInstruction(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
+                //else, go down TRUE branch
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
             } else if(currentBlock.getNextBlocks().size() > 0){
                 blockStack.push(currentBlock.getNextBlock(true));
