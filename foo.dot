@@ -1,9 +1,5 @@
 digraph G {
-  block0 [ label="block0: void\ i\lreturn\ \l\l" ];
+  block0 [ label="block0: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ e\la\ =\ 10\lb\ =\ 20\lc\ =\ 30\ld\ =\ a\ +\ b\l\le\ =\ c\ *\ 3\l\le\ =\ d\ *\ e\l\ -\ 100\l\lprintf\(\"%d\ %d\\n\"\,\ d\,\ e\)\lreturn\ \l\l" ];
   block1 [ label="block1: *end\ of\ method*\l" ];
-  block2 [ label="block2: void\ main\lint\ a\lint\ b\la\ =\ 4\lb\ =\ a\lreturn\ \l\l" ];
-  block3 [ label="block3: *end\ of\ method*\l" ];
   block0 -> block1;
-  block1 -> block2;
-  block2 -> block3;
 }
