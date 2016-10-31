@@ -79,6 +79,7 @@ public class AssignStmt extends Statement {
     @Override
     public void generateAssembly(AssemblyContext ctx){
         expression.generateAssembly(ctx);
+        location.generateAssembly(ctx);
 
         Storage src = expression.allocateRegister(ctx);
         Storage dest = location.allocateRegister(ctx);

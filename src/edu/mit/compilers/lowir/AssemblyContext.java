@@ -99,6 +99,9 @@ public class AssemblyContext {
 	// release a register back into the pool
 	public void deallocateRegister(Storable node) {
 		Register reg = registerLocations.remove(node);
+		if (reg == null) {
+			return;
+		}
 		Memory stackLocation = getStackLocation(node);
 		addInstruction(Mov.create(reg, stackLocation));
 		registers.push(reg);

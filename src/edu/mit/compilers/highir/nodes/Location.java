@@ -30,29 +30,29 @@ abstract public class Location extends Expression {
     public Type getExpressionType() {
         return variable.getType();
     }
-    
+
     @Override
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
     	EqOpExpr expr = new EqOpExpr(new EqOp("=="), this, new BoolLiteral(true));
         return expr.shortCircuit(trueBranch, falseBranch);
     }
-    
+
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	variable.generateAssembly(ctx);
+    	//variable.generateAssembly(ctx);
     }
-    
+
     public Storage getLocation(AssemblyContext ctx) {
-    	return ctx.getStackLocation(variable);
+    	return variable.getLocation(ctx);
     }
-    
+
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
-    	return ctx.allocateRegister(variable);
+    	return variable.allocateRegister(ctx);
     }
-    
+
     @Override
     public void deallocateRegister(AssemblyContext ctx) {
-    	ctx.deallocateRegister(variable);
+    	variable.deallocateRegister(ctx);
     }
 }
