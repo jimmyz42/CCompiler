@@ -382,7 +382,7 @@ public class CFG implements CFGAble {
                 blockStack.push(currentBlock.getNextBlock(false));
                 blockStack.push(currentBlock.getNextBlock(true));
                 
-                //get conditional value
+                //get conditional value generated at the end of currentBlock
                 
                 //compare to 1 
                 
