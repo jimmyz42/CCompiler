@@ -21,7 +21,4 @@ abstract public class Literal extends Expression {
     public void cfgPrint(PrintWriter pw, String prefix) {
     	pw.print(prefix + this);
     }
-    
-    @Override
-    public void deallocateLocation(AssemblyContext ctx) {}
 }

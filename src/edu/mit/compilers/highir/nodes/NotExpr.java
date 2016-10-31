@@ -4,6 +4,12 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
+import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Not;
+import edu.mit.compilers.lowir.instructions.Or;
 import exceptions.TypeMismatchError;
 
 public class NotExpr extends Expression {
@@ -33,5 +39,16 @@ public class NotExpr extends Expression {
     	return expression.shortCircuit(falseBranch, trueBranch);
     }
     
-    //TODO generateAssembly
+    @Override
+    public void generateAssembly(AssemblyContext ctx){
+        expression.generateAssembly(ctx);
+
+        Register src = ctx.allocateRegister(expression);
+        Register dest = ctx.allocateRegister(this);
+        ctx.addInstruction(Mov.create(src, dest));
+        ctx.addInstruction(Not.create(dest));
+
+        ctx.deallocateRegister(expression);;
+        ctx.deallocateRegister(this);;
+    }
 }

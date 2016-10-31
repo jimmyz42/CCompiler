@@ -1,10 +1,9 @@
 digraph G {
-  block0 [ label="block0: void\ i\lreturn\ \lvoid\ main\lint\ i\li\ =\ 4\li\ ==\ 5\l" ];
-  block1 [ label="block1: i\ =\ 5\l" ];
-  block2 [ label="block2: i\ =\ 7\lreturn\ \l" ];
-  block3 [ label="block3: i\ =\ 6\l" ];
+  block0 [ label="block0: void\ i\lreturn\ \l\l" ];
+  block1 [ label="block1: *end\ of\ method*\l" ];
+  block2 [ label="block2: void\ main\lint\ a\lint\ b\la\ =\ 4\lb\ =\ a\lreturn\ \l\l" ];
+  block3 [ label="block3: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
-  block0 -> block3;
-  block3 -> block2;
+  block2 -> block3;
 }

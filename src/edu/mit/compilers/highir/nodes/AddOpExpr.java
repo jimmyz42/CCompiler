@@ -47,8 +47,8 @@ public class AddOpExpr extends BinOpExpr {
 		lhs.generateAssembly(ctx);
 		rhs.generateAssembly(ctx);
 		
-		Storage src = rhs.allocateLocation(ctx);
-		Storage dest = lhs.allocateLocation(ctx);
+		Storage src = ctx.allocateRegister(rhs);
+		Storage dest = ctx.allocateRegister(lhs);
 		Instruction opInstruction;
 		if (operator.getTerminal().equals("+")) {
 			opInstruction = new Add(src, dest);
@@ -58,7 +58,7 @@ public class AddOpExpr extends BinOpExpr {
 		ctx.addInstruction(opInstruction);
 
 		ctx.pushStack(this, dest);
-		rhs.deallocateLocation(ctx);
-		lhs.deallocateLocation(ctx);
+		ctx.deallocateRegister(rhs);
+		ctx.deallocateRegister(lhs);
 	}
 }

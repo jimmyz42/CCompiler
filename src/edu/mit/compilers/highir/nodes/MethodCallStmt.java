@@ -8,6 +8,8 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.MethodCallStmtContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.Storage;
 
 public class MethodCallStmt extends Statement {
     private final MethodCallExpr methodCall;

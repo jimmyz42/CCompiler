@@ -29,6 +29,7 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.LeaveBlock;
 import exceptions.TypeMismatchError;
 
 public class MethodDescriptor extends FunctionDescriptor {
@@ -44,7 +45,7 @@ public class MethodDescriptor extends FunctionDescriptor {
     public List<VariableDescriptor> getArguments() {
         return arguments;
     }
-    
+
     @Override
     public String getExpressionName() {
     	return getName();
@@ -109,15 +110,14 @@ public class MethodDescriptor extends FunctionDescriptor {
         BasicBlock methodBlock = BasicBlock.create(this);
         CFG bodyCFG = body.generateCFG(context);
         BasicBlock returnBlock = BasicBlock.create(ReturnStmt.create());
-        
         methodBlock.setNextBlock(symbolBlock);
         symbolBlock.addPreviousBlock(methodBlock);
         symbolBlock.setNextBlock(bodyCFG.getEntryBlock());
         bodyCFG.addPreviousBlock(symbolBlock);
         bodyCFG.addNextBlock(returnBlock);
         returnBlock.setPreviousBlock(bodyCFG.getExitBlock());
-        
         return new CFG(methodBlock, returnBlock);
+
     }
 
     @Override
@@ -131,7 +131,7 @@ public class MethodDescriptor extends FunctionDescriptor {
         ctx.addInstruction(Directive.create(".type " + getName() + " @function"));
         ctx.addInstruction(Label.create(getName()));
         ctx.enter();
-        
+
 		for(int i = 0; i < arguments.size() && i < 6; i++) {
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {

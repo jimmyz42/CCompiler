@@ -132,12 +132,18 @@ public class BasicBlock extends CFG {
     	}
     }
 
+    public boolean canMerge() {
+    	return true;
+    }
+
     // Checks for merging precondition
     public static boolean canMerge(BasicBlock b1, BasicBlock b2) {
     	if(b1.getNextBlocks().size() != 1) return false;
     	if(b2.getPreviousBlocks().size() != 1) return false;
     	if(b1.getNextBlock() != b2) return false;
     	if(b2.getPreviousBlock() != b1) return false;
+    	if(!b1.canMerge()) return false;
+    	if(!b2.canMerge()) return false;
     	return true;
     }
 

@@ -9,6 +9,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Memory;
+import edu.mit.compilers.lowir.Storage;
 
 abstract public class Location extends Expression {
     private VariableDescriptor variable;
@@ -41,7 +42,7 @@ abstract public class Location extends Expression {
     	variable.generateAssembly(ctx);
     }
     
-    public Memory getLocation(AssemblyContext ctx) {
+    public Storage getLocation(AssemblyContext ctx) {
     	return ctx.getStackLocation(variable);
     }
 }
