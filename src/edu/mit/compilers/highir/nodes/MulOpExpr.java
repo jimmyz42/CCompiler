@@ -56,11 +56,12 @@ public class MulOpExpr extends BinOpExpr {
         if(operator.getTerminal().equals("*")) {
             expression.add(new Imul(src, result));
         } else {
+        	//HELP WHAT DO HERE???
             Register rdx = Register.create("%rdx");
             Register rax = Register.create("%rax");
             expression.add(new Xor(rdx, rdx));
             expression.add(new Mov(src, rax));
-            expression.add(new Idiv(dest));
+            expression.add(new Idiv(result));
             expression.add(new Mov(rax, src));
         }
         ctx.addInstructions(expression);
