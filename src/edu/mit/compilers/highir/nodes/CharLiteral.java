@@ -29,8 +29,14 @@ public class CharLiteral extends Literal {
     public String toString() {
         return "'" + terminal + "' /*" + (int)terminal + "*/";
     }
-    
-    public Storage allocateLocation(AssemblyContext ctx) {
-    	return ImmediateValue.create(terminal);
+
+    @Override
+    public void generateAssembly(AssemblyContext ctx){
+        ctx.pushStack(this, ImmediateValue.create(terminal));
+    }
+
+    @Override
+    public ImmediateValue getLocation(AssemblyContext ctx) {
+        return ImmediateValue.create(terminal);
     }
 }

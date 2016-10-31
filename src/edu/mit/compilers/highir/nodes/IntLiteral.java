@@ -5,6 +5,8 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Storage;
+import edu.mit.compilers.lowir.instructions.And;
+import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.IntegerSizeError;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -39,8 +41,14 @@ public class IntLiteral extends Literal {
     public String toString() {
         return Long.toString(terminal);
     }
-    
-    public Storage allocateLocation(AssemblyContext ctx) {
-    	return ImmediateValue.create(terminal);
+
+    @Override
+    public void generateAssembly(AssemblyContext ctx){
+        ctx.pushStack(this, ImmediateValue.create(terminal));
+    }
+
+    @Override
+    public ImmediateValue getLocation(AssemblyContext ctx) {
+        return ImmediateValue.create(terminal);
     }
 }

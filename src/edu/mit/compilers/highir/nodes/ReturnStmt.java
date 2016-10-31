@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Collections;
 
@@ -12,6 +13,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Leave;
 import edu.mit.compilers.lowir.instructions.Mov;
@@ -56,10 +58,11 @@ public class ReturnStmt extends Statement {
 
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
-        pw.println(prefix + "return ");
+        pw.print(prefix + "return ");
         if(expression != null) {
         	expression.cfgPrint(pw, prefix);
         }
+        pw.println();
     }
 
     @Override
@@ -74,7 +77,8 @@ public class ReturnStmt extends Statement {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         if(expression != null) {
-        	Memory returnValue = expression.getLocation(ctx);
+			expression.generateAssembly(ctx);
+        	Storage returnValue = expression.getLocation(ctx);
         	ctx.addInstruction(Mov.create(returnValue, Register.create("%rax")));
         }
         ctx.leave();

@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Call;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Lea;
+import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Push;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
@@ -112,22 +114,22 @@ public class MethodCallExpr extends Expression {
 			node.generateAssembly(ctx);
 			switch(i) {
 			case 0:
-				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rdi")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdi")));
 				break;
 			case 1:
-				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rsi")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rsi")));
 				break;
 			case 2:
-				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rdx")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdx")));
 				break;
 			case 3:
-				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%rcx")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rcx")));
 				break;
 			case 4:
-				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%r8")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r8")));
 				break;
 			case 5:
-				instructions.add(Lea.create(node.getLocation(ctx), Register.create("%r9")));
+				instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r9")));
 				break;
 			}
 		}
@@ -138,5 +140,6 @@ public class MethodCallExpr extends Expression {
 		}
 		ctx.addInstructions(instructions);
 		ctx.addInstruction(Call.create(Memory.create(function.getExpressionName())));
+		ctx.pushStack(this, Register.create("%rax"));
 	}
 }

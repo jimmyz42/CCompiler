@@ -80,12 +80,11 @@ public class AssignStmt extends Statement {
     public void generateAssembly(AssemblyContext ctx){
         expression.generateAssembly(ctx);
 
-        Storage src = expression.allocateLocation(ctx);
-        Storage dest = location.allocateLocation(ctx);
+        Storage src = ctx.allocateRegister(expression);
+        Storage dest = ctx.allocateRegister(location);
         ctx.addInstruction(new Mov(src, dest));
 
-        ctx.pushStack(this, dest);
-        expression.deallocateLocation(ctx);
-        location.deallocateLocation(ctx);
+        ctx.deallocateRegister(expression);
+        ctx.deallocateRegister(location);
     }
 }

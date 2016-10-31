@@ -17,12 +17,4 @@ abstract public class Statement extends Ir {
     public CFG generateCFG(CFGContext context) {
         return BasicBlock.create(this);
     }
-    
-    public Storage allocateLocation(AssemblyContext ctx) {
-    	return ctx.allocateRegister(this);
-    }
-    
-    public void deallocateLocation(AssemblyContext ctx) {
-    	ctx.deallocateRegister(this);
-    }
 }

@@ -53,12 +53,12 @@ public class OrOpExpr extends BinOpExpr {
         lhs.generateAssembly(ctx);
         rhs.generateAssembly(ctx);
 
-        Storage src = rhs.allocateLocation(ctx);
-        Storage dest = lhs.allocateLocation(ctx);
+        Storage src = ctx.allocateRegister(rhs);
+        Storage dest = ctx.allocateRegister(lhs);
         ctx.addInstruction(new Or(src, dest));
 
         ctx.pushStack(this, dest);
-        rhs.deallocateLocation(ctx);
-        lhs.deallocateLocation(ctx);
+        ctx.deallocateRegister(rhs);
+        ctx.deallocateRegister(lhs);
     }
 }
