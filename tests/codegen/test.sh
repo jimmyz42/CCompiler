@@ -30,6 +30,13 @@ for file in `dirname $0`/input/*.dcf; do
       else
         if ! diff -u $output `dirname $0`/output/`basename $file`.out > $diffout 2>/dev/null; then
           msg="File $file output mismatch.";
+          echo "//////////////////////////////////////////"
+          echo "////////////  OUR OUTPUT    //////////////"
+          cat $output
+
+          echo "//////////////////////////////////////////"
+          echo "////////////  THEIR OUTPUT  //////////////"
+          cat `dirname $0`/output/`basename $file`.out
         fi
       fi
     else
