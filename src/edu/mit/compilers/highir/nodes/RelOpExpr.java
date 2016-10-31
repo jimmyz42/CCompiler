@@ -96,6 +96,9 @@ public class RelOpExpr extends BinOpExpr implements Condition {
         }
         ctx.addInstructions(expression);
 
+        //dest = 0 or 1
+        //	0: expression evaluated to false
+        //	1: expression evaluated to true
         ctx.pushStack(this, dest);
         
         //deallocate temp
