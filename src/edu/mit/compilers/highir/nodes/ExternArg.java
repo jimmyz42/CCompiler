@@ -28,7 +28,7 @@ public class ExternArg extends Ir implements Storable {
     }
     
     @Override
-    public Register deallocateRegister(AssemblyContext ctx) {
-    	return ctx.allocateRegister(this);
+    public void deallocateRegister(AssemblyContext ctx) {
+    	ctx.deallocateRegister(this);
     }
 }

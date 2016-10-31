@@ -11,15 +11,21 @@ import java.util.List;
 import java.util.Stack;
 import java.util.HashSet;
 
+import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Jmp;
 import edu.mit.compilers.lowir.instructions.Jne;
 import edu.mit.compilers.lowir.instructions.Label;
+import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.Memory;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.StringEdgeNameProvider;
@@ -383,13 +389,17 @@ public class CFG implements CFGAble {
                 blockStack.push(currentBlock.getNextBlock(true));
                 
                 //get conditional value generated at the end of currentBlock
-                
+                Storage val = ctx.allocateRegister((Expression)currentBlock.getCondition());
                 //compare to 1 
-                
+                Storage temp = Register.create("%rax");
+                Storage btrue = ImmediateValue.create(true);
+                ctx.addInstruction(Mov.create(btrue, temp));
+                ctx.addInstruction(new Cmp(val, temp));
                 //if its != 1, go down FALSE branch
                 ctx.addInstruction(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
                 //else, go down TRUE branch
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
+                ctx.deallocateRegister((Expression)currentBlock.getCondition());
             } else if(currentBlock.getNextBlocks().size() > 0){
                 blockStack.push(currentBlock.getNextBlock(true));
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));

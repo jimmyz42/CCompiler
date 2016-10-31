@@ -65,21 +65,20 @@ public class EqOpExpr extends BinOpExpr implements Condition {
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
 
-    	//move 0 into dest
-    	expression.add(Mov.create(bfalse, dest));
-
-    	//move 1 into temp
-    	Storage temp = ctx.allocateRegister(this);
-    	expression.add(Mov.create(btrue, temp));
-    	
     	//compare lhs to rhs
         Instruction opInstruction = new Cmp(src, dest);
         expression.add(opInstruction);
     	
+    	//move 0 into dest
+    	expression.add(Mov.create(bfalse, dest));
+
+    	//move 1 into src
+    	expression.add(Mov.create(btrue, src));
+    	
         if(operator.getTerminal().equals("==")) {
-            expression.add(Cmove.create(temp, dest));
+            expression.add(Cmove.create(src, dest));
         } else {
-            expression.add(Cmovne.create(temp, dest));
+            expression.add(Cmovne.create(src, dest));
         }        
 
         ctx.addInstructions(expression);
@@ -89,9 +88,6 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         //	1: expression evaluated to true
         ctx.pushStack(this, dest);
         
-        //deallocate temp
-        ctx.deallocateRegister(this);
-
         rhs.deallocateRegister(ctx);
         lhs.deallocateRegister(ctx);
     }

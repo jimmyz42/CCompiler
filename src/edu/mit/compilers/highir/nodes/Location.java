@@ -52,7 +52,7 @@ abstract public class Location extends Expression {
     }
     
     @Override
-    public Register deallocateRegister(AssemblyContext ctx) {
-    	return ctx.allocateRegister(variable);
+    public void deallocateRegister(AssemblyContext ctx) {
+    	ctx.deallocateRegister(variable);
     }
 }
