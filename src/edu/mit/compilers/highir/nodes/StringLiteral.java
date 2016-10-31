@@ -41,12 +41,6 @@ public class StringLiteral extends ExternArg {
         Instruction stringInstruction = new StringInstruction(label, terminal);
         ctx.addInstruction(Lea.create(Memory.create("."+label+"(%rip)"), Register.create("%rdx")));
         ctx.pushStack(this, Register.create("%rdx"));
-        System.out.println(this);
         ctx.addFooterInstruction(stringInstruction);
     }
-//    
-//    @Override
-//    public Memory getLocation(AssemblyContext ctx) {
-//        return Memory.create("."+label+"(%rip)");
-//    }
 }

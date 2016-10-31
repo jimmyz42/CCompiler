@@ -70,7 +70,7 @@ public class AssemblyContext {
 		} else {
 			stack.add(loc);
 			stackPositions.put(node, stack.size() - 1);
-    		addInstruction(Push.create(loc));
+    		addInstruction(Mov.create(loc, getStackLocation(node)));
 		}
 	}
 
@@ -108,10 +108,12 @@ public class AssemblyContext {
 	public void enter() {
         breakPointerStack.push(breakPointer);
         breakPointer = stackPositions.size();
-        addInstruction(Enter.create(0));
+        addInstruction(Enter.create(6));
 
         registersStack.push(registers);
+        registers = new Stack<>();
 		for (int i = 10; i <= 15; i++) {
+			registers.push(Register.create("%r" + i));
     		addInstruction(Push.create(Register.create("%r" + i)));
 		}
 	}
@@ -125,7 +127,6 @@ public class AssemblyContext {
 		}
 
         breakPointer = breakPointerStack.pop();
-        addInstruction(Leave.create());
 	}
 
 	public void addInstructions(List<Instruction> instructions) {

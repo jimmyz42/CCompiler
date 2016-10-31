@@ -1,10 +1,9 @@
 digraph G {
-  block0 [ label="block0: int\ add\lint\ a\lint\ b\lreturn\ \la\ +\ b\lint\ sub\lint\ a\lint\ b\lreturn\ \la\ -\ b\lint\ sum\lint\ a\lint\ b\lint\ c\lint\ d\lint\ e\lint\ f\lint\ g\lint\ h\lreturn\ \la\ +\ b\l\ +\ c\l\ +\ d\l\ +\ e\l\ +\ f\l\ +\ g\l\ +\ h\lvoid\ main\lint\ a\lint\ b\lint\ c\lint\ d\la\ =\ 1\lb\ =\ 2\lc\ =\ add\(a\,\ b\)\l\ld\ =\ sub\(c\,\ b\)\l\ld\ ==\ a\l" ];
-  block1 [ label="block1: printf\(\"correct\\n\"\)\l\l" ];
-  block2 [ label="block2: printf\(\"sum\ of\ 1\ -\ 8\ is\ %d\ \(36\)\\n\"\,\ sum\(1\,\ 2\,\ 3\,\ 4\,\ 5\,\ 6\,\ 7\,\ 8\)\l\)\lreturn\ \l\l" ];
-  block3 [ label="block3: printf\(\"INCORRECT\\n\"\)\l\l" ];
+  block0 [ label="block0: void\ i\lreturn\ \l\l" ];
+  block1 [ label="block1: *end\ of\ method*\l" ];
+  block2 [ label="block2: void\ main\lint\ a\lint\ b\la\ =\ 4\lb\ =\ a\lreturn\ \l\l" ];
+  block3 [ label="block3: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
-  block0 -> block3;
-  block3 -> block2;
+  block2 -> block3;
 }

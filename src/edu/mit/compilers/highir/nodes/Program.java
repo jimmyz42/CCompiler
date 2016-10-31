@@ -19,6 +19,7 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.LeaveBlock;
 
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
@@ -85,7 +86,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         }
     }
 
-    public CFG generateCFG(CFGContext context) {    	
+    public CFG generateCFG(CFGContext context) {
         ArrayList<CFGAble> components = new ArrayList<>();
         for(Descriptor desc: symbolTable.getDescriptors().values()) {
             if(desc instanceof VariableDescriptor) {
@@ -94,20 +95,20 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
         }
         BasicBlock symbolBlock = BasicBlock.create(components);
         CFG currentCFG = symbolBlock;
-        
+
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
             	BasicBlock start = BasicBlock.createEmpty("method start");
-            	BasicBlock end = BasicBlock.createEmpty("method end");
+            	LeaveBlock end = LeaveBlock.create();
             	CFG methodCFG = new CFG(start, end);
             	context.addMethodCFG((MethodDescriptor)desc, methodCFG);
-            	
+
                 CFG innerCFG = desc.generateCFG(context);
                 start.setNextBlock(innerCFG.getEntryBlock());
                 innerCFG.addPreviousBlock(start);
                 innerCFG.setNextBlock(end);
                 end.addPreviousBlock(innerCFG.getExitBlock());
-                
+
                 currentCFG.setNextBlock(methodCFG.getEntryBlock());
                 methodCFG.setPreviousBlock(currentCFG.getExitBlock());
                 currentCFG = methodCFG;

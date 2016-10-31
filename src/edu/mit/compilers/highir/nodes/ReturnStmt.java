@@ -81,7 +81,8 @@ public class ReturnStmt extends Statement {
         	Storage returnValue = expression.getLocation(ctx);
         	ctx.addInstruction(Mov.create(returnValue, Register.create("%rax")));
         }
-        ctx.leave();
+
+        ctx.addInstruction(Leave.create());
         ctx.addInstruction(Ret.create());
     }
 }
