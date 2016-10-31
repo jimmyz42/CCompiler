@@ -66,15 +66,11 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 
         List<Instruction> expression = new ArrayList<>();
 
-        Storage src = ctx.allocateRegister(rhs);
-        Storage dest = ctx.allocateRegister(lhs);
+        Storage src = rhs.allocateRegister(ctx);
+        Storage dest = lhs.allocateRegister(ctx);
 
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
-
-    	//compare lhs to rhs
-        Instruction opInstruction = new Cmp(src, dest);
-        expression.add(opInstruction);
     	
     	//move 0 into dest
     	expression.add(Mov.create(bfalse, dest));
@@ -82,8 +78,12 @@ public class RelOpExpr extends BinOpExpr implements Condition {
     	//move 1 into src
     	expression.add(Mov.create(btrue, src));
     	
+    	//compare lhs to rhs
+        Instruction opInstruction = new Cmp(src, dest);
+        expression.add(opInstruction);
     	
         switch(operator.getTerminal()){
+
             case ">":
             expression.add(Cmovg.create(src, dest));
             case "<":
@@ -100,8 +100,7 @@ public class RelOpExpr extends BinOpExpr implements Condition {
         //	1: expression evaluated to true
         ctx.pushStack(this, dest);
         
-        //deallocate
-        ctx.deallocateRegister(rhs);
-        ctx.deallocateRegister(lhs);
+        rhs.deallocateRegister(ctx);
+        lhs.deallocateRegister(ctx);
     }
 }

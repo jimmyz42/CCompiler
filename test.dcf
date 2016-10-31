@@ -1,9 +1,0 @@
-// OK - local variable can shadow a method
-void i ( ) {
-}
-void main ( ) {
- int a;
- int b;
- a = 4;
- b = a;
-}

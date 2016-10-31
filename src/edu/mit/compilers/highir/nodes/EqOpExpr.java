@@ -59,8 +59,8 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 
         List<Instruction> expression = new ArrayList<>();
 
-        Storage src = ctx.allocateRegister(rhs);
-        Storage dest = ctx.allocateRegister(lhs);
+        Storage src = rhs.allocateRegister(ctx);
+        Storage dest = lhs.allocateRegister(ctx);
 
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
@@ -88,8 +88,7 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         //	1: expression evaluated to true
         ctx.pushStack(this, dest);
         
-        //deallocate
-        ctx.deallocateRegister(rhs);
-        ctx.deallocateRegister(lhs);
+        rhs.deallocateRegister(ctx);
+        lhs.deallocateRegister(ctx);
     }
 }

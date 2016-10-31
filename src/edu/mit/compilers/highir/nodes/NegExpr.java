@@ -46,12 +46,12 @@ public class NegExpr extends Expression {
     public void generateAssembly(AssemblyContext ctx){
         expression.generateAssembly(ctx);
 
-        Register src = ctx.allocateRegister(expression);
+        Register src = expression.allocateRegister(ctx);
         Register dest = ctx.allocateRegister(this);
         ctx.addInstruction(Mov.create(src, dest));
         ctx.addInstruction(Neg.create(dest));
 
-        ctx.deallocateRegister(expression);;
+        expression.deallocateRegister(ctx);;
         ctx.deallocateRegister(this);;
     }
 }
