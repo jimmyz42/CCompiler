@@ -35,8 +35,12 @@ abstract public class Ir implements PrettyPrintable, CFGAble {
     public CFG generateCFG(CFGContext context) {
         return BasicBlock.create(this);
     }
-
-    @Override
+    
     public void generateAssembly(AssemblyContext ctx) {
+    	
+    }
+    
+    public int getNumStackAllocations() {
+    	return 0;
     }
 }

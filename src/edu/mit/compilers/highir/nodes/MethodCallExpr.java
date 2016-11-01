@@ -140,6 +140,16 @@ public class MethodCallExpr extends Expression {
 		}
 		ctx.addInstructions(instructions);
 		ctx.addInstruction(Call.create(Memory.create(function.getExpressionName())));
-		ctx.pushStack(this, Register.create("%rax"));
+		ctx.storeStack(this, Register.create("%rax"));
+	}
+
+	@Override
+	public int getNumStackAllocations() {
+		int numStackAllocations = 0;
+		for(ExternArg node: arguments) {
+			numStackAllocations += node.getNumStackAllocations();
+		}
+		numStackAllocations++;
+		return numStackAllocations;
 	}
 }

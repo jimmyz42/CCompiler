@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 
 public class EqOp extends BinOp {
-    private String terminal;
 
     public EqOp(String terminal) {
         super(terminal);

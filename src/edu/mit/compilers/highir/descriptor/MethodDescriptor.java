@@ -80,7 +80,7 @@ public class MethodDescriptor extends FunctionDescriptor {
     public void loadBody(DecafSemanticChecker checker, Method_declContext ctx) {
         checker.pushMethodDescriptor(this);
         body.loadBlock(checker, ctx.block());
-        checker.pushMethodDescriptor(this);
+        checker.popMethodDescriptor();
     }
 
     @Override
@@ -101,22 +101,14 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-        ArrayList<CFGAble> components = new ArrayList<>();
-        for(VariableDescriptor argument: arguments) {
-            components.add(argument);
-        }
-        BasicBlock symbolBlock = BasicBlock.create(components);
-        symbolBlock.setDescription("arguments");
         BasicBlock methodBlock = BasicBlock.create(this);
         CFG bodyCFG = body.generateCFG(context);
-        BasicBlock returnBlock = BasicBlock.create(ReturnStmt.create());
-        methodBlock.setNextBlock(symbolBlock);
-        symbolBlock.addPreviousBlock(methodBlock);
-        symbolBlock.setNextBlock(bodyCFG.getEntryBlock());
-        bodyCFG.addPreviousBlock(symbolBlock);
-        bodyCFG.addNextBlock(returnBlock);
-        returnBlock.setPreviousBlock(bodyCFG.getExitBlock());
-        return new CFG(methodBlock, returnBlock);
+        // BasicBlock returnBlock = BasicBlock.create(ReturnStmt.create());
+        methodBlock.setNextBlock(bodyCFG.getEntryBlock());
+        bodyCFG.addPreviousBlock(methodBlock);
+        // bodyCFG.addNextBlock(returnBlock);
+        // returnBlock.setPreviousBlock(bodyCFG.getExitBlock());
+        return new CFG(methodBlock, bodyCFG.getExitBlock());
 
     }
 
@@ -127,37 +119,37 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-        ctx.addInstruction(Directive.create(".globl " + getName()));
-        ctx.addInstruction(Directive.create(".type " + getName() + " @function"));
-        ctx.addInstruction(Label.create(getName()));
-        ctx.enter();
-
 		for(int i = 0; i < arguments.size() && i < 6; i++) {
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
 			case 0:
-				ctx.pushStack(node, Register.create("%rdi"));
+				ctx.storeStack(node, Register.create("%rdi"));
 				break;
 			case 1:
-				ctx.pushStack(node, Register.create("%rsi"));
+				ctx.storeStack(node, Register.create("%rsi"));
 				break;
 			case 2:
-				ctx.pushStack(node, Register.create("%rdx"));
+				ctx.storeStack(node, Register.create("%rdx"));
 				break;
 			case 3:
-				ctx.pushStack(node, Register.create("%rcx"));
+				ctx.storeStack(node, Register.create("%rcx"));
 				break;
 			case 4:
-				ctx.pushStack(node, Register.create("%r8"));
+				ctx.storeStack(node, Register.create("%r8"));
 				break;
 			case 5:
-				ctx.pushStack(node, Register.create("%r9"));
+				ctx.storeStack(node, Register.create("%r9"));
 				break;
 			}
 		}
 		for(int i = 6; i < arguments.size(); i++) {
 			VariableDescriptor node = arguments.get(i);
-			ctx.setStackPosition(node, i);
+			ctx.setStackPosition(node, -i);
 		}
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return arguments.size();
+	}
 }

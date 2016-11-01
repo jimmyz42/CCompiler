@@ -51,4 +51,9 @@ public class NotExpr extends Expression {
         expression.deallocateRegister(ctx);;
         ctx.deallocateRegister(this);;
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return expression.getNumStackAllocations() + 1;
+	}
 }

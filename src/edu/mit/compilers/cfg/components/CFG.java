@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.HashSet;
 
@@ -130,13 +132,13 @@ public class CFG implements CFGAble {
 
     private void giveAllBlocksIds(){
     	 HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-         Stack<BasicBlock> blockStack = new Stack<>();
-         blockStack.push(getEntryBlock());
+         Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+         blockQueue.add(getEntryBlock());
          int blockNum = 0;
 
          //step 1: give every BasicBlock an ID
-         while(!blockStack.empty()) {
-             BasicBlock currentBlock = blockStack.pop();
+         while(blockQueue.size() > 0) {
+             BasicBlock currentBlock = blockQueue.poll();
              if(visited.contains(currentBlock)) continue;
              else visited.add(currentBlock);
 
@@ -144,53 +146,53 @@ public class CFG implements CFGAble {
              blockNum++;
              //push blocks in reverse order to pop in correct order
              if(currentBlock.getNextBlocks().size() > 1) {
-                 blockStack.push(currentBlock.getNextBlock(false));
+                 blockQueue.add(currentBlock.getNextBlock(false));
              }
              if(currentBlock.getNextBlocks().size() > 0){
-                 blockStack.push(currentBlock.getNextBlock(true));
+                 blockQueue.add(currentBlock.getNextBlock(true));
              }
          }
     }
 
     public void clearPrevBlocks(){
    	 	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Stack<BasicBlock> blockStack = new Stack<>();
-        blockStack.push(getEntryBlock());
+        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+        blockQueue.add(getEntryBlock());
 
-        while(!blockStack.empty()) {
-            BasicBlock currentBlock = blockStack.pop();
+        while(blockQueue.size() > 0) {
+            BasicBlock currentBlock = blockQueue.poll();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
             currentBlock.setPreviousBlocks(new ArrayList<BasicBlock>());
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
-                blockStack.push(currentBlock.getNextBlock(false));
+                blockQueue.add(currentBlock.getNextBlock(false));
             }
             if(currentBlock.getNextBlocks().size() > 0){
-                blockStack.push(currentBlock.getNextBlock(true));
+                blockQueue.add(currentBlock.getNextBlock(true));
             }
         }
    }
 
     public void genPrevBlocks(){
    	 	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Stack<BasicBlock> blockStack = new Stack<>();
-        blockStack.push(getEntryBlock());
+        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+        blockQueue.add(getEntryBlock());
 
-        while(!blockStack.empty()) {
-            BasicBlock currentBlock = blockStack.pop();
+        while(blockQueue.size() > 0) {
+            BasicBlock currentBlock = blockQueue.poll();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
             	currentBlock.getNextBlock(false).addPreviousBlock(currentBlock);
-                blockStack.push(currentBlock.getNextBlock(false));
+                blockQueue.add(currentBlock.getNextBlock(false));
             }
             if(currentBlock.getNextBlocks().size() > 0){
             	currentBlock.getNextBlock(true).addPreviousBlock(currentBlock);
-                blockStack.push(currentBlock.getNextBlock(true));
+                blockQueue.add(currentBlock.getNextBlock(true));
             }
         }
    }
@@ -198,11 +200,11 @@ public class CFG implements CFGAble {
     // Merge basic blocks optimization
     public void mergeBasicBlocks(){
     	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Stack<BasicBlock> blockStack = new Stack<>();
-        blockStack.push(getEntryBlock());
+        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+        blockQueue.add(getEntryBlock());
 
-        while(!blockStack.empty()) {
-            BasicBlock currentBlock = blockStack.pop();
+        while(blockQueue.size() > 0) {
+            BasicBlock currentBlock = blockQueue.poll();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
@@ -222,14 +224,14 @@ public class CFG implements CFGAble {
             		List<BasicBlock> list = block.getPreviousBlocks();
             		list.set(list.indexOf(b2), merged);
             	}
-            	blockStack.push(merged);
+            	blockQueue.add(merged);
             } else {
             	//push blocks in reverse order to pop in correct order
             	if(currentBlock.getNextBlocks().size() > 1) {
-                    blockStack.push(currentBlock.getNextBlock(false));
+                    blockQueue.add(currentBlock.getNextBlock(false));
                 }
                 if(currentBlock.getNextBlocks().size() > 0){
-                    blockStack.push(currentBlock.getNextBlock(true));
+                    blockQueue.add(currentBlock.getNextBlock(true));
                 }
             }
         }
@@ -237,11 +239,11 @@ public class CFG implements CFGAble {
 
     public void eliminateEmptyBlocks(){
     	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Stack<BasicBlock> blockStack = new Stack<>();
-        blockStack.push(getEntryBlock());
+        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+        blockQueue.add(getEntryBlock());
 
-        while(!blockStack.empty()) {
-            BasicBlock currentBlock = blockStack.pop();
+        while(blockQueue.size() > 0) {
+            BasicBlock currentBlock = blockQueue.poll();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
@@ -252,14 +254,14 @@ public class CFG implements CFGAble {
             		list.set(list.indexOf(currentBlock), next);
             	}
             	next.setPreviousBlocks(currentBlock.getPreviousBlocks());
-            	blockStack.push(next);
+            	blockQueue.add(next);
             } else {
             	//push blocks in reverse order to pop in correct order
             	if(currentBlock.getNextBlocks().size() > 1) {
-                    blockStack.push(currentBlock.getNextBlock(false));
+                    blockQueue.add(currentBlock.getNextBlock(false));
                 }
                 if(currentBlock.getNextBlocks().size() > 0){
-                    blockStack.push(currentBlock.getNextBlock(true));
+                    blockQueue.add(currentBlock.getNextBlock(true));
                 }
             }
         }
@@ -337,15 +339,15 @@ public class CFG implements CFGAble {
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Stack<BasicBlock> blockStack = new Stack<>();
-        blockStack.push(getEntryBlock());
+        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+        blockQueue.add(getEntryBlock());
 
         //step 1: give every BasicBlock an ID
         giveAllBlocksIds();
 
         //step 2: print stuff
-        while(!blockStack.empty()) {
-            BasicBlock currentBlock = blockStack.pop();
+        while(blockQueue.size() > 0) {
+            BasicBlock currentBlock = blockQueue.poll();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
@@ -359,10 +361,10 @@ public class CFG implements CFGAble {
 
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
-                blockStack.push(currentBlock.getNextBlock(false));
+                blockQueue.add(currentBlock.getNextBlock(false));
             }
             if(currentBlock.getNextBlocks().size() > 0){
-                blockStack.push(currentBlock.getNextBlock(true));
+                blockQueue.add(currentBlock.getNextBlock(true));
             }
         }
     }
@@ -370,13 +372,13 @@ public class CFG implements CFGAble {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Stack<BasicBlock> blockStack = new Stack<>();
-        blockStack.push(getEntryBlock());
-        
+        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+        blockQueue.add(getEntryBlock());
+
         giveAllBlocksIds();
 
-        while(!blockStack.empty()) {
-            BasicBlock currentBlock = blockStack.pop();
+        while(blockQueue.size() > 0) {
+            BasicBlock currentBlock = blockQueue.poll();
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
@@ -385,26 +387,50 @@ public class CFG implements CFGAble {
 
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
-                blockStack.push(currentBlock.getNextBlock(false));
-                blockStack.push(currentBlock.getNextBlock(true));
-                
+                blockQueue.add(currentBlock.getNextBlock(false));
+                blockQueue.add(currentBlock.getNextBlock(true));
+
                 //get conditional value generated at the end of currentBlock
                 Storage val = ctx.allocateRegister((Expression)currentBlock.getCondition());
-                //compare to 1 
+                //compare to 1
                 Storage temp = Register.create("%rax");
                 Storage btrue = ImmediateValue.create(true);
                 ctx.addInstruction(Mov.create(btrue, temp));
                 ctx.addInstruction(new Cmp(val, temp));
+                ctx.deallocateRegister((Expression)currentBlock.getCondition());
                 //if its != 1, go down FALSE branch
                 ctx.addInstruction(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
                 //else, go down TRUE branch
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
-                ctx.deallocateRegister((Expression)currentBlock.getCondition());
             } else if(currentBlock.getNextBlocks().size() > 0){
-                blockStack.push(currentBlock.getNextBlock(true));
+                blockQueue.add(currentBlock.getNextBlock(true));
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
             }
         }
+    }
+    
+    public int getNumStackAllocations() {
+        HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+        blockQueue.add(getEntryBlock());
+
+        int numStackAllocations = 0;
+        while(blockQueue.size() > 0) {
+            BasicBlock currentBlock = blockQueue.poll();
+            if(visited.contains(currentBlock)) continue;
+            else visited.add(currentBlock);
+
+            numStackAllocations += currentBlock.getNumStackAllocations();
+
+            //push blocks in reverse order to pop in correct order
+            if(currentBlock.getNextBlocks().size() > 1) {
+                blockQueue.add(currentBlock.getNextBlock(false));
+            }
+            if(currentBlock.getNextBlocks().size() > 0){
+                blockQueue.add(currentBlock.getNextBlock(true));
+            }
+        }
+        return numStackAllocations;
     }
 
     @Override

@@ -44,8 +44,13 @@ public class IntLiteral extends Literal {
 
     @Override
     public void generateAssembly(AssemblyContext ctx){
-        ctx.pushStack(this, ImmediateValue.create(terminal));
+        ctx.storeStack(this, ImmediateValue.create(terminal));
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return 1;
+	}
 
     @Override
     public ImmediateValue getLocation(AssemblyContext ctx) {

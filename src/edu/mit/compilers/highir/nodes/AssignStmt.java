@@ -8,6 +8,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Idiv;
 import edu.mit.compilers.lowir.instructions.Imul;
@@ -88,4 +89,9 @@ public class AssignStmt extends Statement {
         expression.deallocateRegister(ctx);
         location.deallocateRegister(ctx);
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return expression.getNumStackAllocations() + location.getNumStackAllocations();
+	}
 }

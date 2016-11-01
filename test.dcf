@@ -1,0 +1,28 @@
+extern printf();
+int add ( int a, int b ) {
+printf ( "sum of 1 - 8 is %d (36)\n", (3 + 9 ) );
+  return ( a + b );
+}
+int sub ( int a, int b ) {
+  return ( a - b );
+}
+int sum ( int a, int b, int c, int d, int e, int f, int g, int h ) {
+  return ( a + b + c + d + e + f + g + h );
+}
+void main ( ) {
+  int a, b, c, d;
+  a = 1;
+  b = 2;
+  c = add ( a, b );
+  d = sub ( c, b );
+  printf ( "sum of 1 - 9 is %d %d (36)\n", sub ( 1, 8 ), add(1,8) );
+  if ( d == a ) {
+    a=1;
+  }
+  else {
+    a=2;
+  }
+  printf ("testsing");
+  printf ( "sum of 1 - 8 is %d (36)\n", add ( 3, 9 ) );
+  printf ("testsing");
+}

@@ -1,7 +1,10 @@
 package edu.mit.compilers.cfg.components;
 
 import java.util.List;
+import java.util.Queue;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -130,6 +133,14 @@ public class BasicBlock extends CFG {
     	if(branchCondition != null) {
     		branchCondition.generateAssembly(ctx);
     	}
+    }
+    
+    public int getNumStackAllocations() {
+        int numStackAllocations = 0;
+        for(CFGAble component: components) {
+        	numStackAllocations += component.getNumStackAllocations();
+    	}
+        return numStackAllocations;
     }
 
     public boolean canMerge() {

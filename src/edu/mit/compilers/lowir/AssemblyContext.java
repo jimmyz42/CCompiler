@@ -16,24 +16,22 @@ import edu.mit.compilers.lowir.instructions.Leave;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Pop;
 import edu.mit.compilers.lowir.instructions.Push;
+import edu.mit.compilers.lowir.instructions.Ret;
 
 /**
  * This class walks through a high level DecafSemanticChecker graph a low level
  * control flow graph which can be used to output assembly code
  */
 public class AssemblyContext {
-	private ArrayList<Object> stack = new ArrayList<>();
 	private HashMap<Storable, Integer> stackPositions = new HashMap<>();
 	private Stack<Register> registers = new Stack<>();
 	private HashMap<Storable, Register> registerLocations = new HashMap<>();
 
-	private Stack<Integer> breakPointerStack = new Stack<>();
+	private Stack<HashMap<Storable, Integer>> stackPositionsStack = new Stack<>();
 	private Stack<Stack<Register>> registersStack = new Stack<>();
 
 	private List<Instruction> instructions = new ArrayList<>();
 	private List<Instruction> footerInstructions = new ArrayList<>();
-
-	private int breakPointer;
 
 	public AssemblyContext() {
 		//		registers.push(Register.create("%rax"));
@@ -52,32 +50,23 @@ public class AssemblyContext {
 	}
 
 	public void setStackPosition(Storable node, int position) {
-		stackPositions.put(node, breakPointer - position);
+		stackPositions.put(node, position);
 	}
 
-	public void popStack(Storage loc) {
-		stackPositions.values().remove(stack.size() - 1);
-		Object value = stack.remove(stack.size() - 1);
-		loc.setValue(value);
-		addInstruction(Pop.create(loc));
-	}
-
-	public void pushStack(Storable node, Storage loc) {
+	public void storeStack(Storable node, Storage loc) {
 		if (stackPositions.containsKey(node)) {
-			stack.set(stackPositions.get(node), loc.getValue());
 			Storage stackLocation = node.getLocation(this);
-    		addInstruction(Mov.create(loc, stackLocation));
+			addInstruction(Mov.create(loc, stackLocation));
 		} else {
-			stack.add(loc);
-			stackPositions.put(node, stack.size() - 1);
-    		addInstruction(Mov.create(loc, getStackLocation(node)));
+			stackPositions.put(node, stackPositions.size() + 1);
+			addInstruction(Mov.create(loc, getStackLocation(node)));
 		}
 	}
 
 	// return a register for use
 	public Register allocateRegister(Storable node) {
 		if (!stackPositions.containsKey(node)) {
-			pushStack(node, ImmediateValue.create(0));
+			storeStack(node, ImmediateValue.create(0));
 		}
 		if (registerLocations.get(node) != null) {
 			return registerLocations.get(node);
@@ -87,12 +76,11 @@ public class AssemblyContext {
 		Storage stackLocation = node.getLocation(this);
 		addInstruction(Mov.create(stackLocation, reg));
 		registerLocations.put(node, reg);
-		reg.setValue(stack.get(stackPositions.get(node)));
 		return reg;
 	}
 
 	public Memory getStackLocation(Storable node) {
-		String name = (-8*(stackPositions.get(node)+1 - breakPointer)) + "(%rbp)";
+		String name = (-8*(stackPositions.get(node))) + "(%rbp)";
 		return Memory.create(name);
 	}
 
@@ -105,31 +93,39 @@ public class AssemblyContext {
 		Memory stackLocation = getStackLocation(node);
 		addInstruction(Mov.create(reg, stackLocation));
 		registers.push(reg);
-		stack.set(stackPositions.get(node), reg.getValue());
 	}
 
-	public void enter() {
-        breakPointerStack.push(breakPointer);
-        breakPointer = stackPositions.size();
-        addInstruction(Enter.create(6));
+	public void enter(int numStackAllocations) {
+		stackPositionsStack.push(stackPositions);
+		stackPositions = new HashMap<>();
+		addInstruction(Enter.create(numStackAllocations + 6)); //6 for the number of registers
 
-        registersStack.push(registers);
-        registers = new Stack<>();
+		registersStack.push(registers);
+		registers = new Stack<>();
 		for (int i = 10; i <= 15; i++) {
 			registers.push(Register.create("%r" + i));
-    		addInstruction(Push.create(Register.create("%r" + i)));
+			addInstruction(Push.create(Register.create("%r" + i)));
 		}
 	}
 
-	public void leave() {
-		//TODO this code might break when dealing with multiple return statements in a function
-		//in the case we shouldn't pop till all paths are taken
-        registers = registersStack.pop();
-		for (int i = 15; i >= 10; i--) {
-    		addInstruction(Pop.create(Register.create("%r" + i)));
-		}
+	public void leave(boolean isMethodEnd) {
+		if(isMethodEnd) {
+			registers = registersStack.pop();
 
-        breakPointer = breakPointerStack.pop();
+			for (int i = 15; i >= 10; i--) {
+				addInstruction(Pop.create(Register.create("%r" + i)));
+			}
+	        addInstruction(Leave.create());
+	        addInstruction(Ret.create());
+	        
+			stackPositions = stackPositionsStack.pop();
+		} else {
+			for (int i = 15; i >= 10; i--) {
+				addInstruction(Pop.create(Register.create("%r" + i)));
+			}
+	        addInstruction(Leave.create());
+	        addInstruction(Ret.create());
+		}
 	}
 
 	public void addInstructions(List<Instruction> instructions) {

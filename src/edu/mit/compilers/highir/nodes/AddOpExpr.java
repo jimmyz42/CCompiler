@@ -62,9 +62,13 @@ public class AddOpExpr extends BinOpExpr {
 		}
 		ctx.addInstruction(opInstruction);
 
-		ctx.pushStack(this, result);
 		ctx.deallocateRegister(this);
 		rhs.deallocateRegister(ctx);
 		lhs.deallocateRegister(ctx);
+	}
+
+	@Override
+	public int getNumStackAllocations() {
+		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
 	}
 }

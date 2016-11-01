@@ -39,8 +39,12 @@ abstract public class Location extends Expression {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	//variable.generateAssembly(ctx);
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return 0;
+	}
 
     public Storage getLocation(AssemblyContext ctx) {
     	return variable.getLocation(ctx);

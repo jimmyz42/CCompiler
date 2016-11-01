@@ -23,14 +23,6 @@ abstract public class Storage {
     public String getName() {
         return this.name;
     }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public Object getValue() {
-        return this.value;
-    }
     
     @Override
     public String toString(){

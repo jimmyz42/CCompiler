@@ -9,33 +9,44 @@ import edu.mit.compilers.cfg.*;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.highir.nodes.Statement;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.instructions.Directive;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Jmp;
 import edu.mit.compilers.lowir.instructions.Label;
 
-public class LeaveBlock extends BasicBlock {
-
-    public LeaveBlock(List<CFGAble> components) {
+public class EnterBlock extends BasicBlock {
+	private String name;
+	private int numStackAllocations;
+		
+    public EnterBlock(String name, List<CFGAble> components) {
         super(components);
+        this.name = name;
     }
 
-    public static LeaveBlock create() {
-        return new LeaveBlock(new ArrayList<CFGAble>());
+    public static EnterBlock create(String name) {
+        return new EnterBlock(name, new ArrayList<CFGAble>());
     }
 
     // For detecting NOPs
     public boolean isEmpty() {
         return false;
     }
+    
+    public void setNumStackAllocations(int numStackAllocations) {
+    	this.numStackAllocations = numStackAllocations;
+    }
 
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
-        pw.println("*end of method*");
+        pw.println("*start of method*");
     }
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-        ctx.leave(true);
+        ctx.addInstruction(Directive.create(".globl " + name));
+        ctx.addInstruction(Directive.create(".type " + name + " @function"));
+        ctx.addInstruction(Label.create(name));
+        ctx.enter(numStackAllocations);
     }
 
     @Override

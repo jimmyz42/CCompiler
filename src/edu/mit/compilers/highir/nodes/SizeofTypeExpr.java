@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.lowir.AssemblyContext;
 
 public class SizeofTypeExpr extends Expression {
     private Type type;
@@ -27,4 +28,14 @@ public class SizeofTypeExpr extends Expression {
     public void cfgPrint(PrintWriter pw, String prefix) {
     	pw.print(prefix + "sizeof(" + type + ")");
     }
+    
+    public void generateAssembly(AssemblyContext ctx) {
+		// TODO Auto-generated method stub
+    }
+
+	@Override
+	public int getNumStackAllocations() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

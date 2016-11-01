@@ -65,11 +65,14 @@ public class MulOpExpr extends BinOpExpr {
             expression.add(new Mov(rax, src));
         }
         ctx.addInstructions(expression);
-
-        ctx.pushStack(this, src);
         
         ctx.deallocateRegister(this);
         rhs.deallocateRegister(ctx);
         lhs.deallocateRegister(ctx);
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
+	}
 }

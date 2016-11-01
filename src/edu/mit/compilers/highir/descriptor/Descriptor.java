@@ -53,7 +53,7 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	ctx.pushStack(this, ImmediateValue.create(0));
+    	ctx.storeStack(this, ImmediateValue.create(0));
     }
 
     @Override
@@ -70,4 +70,9 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
     public void deallocateRegister(AssemblyContext ctx) {
     	ctx.deallocateRegister(this);
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return 1;
+	}
 }

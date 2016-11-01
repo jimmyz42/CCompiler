@@ -24,87 +24,99 @@ import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.TypeMismatchError;
 
 public class RelOpExpr extends BinOpExpr implements Condition {
-    public RelOpExpr(BinOp operator, Expression lhs, Expression rhs) {
-        super(operator, lhs, rhs);
-    }
+	public RelOpExpr(BinOp operator, Expression lhs, Expression rhs) {
+		super(operator, lhs, rhs);
+	}
 
-    public static RelOpExpr create(DecafSemanticChecker checker, DecafParser.RelOpExprContext ctx) {
-        RelOp operator = RelOp.create(checker, ctx.REL_OP());
-        Expression lhs = Expression.create(checker, ctx.expr(0));
-        Expression rhs = Expression.create(checker, ctx.expr(1));
+	public static RelOpExpr create(DecafSemanticChecker checker, DecafParser.RelOpExprContext ctx) {
+		RelOp operator = RelOp.create(checker, ctx.REL_OP());
+		Expression lhs = Expression.create(checker, ctx.expr(0));
+		Expression rhs = Expression.create(checker, ctx.expr(1));
 
-        if (lhs.getExpressionType() != ScalarType.INT) {
-            throw new TypeMismatchError("Left argument of " + operator + " must be an int, got a " +
-            lhs.getExpressionType(), ctx.expr(0));
-        }
-        if (rhs.getExpressionType() != ScalarType.INT) {
-            throw new TypeMismatchError("Right argument of " + operator + " must be an int, got a " +
-            rhs.getExpressionType(), ctx.expr(1));
-        }
+		if (lhs.getExpressionType() != ScalarType.INT) {
+			throw new TypeMismatchError("Left argument of " + operator + " must be an int, got a " +
+					lhs.getExpressionType(), ctx.expr(0));
+		}
+		if (rhs.getExpressionType() != ScalarType.INT) {
+			throw new TypeMismatchError("Right argument of " + operator + " must be an int, got a " +
+					rhs.getExpressionType(), ctx.expr(1));
+		}
 
-        return new RelOpExpr(operator, lhs, rhs);
-    }
+		return new RelOpExpr(operator, lhs, rhs);
+	}
 
-    @Override
-    public Type getExpressionType() {
-        return ScalarType.BOOL;
-    }
+	@Override
+	public Type getExpressionType() {
+		return ScalarType.BOOL;
+	}
 
-    @Override
-    public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
-        BasicBlock block = BasicBlock.createWithCondition(this);
-        block.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
-        trueBranch.addPreviousBlock(block);
-        falseBranch.addPreviousBlock(block);
-        return block;
-    }
+	@Override
+	public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
+		BasicBlock block = BasicBlock.createWithCondition(this);
+		block.setNextBlocks(Arrays.asList(trueBranch.getEntryBlock(), falseBranch.getEntryBlock()));
+		trueBranch.addPreviousBlock(block);
+		falseBranch.addPreviousBlock(block);
+		return block;
+	}
 
-    @Override
-    public void generateAssembly(AssemblyContext ctx) {
-        lhs.generateAssembly(ctx);
-        rhs.generateAssembly(ctx);
+	@Override
+	public void generateAssembly(AssemblyContext ctx) {
+		System.out.println("here with a relop for");
+		System.out.println(lhs);
+		System.out.println(operator);
+		System.out.println(rhs);
+		lhs.generateAssembly(ctx);
+		rhs.generateAssembly(ctx);
 
-        List<Instruction> expression = new ArrayList<>();
+		List<Instruction> expression = new ArrayList<>();
 
-        Storage src = rhs.allocateRegister(ctx);
-        Storage dest = lhs.allocateRegister(ctx);
-        Storage result = ctx.allocateRegister(this);
-        expression.add(Mov.create(lhs.allocateRegister(ctx), result));
-        
-    	Storage btrue = ImmediateValue.create(true);
-    	Storage bfalse = ImmediateValue.create(false);
-    	
-    	//compare lhs to rhs
-        Instruction opInstruction = new Cmp(src, dest);
-        expression.add(opInstruction);
-        
-    	//move 0 into result
-    	expression.add(Mov.create(bfalse, result));
+		Storage src = rhs.allocateRegister(ctx);
+		Storage dest = lhs.allocateRegister(ctx);
+		Storage result = ctx.allocateRegister(this);
 
-    	//move 1 into temp
-    	Storage temp = Register.create("%rax");
-    	expression.add(Mov.create(btrue, temp));
-    	
-        switch(operator.getTerminal()){
+		Storage btrue = ImmediateValue.create(true);
+		Storage bfalse = ImmediateValue.create(false);
 
-            case ">":
-            expression.add(Cmovg.create(temp, dest));
-            case "<":
-            expression.add(Cmovl.create(temp, dest));
-            case ">=":
-            expression.add(Cmovge.create(temp, dest));
-            case "<=":
-            expression.add(Cmovle.create(temp, dest));
-        }
-        ctx.addInstructions(expression);
+		//move 0 into result
+		expression.add(Mov.create(bfalse, result));
 
-        //result = 0 or 1
-        //	0: expression evaluated to false
-        //	1: expression evaluated to true
-        ctx.pushStack(this, dest);
-        
-        ctx.deallocateRegister(this);
-        rhs.deallocateRegister(ctx);
-        lhs.deallocateRegister(ctx);
-    }
+		//move 1 into temp
+		Storage temp = Register.create("%rax");
+		expression.add(Mov.create(btrue, temp));
+
+		//compare lhs to rhs
+		Instruction opInstruction = new Cmp(src, dest);
+		expression.add(opInstruction);
+
+		switch(operator.getTerminal()) {
+		case ">":
+			expression.add(Cmovg.create(temp, result));
+			break;
+		case "<":
+			expression.add(Cmovl.create(temp, result));
+			break;
+		case ">=":
+			expression.add(Cmovge.create(temp, result));
+			break;
+		case "<=":
+			expression.add(Cmovle.create(temp, result));
+			break;
+		default:
+
+		}
+		ctx.addInstructions(expression);
+
+		//result = 0 or 1
+		//	0: expression evaluated to false
+		//	1: expression evaluated to true
+
+		ctx.deallocateRegister(this);
+		rhs.deallocateRegister(ctx);
+		lhs.deallocateRegister(ctx);
+	}
+
+	@Override
+	public int getNumStackAllocations() {
+		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
+	}
 }

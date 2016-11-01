@@ -8,7 +8,7 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
 
-public class ExternArg extends Ir implements Storable {
+abstract public class ExternArg extends Ir implements Storable {
     public static ExternArg create(DecafSemanticChecker checker, DecafParser.Extern_argContext ctx) {
         if (ctx.expr() != null) {
             return Expression.create(checker, ctx.expr());
@@ -31,4 +31,7 @@ public class ExternArg extends Ir implements Storable {
     public void deallocateRegister(AssemblyContext ctx) {
     	ctx.deallocateRegister(this);
     }
+
+	@Override
+	abstract public int getNumStackAllocations();
 }

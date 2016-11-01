@@ -13,6 +13,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Leave;
@@ -77,12 +78,12 @@ public class ReturnStmt extends Statement {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         if(expression != null) {
+        	System.out.print("return exprssion ");
+        	System.out.println(expression);
 			expression.generateAssembly(ctx);
         	Storage returnValue = expression.getLocation(ctx);
         	ctx.addInstruction(Mov.create(returnValue, Register.create("%rax")));
         }
-
-        ctx.addInstruction(Leave.create());
-        ctx.addInstruction(Ret.create());
+        ctx.leave(false);
     }
 }
