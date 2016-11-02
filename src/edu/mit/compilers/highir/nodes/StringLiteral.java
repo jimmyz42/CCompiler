@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import edu.mit.compilers.lowir.AssemblyContext;
@@ -19,7 +20,8 @@ public class StringLiteral extends ExternArg {
     public StringLiteral(String terminal) {
         this.terminal = terminal;
         this.label = terminal.split(" ")[0].replaceAll("[^a-zA-Z0-9]", "");
-        this.label += Integer.toString(ThreadLocalRandom.current().nextInt(0, 500));
+        this.label += Integer.toString(ThreadLocalRandom.current().nextInt(0, 100000));
+        //TODO: BREAKING make the list of numbers deterministic
     }
 
     @Override
