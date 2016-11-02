@@ -119,7 +119,8 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-		for(int i = 0; i < arguments.size() && i < 6; i++) {
+    	int PARAMS_IN_REGS = 6;
+		for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGS; i++) {
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
 			case 0:
@@ -142,8 +143,8 @@ public class MethodDescriptor extends FunctionDescriptor {
 				break;
 			}
 		}
-		for(int i = 6; i < arguments.size(); i++) {
-			VariableDescriptor node = arguments.get(i);
+		for(int i = 0; i+PARAMS_IN_REGS < arguments.size(); i++) {
+			VariableDescriptor node = arguments.get(i+PARAMS_IN_REGS);
 			ctx.setStackPosition(node, -i);
 		}
     }
