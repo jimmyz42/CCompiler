@@ -10,6 +10,10 @@ public class Sub extends Instruction {
     	this.src = src; 
     	this.dest = dest;
     }
+    
+    public static Sub create(Storage src, Storage dest) {
+    	return new Sub(src, dest);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {

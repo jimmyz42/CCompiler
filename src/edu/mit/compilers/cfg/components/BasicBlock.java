@@ -134,12 +134,16 @@ public class BasicBlock extends CFG {
     		branchCondition.generateAssembly(ctx);
     	}
     }
-    
+
     public int getNumStackAllocations() {
         int numStackAllocations = 0;
         for(CFGAble component: components) {
         	numStackAllocations += component.getNumStackAllocations();
     	}
+    	if(branchCondition != null) {
+    		numStackAllocations += branchCondition.getNumStackAllocations();
+    	}
+
         return numStackAllocations;
     }
 

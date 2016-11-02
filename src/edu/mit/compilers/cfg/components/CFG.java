@@ -21,6 +21,7 @@ import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Je;
 import edu.mit.compilers.lowir.instructions.Jmp;
 import edu.mit.compilers.lowir.instructions.Jne;
 import edu.mit.compilers.lowir.instructions.Label;
@@ -144,12 +145,11 @@ public class CFG implements CFGAble {
 
              currentBlock.setID("block" +  blockNum);
              blockNum++;
-             //push blocks in reverse order to pop in correct order
-             if(currentBlock.getNextBlocks().size() > 1) {
-                 blockQueue.add(currentBlock.getNextBlock(false));
-             }
              if(currentBlock.getNextBlocks().size() > 0){
                  blockQueue.add(currentBlock.getNextBlock(true));
+             }
+             if(currentBlock.getNextBlocks().size() > 1) {
+                 blockQueue.add(currentBlock.getNextBlock(false));
              }
          }
     }
@@ -165,12 +165,11 @@ public class CFG implements CFGAble {
             else visited.add(currentBlock);
 
             currentBlock.setPreviousBlocks(new ArrayList<BasicBlock>());
-            //push blocks in reverse order to pop in correct order
-            if(currentBlock.getNextBlocks().size() > 1) {
-                blockQueue.add(currentBlock.getNextBlock(false));
-            }
             if(currentBlock.getNextBlocks().size() > 0){
                 blockQueue.add(currentBlock.getNextBlock(true));
+            }
+            if(currentBlock.getNextBlocks().size() > 1) {
+                blockQueue.add(currentBlock.getNextBlock(false));
             }
         }
    }
@@ -185,14 +184,13 @@ public class CFG implements CFGAble {
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
-            //push blocks in reverse order to pop in correct order
-            if(currentBlock.getNextBlocks().size() > 1) {
-            	currentBlock.getNextBlock(false).addPreviousBlock(currentBlock);
-                blockQueue.add(currentBlock.getNextBlock(false));
-            }
             if(currentBlock.getNextBlocks().size() > 0){
             	currentBlock.getNextBlock(true).addPreviousBlock(currentBlock);
                 blockQueue.add(currentBlock.getNextBlock(true));
+            }
+            if(currentBlock.getNextBlocks().size() > 1) {
+            	currentBlock.getNextBlock(false).addPreviousBlock(currentBlock);
+                blockQueue.add(currentBlock.getNextBlock(false));
             }
         }
    }
@@ -226,12 +224,11 @@ public class CFG implements CFGAble {
             	}
             	blockQueue.add(merged);
             } else {
-            	//push blocks in reverse order to pop in correct order
-            	if(currentBlock.getNextBlocks().size() > 1) {
-                    blockQueue.add(currentBlock.getNextBlock(false));
-                }
                 if(currentBlock.getNextBlocks().size() > 0){
                     blockQueue.add(currentBlock.getNextBlock(true));
+                }
+            	if(currentBlock.getNextBlocks().size() > 1) {
+                    blockQueue.add(currentBlock.getNextBlock(false));
                 }
             }
         }
@@ -256,12 +253,11 @@ public class CFG implements CFGAble {
             	next.setPreviousBlocks(currentBlock.getPreviousBlocks());
             	blockQueue.add(next);
             } else {
-            	//push blocks in reverse order to pop in correct order
-            	if(currentBlock.getNextBlocks().size() > 1) {
-                    blockQueue.add(currentBlock.getNextBlock(false));
-                }
                 if(currentBlock.getNextBlocks().size() > 0){
                     blockQueue.add(currentBlock.getNextBlock(true));
+                }
+            	if(currentBlock.getNextBlocks().size() > 1) {
+                    blockQueue.add(currentBlock.getNextBlock(false));
                 }
             }
         }
@@ -359,12 +355,11 @@ public class CFG implements CFGAble {
             	pw.println(prefix + "    " + block.getID());
             }
 
-            //push blocks in reverse order to pop in correct order
-            if(currentBlock.getNextBlocks().size() > 1) {
-                blockQueue.add(currentBlock.getNextBlock(false));
-            }
             if(currentBlock.getNextBlocks().size() > 0){
                 blockQueue.add(currentBlock.getNextBlock(true));
+            }
+            if(currentBlock.getNextBlocks().size() > 1) {
+                blockQueue.add(currentBlock.getNextBlock(false));
             }
         }
     }
@@ -387,8 +382,8 @@ public class CFG implements CFGAble {
 
             //push blocks in reverse order to pop in correct order
             if(currentBlock.getNextBlocks().size() > 1) {
-                blockQueue.add(currentBlock.getNextBlock(false));
                 blockQueue.add(currentBlock.getNextBlock(true));
+                blockQueue.add(currentBlock.getNextBlock(false));
 
                 //get conditional value generated at the end of currentBlock
                 Storage val = ctx.allocateRegister((Expression)currentBlock.getCondition());
@@ -398,17 +393,17 @@ public class CFG implements CFGAble {
                 ctx.addInstruction(Mov.create(btrue, temp));
                 ctx.addInstruction(new Cmp(val, temp));
                 ctx.deallocateRegister((Expression)currentBlock.getCondition());
-                //if its != 1, go down FALSE branch
-                ctx.addInstruction(Jne.create(Memory.create(currentBlock.getNextBlock(false).getID())));
+                //if its == 1, go down true branch
+                ctx.addInstruction(Je.create(Memory.create(currentBlock.getNextBlock(true).getID())));
                 //else, go down TRUE branch
-                ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
+                ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(false).getID())));
             } else if(currentBlock.getNextBlocks().size() > 0){
                 blockQueue.add(currentBlock.getNextBlock(true));
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
             }
         }
     }
-    
+
     public int getNumStackAllocations() {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Queue<BasicBlock> blockQueue = new ArrayDeque<>();
@@ -422,14 +417,14 @@ public class CFG implements CFGAble {
 
             numStackAllocations += currentBlock.getNumStackAllocations();
 
-            //push blocks in reverse order to pop in correct order
-            if(currentBlock.getNextBlocks().size() > 1) {
-                blockQueue.add(currentBlock.getNextBlock(false));
-            }
             if(currentBlock.getNextBlocks().size() > 0){
                 blockQueue.add(currentBlock.getNextBlock(true));
             }
+            if(currentBlock.getNextBlocks().size() > 1) {
+                blockQueue.add(currentBlock.getNextBlock(false));
+            }
         }
+
         return numStackAllocations;
     }
 

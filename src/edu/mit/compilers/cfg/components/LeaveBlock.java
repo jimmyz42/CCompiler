@@ -14,6 +14,7 @@ import edu.mit.compilers.lowir.instructions.Jmp;
 import edu.mit.compilers.lowir.instructions.Label;
 
 public class LeaveBlock extends BasicBlock {
+	private int numStackAllocations;
 
     public LeaveBlock(List<CFGAble> components) {
         super(components);
@@ -27,6 +28,10 @@ public class LeaveBlock extends BasicBlock {
     public boolean isEmpty() {
         return false;
     }
+    
+    public void setNumStackAllocations(int numStackAllocations) {
+    	this.numStackAllocations = numStackAllocations;
+    }
 
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
@@ -35,7 +40,7 @@ public class LeaveBlock extends BasicBlock {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-        ctx.leave(true);
+        ctx.leave(numStackAllocations);
     }
 
     @Override

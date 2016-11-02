@@ -12,6 +12,10 @@ public class Add extends Instruction {
     	this.src = src; 
     	this.dest = dest;
     }
+    
+    public static Add create(Storage src, Storage dest) {
+    	return new Add(src, dest);
+    }
 
     @Override
     public void printAssembly(PrintWriter pw, String prefix) {

@@ -10,6 +10,10 @@ public class Xor extends Instruction {
     	this.src = src;
     	this.dest = dest;
     }
+    
+    public static Xor create(Storage src, Storage dest)  {
+    	return new Xor(src, dest);
+    }
 
 	@Override
 	public void printAssembly(PrintWriter pw, String prefix) {

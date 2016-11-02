@@ -61,10 +61,6 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 
 	@Override
 	public void generateAssembly(AssemblyContext ctx) {
-		System.out.println("here with a relop for");
-		System.out.println(lhs);
-		System.out.println(operator);
-		System.out.println(rhs);
 		lhs.generateAssembly(ctx);
 		rhs.generateAssembly(ctx);
 
