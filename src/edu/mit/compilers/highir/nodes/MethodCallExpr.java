@@ -21,7 +21,9 @@ import edu.mit.compilers.lowir.instructions.Call;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Lea;
 import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Pop;
 import edu.mit.compilers.lowir.instructions.Push;
+import edu.mit.compilers.lowir.instructions.Xor;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
 
@@ -138,8 +140,13 @@ public class MethodCallExpr extends Expression {
 			node.generateAssembly(ctx);
 			instructions.add(Push.create(node.getLocation(ctx)));
 		}
+		
+		if(function instanceof ExternDescriptor) {
+			instructions.add(Xor.create(Register.create("%rax"), Register.create("%rax")));
+		}
+		instructions.add(Call.create(Memory.create(function.getExpressionName())));
+		
 		ctx.addInstructions(instructions);
-		ctx.addInstruction(Call.create(Memory.create(function.getExpressionName())));
 		ctx.storeStack(this, Register.create("%rax"));
 	}
 

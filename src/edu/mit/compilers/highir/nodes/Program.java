@@ -104,7 +104,9 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
             	CFG methodCFG = new CFG(start, end);
             	context.addMethodCFG((MethodDescriptor)desc, methodCFG);
                 CFG innerCFG = desc.generateCFG(context);
-                start.setNumStackAllocations(desc.getNumStackAllocations());
+                int numStackAllocations = innerCFG.getNumStackAllocations();
+                start.setNumStackAllocations(numStackAllocations);
+                end.setNumStackAllocations(numStackAllocations);
             	
                 start.setNextBlock(innerCFG.getEntryBlock());
                 innerCFG.addPreviousBlock(start);

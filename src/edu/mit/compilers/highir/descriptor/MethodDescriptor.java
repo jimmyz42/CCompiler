@@ -151,6 +151,6 @@ public class MethodDescriptor extends FunctionDescriptor {
 
 	@Override
 	public int getNumStackAllocations() {
-		return arguments.size();
+		return Math.min(arguments.size(), 6);
 	}
 }

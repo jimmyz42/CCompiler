@@ -78,12 +78,14 @@ public class ReturnStmt extends Statement {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         if(expression != null) {
-        	System.out.print("return exprssion ");
-        	System.out.println(expression);
 			expression.generateAssembly(ctx);
         	Storage returnValue = expression.getLocation(ctx);
         	ctx.addInstruction(Mov.create(returnValue, Register.create("%rax")));
         }
-        ctx.leave(false);
     }
+
+	@Override
+	public int getNumStackAllocations() {
+		return expression.getNumStackAllocations();
+	}
 }

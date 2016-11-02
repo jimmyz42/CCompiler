@@ -1,7 +1,4 @@
 	.file	"test.c"
-	.section	.rodata
-.LC0:
-	.string	"sum of 1 - 8 is %d (36)\n"
 	.text
 	.globl	add
 	.type	add, @function
@@ -13,17 +10,12 @@ add:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
 	movl	%edi, -4(%rbp)
 	movl	%esi, -8(%rbp)
-	movl	$12, %esi
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
 	movl	-4(%rbp), %edx
 	movl	-8(%rbp), %eax
 	addl	%edx, %eax
-	leave
+	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
@@ -87,10 +79,10 @@ sum:
 .LFE2:
 	.size	sum, .-sum
 	.section	.rodata
+.LC0:
+	.string	"correct\n"
 .LC1:
-	.string	"sum of 1 - 9 is %d %d (36)\n"
-.LC2:
-	.string	"testsing"
+	.string	"INCORRECT\n"
 	.text
 	.globl	main
 	.type	main, @function
@@ -102,60 +94,35 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	pushq	%rbx
-	subq	$24, %rsp
-	.cfi_offset 3, -24
-	movl	$1, -20(%rbp)
-	movl	$2, -24(%rbp)
-	movl	-24(%rbp), %edx
-	movl	-20(%rbp), %eax
+	subq	$16, %rsp
+	movl	$1, -4(%rbp)
+	movl	$2, -8(%rbp)
+	movl	-8(%rbp), %edx
+	movl	-4(%rbp), %eax
 	movl	%edx, %esi
 	movl	%eax, %edi
 	call	add
-	movl	%eax, -28(%rbp)
-	movl	-24(%rbp), %edx
-	movl	-28(%rbp), %eax
+	movl	%eax, -12(%rbp)
+	movl	-8(%rbp), %edx
+	movl	-12(%rbp), %eax
 	movl	%edx, %esi
 	movl	%eax, %edi
 	call	sub
-	movl	%eax, -32(%rbp)
-	movl	$8, %esi
-	movl	$1, %edi
-	call	add
-	movl	%eax, %ebx
-	movl	$8, %esi
-	movl	$1, %edi
-	call	sub
-	movl	%ebx, %edx
-	movl	%eax, %esi
-	leaq	.LC1(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	movl	-32(%rbp), %eax
-	cmpl	-20(%rbp), %eax
+	movl	%eax, -16(%rbp)
+	movl	-16(%rbp), %eax
+	cmpl	-4(%rbp), %eax
 	jne	.L8
-	movl	$1, -20(%rbp)
-	jmp	.L9
-.L8:
-	movl	$2, -20(%rbp)
-.L9:
-	leaq	.LC2(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	movl	$9, %esi
-	movl	$3, %edi
-	call	add
-	movl	%eax, %esi
 	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
-	leaq	.LC2(%rip), %rdi
+	jmp	.L10
+.L8:
+	leaq	.LC1(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
+.L10:
 	nop
-	addq	$24, %rsp
-	popq	%rbx
-	popq	%rbp
+	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc

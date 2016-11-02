@@ -10,6 +10,7 @@ import java.util.List;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Add;
 import edu.mit.compilers.lowir.instructions.Enter;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Leave;
@@ -17,6 +18,7 @@ import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Pop;
 import edu.mit.compilers.lowir.instructions.Push;
 import edu.mit.compilers.lowir.instructions.Ret;
+import edu.mit.compilers.lowir.instructions.Sub;
 
 /**
  * This class walks through a high level DecafSemanticChecker graph a low level
@@ -98,34 +100,33 @@ public class AssemblyContext {
 	public void enter(int numStackAllocations) {
 		stackPositionsStack.push(stackPositions);
 		stackPositions = new HashMap<>();
-		addInstruction(Enter.create(numStackAllocations + 6)); //6 for the number of registers
+		addInstruction(Push.create(Register.create("%rbp")));
+		addInstruction(Mov.create(Register.create("%rsp"),Register.create("%rbp")));
 
 		registersStack.push(registers);
 		registers = new Stack<>();
 		for (int i = 10; i <= 15; i++) {
 			registers.push(Register.create("%r" + i));
-			addInstruction(Push.create(Register.create("%r" + i)));
+//			addInstruction(Push.create(Register.create("%r" + i)));
 		}
+		
+		//add enough space to the stack for the pushed registers and the future stack allocations
+		addInstruction(Sub.create(ImmediateValue.create((numStackAllocations)*8), Register.create("%rsp")));
 	}
 
-	public void leave(boolean isMethodEnd) {
-		if(isMethodEnd) {
-			registers = registersStack.pop();
+	public void leave(int numStackAllocations) {
+		registers = registersStack.pop();
 
-			for (int i = 15; i >= 10; i--) {
-				addInstruction(Pop.create(Register.create("%r" + i)));
-			}
-	        addInstruction(Leave.create());
-	        addInstruction(Ret.create());
-	        
-			stackPositions = stackPositionsStack.pop();
-		} else {
-			for (int i = 15; i >= 10; i--) {
-				addInstruction(Pop.create(Register.create("%r" + i)));
-			}
-	        addInstruction(Leave.create());
-	        addInstruction(Ret.create());
-		}
+		//remove the space the stack for the pushed registers and stack allocations
+		addInstruction(Add.create(ImmediateValue.create((numStackAllocations)*8), Register.create("%rsp")));
+//		for (int i = 15; i >= 10; i--) {
+//			addInstruction(Pop.create(Register.create("%r" + i)));
+//		}
+		addInstruction(Pop.create(Register.create("%rbp")));
+		addInstruction(Ret.create());
+
+		stackPositions = stackPositionsStack.pop();
+
 	}
 
 	public void addInstructions(List<Instruction> instructions) {

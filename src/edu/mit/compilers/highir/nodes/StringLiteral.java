@@ -21,6 +21,7 @@ public class StringLiteral extends ExternArg {
         this.terminal = terminal;
         this.label = terminal.split(" ")[0].replaceAll("[^a-zA-Z0-9]", "");
         this.label += Integer.toString(ThreadLocalRandom.current().nextInt(0, 100000));
+        //TODO: BREAKING make the list of numbers deterministic
     }
 
     @Override

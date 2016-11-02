@@ -127,7 +127,7 @@ class Main {
 						cfg.clearPrevBlocks();
 						cfg.genPrevBlocks();
 						cfg.mergeBasicBlocks();
-						cfg.eliminateEmptyBlocks();
+//						cfg.eliminateEmptyBlocks();
 
 						StringWriter sw = new StringWriter();
 						cfg.cfgPrint(new PrintWriter(sw), "");
@@ -149,7 +149,7 @@ class Main {
 						cfg.clearPrevBlocks();
 						cfg.genPrevBlocks();
 						cfg.mergeBasicBlocks();
-						cfg.eliminateEmptyBlocks();
+//						cfg.eliminateEmptyBlocks();
 
 						AssemblyContext actx = new AssemblyContext();
 						cfg.generateAssembly(actx);
