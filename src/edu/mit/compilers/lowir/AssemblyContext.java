@@ -52,7 +52,11 @@ public class AssemblyContext {
 	}
 
 	public void setStackPosition(Storable node, int position) {
+		//System.out.println("Before adding: " + stackPositions.toString());
 		stackPositions.put(node, position);
+		//System.out.println("After adding: " + node.toString());
+		//System.out.println(stackPositions.toString());
+
 	}
 
 	public void storeStack(Storable node, Storage loc) {
@@ -146,5 +150,9 @@ public class AssemblyContext {
 		completeList.addAll(instructions);
 		completeList.addAll(footerInstructions);
 		return completeList;
+	}
+	
+	public int getStackSize(){
+		return stackPositions.size();
 	}
 }

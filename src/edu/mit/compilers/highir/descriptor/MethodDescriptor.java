@@ -145,7 +145,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 		}
 		for(int i = 0; i+PARAMS_IN_REGS < arguments.size(); i++) {
 			VariableDescriptor node = arguments.get(i+PARAMS_IN_REGS);
-			ctx.setStackPosition(node, -i);
+			ctx.setStackPosition(node, ctx.getStackSize() + 1);
 		}
     }
 
