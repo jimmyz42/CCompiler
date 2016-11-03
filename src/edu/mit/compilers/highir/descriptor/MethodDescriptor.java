@@ -120,7 +120,9 @@ public class MethodDescriptor extends FunctionDescriptor {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
     	int PARAMS_IN_REGS = 6;
+		System.out.println("FIRST FOR LOOP");
 		for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGS; i++) {
+			System.out.println("putting arg " + i + " in a reg");
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
 			case 0:
@@ -143,10 +145,12 @@ public class MethodDescriptor extends FunctionDescriptor {
 				break;
 			}
 		}
-		for(int i = 0; i+PARAMS_IN_REGS < arguments.size(); i++) {
-			VariableDescriptor node = arguments.get(i+PARAMS_IN_REGS);
-			ctx.setStackPosition(node, ctx.getStackSize() + 1);
-		}
+//		System.out.println("SECOND FOR LOOP");
+//		for(int i = arguments.size() - 1; i >= PARAMS_IN_REGS; i--) {
+//			System.out.println("putting arg " + i + " on the stack" );
+//			VariableDescriptor node = arguments.get(i);
+//			ctx.setStackPosition(node, ctx.getStackSize()+1);
+//		}
     }
 
 	@Override

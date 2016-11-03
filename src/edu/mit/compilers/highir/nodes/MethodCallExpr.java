@@ -135,7 +135,10 @@ public class MethodCallExpr extends Expression {
 				break;
 			}
 		}
-		for(int i = arguments.size()-1; i >= 6; i--) {
+
+		//For some reason, pushing items in non-reverse order here
+		//pushes them in actual-reverse order in the assembly code
+		for(int i = 6; i < arguments.size(); i++) {
 			ExternArg node = arguments.get(i);
 			node.generateAssembly(ctx);
 			instructions.add(Push.create(node.getLocation(ctx)));
