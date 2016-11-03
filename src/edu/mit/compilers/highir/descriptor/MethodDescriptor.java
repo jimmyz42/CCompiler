@@ -127,36 +127,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	
-    	//"node"s are previously created/stored in whatever function calls Method
-    	//"storeStack(Storable node, Storage loc)" moves value at loc into node.getLocation()
-    	//so if the node was previously stored on the stack, we'll just be loading the
-    	//value at loc into the previous place it was stored (i.e. not at the bottom of the stack)
-    	int PARAMS_IN_REGS = 6;
-    	
-    	//For all params already on the stack, set position accordingly
-    	//note: does not run if there are more than 6 arguments
-    	int stackPosition = 0;
-		for(int i = arguments.size() - 1; i >= PARAMS_IN_REGS; i--) {
-			VariableDescriptor node = arguments.get(i);
-			ctx.setStackPosition(node, ctx.getStackSize() - stackPosition);
-			stackPosition++;
-		}
-    	
-		//for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGS; i++) {
-   
-    	//we want to do this backwards, to push values onto the stack in reverse 
-    	//because all other values are already on the stack in reverse
-    	for(int i = PARAMS_IN_REGS - 1; i >= 0; i--) {
-    		
-    		//if there are less than 6 arguments for this Method, then continue
-    		//until we reach the arguments that exist
-    		//note: there is def a better way to do this, but whatevs 
-    		if(i > arguments.size() - 1){
-    			continue;
-    		}
-    		
-    		System.out.println("putting arg " + i + " onto the stack");
+		for(int i = 0; i < arguments.size() && i < 6; i++) {
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
 			case 0:
@@ -179,6 +150,74 @@ public class MethodDescriptor extends FunctionDescriptor {
 				break;
 			}
 		}
+		for(int i = 6; i < arguments.size(); i++) {
+			VariableDescriptor node = arguments.get(i);
+			ctx.setStackPosition(node, -i);
+		}
+    
+    	
+    	
+    	
+//    	
+//    	//"node"s are previously created/stored in whatever function calls Method
+//    	//"storeStack(Storable node, Storage loc)" moves value at loc into node.getLocation()
+//    	//so if the node was previously stored on the stack, we'll just be loading the
+//    	//value at loc into the previous place it was stored (i.e. not at the bottom of the stack)
+//    	int PARAMS_IN_REGS = 6;
+//    	
+//    	//For all params already on the stack, set position accordingly
+//    	//note: does not run if there are more than 6 arguments
+//    	int stackPosition = 0;
+//    	System.out.println("Stack size: " + ctx.getStackSize());
+//		for(int i = PARAMS_IN_REGS-1; i<arguments.size(); i++) {
+//			VariableDescriptor node = arguments.get(i);
+//			int position = ctx.getStackSize() - stackPosition;
+//			ctx.setStackPosition(node, position);
+//			
+//			System.out.println(node.toString() + " is at stack position " + position);
+//
+//			
+//			stackPosition++;
+//		}
+//    	
+//		//for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGS; i++) {
+//   
+//    	//we want to do this backwards, to push values onto the stack in reverse 
+//    	//because all other values are already on the stack in reverse
+//    	for(int i = PARAMS_IN_REGS - 1; i >= 0; i--) {
+//    		
+//    		//if there are less than 6 arguments for this Method, then continue
+//    		//until we reach the arguments that exist
+//    		//note: there is def a better way to do this, but whatevs 
+//    		if(i > arguments.size() - 1){
+//    			continue;
+//    		}
+//    		
+//    		System.out.println("putting arg " + i + " onto the stack");
+//			VariableDescriptor node = arguments.get(i);
+//			switch(i) {
+//			case 0:
+//				ctx.storeStack(node, Register.create("%rdi"));
+//				break;
+//			case 1:
+//				ctx.storeStack(node, Register.create("%rsi"));
+//				break;
+//			case 2:
+//				ctx.storeStack(node, Register.create("%rdx"));
+//				break;
+//			case 3:
+//				ctx.storeStack(node, Register.create("%rcx"));
+//				break;
+//			case 4:
+//				ctx.storeStack(node, Register.create("%r8"));
+//				break;
+//			case 5:
+//				ctx.storeStack(node, Register.create("%r9"));
+//				break;
+//			}
+//		}
+//
+//    	System.out.println("Stack size: " + ctx.getStackSize());
 
     }
 

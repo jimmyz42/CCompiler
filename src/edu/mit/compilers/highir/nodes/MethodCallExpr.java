@@ -136,9 +136,11 @@ public class MethodCallExpr extends Expression {
 			}
 		}
 
+    	//int position = 0;
 		for(int i = arguments.size()-1; i >= 6; i--) {
 			ExternArg node = arguments.get(i);
 			node.generateAssembly(ctx);
+			//ctx.setStackPosition(node, position);
 			instructions.add(Push.create(node.getLocation(ctx)));
 		}
 
