@@ -1,12 +1,12 @@
 #include <stdbool.h>
+
 extern printf();
 bool not2 ( bool a ) {
   bool b;
-  //b = a ? false : true; <-- WRONG SYNTAX 
-  if(a){
-  	b = false;
+  if (a) {
+    b = false;
   } else {
-  	b = true;
+    b = true;
   }
   return b;
 }

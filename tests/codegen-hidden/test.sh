@@ -24,19 +24,12 @@ for file in `dirname $0`/input/*.dcf; do
       diffout=`tempfile`
       if [ -f `dirname $0`/error/`basename $file`.err ]; then
         val=$(<`dirname $0`/error/`basename $file`.err)
-        if [ "$val" != "$exitcode" ]; then
-          msg="Program did not exit with exit status $val"
+        if [ \( "255" != "$exitcode" \) -a \( "254" != "$exitcode" \) ]; then
+          msg="Program did not exit with proper exit code ($exitcode)"
         fi
       else
         if ! diff -u $output `dirname $0`/output/`basename $file`.out > $diffout 2>/dev/null; then
           msg="File $file output mismatch.";
-          echo "//////////////////////////////////////////"
-          echo "////////////  OUR OUTPUT    //////////////"
-          cat $output
-
-          echo "//////////////////////////////////////////"
-          echo "////////////  THEIR OUTPUT  //////////////"
-          cat `dirname $0`/output/`basename $file`.out
         fi
       fi
     else
@@ -46,7 +39,7 @@ for file in `dirname $0`/input/*.dcf; do
     msg="Program failed to generate assembly.";
   fi
   if [ ! -z "$msg" ]; then
-    fail=$(($fail+1))
+    fail=$((fail+1))
     echo $msg
   fi
   rm -f $diffout $output $binary $asm;
