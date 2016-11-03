@@ -15,14 +15,17 @@ import edu.mit.compilers.grammar.DecafParser.Method_callContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.*;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Add;
 import edu.mit.compilers.lowir.instructions.Call;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Lea;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Pop;
 import edu.mit.compilers.lowir.instructions.Push;
+import edu.mit.compilers.lowir.instructions.Sub;
 import edu.mit.compilers.lowir.instructions.Xor;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
@@ -140,7 +143,6 @@ public class MethodCallExpr extends Expression {
 		for(int i = arguments.size()-1; i >= 6; i--) {
 			ExternArg node = arguments.get(i);
 			node.generateAssembly(ctx);
-			//ctx.setStackPosition(node, position);
 			instructions.add(Push.create(node.getLocation(ctx)));
 		}
 
@@ -148,6 +150,11 @@ public class MethodCallExpr extends Expression {
 			instructions.add(Xor.create(Register.create("%rax"), Register.create("%rax")));
 		}
 		instructions.add(Call.create(Memory.create(function.getExpressionName())));
+		
+		//increase %rsp to ignore params pushed to the stack
+		int paramsOnStack =Math.max(0, arguments.size() - 6);
+		instructions.add(Add.create(ImmediateValue.create(paramsOnStack*8),Register.create("%rsp")));
+
 		
 		ctx.addInstructions(instructions);
 		ctx.storeStack(this, Register.create("%rax"));
