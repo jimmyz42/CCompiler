@@ -119,7 +119,6 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	System.out.println("Stack size: " + ctx.getStackSize());
 		for(int i = 0; i < arguments.size() && i < 6; i++) {
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
