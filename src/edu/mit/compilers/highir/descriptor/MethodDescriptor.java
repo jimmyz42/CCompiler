@@ -38,15 +38,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     public MethodDescriptor(String name, Type returnType, List<VariableDescriptor> arguments, Block body) {
         super(name, returnType);
-        //test: because we're using these "nodes" as something separate than 
-        //what they were used as in the function that calls Method 
-        //let's make a copy of the argument list
-        //instead of referencing the same nodes as before
-        this.arguments = new ArrayList<>();
-        for (VariableDescriptor var : arguments){
-        	this.arguments.add(var);
-        }
-        //this.arguments = Collections.unmodifiableList(arguments);
+        this.arguments = Collections.unmodifiableList(arguments);
         this.body = body;
     }
 
@@ -127,6 +119,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
+    	System.out.println("Stack size: " + ctx.getStackSize());
 		for(int i = 0; i < arguments.size() && i < 6; i++) {
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
@@ -150,9 +143,12 @@ public class MethodDescriptor extends FunctionDescriptor {
 				break;
 			}
 		}
+		//starting position at 2 because first param is at +16(%rbp)
+		int position = 2;
 		for(int i = 6; i < arguments.size(); i++) {
 			VariableDescriptor node = arguments.get(i);
-			ctx.setStackPosition(node, -i);
+			ctx.setStackPosition(node, -position);
+			position++;
 		}
     
     	
