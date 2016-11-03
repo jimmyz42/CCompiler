@@ -56,6 +56,8 @@ public class AssemblyContext {
 		stackPositions.put(node, position);
 		//System.out.println("After adding: " + node.toString());
 		//System.out.println(stackPositions.toString());
+		
+		addInstruction(Mov.create(node.getLocation(this), getStackLocation(node)));
 
 	}
 

@@ -119,8 +119,10 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
+    	
+    	//GOTTA DO THIS THE OPPOSITE WAY BECAUSE IDK ASSEMBLYCONTEXT IS WEIRD
+    	//i.e. "pushing" in reverse actually pushes in not-reverse
     	int PARAMS_IN_REGS = 6;
-		System.out.println("FIRST FOR LOOP");
 		for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGS; i++) {
 			System.out.println("putting arg " + i + " in a reg");
 			VariableDescriptor node = arguments.get(i);
@@ -145,12 +147,11 @@ public class MethodDescriptor extends FunctionDescriptor {
 				break;
 			}
 		}
-//		System.out.println("SECOND FOR LOOP");
-//		for(int i = arguments.size() - 1; i >= PARAMS_IN_REGS; i--) {
-//			System.out.println("putting arg " + i + " on the stack" );
-//			VariableDescriptor node = arguments.get(i);
-//			ctx.setStackPosition(node, ctx.getStackSize()+1);
-//		}
+		for(int i = arguments.size() - 1; i >= PARAMS_IN_REGS; i--) {
+			System.out.println("putting arg " + i + " on the stack" );
+			VariableDescriptor node = arguments.get(i);
+			ctx.setStackPosition(node, ctx.getStackSize()+1);
+		}
     }
 
 	@Override
