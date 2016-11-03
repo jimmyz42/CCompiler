@@ -136,14 +136,12 @@ public class MethodCallExpr extends Expression {
 			}
 		}
 
-		//For some reason, pushing items in non-reverse order here
-		//pushes them in actual-reverse order in the assembly code
-		for(int i = 6; i < arguments.size(); i++) {
+		for(int i = arguments.size()-1; i >= 6; i--) {
 			ExternArg node = arguments.get(i);
 			node.generateAssembly(ctx);
 			instructions.add(Push.create(node.getLocation(ctx)));
 		}
-		
+
 		if(function instanceof ExternDescriptor) {
 			instructions.add(Xor.create(Register.create("%rax"), Register.create("%rax")));
 		}
