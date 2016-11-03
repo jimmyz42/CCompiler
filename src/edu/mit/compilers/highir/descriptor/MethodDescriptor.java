@@ -38,7 +38,15 @@ public class MethodDescriptor extends FunctionDescriptor {
 
     public MethodDescriptor(String name, Type returnType, List<VariableDescriptor> arguments, Block body) {
         super(name, returnType);
-        this.arguments = Collections.unmodifiableList(arguments);
+        //test: because we're using these "nodes" as something separate than 
+        //what they were used as in the function that calls Method 
+        //let's make a copy of the argument list
+        //instead of referencing the same nodes as before
+        this.arguments = new ArrayList<>();
+        for (VariableDescriptor var : arguments){
+        	this.arguments.add(var);
+        }
+        //this.arguments = Collections.unmodifiableList(arguments);
         this.body = body;
     }
 
@@ -120,11 +128,35 @@ public class MethodDescriptor extends FunctionDescriptor {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
     	
-    	//GOTTA DO THIS THE OPPOSITE WAY BECAUSE IDK ASSEMBLYCONTEXT IS WEIRD
-    	//i.e. "pushing" in reverse actually pushes in not-reverse
+    	//"node"s are previously created/stored in whatever function calls Method
+    	//"storeStack(Storable node, Storage loc)" moves value at loc into node.getLocation()
+    	//so if the node was previously stored on the stack, we'll just be loading the
+    	//value at loc into the previous place it was stored (i.e. not at the bottom of the stack)
     	int PARAMS_IN_REGS = 6;
-		for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGS; i++) {
-			System.out.println("putting arg " + i + " in a reg");
+    	
+    	//For all params already on the stack, set position accordingly
+    	//note: does not run if there are more than 6 arguments
+    	int stackPosition = 0;
+		for(int i = arguments.size() - 1; i >= PARAMS_IN_REGS; i--) {
+			VariableDescriptor node = arguments.get(i);
+			ctx.setStackPosition(node, ctx.getStackSize() - stackPosition);
+			stackPosition++;
+		}
+    	
+		//for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGS; i++) {
+   
+    	//we want to do this backwards, to push values onto the stack in reverse 
+    	//because all other values are already on the stack in reverse
+    	for(int i = PARAMS_IN_REGS - 1; i >= 0; i--) {
+    		
+    		//if there are less than 6 arguments for this Method, then continue
+    		//until we reach the arguments that exist
+    		//note: there is def a better way to do this, but whatevs 
+    		if(i > arguments.size() - 1){
+    			continue;
+    		}
+    		
+    		System.out.println("putting arg " + i + " onto the stack");
 			VariableDescriptor node = arguments.get(i);
 			switch(i) {
 			case 0:
@@ -147,11 +179,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 				break;
 			}
 		}
-		for(int i = arguments.size() - 1; i >= PARAMS_IN_REGS; i--) {
-			System.out.println("putting arg " + i + " on the stack" );
-			VariableDescriptor node = arguments.get(i);
-			ctx.setStackPosition(node, ctx.getStackSize()+1);
-		}
+
     }
 
 	@Override
