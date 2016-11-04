@@ -148,7 +148,14 @@ public class MethodDescriptor extends FunctionDescriptor {
 				}	
 			}
 		}
-	}
+		//starting position at 2 because first param is at +16(%rbp)
+		int position = 2;
+		for(int i = 6; i < arguments.size(); i++) {
+			VariableDescriptor node = arguments.get(i);
+			ctx.setStackPosition(node, -position);
+			position++;
+		}
+    }
 
 	@Override
 	public long getNumStackAllocations() {

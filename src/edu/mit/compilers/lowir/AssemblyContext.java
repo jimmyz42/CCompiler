@@ -159,4 +159,8 @@ public class AssemblyContext {
 		completeList.addAll(footerInstructions);
 		return completeList;
 	}
+	
+	public int getStackSize(){
+		return stackPositions.size();
+	}
 }
