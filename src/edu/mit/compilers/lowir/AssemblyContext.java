@@ -35,16 +35,6 @@ public class AssemblyContext {
 	private List<Instruction> footerInstructions = new ArrayList<>();
 
 	public AssemblyContext() {
-		//		registers.push(Register.create("%rax"));
-		//		registers.push(Register.create("%rbx"));
-		//		registers.push(Register.create("%rcx"));
-		//		registers.push(Register.create("%rdx"));
-		//		registers.push(Register.create("%rsp"));
-		//		registers.push(Register.create("%rbp"));
-		//		registers.push(Register.create("%rsi"));
-		//		registers.push(Register.create("%rdi"));
-		//		registers.push(Register.create("%r8"));
-		//		registers.push(Register.create("%r9"));
 		for (int i = 10; i <= 15; i++) {
 			registers.push(Register.create("%r" + i));
 		}
@@ -159,7 +149,7 @@ public class AssemblyContext {
 		completeList.addAll(footerInstructions);
 		return completeList;
 	}
-	
+
 	public int getStackSize(){
 		return stackPositions.size();
 	}

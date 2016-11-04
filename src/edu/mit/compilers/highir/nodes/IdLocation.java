@@ -19,6 +19,7 @@ public class IdLocation extends Location {
     }
 
     public static IdLocation create(DecafSemanticChecker checker, DecafParser.IdLocationContext ctx) {
+    	//TODO this check for if a variable is declared is broken
         String varName = ctx.ID().getText();
         VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
         if (variable == null) {
