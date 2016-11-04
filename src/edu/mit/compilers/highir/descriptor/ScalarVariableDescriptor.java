@@ -54,8 +54,6 @@ public class ScalarVariableDescriptor extends VariableDescriptor {
 
     @Override
     public Storage getLocation(AssemblyContext ctx) {
-    	System.out.println("get scalar location");
-    	System.out.println(this);
 		if(isGlobal()) return Memory.create(getName() + "(%rip)");
     	return ctx.getStackLocation(getStorageTuple());
     }

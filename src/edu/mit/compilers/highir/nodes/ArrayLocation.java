@@ -9,6 +9,7 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
+import edu.mit.compilers.lowir.instructions.Xor;
 import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
 
@@ -42,7 +43,7 @@ public class ArrayLocation extends Location {
     public Type getExpressionType() {
         return ((ArrayType) getVariable().getType()).getElementType();
     }
-    
+
     @Override
     public ArrayVariableDescriptor getVariable() {
     	return (ArrayVariableDescriptor) super.getVariable();
@@ -74,8 +75,8 @@ public class ArrayLocation extends Location {
 	}
 
     public Storage getLocation(AssemblyContext ctx) {
-    	Register indexRegister = index.allocateRegister(ctx);
-    	return getVariable().getLocation(ctx, indexRegister);
+        ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
+    	return getVariable().getLocation(ctx, Register.create("%rax"));
     }
 
     @Override

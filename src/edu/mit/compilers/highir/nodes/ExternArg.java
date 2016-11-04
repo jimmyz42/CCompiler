@@ -10,24 +10,23 @@ import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.StorageTuple;
 
 abstract public class ExternArg extends Ir implements Storable {
-    
+
 	private final StorageTuple storageTuple;
-	
+
 	public ExternArg() {
 		this.storageTuple = StorageTuple.create(this);
 	}
-	
+
     @Override
     public Storage getLocation(AssemblyContext ctx) {
-    	System.out.println(this);
     	//most expressions and literals don't need an index parameter
     	return ctx.getStackLocation(getStorageTuple());
     }
-   
+
     public StorageTuple getStorageTuple() {
     	return storageTuple;
     }
-   
+
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
     	return ctx.allocateRegister(getStorageTuple());

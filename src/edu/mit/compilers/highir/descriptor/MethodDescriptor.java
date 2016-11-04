@@ -144,16 +144,10 @@ public class MethodDescriptor extends FunctionDescriptor {
 					node.storeStack(j, Register.create("%r9"), ctx);
 					break;
 				default:
+					//starting position at 2 because first param is at +16(%rbp)
 					node.setStackPosition(j, PARAMS_IN_REGS - 2 - i, ctx);
 				}	
 			}
-		}
-		//starting position at 2 because first param is at +16(%rbp)
-		int position = 2;
-		for(int i = 6; i < arguments.size(); i++) {
-			VariableDescriptor node = arguments.get(i);
-			ctx.setStackPosition(node, -position);
-			position++;
 		}
     }
 
