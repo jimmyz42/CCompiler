@@ -10,6 +10,7 @@ import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Sub;
 import edu.mit.compilers.lowir.instructions.Xor;
 import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
@@ -77,13 +78,14 @@ public class ArrayLocation extends Location {
 
     public Storage getLocation(AssemblyContext ctx) {
         ctx.addInstruction(Xor.create(Register.create("%rdx"), Register.create("%rdx")));
-        ctx.addInstruction(Mov.create(index.getLocation(ctx), Register.create("%rdx")));
+        ctx.addInstruction(Sub.create(index.getLocation(ctx), Register.create("%rdx")));
     	return getVariable().getLocation(ctx, Register.create("%rdx"));
     }
 
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
-    	Register indexRegister = index.allocateRegister(ctx);
-    	return ((ArrayVariableDescriptor) getVariable()).allocateRegister(ctx, indexRegister);
+        ctx.addInstruction(Xor.create(Register.create("%rdx"), Register.create("%rdx")));
+        ctx.addInstruction(Sub.create(index.getLocation(ctx), Register.create("%rdx")));
+    	return ((ArrayVariableDescriptor) getVariable()).allocateRegister(ctx, Register.create("%rdx"));
     }
 }

@@ -75,7 +75,7 @@ public class ArrayVariableDescriptor extends VariableDescriptor {
 			return reg;
 		}
 		StorageTuple tupleWithIndex = StorageTuple.create(storedDescriptors.get(0).getStorageTuple().base, index);
-		return ctx.allocateRegister(tupleWithIndex);
+		return ctx.allocateRegister(tupleWithIndex, true);
 	}
 
 	public static ArrayVariableDescriptor create(String name, ArrayType type, boolean isGlobal) {

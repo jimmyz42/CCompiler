@@ -1,0 +1,70 @@
+block0:
+    jmp block1
+block1:
+    .globl main
+    .type main @function
+main:
+    push %rbp
+    movq %rsp, %rbp
+    subq $168, %rsp
+    jmp block2
+block2:
+    movq $0, -8(%rbp)
+    movq $0, -16(%rbp)
+    movq $0, -24(%rbp)
+    movq $0, -32(%rbp)
+    movq $0, -40(%rbp)
+    movq $0, -48(%rbp)
+    movq $0, -56(%rbp)
+    movq $0, -64(%rbp)
+    movq $0, -72(%rbp)
+    movq $0, -80(%rbp)
+    movq $0, -88(%rbp)
+    movq $0, -96(%rbp)
+    movq $0, -104(%rbp)
+    movq -104(%rbp), %r15
+    movq %r15, -96(%rbp)
+    movq $0, -112(%rbp)
+    movq -112(%rbp), %r15
+    movq %r15, -88(%rbp)
+    movq $0, -120(%rbp)
+    movq -120(%rbp), %r15
+    movq %r15, -88(%rbp)
+    jmp block3
+block3:
+    movq $10, -128(%rbp)
+    movq -128(%rbp), %r15
+    movq -88(%rbp), %r14
+    movq $0, -136(%rbp)
+    movq -136(%rbp), %r13
+    movq $0, %r13
+    movq $1, %rax
+    cmpq %r15, %r14
+    cmovlq %rax, %r13
+    movq %r13, -136(%rbp)
+    movq -136(%rbp), %r13
+    movq $1, %rax
+    cmpq %r13, %rax
+    je block4
+    jmp block5
+block4:
+    movq $37, -144(%rbp)
+    movq $0, -152(%rbp)
+    movq -144(%rbp), %r13
+    xorq %rdx, %rdx
+    movq $0, %rdx
+    movq %r13, -8(%rbp, %rdx, 8)
+    movq $1, -160(%rbp)
+    movq -160(%rbp), %r13
+    movq $0, -168(%rbp)
+    movq -168(%rbp), %r14
+    movq -88(%rbp), %r14
+    addq %r13, %r14
+    movq %r14, -168(%rbp)
+    movq -168(%rbp), %r14
+    movq %r14, -88(%rbp)
+    jmp block3
+block5:
+    addq $168, %rsp
+    pop %rbp
+    ret
