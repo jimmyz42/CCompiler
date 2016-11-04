@@ -30,7 +30,7 @@ public class ArgumentSymbolTable extends SymbolTable {
     @Override
     public VariableDescriptor addVariable(Type type, String name, ParserRuleContext ctx) {
         checkNamingConflicts(name, ctx);
-        VariableDescriptor descriptor = new LocalVariableDescriptor(name, type);
+        VariableDescriptor descriptor = VariableDescriptor.create(name, type, false);
         variables.put(name, descriptor);
         return descriptor;
     }

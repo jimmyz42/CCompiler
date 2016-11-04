@@ -15,5 +15,5 @@ public interface CFGAble {
      *  	onto the stack for future expressions that want to use it's value
      */
     public void generateAssembly(AssemblyContext ctx);
-    public int getNumStackAllocations();
+    public long getNumStackAllocations();
 }

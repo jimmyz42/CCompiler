@@ -37,7 +37,7 @@ public class GlobalSymbolTable extends SymbolTable {
     @Override
     public VariableDescriptor addVariable(Type type, String name, ParserRuleContext ctx) {
         checkNamingConflicts(name, ctx);
-        VariableDescriptor descriptor = new GlobalVariableDescriptor(name, type);
+        VariableDescriptor descriptor = VariableDescriptor.create(name, type, true);
         descriptors.put(name, descriptor);
         return descriptor;
     }

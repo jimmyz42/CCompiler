@@ -1,24 +1,82 @@
+#include <stdbool.h>
 extern printf();
-int add ( int a, int b ) {
-  return ( a + b );
+bool not2 ( bool a ) {
+  bool b;
+  //b = a ? false : true; <-- WRONG SYNTAX 
+  if(a){
+  	b = false;
+  } else {
+  	b = true;
+  }
+  return b;
 }
-int sub ( int a, int b ) {
-  return ( a - b );
-}
-int sum ( int a, int b, int c, int d, int e, int f, int g, int h ) {
-  return ( a + b + c + d + e + f + g + h );
+void phw ( bool a, bool b, bool c, bool d, bool e, bool f, bool g, bool h, bool i, bool j ) {
+  if ( a ) {
+    printf ( "H" );
+    if ( b ) {
+      printf ( "e" );
+      if ( c ) {
+        printf ( "l" );
+        if ( d ) {
+          printf ( "l" );
+          if ( e ) {
+            printf ( "*" );
+          }
+          if ( not2 ( e ) ) {
+            printf ( "o" );
+          }
+        }
+        if ( not2 ( d ) ) {
+          printf ( "*" );
+        }
+      }
+      if ( not2 ( c ) ) {
+        printf ( "*" );
+      }
+    }
+    if ( not2 ( b ) ) {
+      printf ( "*" );
+    }
+  }
+  if ( not2 ( a ) ) {
+    printf ( "*" );
+  }
+  printf ( " " );
+  if ( not2 ( f ) ) {
+    printf ( "*" );
+  }
+  if ( g ) {
+    if ( not2 ( h ) ) {
+      printf ( "W" );
+      if ( i ) {
+        printf ( "o" );
+        if ( j ) {
+          printf ( "r" );
+        }
+      }
+    }
+  }
+  if ( not2 ( g ) ) {
+    printf ( "*" );
+  }
+  printf ( "l" );
+  printf ( "d" );
 }
 void main ( ) {
-  int a, b, c, d;
-  a = 1;
-  b = 2;
-  c = add ( a, b );
-  d = sub ( c, b );
-  if ( d == a ) {
-    printf ( "correct\n" );
+  printf ( "[" );
+  phw ( true, true, true, true, false, true, true, false, true, true );
+  printf ( "]" );
+  printf ( "\n" );
+  if ( 2 > ( 3 - 5 ) *2 ) {
+    printf ( "should be here\n" );
+    if ( 2 > 5 ) {
+      printf ( "should not be here\n" );
+    }
+    else {
+      printf ( "should be here\n" );
+    }
   }
   else {
-    printf ( "INCORRECT\n" );
+    printf ( "should not be here\n" );
   }
-  printf ( "sum of 1 - 8 is %d (36)\n", sum ( 1, 2, 3, 4, 5, 6, 7, 8 ) );
 }

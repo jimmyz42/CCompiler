@@ -34,7 +34,7 @@ public class SizeofTypeExpr extends Expression {
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -54,21 +54,21 @@ public class AndOpExpr extends BinOpExpr {
         lhs.generateAssembly(ctx);
         rhs.generateAssembly(ctx);
 
-        Storage src = rhs.allocateRegister(ctx);
-        Storage result = ctx.allocateRegister(this);
+        Register src = rhs.allocateRegister(ctx);
+        Register result = ctx.allocateRegister(getStorageTuple());
         ctx.addInstruction(Mov.create(lhs.getLocation(ctx), result));
         Instruction opInstruction = new And(src, result);
         ctx.addInstruction(opInstruction);
 
-        ctx.storeStack(this, result);
-        
-        ctx.deallocateRegister(this);
-        rhs.deallocateRegister(ctx);
-        lhs.deallocateRegister(ctx);
+        ctx.storeStack(getStorageTuple(), result);
+
+		ctx.storeStack(getStorageTuple(), result);
+        ctx.deallocateRegister(src);
+        ctx.deallocateRegister(result);
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
 	}
 }

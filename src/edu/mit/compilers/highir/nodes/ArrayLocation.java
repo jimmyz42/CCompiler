@@ -4,14 +4,18 @@ import java.io.PrintWriter;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.ArrayVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
 
 public class ArrayLocation extends Location {
     private Expression index;
 
-    public ArrayLocation(VariableDescriptor variable, Expression index) {
+    public ArrayLocation(ArrayVariableDescriptor variable, Expression index) {
         super(variable);
         this.index = index;
     }
@@ -31,12 +35,17 @@ public class ArrayLocation extends Location {
             throw new TypeMismatchError("Array index must be an int", ctx.expr());
         }
 
-        return new ArrayLocation(variable, index);
+        return new ArrayLocation((ArrayVariableDescriptor) variable, index);
     }
 
     @Override
     public Type getExpressionType() {
         return ((ArrayType) getVariable().getType()).getElementType();
+    }
+    
+    @Override
+    public ArrayVariableDescriptor getVariable() {
+    	return (ArrayVariableDescriptor) super.getVariable();
     }
 
     @Override
@@ -52,5 +61,26 @@ public class ArrayLocation extends Location {
         pw.print(prefix + getVariable().getName() + "[");
         index.cfgPrint(pw,"");
         pw.print("]");
+    }
+
+    @Override
+    public void generateAssembly(AssemblyContext ctx) {
+    	index.generateAssembly(ctx);
+    }
+
+	@Override
+	public long getNumStackAllocations() {
+		return index.getNumStackAllocations();
+	}
+
+    public Storage getLocation(AssemblyContext ctx) {
+    	Register indexRegister = index.allocateRegister(ctx);
+    	return getVariable().getLocation(ctx, indexRegister);
+    }
+
+    @Override
+    public Register allocateRegister(AssemblyContext ctx) {
+    	Register indexRegister = index.allocateRegister(ctx);
+    	return ((ArrayVariableDescriptor) getVariable()).allocateRegister(ctx, indexRegister);
     }
 }

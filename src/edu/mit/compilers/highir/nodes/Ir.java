@@ -40,7 +40,7 @@ abstract public class Ir implements PrettyPrintable, CFGAble {
     	
     }
     
-    public int getNumStackAllocations() {
+    public long getNumStackAllocations() {
     	return 0;
     }
 }

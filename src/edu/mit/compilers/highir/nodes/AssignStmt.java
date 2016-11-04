@@ -82,16 +82,13 @@ public class AssignStmt extends Statement {
         expression.generateAssembly(ctx);
         location.generateAssembly(ctx);
 
-        Storage src = expression.allocateRegister(ctx);
-        Storage dest = location.allocateRegister(ctx);
-        ctx.addInstruction(new Mov(src, dest));
-
-        expression.deallocateRegister(ctx);
-        location.deallocateRegister(ctx);
+        Register src = expression.allocateRegister(ctx);
+        ctx.addInstruction(Mov.create(src, location.getLocation(ctx)));
+        ctx.deallocateRegister(src);
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + location.getNumStackAllocations();
 	}
 }

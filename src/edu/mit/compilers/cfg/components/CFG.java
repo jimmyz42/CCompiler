@@ -386,13 +386,13 @@ public class CFG implements CFGAble {
                 blockQueue.add(currentBlock.getNextBlock(false));
 
                 //get conditional value generated at the end of currentBlock
-                Storage val = ctx.allocateRegister((Expression)currentBlock.getCondition());
+                Register val = ((Expression) currentBlock.getCondition()).allocateRegister(ctx);
                 //compare to 1
                 Storage temp = Register.create("%rax");
                 Storage btrue = ImmediateValue.create(true);
                 ctx.addInstruction(Mov.create(btrue, temp));
                 ctx.addInstruction(new Cmp(val, temp));
-                ctx.deallocateRegister((Expression)currentBlock.getCondition());
+               	ctx.deallocateRegister(val);
                 //if its == 1, go down true branch
                 ctx.addInstruction(Je.create(Memory.create(currentBlock.getNextBlock(true).getID())));
                 //else, go down TRUE branch
@@ -404,7 +404,8 @@ public class CFG implements CFGAble {
         }
     }
 
-    public int getNumStackAllocations() {
+    @Override
+    public long getNumStackAllocations() {
         HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
         Queue<BasicBlock> blockQueue = new ArrayDeque<>();
         blockQueue.add(getEntryBlock());

@@ -16,8 +16,8 @@ import edu.mit.compilers.lowir.instructions.Label;
 
 public class EnterBlock extends BasicBlock {
 	private String name;
-	private int numStackAllocations;
-		
+	private long numStackAllocations;
+
     public EnterBlock(String name, List<CFGAble> components) {
         super(components);
         this.name = name;
@@ -31,8 +31,8 @@ public class EnterBlock extends BasicBlock {
     public boolean isEmpty() {
         return false;
     }
-    
-    public void setNumStackAllocations(int numStackAllocations) {
+
+    public void setNumStackAllocations(long numStackAllocations) {
     	this.numStackAllocations = numStackAllocations;
     }
 

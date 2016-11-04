@@ -1,5 +1,15 @@
 digraph G {
-  block0 [ label="block0: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ e\la\ =\ 10\lb\ =\ 20\lc\ =\ 30\ld\ =\ a\ +\ b\l\le\ =\ c\ *\ 3\l\le\ =\ d\ *\ e\l\ -\ 100\l\lprintf\(\"%d\ %d\\n\"\,\ d\,\ e\)\lreturn\ \l\l" ];
-  block1 [ label="block1: *end\ of\ method*\l" ];
+  block0 [ label="block0: \l" ];
+  block1 [ label="block1: *start\ of\ method*\l" ];
+  block2 [ label="block2: void\ i\l\l" ];
+  block3 [ label="block3: *end\ of\ method*\l" ];
+  block4 [ label="block4: *start\ of\ method*\l" ];
+  block5 [ label="block5: void\ main\lint\ i\li\ =\ 4\l\l" ];
+  block6 [ label="block6: *end\ of\ method*\l" ];
   block0 -> block1;
+  block1 -> block2;
+  block2 -> block3;
+  block3 -> block4;
+  block4 -> block5;
+  block5 -> block6;
 }

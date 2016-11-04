@@ -33,27 +33,28 @@ public class NotExpr extends Expression {
         // TODO Auto-generated method stub
         return ScalarType.BOOL;
     }
-    
+
     @Override
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
     	return expression.shortCircuit(falseBranch, trueBranch);
     }
-    
+
     @Override
     public void generateAssembly(AssemblyContext ctx){
         expression.generateAssembly(ctx);
 
         Register src = expression.allocateRegister(ctx);
-        Register dest = ctx.allocateRegister(this);
+        Register dest = ctx.allocateRegister(getStorageTuple());
         ctx.addInstruction(Mov.create(src, dest));
         ctx.addInstruction(Not.create(dest));
 
-        expression.deallocateRegister(ctx);;
-        ctx.deallocateRegister(this);;
+		ctx.storeStack(getStorageTuple(), dest);
+        ctx.deallocateRegister(src);
+        ctx.deallocateRegister(dest);
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + 1;
 	}
 }

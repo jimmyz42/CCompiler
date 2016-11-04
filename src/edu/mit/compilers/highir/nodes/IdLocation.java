@@ -5,6 +5,10 @@ import java.io.PrintWriter;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
+import edu.mit.compilers.lowir.StorageTuple;
 import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
 
@@ -35,5 +39,14 @@ public class IdLocation extends Location {
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.print(prefix + getVariable().getName());
+    }
+
+    public Storage getLocation(AssemblyContext ctx) {
+    	return getVariable().getLocation(ctx);
+    }
+
+    @Override
+    public Register allocateRegister(AssemblyContext ctx) {
+    	return getVariable().allocateRegister(ctx);
     }
 }

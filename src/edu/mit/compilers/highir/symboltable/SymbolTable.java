@@ -23,7 +23,7 @@ public abstract class SymbolTable {
     public abstract FunctionDescriptor getFunction(String name, ParserRuleContext ctx);
 
     public void addVariablesFromFieldDecl(DecafSemanticChecker checker, Field_declContext ctx) {
-        Type type = ScalarType.create(checker, ctx.type());
+        ScalarType type = ScalarType.create(checker, ctx.type());
         for (FieldContext name : ctx.field()) {
             if (name.INT_LITERAL() == null) {
                 addVariable(type, name.ID().getText(), name);

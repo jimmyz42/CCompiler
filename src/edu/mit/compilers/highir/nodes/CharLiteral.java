@@ -32,11 +32,11 @@ public class CharLiteral extends Literal {
 
     @Override
     public void generateAssembly(AssemblyContext ctx){
-        ctx.storeStack(this, ImmediateValue.create(terminal));
+        ctx.storeStack(getStorageTuple(), ImmediateValue.create(terminal));
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return 1;
 	}
 

@@ -7,6 +7,7 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.instructions.Extern;
 
 public class ExternDescriptor extends FunctionDescriptor {
@@ -23,4 +24,13 @@ public class ExternDescriptor extends FunctionDescriptor {
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + "extern " + getName());
     }
+
+    @Override
+    public void generateAssembly(AssemblyContext ctx) {
+    }
+
+	@Override
+	public long getNumStackAllocations() {
+		return 0;
+	}
 }

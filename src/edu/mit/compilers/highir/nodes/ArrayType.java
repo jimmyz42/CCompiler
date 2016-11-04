@@ -6,18 +6,19 @@ import exceptions.BadArraySizeError;
 
 public class ArrayType implements Type {
     private final long length;
-    private final Type elementType;
+    private final ScalarType elementType;
 
-    public ArrayType(long length, Type elementType) {
+    public ArrayType(long length, ScalarType elementType) {
         this.length = length;
         this.elementType = elementType;
     }
 
+    @Override
     public long getLength() {
         return length;
     }
 
-    public Type getElementType() {
+    public ScalarType getElementType() {
         return elementType;
     }
 

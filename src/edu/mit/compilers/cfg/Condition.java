@@ -13,5 +13,5 @@ public interface Condition {
 	
 	public void generateAssembly(AssemblyContext ctx);
 	public void cfgPrint(PrintWriter pw, String prefix);
-    public int getNumStackAllocations();
+    public long getNumStackAllocations();
 }

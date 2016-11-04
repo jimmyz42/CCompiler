@@ -10,6 +10,7 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
+import edu.mit.compilers.lowir.StorageTuple;
 
 abstract public class Location extends Expression {
     private VariableDescriptor variable;
@@ -42,21 +43,7 @@ abstract public class Location extends Expression {
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return 0;
 	}
-
-    public Storage getLocation(AssemblyContext ctx) {
-    	return variable.getLocation(ctx);
-    }
-
-    @Override
-    public Register allocateRegister(AssemblyContext ctx) {
-    	return variable.allocateRegister(ctx);
-    }
-
-    @Override
-    public void deallocateRegister(AssemblyContext ctx) {
-    	variable.deallocateRegister(ctx);
-    }
 }

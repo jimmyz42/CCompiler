@@ -49,9 +49,9 @@ public class MulOpExpr extends BinOpExpr {
         rhs.generateAssembly(ctx);
         List<Instruction> expression = new ArrayList<>();
 
-        Storage src = rhs.allocateRegister(ctx);
-        //Storage dest = lhs.allocateRegister(ctx);
-        Storage result = ctx.allocateRegister(this);
+        Register src = rhs.allocateRegister(ctx);
+        //Register dest = lhs.allocateRegister(ctx);
+        Register result = ctx.allocateRegister(getStorageTuple());
         expression.add(Mov.create(lhs.getLocation(ctx), result));
         if(operator.getTerminal().equals("*")) {
             expression.add(new Imul(src, result));
@@ -65,14 +65,14 @@ public class MulOpExpr extends BinOpExpr {
             expression.add(new Mov(rax, src));
         }
         ctx.addInstructions(expression);
-        
-        ctx.deallocateRegister(this);
-        rhs.deallocateRegister(ctx);
-        lhs.deallocateRegister(ctx);
+
+		ctx.storeStack(getStorageTuple(), result);
+        ctx.deallocateRegister(src);
+        ctx.deallocateRegister(result);
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
 	}
 }

@@ -59,13 +59,13 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 
         List<Instruction> expression = new ArrayList<>();
 
-        Storage src = rhs.allocateRegister(ctx);
-        Storage dest = lhs.allocateRegister(ctx);
-        Storage result = ctx.allocateRegister(this);
+        Register src = rhs.allocateRegister(ctx);
+        Register dest = lhs.allocateRegister(ctx);
+        Register result = ctx.allocateRegister(getStorageTuple());
 
     	Storage btrue = ImmediateValue.create(true);
     	Storage bfalse = ImmediateValue.create(false);
-    	
+
     	//move 0 into result
     	expression.add(Mov.create(bfalse, result));
 
@@ -76,7 +76,7 @@ public class EqOpExpr extends BinOpExpr implements Condition {
     	//compare lhs to rhs
         Instruction opInstruction = new Cmp(src, dest);
         expression.add(opInstruction);
-    	
+
     	//if expression is true, put temp (1) into result
         if(operator.getTerminal().equals("==")) {
             expression.add(Cmove.create(temp, result));
@@ -85,18 +85,19 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         }
 
         ctx.addInstructions(expression);
-        
+
         //result = 0 or 1
         //	0: expression evaluated to false
         //	1: expression evaluated to true
-        
-        rhs.deallocateRegister(ctx);
-        lhs.deallocateRegister(ctx);
-        ctx.deallocateRegister(this);
+
+		ctx.storeStack(getStorageTuple(), result);
+        ctx.deallocateRegister(src);
+        ctx.deallocateRegister(dest);
+        ctx.deallocateRegister(result);
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
 	}
 }

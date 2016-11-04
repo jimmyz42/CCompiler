@@ -9,6 +9,11 @@ public class VoidType implements Type {
     }
 
     @Override
+    public long getLength() {
+        return 0;
+    }
+
+    @Override
     public long getSize() {
         return 0;
     }

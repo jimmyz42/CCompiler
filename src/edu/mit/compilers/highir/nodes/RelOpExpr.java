@@ -66,9 +66,9 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 
 		List<Instruction> expression = new ArrayList<>();
 
-		Storage src = rhs.allocateRegister(ctx);
-		Storage dest = lhs.allocateRegister(ctx);
-		Storage result = ctx.allocateRegister(this);
+		Register src = rhs.allocateRegister(ctx);
+		Register dest = lhs.allocateRegister(ctx);
+		Register result = ctx.allocateRegister(getStorageTuple());
 
 		Storage btrue = ImmediateValue.create(true);
 		Storage bfalse = ImmediateValue.create(false);
@@ -106,13 +106,14 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 		//	0: expression evaluated to false
 		//	1: expression evaluated to true
 
-		ctx.deallocateRegister(this);
-		rhs.deallocateRegister(ctx);
-		lhs.deallocateRegister(ctx);
+		ctx.storeStack(getStorageTuple(), result);
+        ctx.deallocateRegister(src);
+        ctx.deallocateRegister(dest);
+		ctx.deallocateRegister(result);
 	}
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
 	}
 }

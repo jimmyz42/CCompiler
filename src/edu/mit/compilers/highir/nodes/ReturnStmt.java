@@ -85,7 +85,7 @@ public class ReturnStmt extends Statement {
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations();
 	}
 }

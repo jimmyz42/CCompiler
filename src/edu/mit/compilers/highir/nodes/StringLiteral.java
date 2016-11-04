@@ -38,12 +38,12 @@ public class StringLiteral extends ExternArg {
     public void generateAssembly(AssemblyContext ctx) {
         Instruction stringInstruction = new StringInstruction(label, terminal);
         ctx.addInstruction(Lea.create(Memory.create("."+label+"(%rip)"), Register.create("%rdx")));
-        ctx.storeStack(this, Register.create("%rdx"));
+        ctx.storeStack(getStorageTuple(), Register.create("%rdx"));
         ctx.addFooterInstruction(stringInstruction);
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return 1;
 	}
 }

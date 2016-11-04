@@ -135,7 +135,8 @@ public class BasicBlock extends CFG {
     	}
     }
 
-    public int getNumStackAllocations() {
+    @Override
+    public long getNumStackAllocations() {
         int numStackAllocations = 0;
         for(CFGAble component: components) {
         	numStackAllocations += component.getNumStackAllocations();

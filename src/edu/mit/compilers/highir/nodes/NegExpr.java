@@ -34,29 +34,30 @@ public class NegExpr extends Expression {
     public Type getExpressionType() {
         return ScalarType.INT;
     }
-    
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix){
     	super.prettyPrint(pw, prefix);
     	pw.println(prefix + "-expression:");
     	expression.prettyPrint(pw, prefix + "    ");
     }
-    
+
     @Override
     public void generateAssembly(AssemblyContext ctx){
         expression.generateAssembly(ctx);
 
         Register src = expression.allocateRegister(ctx);
-        Register dest = ctx.allocateRegister(this);
+        Register dest = ctx.allocateRegister(getStorageTuple());
         ctx.addInstruction(Mov.create(src, dest));
         ctx.addInstruction(Neg.create(dest));
 
-        expression.deallocateRegister(ctx);;
-        ctx.deallocateRegister(this);;
+		ctx.storeStack(getStorageTuple(), dest);
+        ctx.deallocateRegister(src);
+        ctx.deallocateRegister(dest);
     }
 
 	@Override
-	public int getNumStackAllocations() {
+	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + 1;
 	}
 }
