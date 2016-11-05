@@ -38,6 +38,7 @@ public class SizeofIdExpr extends Expression {
     
     @Override
     public void generateAssembly(AssemblyContext ctx) {
+    	System.out.println("size of " + this.variable.getType().toString() + " is " + this.variable.getType().getSize());
 		ctx.storeStack(getStorageTuple(), ImmediateValue.create(this.variable.getType().getSize()));
     }
 
