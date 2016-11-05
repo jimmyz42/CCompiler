@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
 
 public class SizeofTypeExpr extends Expression {
     private Type type;
@@ -30,12 +31,11 @@ public class SizeofTypeExpr extends Expression {
     }
     
     public void generateAssembly(AssemblyContext ctx) {
-		// TODO Auto-generated method stub
+		ctx.storeStack(getStorageTuple(), ImmediateValue.create(this.type.getSize()));
     }
 
 	@Override
 	public long getNumStackAllocations() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 }
