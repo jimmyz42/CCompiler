@@ -234,34 +234,35 @@ public class CFG implements CFGAble {
         }
    }
 
-    public void eliminateEmptyBlocks(){
-    	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
-        blockQueue.add(getEntryBlock());
-
-        while(blockQueue.size() > 0) {
-            BasicBlock currentBlock = blockQueue.poll();
-            if(visited.contains(currentBlock)) continue;
-            else visited.add(currentBlock);
-
-            if(currentBlock.isEmpty() && currentBlock.getNextBlocks().size() > 0) {
-        		BasicBlock next = currentBlock.getNextBlock();
-            	for(BasicBlock block: currentBlock.getPreviousBlocks()) {
-            		List<BasicBlock> list = block.getNextBlocks();
-            		list.set(list.indexOf(currentBlock), next);
-            	}
-            	next.setPreviousBlocks(currentBlock.getPreviousBlocks());
-            	blockQueue.add(next);
-            } else {
-                if(currentBlock.getNextBlocks().size() > 0){
-                    blockQueue.add(currentBlock.getNextBlock(true));
-                }
-            	if(currentBlock.getNextBlocks().size() > 1) {
-                    blockQueue.add(currentBlock.getNextBlock(false));
-                }
-            }
-        }
-   }
+//DO NOT UNCOMMENT unless you are sure it won't break codegen test 17 or any other codegen test
+//    public void eliminateEmptyBlocks(){
+//    	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+//        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+//        blockQueue.add(getEntryBlock());
+//
+//        while(blockQueue.size() > 0) {
+//            BasicBlock currentBlock = blockQueue.poll();
+//            if(visited.contains(currentBlock)) continue;
+//            else visited.add(currentBlock);
+//
+//            if(currentBlock.isEmpty() && currentBlock.getNextBlocks().size() > 0) {
+//        		BasicBlock next = currentBlock.getNextBlock();
+//            	for(BasicBlock block: currentBlock.getPreviousBlocks()) {
+//            		List<BasicBlock> list = block.getNextBlocks();
+//            		list.set(list.indexOf(currentBlock), next);
+//            	}
+//            	next.setPreviousBlocks(currentBlock.getPreviousBlocks());
+//            	blockQueue.add(next);
+//            } else {
+//                if(currentBlock.getNextBlocks().size() > 0){
+//                    blockQueue.add(currentBlock.getNextBlock(true));
+//                }
+//            	if(currentBlock.getNextBlocks().size() > 1) {
+//                    blockQueue.add(currentBlock.getNextBlock(false));
+//                }
+//            }
+//        }
+//   }
 
     public void exportDOT(String fileName){
         DOTExporter<BasicBlock, DefaultEdge> exporter =

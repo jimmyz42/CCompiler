@@ -107,6 +107,7 @@ public class Block extends Ir {
     public CFG generateCFG(CFGContext context) {
         ArrayList<CFGAble> components = new ArrayList<>();
         for(VariableDescriptor desc: symbolTable.getDescriptors().values()) {
+        	System.out.println("adding descriptor " + desc);
             components.add(desc);
         }
         BasicBlock symbolBlock = BasicBlock.create(components);
