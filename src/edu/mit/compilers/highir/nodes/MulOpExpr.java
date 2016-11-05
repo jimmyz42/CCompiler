@@ -59,9 +59,9 @@ public class MulOpExpr extends BinOpExpr {
             Register rdx = Register.create("%rdx");
             Register rax = Register.create("%rax");
             expression.add(new Xor(rdx, rdx));
-            expression.add(new Mov(src, rax));
-            expression.add(new Idiv(result));
-            expression.add(new Mov(rax, src));
+            expression.add(new Mov(result, rax));
+            expression.add(new Idiv(src));
+            expression.add(new Mov(rax, result));
         }
         ctx.addInstructions(expression);
 
