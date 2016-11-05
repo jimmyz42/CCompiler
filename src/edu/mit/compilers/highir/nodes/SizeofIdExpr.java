@@ -36,6 +36,7 @@ public class SizeofIdExpr extends Expression {
     	pw.print(prefix + "sizeof(" + variable.getName() + ")");
     }
     
+    @Override
     public void generateAssembly(AssemblyContext ctx) {
 		ctx.storeStack(getStorageTuple(), ImmediateValue.create(this.variable.getType().getSize()));
     }
@@ -44,4 +45,9 @@ public class SizeofIdExpr extends Expression {
 	public long getNumStackAllocations() {
 		return 1;
 	}
+	
+    @Override
+    public ImmediateValue getLocation(AssemblyContext ctx) {
+        return ImmediateValue.create(this.variable.getType().getSize());
+    }
 }
