@@ -7,8 +7,12 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.ArrayVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
+import edu.mit.compilers.lowir.instructions.Cmp;
+import edu.mit.compilers.lowir.instructions.Jae;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Sub;
 import edu.mit.compilers.lowir.instructions.Xor;
@@ -77,13 +81,19 @@ public class ArrayLocation extends Location {
 	}
 
     public Storage getLocation(AssemblyContext ctx) {
-        ctx.addInstruction(Xor.create(Register.create("%rdx"), Register.create("%rdx")));
+    	ctx.addInstruction(Mov.create(index.getLocation(ctx), Register.create("%rax")));
+    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),Register.create("%rax")));
+    	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
+    	ctx.addInstruction(Xor.create(Register.create("%rdx"), Register.create("%rdx")));
         ctx.addInstruction(Sub.create(index.getLocation(ctx), Register.create("%rdx")));
     	return getVariable().getLocation(ctx, Register.create("%rdx"));
     }
 
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
+    	ctx.addInstruction(Mov.create(index.getLocation(ctx), Register.create("%rax")));
+    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),Register.create("%rax")));
+    	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
         ctx.addInstruction(Xor.create(Register.create("%rdx"), Register.create("%rdx")));
         ctx.addInstruction(Sub.create(index.getLocation(ctx), Register.create("%rdx")));
     	return ((ArrayVariableDescriptor) getVariable()).allocateRegister(ctx, Register.create("%rdx"));

@@ -13,7 +13,7 @@ import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.StorageTuple;
 
 abstract public class Location extends Expression {
-    private VariableDescriptor variable;
+    protected VariableDescriptor variable;
 
     Location(VariableDescriptor variable) {
         this.variable = variable;

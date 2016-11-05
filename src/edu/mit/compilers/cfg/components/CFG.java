@@ -19,6 +19,7 @@ import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.instructions.Call;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Je;
@@ -403,6 +404,10 @@ public class CFG implements CFGAble {
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
             }
         }
+        // Array Index Out Of Bounds Handler
+        ctx.addInstruction(Label.create("array_index_error"));
+        ctx.addInstruction(Mov.create(ImmediateValue.create(-1), Register.create("%rdi")));
+        ctx.addInstruction(Call.create(Memory.create("exit")));
     }
 
     @Override
