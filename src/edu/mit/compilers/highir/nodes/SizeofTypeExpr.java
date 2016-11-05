@@ -32,7 +32,7 @@ public class SizeofTypeExpr extends Expression {
     
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-		ctx.storeStack(getStorageTuple(), ImmediateValue.create(this.type.getSize()));
+		//ctx.storeStack(getStorageTuple(), ImmediateValue.create(this.type.getSize()));
     }
 
 	@Override
