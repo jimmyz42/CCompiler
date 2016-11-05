@@ -27,6 +27,7 @@ import edu.mit.compilers.lowir.instructions.Jmp;
 import edu.mit.compilers.lowir.instructions.Jne;
 import edu.mit.compilers.lowir.instructions.Label;
 import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Syscall;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
@@ -406,8 +407,9 @@ public class CFG implements CFGAble {
         }
         // Array Index Out Of Bounds Handler
         ctx.addInstruction(Label.create("array_index_error"));
-        ctx.addInstruction(Mov.create(ImmediateValue.create(-1), Register.create("%rdi")));
-        ctx.addInstruction(Call.create(Memory.create("exit")));
+        ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
+        ctx.addInstruction(Mov.create(ImmediateValue.create(1), Register.create("%rdi")));
+        ctx.addInstruction(Syscall.create());
     }
 
     @Override
