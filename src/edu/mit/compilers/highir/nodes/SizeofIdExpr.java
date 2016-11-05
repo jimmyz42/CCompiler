@@ -6,6 +6,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.ImmediateValue;
 import exceptions.UndeclaredIdentifierError;
 
 public class SizeofIdExpr extends Expression {
@@ -35,13 +36,18 @@ public class SizeofIdExpr extends Expression {
     	pw.print(prefix + "sizeof(" + variable.getName() + ")");
     }
     
+    @Override
     public void generateAssembly(AssemblyContext ctx) {
-		// TODO Auto-generated method stub
+		ctx.storeStack(getStorageTuple(), ImmediateValue.create(this.variable.getType().getSize()));
     }
 
 	@Override
 	public long getNumStackAllocations() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
+	
+    @Override
+    public ImmediateValue getLocation(AssemblyContext ctx) {
+        return ImmediateValue.create(this.variable.getType().getSize());
+    }
 }
