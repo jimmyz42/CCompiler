@@ -408,7 +408,7 @@ public class CFG implements CFGAble {
         // Array Index Out Of Bounds Handler
         ctx.addInstruction(Label.create("array_index_error"));
         ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
-        ctx.addInstruction(Mov.create(ImmediateValue.create(1), Register.create("%rdi")));
+        ctx.addInstruction(Mov.create(ImmediateValue.create(-1), Register.create("%rdi")));
         ctx.addInstruction(Syscall.create());
         
         // Fall Off Method Handler
