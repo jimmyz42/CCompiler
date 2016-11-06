@@ -99,8 +99,10 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
 
         for(Descriptor desc : symbolTable.getDescriptors().values()) {
             if(desc instanceof MethodDescriptor) {
+            	boolean isNotVoid = desc.getType().toString().equals("void") ? false : true;
+            	System.out.println(desc.getType().toString() + " " + isNotVoid);
             	EnterBlock start = EnterBlock.create(desc.getName());
-            	LeaveBlock end = LeaveBlock.create();
+            	LeaveBlock end = LeaveBlock.create(isNotVoid);
             	CFG methodCFG = new CFG(start, end);
             	context.addMethodCFG((MethodDescriptor)desc, methodCFG);
                 CFG innerCFG = desc.generateCFG(context);
