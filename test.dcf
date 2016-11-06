@@ -6,17 +6,10 @@
 extern printf();
 
 int getTest(int x){
-int a,b,c;
 
 if(x==0){
 	return 1;
 }
-
-a = 1;
-b = 2; 
-c = 3;
-
-return a+b+c;
 }
 
 void main ( ) {
