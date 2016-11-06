@@ -7,10 +7,10 @@ import java.io.StringWriter;
 
 import edu.mit.compilers.cfg.*;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
-import edu.mit.compilers.highir.nodes.EndOfNonVoidMethod;
 import edu.mit.compilers.highir.nodes.Statement;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Jmp;
@@ -51,9 +51,7 @@ public class LeaveBlock extends BasicBlock {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
     	if(notVoid){
-        	ctx.addInstruction(Mov.create(ImmediateValue.create(60),Register.create("%rax")));
-        	ctx.addInstruction(Mov.create(ImmediateValue.create(-2),Register.create("%rdi")));
-        	ctx.addInstruction(Syscall.create());
+        	ctx.addInstruction(Jmp.create(Memory.create("fall_off_error")));
     	}
         ctx.leave(numStackAllocations);
     }

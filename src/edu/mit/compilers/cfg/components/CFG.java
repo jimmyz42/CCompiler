@@ -410,6 +410,12 @@ public class CFG implements CFGAble {
         ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
         ctx.addInstruction(Mov.create(ImmediateValue.create(1), Register.create("%rdi")));
         ctx.addInstruction(Syscall.create());
+        
+        // Fall Off Method Handler
+        ctx.addInstruction(Label.create("fall_off_error"));
+        ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
+        ctx.addInstruction(Mov.create(ImmediateValue.create(2), Register.create("%rdi")));
+        ctx.addInstruction(Syscall.create());
     }
 
     @Override
