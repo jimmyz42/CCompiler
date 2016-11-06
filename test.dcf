@@ -1,27 +1,36 @@
 
+
+
 #define int long long
 
 extern printf();
-int a[10];
 
-int getNum(){
-return 1;
+int getTest(int x){
+int a,b,c;
+
+if(x==0){
+	return 1;
 }
 
-int doNotGet(){
- if(getNum == 0){
-}
+a = 1;
+b = 2; 
+c = 3;
+
+return a+b+c;
 }
 
 void main ( ) {
-int j,i;
-j = doNotGet();
-i = getNum();
-if(i==1){
-  printf("i is 1\n");
+int j;
+j = getTest(0);
+if(j==1){
+printf("j is 1\n");
+}
+if(j==0){
+printf("j is 0\n");
 }
 printf("done\n");
 }
+
 
 
 

@@ -39,6 +39,10 @@ public class LeaveBlock extends BasicBlock {
     public void setNumStackAllocations(long numStackAllocations) {
     	this.numStackAllocations = numStackAllocations;
     }
+    
+    public boolean getNotVoid(){
+    	return this.notVoid;
+    }
 
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
@@ -50,9 +54,6 @@ public class LeaveBlock extends BasicBlock {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	if(notVoid){
-        	//ctx.addInstruction(Jmp.create(Memory.create("fall_off_error")));
-    	}
         ctx.leave(numStackAllocations);
     }
 
