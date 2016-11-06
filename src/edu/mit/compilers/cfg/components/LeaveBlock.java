@@ -51,7 +51,7 @@ public class LeaveBlock extends BasicBlock {
     public void generateAssembly(AssemblyContext ctx) {
     	if(notVoid){
         	ctx.addInstruction(Mov.create(ImmediateValue.create(60),Register.create("%rax")));
-        	ctx.addInstruction(Mov.create(ImmediateValue.create(-2),Register.create("%rdi")));
+        	ctx.addInstruction(Mov.create(ImmediateValue.create(2),Register.create("%rdi")));
         	ctx.addInstruction(Syscall.create());
     	}
         ctx.leave(numStackAllocations);
