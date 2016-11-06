@@ -380,12 +380,6 @@ public class CFG implements CFGAble {
             if(visited.contains(currentBlock)) continue;
             else visited.add(currentBlock);
 
-            if (currentBlock instanceof LeaveBlock){
-            	if(((LeaveBlock)currentBlock).getNotVoid()){
-            		ctx.addInstruction(Jmp.create(Memory.create("fall_off_error")));
-            	}
-            }
-            
         	ctx.addInstruction(Label.create(currentBlock.getID()));
             currentBlock.generateAssembly(ctx);
 

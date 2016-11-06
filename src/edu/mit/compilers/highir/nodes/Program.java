@@ -21,7 +21,7 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.EnterBlock;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.LeaveBlock;
-
+import edu.mit.compilers.cfg.components.NonVoidBlock;
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
 
@@ -101,20 +101,33 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
             if(desc instanceof MethodDescriptor) {
             	//is the method not void? if yes, true, else false
             	boolean isNotVoid = desc.getType().toString().equals("void") ? false : true;
+            	
             	EnterBlock start = EnterBlock.create(desc.getName());
             	LeaveBlock end = LeaveBlock.create(isNotVoid);
+            	
             	CFG methodCFG = new CFG(start, end);
             	context.addMethodCFG((MethodDescriptor)desc, methodCFG);
-                CFG innerCFG = desc.generateCFG(context);
-                long numStackAllocations = innerCFG.getNumStackAllocations();
+                
+            	CFG innerCFG = desc.generateCFG(context);
+                
+            	long numStackAllocations = innerCFG.getNumStackAllocations();
                 start.setNumStackAllocations(numStackAllocations);
                 end.setNumStackAllocations(numStackAllocations);
 
                 start.setNextBlock(innerCFG.getEntryBlock());
                 innerCFG.addPreviousBlock(start);
-                innerCFG.setNextBlock(end);
-                end.addPreviousBlock(innerCFG.getExitBlock());
-
+                
+                if(isNotVoid){ //Non-void Method
+                	NonVoidBlock error = NonVoidBlock.create();
+                	innerCFG.setNextBlock(error);
+                	error.addPreviousBlock(innerCFG.getExitBlock());
+                	
+                	error.setNextBlock(end);
+                	end.addPreviousBlock(error);
+                } else { //void method
+                    innerCFG.setNextBlock(end);
+                    end.addPreviousBlock(innerCFG.getExitBlock());
+                }
                 currentCFG.setNextBlock(methodCFG.getEntryBlock());
                 methodCFG.setPreviousBlock(currentCFG.getExitBlock());
                 currentCFG = methodCFG;
