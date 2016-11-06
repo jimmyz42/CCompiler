@@ -7,7 +7,6 @@ import java.io.StringWriter;
 
 import edu.mit.compilers.cfg.*;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
-import edu.mit.compilers.highir.nodes.EndOfNonVoidMethod;
 import edu.mit.compilers.highir.nodes.Statement;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
