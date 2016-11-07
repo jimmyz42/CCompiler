@@ -133,27 +133,42 @@ public class CFG implements CFGAble {
         return this;
     }
 
-    private void giveAllBlocksIds(){
+    // return linearized list so we don't have to redo logic in all methods
+    private List<BasicBlock> giveAllBlocksIds(){
+    	 List<BasicBlock> ret = new ArrayList<BasicBlock>();
     	 HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
          Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+         // handle special blocks (don't print them until all ingoing paths satisfied)
+         Queue<BasicBlock> leaveQueue = new ArrayDeque<>();
          blockQueue.add(getEntryBlock());
          int blockNum = 0;
 
          //step 1: give every BasicBlock an ID
-         while(blockQueue.size() > 0) {
-             BasicBlock currentBlock = blockQueue.poll();
+         while(blockQueue.size() > 0 || leaveQueue.size() > 0) {
+        	 BasicBlock currentBlock;
+             if(blockQueue.size() > 0) {
+            	 currentBlock = blockQueue.poll();
+             } else {
+            	 currentBlock = leaveQueue.poll();
+             }
              if(visited.contains(currentBlock)) continue;
-             else visited.add(currentBlock);
+             visited.add(currentBlock);
+             ret.add(currentBlock);
 
              currentBlock.setID("block" +  blockNum);
              blockNum++;
              if(currentBlock.getNextBlocks().size() > 0){
-                 blockQueue.add(currentBlock.getNextBlock(true));
+            	 BasicBlock trueBlock = currentBlock.getNextBlock(true);
+            	 if(trueBlock.canMerge()) blockQueue.add(trueBlock);
+            	 else leaveQueue.add(trueBlock); //special (entry, non-void, leave) block
              }
              if(currentBlock.getNextBlocks().size() > 1) {
-                 blockQueue.add(currentBlock.getNextBlock(false));
+            	 BasicBlock falseBlock = currentBlock.getNextBlock(false);
+            	 if(falseBlock.canMerge()) blockQueue.add(falseBlock);
+            	 else leaveQueue.add(falseBlock); //special (entry, non-void, leave) block
              }
          }
+         return ret;
     }
 
     public void clearPrevBlocks(){
@@ -337,19 +352,11 @@ public class CFG implements CFGAble {
 
     @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
-        HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
-        blockQueue.add(getEntryBlock());
-
         //step 1: give every BasicBlock an ID
-        giveAllBlocksIds();
+        List<BasicBlock> blocks = giveAllBlocksIds();
 
         //step 2: print stuff
-        while(blockQueue.size() > 0) {
-            BasicBlock currentBlock = blockQueue.poll();
-            if(visited.contains(currentBlock)) continue;
-            else visited.add(currentBlock);
-
+        for(BasicBlock currentBlock: blocks) {
             pw.println(prefix + "BasicBlock " + currentBlock.getID() + ":");
             currentBlock.cfgPrint(pw, prefix + "    ");
             pw.println(prefix + currentBlock.getID() + " points to:");
@@ -357,37 +364,20 @@ public class CFG implements CFGAble {
             for(BasicBlock block : currentBlock.getNextBlocks()){
             	pw.println(prefix + "    " + block.getID());
             }
-
-            if(currentBlock.getNextBlocks().size() > 0){
-                blockQueue.add(currentBlock.getNextBlock(true));
-            }
-            if(currentBlock.getNextBlocks().size() > 1) {
-                blockQueue.add(currentBlock.getNextBlock(false));
-            }
         }
     }
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-        HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
-        blockQueue.add(getEntryBlock());
+        //step 1: give every BasicBlock an ID
+        List<BasicBlock> blocks = giveAllBlocksIds();
 
-        giveAllBlocksIds();
-
-        while(blockQueue.size() > 0) {
-            BasicBlock currentBlock = blockQueue.poll();
-            if(visited.contains(currentBlock)) continue;
-            else visited.add(currentBlock);
-
+        //step 2: print stuff
+        for(BasicBlock currentBlock: blocks) {
         	ctx.addInstruction(Label.create(currentBlock.getID()));
             currentBlock.generateAssembly(ctx);
-
-            //push blocks in reverse order to pop in correct order
+            
             if(currentBlock.getNextBlocks().size() > 1) {
-                blockQueue.add(currentBlock.getNextBlock(true));
-                blockQueue.add(currentBlock.getNextBlock(false));
-
                 //get conditional value generated at the end of currentBlock
                 Register val = ((Expression) currentBlock.getCondition()).allocateRegister(ctx);
                 //compare to 1
@@ -401,7 +391,6 @@ public class CFG implements CFGAble {
                 //else, go down TRUE branch
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(false).getID())));
             } else if(currentBlock.getNextBlocks().size() > 0){
-                blockQueue.add(currentBlock.getNextBlock(true));
                 ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
             }
         }
