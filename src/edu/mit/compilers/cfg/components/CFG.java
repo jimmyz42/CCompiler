@@ -170,9 +170,8 @@ public class CFG implements CFGAble {
 				blockStackStack.add(blockStack);
 			} else if(currentBlock.getNextBlocks().size() == 1) {
 				blockStack = new Stack<>();
-				BasicBlock nextBlock = currentBlock.getNextBlock(true);
+				BasicBlock nextBlock = currentBlock.getNextBlock();
 				blockStack.add(nextBlock);
-
 				if(searchSet.contains(nextBlock)) {}
 				else if(nextBlock.getNextBlocks().size() > 1 && !visited.contains(nextBlock)) {
 					visited.add(nextBlock);
@@ -192,8 +191,10 @@ public class CFG implements CFGAble {
 					searchSet.add(nextBlock);
 				}
 			}
+			
 		}
 
+		System.out.println(orderedBlocks);
 		return orderedBlocks;
 	}
 
@@ -279,15 +280,16 @@ public class CFG implements CFGAble {
 	}
 
 	public List<BasicBlock> getPrunedBlocks(List<BasicBlock> orderedBlocks){
-		List<BasicBlock> mergedBlocks = new ArrayList<>();
+		List<BasicBlock> prunedBlocks = new ArrayList<>();
 		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
 			BasicBlock b1 = orderedBlocks.get(blockNum);
 
 			if(b1.isEmpty() && b1.getNextBlocks().size() > 0) {
 				BasicBlock b2 = b1.getNextBlock();
 				if(b1 == entryBlock) entryBlock = b2;
-				if(b2 == exitBlock) exitBlock = b2;
-				
+
+//				System.out.println("pruned " + b1 + " and " + b2);
+//				System.out.println(b1.getPreviousBlocks());
 				for(BasicBlock block: b1.getPreviousBlocks()) {
 					List<BasicBlock> list = block.getNextBlocks();
 					list.set(list.indexOf(b1), b2);
@@ -295,12 +297,12 @@ public class CFG implements CFGAble {
 				b2.addPreviousBlocks(new ArrayList<>(new HashSet<>(b1.getPreviousBlocks())));
 			}
 			else {
-				mergedBlocks.add(b1);
+				prunedBlocks.add(b1);
 			}
 		}
 		
-		mergedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
-		return mergedBlocks;
+		prunedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
+		return prunedBlocks;
 	}
 
 	public void exportDOT(String fileName){
@@ -374,11 +376,12 @@ public class CFG implements CFGAble {
 
 	@Override
 	public void cfgPrint(PrintWriter pw, String prefix) {
+		clearPrevBlocks();
+		genPrevBlocks();
 		List<BasicBlock> orderedBlocks = getOrderedBlocks();
 		orderedBlocks = getMergedBlocks(orderedBlocks);
 		orderedBlocks = getPrunedBlocks(orderedBlocks);
 		giveAllBlocksIds(orderedBlocks);
-		//		orderedBlocks = eliminateEmptyBlocks();
 
 		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
@@ -394,6 +397,8 @@ public class CFG implements CFGAble {
 
 	@Override
 	public void generateAssembly(AssemblyContext ctx) {
+		clearPrevBlocks();
+		genPrevBlocks();
 		List<BasicBlock> orderedBlocks = getOrderedBlocks();
 		orderedBlocks = getMergedBlocks(orderedBlocks);
 		orderedBlocks = getPrunedBlocks(orderedBlocks);

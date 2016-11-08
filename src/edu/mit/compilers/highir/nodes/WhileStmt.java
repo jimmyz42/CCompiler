@@ -44,15 +44,16 @@ public class WhileStmt extends Statement {
     	context.pushLoopCFG(new CFG(startBlock, escapeBlock));
 
         CFG trueBranch = block.generateCFG(context);
+        trueBranch.getEntryBlock().setDescription("while start");
         BasicBlock startCondition = condition.shortCircuit(trueBranch, escapeBlock);
         startBlock.setNextBlock(startCondition);
-        startCondition.addPreviousBlock(startBlock);
+        startCondition.addPreviousBlocks(startBlock.getPreviousBlocks());
         trueBranch.setNextBlock(startCondition);
         startCondition.addPreviousBlock(trueBranch.getEntryBlock());
 
         context.popLoopCFG();
 
-        return new CFG(startBlock, escapeBlock);
+        return new CFG(startCondition, escapeBlock);
     }
 }
 
