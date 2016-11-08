@@ -10,6 +10,10 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Imul;
+import edu.mit.compilers.lowir.instructions.Cmovg;
+import edu.mit.compilers.lowir.instructions.Cmovge;
+import edu.mit.compilers.lowir.instructions.Cmovl;
+import edu.mit.compilers.lowir.instructions.Cmovle;
 import edu.mit.compilers.lowir.instructions.Idiv;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Xor;
@@ -52,16 +56,29 @@ public class MulOpExpr extends BinOpExpr {
         Register src = rhs.allocateRegister(ctx);
         Register result = ctx.allocateRegister(getStorageTuple());
         expression.add(Mov.create(lhs.getLocation(ctx), result));
-        if(operator.getTerminal().equals("*")) {
+        Register rdx = Register.create("%rdx");
+        Register rax = Register.create("%rax");
+        switch(operator.getTerminal()) {
+		case "*":
             expression.add(new Imul(src, result));
-        } else {
-        	//HELP WHAT DO HERE???
-            Register rdx = Register.create("%rdx");
-            Register rax = Register.create("%rax");
+			break;
+		case "/":
             expression.add(new Xor(rdx, rdx));
             expression.add(new Mov(result, rax));
             expression.add(new Idiv(src));
             expression.add(new Mov(rax, result));
+			break;
+		case "%":
+            expression.add(new Xor(rdx, rdx));
+            expression.add(new Mov(result, rax));
+            expression.add(new Idiv(src));
+            expression.add(new Mov(rdx, result));
+			break;
+		default:
+
+		}
+        if(operator.getTerminal().equals("*")) {
+        } else {
         }
         ctx.addInstructions(expression);
 
