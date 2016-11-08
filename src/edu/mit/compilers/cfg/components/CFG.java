@@ -134,25 +134,22 @@ public class CFG implements CFGAble {
 		return this;
 	}
 
-	private List<BasicBlock> orderBlocks() {
+	private List<BasicBlock> getOrderedBlocks() {
 		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
 		Stack<BasicBlock> blockStack = new Stack<>();
 		Stack<Stack<BasicBlock>> blockStackStack = new Stack<>();
 		blockStack.add(getEntryBlock());
 		blockStackStack.add(blockStack);
-		
+
 		Set<BasicBlock> searchSet = new HashSet<>();
 
 		List<BasicBlock> orderedBlocks = new ArrayList<>();
 
-		//step 1: give every BasicBlock an ID
 		while(blockStackStack.size() > 0) {
 			BasicBlock currentBlock = blockStackStack.peek().pop();
 			searchSet.remove(currentBlock);
 			if(blockStackStack.peek().isEmpty())
 				blockStackStack.pop();
-
-			System.out.println(currentBlock);
 
 			orderedBlocks.add(currentBlock);
 
@@ -175,8 +172,7 @@ public class CFG implements CFGAble {
 				blockStack = new Stack<>();
 				BasicBlock nextBlock = currentBlock.getNextBlock(true);
 				blockStack.add(nextBlock);
-				
-				System.out.println(nextBlock.getPreviousBlocks().size());
+
 				if(searchSet.contains(nextBlock)) {}
 				else if(nextBlock.getNextBlocks().size() > 1 && !visited.contains(nextBlock)) {
 					visited.add(nextBlock);
@@ -196,9 +192,6 @@ public class CFG implements CFGAble {
 					searchSet.add(nextBlock);
 				}
 			}
-//			if(blockStackStack.peek().isEmpty())
-//				blockStackStack.pop();
-			System.out.println(blockStackStack);
 		}
 
 		return orderedBlocks;
@@ -207,7 +200,6 @@ public class CFG implements CFGAble {
 	private void giveAllBlocksIds(List<BasicBlock> orderedBlocks){
 		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-//			System.out.println(currentBlock.toString() + blockNum);
 			currentBlock.setID("block" +  blockNum);
 		}
 	}
@@ -254,24 +246,18 @@ public class CFG implements CFGAble {
 	}
 
 	// Merge basic blocks optimization
-	public void mergeBasicBlocks(){
-		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-		Queue<BasicBlock> blockQueue = new ArrayDeque<>();
-		blockQueue.add(getEntryBlock());
+	public List<BasicBlock> getMergedBlocks(List<BasicBlock> orderedBlocks){
+		List<BasicBlock> mergedBlocks = new ArrayList<>();
+		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
+			BasicBlock b1 = orderedBlocks.get(blockNum);
+			BasicBlock b2 = orderedBlocks.get(blockNum+1);
 
-		while(blockQueue.size() > 0) {
-			BasicBlock currentBlock = blockQueue.poll();
-			if(visited.contains(currentBlock)) continue;
-			else visited.add(currentBlock);
-
-
-			if(currentBlock.getNextBlocks().size() > 0 &&
-					BasicBlock.canMerge(currentBlock, currentBlock.getNextBlock())) {
-				BasicBlock b1 = currentBlock, b2 = currentBlock.getNextBlock();
+			if(b1.getNextBlocks().contains(b2) &&
+					BasicBlock.canMerge(b1, b2)) {
 				BasicBlock merged = BasicBlock.merge(b1, b2);
 				if(b1 == entryBlock) entryBlock = merged;
 				if(b2 == exitBlock) exitBlock = merged;
-
+	
 				for(BasicBlock block: merged.getPreviousBlocks()) {
 					List<BasicBlock> list = block.getNextBlocks();
 					list.set(list.indexOf(b1), merged);
@@ -280,47 +266,42 @@ public class CFG implements CFGAble {
 					List<BasicBlock> list = block.getPreviousBlocks();
 					list.set(list.indexOf(b2), merged);
 				}
-				blockQueue.add(merged);
-			} else {
-				if(currentBlock.getNextBlocks().size() > 0){
-					blockQueue.add(currentBlock.getNextBlock(true));
-				}
-				if(currentBlock.getNextBlocks().size() > 1) {
-					blockQueue.add(currentBlock.getNextBlock(false));
-				}
+				orderedBlocks.set(blockNum, merged);
+				orderedBlocks.set(blockNum+1, merged);
+			}
+			else {
+				mergedBlocks.add(b1);
 			}
 		}
+		
+		mergedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
+		return mergedBlocks;
 	}
 
-	//DO NOT UNCOMMENT unless you are sure it won't break codegen test 17 or any other codegen test
-	//    public void eliminateEmptyBlocks(){
-	//    	HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-	//        Queue<BasicBlock> blockQueue = new ArrayDeque<>();
-	//        blockQueue.add(getEntryBlock());
-	//
-	//        while(blockQueue.size() > 0) {
-	//            BasicBlock currentBlock = blockQueue.poll();
-	//            if(visited.contains(currentBlock)) continue;
-	//            else visited.add(currentBlock);
-	//
-	//            if(currentBlock.isEmpty() && currentBlock.getNextBlocks().size() > 0) {
-	//        		BasicBlock next = currentBlock.getNextBlock();
-	//            	for(BasicBlock block: currentBlock.getPreviousBlocks()) {
-	//            		List<BasicBlock> list = block.getNextBlocks();
-	//            		list.set(list.indexOf(currentBlock), next);
-	//            	}
-	//            	next.setPreviousBlocks(currentBlock.getPreviousBlocks());
-	//            	blockQueue.add(next);
-	//            } else {
-	//                if(currentBlock.getNextBlocks().size() > 0){
-	//                    blockQueue.add(currentBlock.getNextBlock(true));
-	//                }
-	//            	if(currentBlock.getNextBlocks().size() > 1) {
-	//                    blockQueue.add(currentBlock.getNextBlock(false));
-	//                }
-	//            }
-	//        }
-	//   }
+	public List<BasicBlock> getPrunedBlocks(List<BasicBlock> orderedBlocks){
+		List<BasicBlock> mergedBlocks = new ArrayList<>();
+		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
+			BasicBlock b1 = orderedBlocks.get(blockNum);
+
+			if(b1.isEmpty() && b1.getNextBlocks().size() > 0) {
+				BasicBlock b2 = b1.getNextBlock();
+				if(b1 == entryBlock) entryBlock = b2;
+				if(b2 == exitBlock) exitBlock = b2;
+				
+				for(BasicBlock block: b1.getPreviousBlocks()) {
+					List<BasicBlock> list = block.getNextBlocks();
+					list.set(list.indexOf(b1), b2);
+				}
+				b2.addPreviousBlocks(new ArrayList<>(new HashSet<>(b1.getPreviousBlocks())));
+			}
+			else {
+				mergedBlocks.add(b1);
+			}
+		}
+		
+		mergedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
+		return mergedBlocks;
+	}
 
 	public void exportDOT(String fileName){
 		DOTExporter<BasicBlock, DefaultEdge> exporter =
@@ -393,9 +374,12 @@ public class CFG implements CFGAble {
 
 	@Override
 	public void cfgPrint(PrintWriter pw, String prefix) {
-		List<BasicBlock> orderedBlocks = orderBlocks();
+		List<BasicBlock> orderedBlocks = getOrderedBlocks();
+		orderedBlocks = getMergedBlocks(orderedBlocks);
+		orderedBlocks = getPrunedBlocks(orderedBlocks);
 		giveAllBlocksIds(orderedBlocks);
-		
+		//		orderedBlocks = eliminateEmptyBlocks();
+
 		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 
@@ -410,35 +394,38 @@ public class CFG implements CFGAble {
 
 	@Override
 	public void generateAssembly(AssemblyContext ctx) {
-		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
-		Queue<BasicBlock> blockQueue = new ArrayDeque<>();
-		blockQueue.add(getEntryBlock());
-
-		List<BasicBlock> orderedBlocks = orderBlocks();
+		List<BasicBlock> orderedBlocks = getOrderedBlocks();
+		orderedBlocks = getMergedBlocks(orderedBlocks);
+		orderedBlocks = getPrunedBlocks(orderedBlocks);
 		giveAllBlocksIds(orderedBlocks);
 
 
-		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
+		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 			ctx.addInstruction(Label.create(currentBlock.getID()));
 			currentBlock.generateAssembly(ctx);
-			
+
 			//get conditional value generated at the end of currentBlock
 			if(currentBlock.getCondition() != null) {
-			Register val = ((Expression) currentBlock.getCondition()).allocateRegister(ctx);
-			//compare to 1
-			Storage temp = Register.create("%rax");
-			Storage btrue = ImmediateValue.create(true);
-			ctx.addInstruction(Mov.create(btrue, temp));
-			ctx.addInstruction(new Cmp(val, temp));
-			ctx.deallocateRegister(val);
-			//if its == 1, go down true branch
-			ctx.addInstruction(Je.create(Memory.create(currentBlock.getNextBlock(true).getID())));
-			//else, go down TRUE branch
-			ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(false).getID())));
+				Register val = ((Expression) currentBlock.getCondition()).allocateRegister(ctx);
+				//compare to 1
+				Storage temp = Register.create("%rax");
+				Storage btrue = ImmediateValue.create(true);
+				ctx.addInstruction(Mov.create(btrue, temp));
+				ctx.addInstruction(new Cmp(val, temp));
+				ctx.deallocateRegister(val);
+				//if its == 1, go down true branch
+				ctx.addInstruction(Je.create(Memory.create(currentBlock.getNextBlock(true).getID())));
+				//else, go down TRUE branch
+				ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(false).getID())));
+			} else {
+				ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
 			}
 		}
-		
+		BasicBlock currentBlock = orderedBlocks.get(orderedBlocks.size()-1);
+		ctx.addInstruction(Label.create(currentBlock.getID()));
+		currentBlock.generateAssembly(ctx);
+
 		// Array Index Out Of Bounds Handler
 		ctx.addInstruction(Label.create("array_index_error"));
 		ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
