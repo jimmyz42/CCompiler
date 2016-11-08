@@ -86,6 +86,7 @@ public class ReturnStmt extends Statement {
 
 	@Override
 	public long getNumStackAllocations() {
+		if(expression == null) return 0;
 		return expression.getNumStackAllocations();
 	}
 }
