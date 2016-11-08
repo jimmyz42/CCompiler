@@ -19,8 +19,12 @@ abstract public class ExternArg extends Ir implements Storable {
 
     @Override
     public Storage getLocation(AssemblyContext ctx) {
-    	//most expressions and literals don't need an index parameter
     	return ctx.getStackLocation(getStorageTuple());
+    }
+
+    @Override
+    public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation ) {
+    	return getLocation(ctx);
     }
 
     public StorageTuple getStorageTuple() {

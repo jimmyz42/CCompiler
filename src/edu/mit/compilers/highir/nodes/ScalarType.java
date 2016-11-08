@@ -7,6 +7,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 
 public class ScalarType implements Type {
     public final static ScalarType INT = new ScalarType("int", 8);
+    public final static ScalarType String = new ScalarType("string", 8);
     public final static ScalarType BOOL = new ScalarType("bool", 1);
 
     private String name;

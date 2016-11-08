@@ -27,7 +27,7 @@ public class SizeofIdExpr extends Expression {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ScalarType.INT;
     }
 

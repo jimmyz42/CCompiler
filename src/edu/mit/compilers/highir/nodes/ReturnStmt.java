@@ -38,8 +38,8 @@ public class ReturnStmt extends Statement {
         }
 
         Expression expression = Expression.create(checker, ctx.expr());
-        if(expression.getExpressionType() != methodType) {
-            throw new TypeMismatchError("Return type " + expression.getExpressionType() + " does not match the expected type " + methodType, ctx);
+        if(expression.getType() != methodType) {
+            throw new TypeMismatchError("Return type " + expression.getType() + " does not match the expected type " + methodType, ctx);
         }
         return new ReturnStmt(expression);
     }

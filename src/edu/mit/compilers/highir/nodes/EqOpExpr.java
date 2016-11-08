@@ -31,7 +31,7 @@ public class EqOpExpr extends BinOpExpr implements Condition {
         Expression lhs = Expression.create(checker, ctx.expr(0));
         Expression rhs = Expression.create(checker, ctx.expr(1));
 
-        if (lhs.getExpressionType() != rhs.getExpressionType() || !(lhs.getExpressionType() instanceof ScalarType)) {
+        if (lhs.getType() != rhs.getType() || !(lhs.getType() instanceof ScalarType)) {
             throw new TypeMismatchError("Expected scalar arguments of the same type", ctx);
         }
 
@@ -39,7 +39,7 @@ public class EqOpExpr extends BinOpExpr implements Condition {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ScalarType.BOOL;
     }
 

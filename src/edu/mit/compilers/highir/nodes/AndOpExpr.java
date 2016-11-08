@@ -26,20 +26,20 @@ public class AndOpExpr extends BinOpExpr {
         Expression lhs = Expression.create(checker, ctx.expr(0));
         Expression rhs = Expression.create(checker, ctx.expr(1));
 
-        if (lhs.getExpressionType() != ScalarType.BOOL) {
+        if (lhs.getType() != ScalarType.BOOL) {
             throw new TypeMismatchError("Left argument of && must be an bool, got a " +
-                    lhs.getExpressionType(), ctx.expr(0));
+                    lhs.getType(), ctx.expr(0));
         }
-        if (rhs.getExpressionType() != ScalarType.BOOL) {
+        if (rhs.getType() != ScalarType.BOOL) {
             throw new TypeMismatchError("Right argument of && must be an bool, got a " +
-                    rhs.getExpressionType(), ctx.expr(1));
+                    rhs.getType(), ctx.expr(1));
         }
 
         return new AndOpExpr(operator, lhs, rhs);
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ScalarType.BOOL;
     }
 

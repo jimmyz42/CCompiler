@@ -33,20 +33,20 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 		Expression lhs = Expression.create(checker, ctx.expr(0));
 		Expression rhs = Expression.create(checker, ctx.expr(1));
 
-		if (lhs.getExpressionType() != ScalarType.INT) {
+		if (lhs.getType() != ScalarType.INT) {
 			throw new TypeMismatchError("Left argument of " + operator + " must be an int, got a " +
-					lhs.getExpressionType(), ctx.expr(0));
+					lhs.getType(), ctx.expr(0));
 		}
-		if (rhs.getExpressionType() != ScalarType.INT) {
+		if (rhs.getType() != ScalarType.INT) {
 			throw new TypeMismatchError("Right argument of " + operator + " must be an int, got a " +
-					rhs.getExpressionType(), ctx.expr(1));
+					rhs.getType(), ctx.expr(1));
 		}
 
 		return new RelOpExpr(operator, lhs, rhs);
 	}
 
 	@Override
-	public Type getExpressionType() {
+	public Type getType() {
 		return ScalarType.BOOL;
 	}
 

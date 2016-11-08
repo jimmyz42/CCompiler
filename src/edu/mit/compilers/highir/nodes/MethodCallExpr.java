@@ -40,7 +40,7 @@ public class MethodCallExpr extends Expression {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return function.getType();
     }
 
@@ -68,9 +68,9 @@ public class MethodCallExpr extends Expression {
                     throw new MethodCallException("Can't have string literals as method arguments", ctx.extern_arg(i));
                 }
                 Expression arg = (Expression) arguments.get(i);
-                if (arg.getExpressionType() != expectedArgs.get(i).getType()) {
+                if (arg.getType() != expectedArgs.get(i).getType()) {
                     // 1-based indexing for arguments in error messages
-                    throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getExpressionType() +
+                    throw new MethodCallException("Argument #" + (i + 1) + " has type " + arg.getType() +
                     ", expected " + expectedArgs.get(i).getType(), ctx.extern_arg(i));
                 }
             }
@@ -114,36 +114,37 @@ public class MethodCallExpr extends Expression {
     @Override
     public void generateAssembly(AssemblyContext ctx) {
         List<Instruction> instructions = new ArrayList<>();
-        for(int i = 0; i < arguments.size() && i < 6; i++) {
+        int PARAMS_IN_REGISTER = 6;
+        for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGISTER; i++) {
             ExternArg node = arguments.get(i);
             node.generateAssembly(ctx);
             switch(i) {
                 case 0:
-                instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdi")));
+                instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rdi")));
                 break;
                 case 1:
-                instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rsi")));
+                instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rsi")));
                 break;
                 case 2:
-                instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rdx")));
+                instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rdx")));
                 break;
                 case 3:
-                instructions.add(Mov.create(node.getLocation(ctx), Register.create("%rcx")));
+                instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rcx")));
                 break;
                 case 4:
-                instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r8")));
+                instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%r8")));
                 break;
                 case 5:
-                instructions.add(Mov.create(node.getLocation(ctx), Register.create("%r9")));
+                instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%r9")));
                 break;
             }
         }
 
         //int position = 0;
-        for(int i = arguments.size()-1; i >= 6; i--) {
+        for(int i = arguments.size()-1; i >= PARAMS_IN_REGISTER; i--) {
             ExternArg node = arguments.get(i);
             node.generateAssembly(ctx);
-            instructions.add(Push.create(node.getLocation(ctx)));
+            instructions.add(Push.create(node.getLocation(ctx, true)));
         }
 
         if(function instanceof ExternDescriptor) {
@@ -152,7 +153,7 @@ public class MethodCallExpr extends Expression {
         instructions.add(Call.create(Memory.create(function.getExpressionName())));
 
         //increase %rsp to ignore params pushed to the stack
-        int paramsOnStack =Math.max(0, arguments.size() - 6);
+        int paramsOnStack =Math.max(0, arguments.size() - PARAMS_IN_REGISTER);
         instructions.add(Add.create(ImmediateValue.create(paramsOnStack*8),Register.create("%rsp")));
 
 

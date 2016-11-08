@@ -57,4 +57,9 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
     public Storage getLocation(AssemblyContext ctx) {
     	return ctx.getStackLocation(getStorageTuple());
     }
+
+    @Override
+    public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation) {
+    	return getLocation(ctx);
+    }
 }

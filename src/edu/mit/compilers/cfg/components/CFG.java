@@ -191,10 +191,9 @@ public class CFG implements CFGAble {
 					searchSet.add(nextBlock);
 				}
 			}
-			
+
 		}
 
-		System.out.println(orderedBlocks);
 		return orderedBlocks;
 	}
 
@@ -258,7 +257,7 @@ public class CFG implements CFGAble {
 				BasicBlock merged = BasicBlock.merge(b1, b2);
 				if(b1 == entryBlock) entryBlock = merged;
 				if(b2 == exitBlock) exitBlock = merged;
-	
+
 				for(BasicBlock block: merged.getPreviousBlocks()) {
 					List<BasicBlock> list = block.getNextBlocks();
 					list.set(list.indexOf(b1), merged);
@@ -274,7 +273,7 @@ public class CFG implements CFGAble {
 				mergedBlocks.add(b1);
 			}
 		}
-		
+
 		mergedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
 		return mergedBlocks;
 	}
@@ -288,8 +287,6 @@ public class CFG implements CFGAble {
 				BasicBlock b2 = b1.getNextBlock();
 				if(b1 == entryBlock) entryBlock = b2;
 
-//				System.out.println("pruned " + b1 + " and " + b2);
-//				System.out.println(b1.getPreviousBlocks());
 				for(BasicBlock block: b1.getPreviousBlocks()) {
 					List<BasicBlock> list = block.getNextBlocks();
 					list.set(list.indexOf(b1), b2);
@@ -300,7 +297,7 @@ public class CFG implements CFGAble {
 				prunedBlocks.add(b1);
 			}
 		}
-		
+
 		prunedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
 		return prunedBlocks;
 	}

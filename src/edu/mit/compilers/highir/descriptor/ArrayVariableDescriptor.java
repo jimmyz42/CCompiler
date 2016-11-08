@@ -60,22 +60,23 @@ public class ArrayVariableDescriptor extends VariableDescriptor {
 
 	public Storage getLocation(AssemblyContext ctx, Register index) {
 		if(isGlobal()) {
-			ctx.addInstruction(Lea.create(Memory.create(getName() + "(%rip)"), Register.create("%rax")));
-			return Memory.create("(%rax, " + index.getName() + ", 8)");
+			Register src = ctx.allocateRegister();
+			ctx.addInstruction(Lea.create(Memory.create(getName() + "(%rip)"), src));
+			ctx.addInstruction(Lea.create(Memory.create("(" + src.getName() + ", " + index.getName() + ", 8)"), Register.create("%rax")));
+			ctx.deallocateRegister(src);
+			return Memory.create("(%rax)");
 		
 		}
+		
+		//TODO is a unique location needed here too
 		StorageTuple tupleWithIndex = StorageTuple.create(storedDescriptors.get(0).getStorageTuple().base, index);
 		return ctx.getStackLocation(tupleWithIndex, true);
 	}
 
 	public Register allocateRegister(AssemblyContext ctx, Register index) {
-		if(isGlobal()) {
-			Register reg = ctx.allocateRegister();
-			ctx.addInstruction(Mov.create(getLocation(ctx, index), reg));
-			return reg;
-		}
-		StorageTuple tupleWithIndex = StorageTuple.create(storedDescriptors.get(0).getStorageTuple().base, index);
-		return ctx.allocateRegister(tupleWithIndex, true);
+		Register reg = ctx.allocateRegister();
+		ctx.addInstruction(Mov.create(getLocation(ctx, index), reg));
+		return reg;
 	}
 
 	public static ArrayVariableDescriptor create(String name, ArrayType type, boolean isGlobal) {

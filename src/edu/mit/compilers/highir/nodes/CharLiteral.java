@@ -20,7 +20,7 @@ public class CharLiteral extends Literal {
     }
     
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         // Chars are treated as ints in decaf
         return ScalarType.INT;
     }

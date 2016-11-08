@@ -23,7 +23,7 @@ public class NegExpr extends Expression {
 
     public static NegExpr create(DecafSemanticChecker checker, DecafParser.NegExprContext ctx) {
         Expression expression = (Expression) checker.visit(ctx.expr());
-        if (expression.getExpressionType() != ScalarType.INT) {
+        if (expression.getType() != ScalarType.INT) {
             throw new TypeMismatchError("Expected an int expression", ctx.expr());
         }
 
@@ -31,7 +31,7 @@ public class NegExpr extends Expression {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ScalarType.INT;
     }
 

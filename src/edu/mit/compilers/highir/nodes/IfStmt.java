@@ -28,7 +28,7 @@ public class IfStmt extends Statement {
 
     public static IfStmt create(DecafSemanticChecker checker, DecafParser.IfStmtContext ctx) {
         Expression condition = Expression.create(checker, ctx.expr());
-        if (condition.getExpressionType() != ScalarType.BOOL) {
+        if (condition.getType() != ScalarType.BOOL) {
             throw new TypeMismatchError("If condition must be a bool", ctx.expr());
         }
 

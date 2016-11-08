@@ -23,7 +23,7 @@ public class WhileStmt extends Statement {
 
     public static WhileStmt create(DecafSemanticChecker checker, DecafParser.WhileStmtContext ctx) {
         Expression condition = Expression.create(checker, ctx.expr());
-        if (condition.getExpressionType() != ScalarType.BOOL) {
+        if (condition.getType() != ScalarType.BOOL) {
             throw new TypeMismatchError("While condition must be a bool", ctx.expr());
         }
 

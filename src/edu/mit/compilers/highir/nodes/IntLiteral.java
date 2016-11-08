@@ -33,7 +33,7 @@ public class IntLiteral extends Literal {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ScalarType.INT;
     }
 

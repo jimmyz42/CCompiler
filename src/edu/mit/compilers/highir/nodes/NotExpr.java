@@ -21,7 +21,7 @@ public class NotExpr extends Expression {
 
     public static NotExpr create(DecafSemanticChecker checker, DecafParser.NotExprContext ctx) {
         Expression expression = (Expression) checker.visit(ctx.expr());
-        if (expression.getExpressionType() != ScalarType.BOOL) {
+        if (expression.getType() != ScalarType.BOOL) {
             throw new TypeMismatchError("Expected a bool expression", ctx.expr());
         }
 
@@ -29,7 +29,7 @@ public class NotExpr extends Expression {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         // TODO Auto-generated method stub
         return ScalarType.BOOL;
     }

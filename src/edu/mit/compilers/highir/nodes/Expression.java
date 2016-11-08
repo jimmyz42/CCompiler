@@ -16,7 +16,7 @@ abstract public class Expression extends ExternArg {
         return (Expression) checker.visit(ctx);
     }
 
-    public abstract Type getExpressionType();
+    public abstract Type getType();
 
     // For bool expressions, returns entry block
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {

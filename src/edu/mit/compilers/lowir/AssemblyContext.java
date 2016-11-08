@@ -45,7 +45,7 @@ public class AssemblyContext {
 	}
 
 	public void allocateStack(StorageTuple node) {
-		if (!stackPositions.containsKey(node)) {
+		if (!stackPositions.containsKey(node.base)) {
 			stackPositions.put(node.base, stackPositions.size() + 1);
 		}
 	}

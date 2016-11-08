@@ -38,7 +38,7 @@ public class ArrayLocation extends Location {
         if (!(variable.getType() instanceof ArrayType)) {
             throw new TypeMismatchError("Can only index variables", ctx);
         }
-        if (index.getExpressionType() != ScalarType.INT) {
+        if (index.getType() != ScalarType.INT) {
             throw new TypeMismatchError("Array index must be an int", ctx.expr());
         }
 
@@ -46,7 +46,7 @@ public class ArrayLocation extends Location {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ((ArrayType) getVariable().getType()).getElementType();
     }
 
@@ -81,21 +81,40 @@ public class ArrayLocation extends Location {
 	}
 
     public Storage getLocation(AssemblyContext ctx) {
-    	ctx.addInstruction(Mov.create(index.getLocation(ctx), Register.create("%rax")));
-    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),Register.create("%rax")));
+    	Register src = index.allocateRegister(ctx);
+    	
+    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
     	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
-    	ctx.addInstruction(Xor.create(Register.create("%rdx"), Register.create("%rdx")));
-        ctx.addInstruction(Sub.create(index.getLocation(ctx), Register.create("%rdx")));
-    	return getVariable().getLocation(ctx, Register.create("%rdx"));
+    	ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
+        ctx.addInstruction(Sub.create(src, Register.create("%rax")));
+        
+        Storage result =  getVariable().getLocation(ctx, Register.create("%rax"));
+        ctx.deallocateRegister(src);
+    	return result;
+    }
+
+    public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation) {
+    	if(forceStackLocation) {
+    		Register reg = allocateRegister(ctx);
+    		ctx.storeStack(getStorageTuple(), reg);
+    		ctx.deallocateRegister(reg);
+    		return ctx.getStackLocation(getStorageTuple());
+    	} else {
+    		return getLocation(ctx);
+    	}
     }
 
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
-    	ctx.addInstruction(Mov.create(index.getLocation(ctx), Register.create("%rax")));
-    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),Register.create("%rax")));
+    	Register src = index.allocateRegister(ctx);
+    	
+    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
     	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
-        ctx.addInstruction(Xor.create(Register.create("%rdx"), Register.create("%rdx")));
-        ctx.addInstruction(Sub.create(index.getLocation(ctx), Register.create("%rdx")));
-    	return ((ArrayVariableDescriptor) getVariable()).allocateRegister(ctx, Register.create("%rdx"));
+    	ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
+        ctx.addInstruction(Sub.create(src, Register.create("%rax")));
+        
+        Register result = getVariable().allocateRegister(ctx, Register.create("%rax"));
+        ctx.deallocateRegister(src);
+    	return result;
     }
 }

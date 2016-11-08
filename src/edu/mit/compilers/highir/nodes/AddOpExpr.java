@@ -26,12 +26,12 @@ public class AddOpExpr extends BinOpExpr {
 		Expression lhs = Expression.create(checker, ctx.expr(0));
 		Expression rhs = Expression.create(checker, ctx.expr(1));
 
-		if (lhs.getExpressionType() != ScalarType.INT) {
-			throw new TypeMismatchError("Left argument of + must be an int, got a " + lhs.getExpressionType(),
+		if (lhs.getType() != ScalarType.INT) {
+			throw new TypeMismatchError("Left argument of + must be an int, got a " + lhs.getType(),
 					ctx.expr(0));
 		}
-		if (rhs.getExpressionType() != ScalarType.INT) {
-			throw new TypeMismatchError("Right argument of + must be an int, got a " + rhs.getExpressionType(),
+		if (rhs.getType() != ScalarType.INT) {
+			throw new TypeMismatchError("Right argument of + must be an int, got a " + rhs.getType(),
 					ctx.expr(1));
 		}
 
@@ -39,7 +39,7 @@ public class AddOpExpr extends BinOpExpr {
 	}
 
 	@Override
-	public Type getExpressionType() {
+	public Type getType() {
 		return ScalarType.INT;
 	}
 

@@ -21,7 +21,7 @@ public class SizeofTypeExpr extends Expression {
     // This is the return type, which is NOT the same as this.type:
     // e.g. `sizeof(bool)` is an int
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ScalarType.INT;
     }
 

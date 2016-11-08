@@ -27,7 +27,7 @@ public class BoolLiteral extends Literal {
     }
     
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return ScalarType.BOOL;
     }
     

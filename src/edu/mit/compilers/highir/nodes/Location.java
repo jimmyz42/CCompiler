@@ -28,7 +28,7 @@ abstract public class Location extends Expression {
     }
 
     @Override
-    public Type getExpressionType() {
+    public Type getType() {
         return variable.getType();
     }
 

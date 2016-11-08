@@ -38,14 +38,14 @@ public class AssignStmt extends Statement {
     }
 
     public static AssignStmt create(Location location, String assignOp, Expression expression, DecafParser.StatementContext ctx) {
-        if (location.getExpressionType() != expression.getExpressionType()) {
+        if (location.getType() != expression.getType()) {
             throw new TypeMismatchError("Two sides of an assignment should have the same type", ctx);
         }
-        if (!(location.getExpressionType() instanceof ScalarType)) {
+        if (!(location.getType() instanceof ScalarType)) {
             throw new TypeMismatchError("Can only assign a scalar", ctx);
         }
         if (!assignOp.equals("=")) {
-            if (location.getExpressionType() != ScalarType.INT) {
+            if (location.getType() != ScalarType.INT) {
                 throw new TypeMismatchError("Can only use += and -= on ints", ctx);
             }
             if (assignOp.equals("+=")) {

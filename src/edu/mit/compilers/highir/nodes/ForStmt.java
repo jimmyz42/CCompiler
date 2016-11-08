@@ -33,7 +33,7 @@ public class ForStmt extends Statement {
         SymbolTable symbolTable = checker.currentSymbolTable();
 
         IdLocation iterator = new IdLocation(symbolTable.getVariable(ctx.init_id.getText(), ctx));
-        if (iterator.getExpressionType() != ScalarType.INT) {
+        if (iterator.getType() != ScalarType.INT) {
             throw new TypeMismatchError("For loop iterator must be an int", ctx);
         }
         AssignStmt initializer = AssignStmt.create(
@@ -43,7 +43,7 @@ public class ForStmt extends Statement {
                 ctx);
 
         Expression condition = Expression.create(checker, ctx.condition);
-        if (condition.getExpressionType() != ScalarType.BOOL) {
+        if (condition.getType() != ScalarType.BOOL) {
             throw new TypeMismatchError("For loop condition must be a bool", ctx.condition);
         }
 
