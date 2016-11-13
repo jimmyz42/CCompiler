@@ -29,6 +29,6 @@ public class MethodCallStmt extends Statement {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-        return BasicBlock.create(methodCall);
+        return methodCall.generateCFG(context);
     }
 }

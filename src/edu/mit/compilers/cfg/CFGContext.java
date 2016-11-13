@@ -4,12 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.highir.nodes.IdLocation;
+import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.descriptor.FunctionDescriptor;
 
 public class CFGContext {
 	private Stack<CFG> loops;
 	private Map<FunctionDescriptor, CFG> methods;
 	private CFG currentMethod;
+	
+	private int tempVarNonce;
 
 	public CFGContext() {
 		this.loops = new Stack<>();
@@ -40,5 +45,10 @@ public class CFGContext {
 	
 	public CFG getMethodCFG(FunctionDescriptor desc) {
 		return methods.get(desc);
+	}
+	
+	public VariableDescriptor generateNewTemporary(Type type) {
+		tempVarNonce++;
+		return VariableDescriptor.create("t"+tempVarNonce, type, false);
 	}
 }

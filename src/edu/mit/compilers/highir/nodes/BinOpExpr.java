@@ -45,6 +45,23 @@ abstract public class BinOpExpr extends Expression {
     	lhs.cfgPrint(pw, "");
     	operator.cfgPrint(pw, " ");
     	rhs.cfgPrint(pw, " ");
-    	pw.println();
+    }
+
+    @Override
+    public CFG generateCFG(CFGContext context) {
+    	CFG lhsCFG =  lhs.generateCFG(context);
+    	CFG rhsCFG = rhs.generateCFG(context);
+    	VariableDescriptor temp = context.generateNewTemporary(getType());
+    	List<CFGAble> components = new ArrayList<>();
+    	components.add(temp);
+    	components.add(AssignStmt.create(IdLocation.create(temp), "=", this));
+    	BasicBlock thisCFG = BasicBlock.create(components);
+    	
+    	lhsCFG.addNextBlock(rhsCFG.getEntryBlock());
+    	rhsCFG.addPreviousBlock(lhsCFG.getExitBlock());
+    	rhsCFG.addNextBlock(thisCFG.getEntryBlock());
+    	thisCFG.addPreviousBlock(rhsCFG.getExitBlock());
+    	
+        return new CFG(lhsCFG.getEntryBlock(), thisCFG.getExitBlock());
     }
 }

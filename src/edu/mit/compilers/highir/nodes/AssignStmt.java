@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storable;
@@ -16,6 +17,8 @@ import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Xor;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import exceptions.TypeMismatchError;
 
@@ -58,6 +61,10 @@ public class AssignStmt extends Statement {
         return new AssignStmt(location, "=", expression);
     }
 
+    public static AssignStmt create(Location location, String assignOp, Expression expression) {
+        return new AssignStmt(location, "=", expression);
+    }
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         super.prettyPrint(pw, prefix);
@@ -75,6 +82,23 @@ public class AssignStmt extends Statement {
         pw.print(" " + assignOp);
         expression.cfgPrint(pw," ");
         pw.println();
+    }
+
+    @Override
+    public CFG generateCFG(CFGContext context) {
+    	CFG expressionCFG =  expression.generateCFG(context);
+    	VariableDescriptor temp = context.generateNewTemporary(expression.getType());
+    	
+    	List<CFGAble> components = new ArrayList<>();
+    	components.add(temp);
+    	components.add(this);
+    	components.add(AssignStmt.create(IdLocation.create(temp), "=", location));
+    	BasicBlock thisCFG = BasicBlock.create(components);
+    	
+    	expressionCFG.addNextBlock(thisCFG.getEntryBlock());
+    	thisCFG.addPreviousBlock(expressionCFG.getExitBlock());
+    	
+        return new CFG(expressionCFG.getEntryBlock(), thisCFG.getExitBlock());
     }
 
     @Override

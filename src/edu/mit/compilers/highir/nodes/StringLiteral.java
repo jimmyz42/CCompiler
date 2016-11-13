@@ -4,6 +4,9 @@ import java.io.PrintWriter;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
@@ -25,13 +28,18 @@ public class StringLiteral extends ExternArg {
     }
 
     @Override
+    public void prettyPrint(PrintWriter pw, String prefix) {
+        pw.println(prefix + getClass().getSimpleName() + ": " + terminal);
+    }
+
+    @Override
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.print(prefix + terminal);
     }
 
     @Override
-    public void prettyPrint(PrintWriter pw, String prefix) {
-        pw.println(prefix + getClass().getSimpleName() + ": " + terminal);
+    public CFG generateCFG(CFGContext context) {
+        return BasicBlock.createEmpty();
     }
 
     @Override
