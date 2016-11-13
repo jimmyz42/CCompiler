@@ -1,15 +1,16 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.MethodCallStmtContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.ImmediateValue;
-import edu.mit.compilers.lowir.Storage;
 
 public class MethodCallStmt extends Statement {
     private final MethodCallExpr methodCall;
@@ -28,7 +29,39 @@ public class MethodCallStmt extends Statement {
     }
 
     @Override
-    public CFG generateCFG(CFGContext context) {
-        return methodCall.generateCFG(context);
+    public void cfgPrint(PrintWriter pw, String prefix) {
+        methodCall.cfgPrint(pw, prefix);
+        pw.println();
     }
+
+    @Override
+    public CFG generateCFG(CFGContext context) {
+    	CFG callCFG =  methodCall.generateCFG(context);
+    	BasicBlock thisCFG = BasicBlock.create(this);
+    	
+    	callCFG.addNextBlock(thisCFG.getEntryBlock());
+    	thisCFG.addPreviousBlock(callCFG.getExitBlock());
+    	
+        return new CFG(callCFG.getEntryBlock(), thisCFG.getExitBlock());
+    }
+
+    @Override
+    public void generateAssembly(AssemblyContext ctx){
+        methodCall.generateAssembly(ctx);
+    }
+
+	@Override
+	public long getNumStackAllocations() {
+		return methodCall.getNumStackAllocations();
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return methodCall.getConsumedDescriptors();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
+	}
 }

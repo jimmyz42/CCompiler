@@ -1,10 +1,17 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.ArrayVariableDescriptor;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
@@ -13,7 +20,6 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Jae;
-import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Sub;
 import edu.mit.compilers.lowir.instructions.Xor;
 import exceptions.TypeMismatchError;
@@ -71,6 +77,11 @@ public class ArrayLocation extends Location {
     }
 
     @Override
+    public CFG generateCFG(CFGContext context) {
+        return index.generateCFG(context);
+    }
+
+    @Override
     public void generateAssembly(AssemblyContext ctx) {
     	index.generateAssembly(ctx);
     }
@@ -117,4 +128,19 @@ public class ArrayLocation extends Location {
         ctx.deallocateRegister(src);
     	return result;
     }
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		Set<Descriptor> consumed = new HashSet<>();
+		consumed.add(variable);
+		consumed.addAll(index.getConsumedDescriptors());
+		return consumed;
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		Set<Descriptor> generated = new HashSet<>();
+		generated.add(variable);
+		return generated;
+	}
 }

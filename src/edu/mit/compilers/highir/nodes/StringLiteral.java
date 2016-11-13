@@ -1,17 +1,17 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-import java.util.Random;
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Lea;
 import edu.mit.compilers.lowir.instructions.StringInstruction;
@@ -53,5 +53,15 @@ public class StringLiteral extends ExternArg {
 	@Override
 	public long getNumStackAllocations() {
 		return 1;
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
 	}
 }

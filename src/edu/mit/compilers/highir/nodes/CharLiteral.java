@@ -4,7 +4,6 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
-import edu.mit.compilers.lowir.Storage;
 
 public class CharLiteral extends Literal {
     private char terminal;

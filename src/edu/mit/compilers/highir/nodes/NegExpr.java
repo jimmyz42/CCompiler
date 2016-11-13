@@ -1,23 +1,24 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Neg;
-import edu.mit.compilers.lowir.instructions.Not;
-import edu.mit.compilers.lowir.instructions.Or;
 import exceptions.TypeMismatchError;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NegExpr extends Expression {
     private Expression expression;
@@ -58,7 +59,7 @@ public class NegExpr extends Expression {
     	CFG expressionCFG =  expression.generateCFG(context);
     	VariableDescriptor temp = context.generateNewTemporary(getType());
     	List<CFGAble> components = new ArrayList<>();
-    	components.add(BasicBlock.create(temp));
+    	components.add(temp);
     	components.add(AssignStmt.create(IdLocation.create(temp), "=", this));
     	BasicBlock thisCFG = BasicBlock.create(components);
     	
@@ -85,5 +86,15 @@ public class NegExpr extends Expression {
 	@Override
 	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + 1;
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return expression.getConsumedDescriptors();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
 	}
 }

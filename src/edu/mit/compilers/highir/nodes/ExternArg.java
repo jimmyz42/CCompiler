@@ -1,15 +1,20 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.io.PrintWriter;
+
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.StorageTuple;
 
-abstract public class ExternArg extends Ir implements Storable {
+abstract public class ExternArg extends Ir implements Storable, CFGAble {
 
 	private final StorageTuple storageTuple;
 
@@ -34,6 +39,26 @@ abstract public class ExternArg extends Ir implements Storable {
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
     	return ctx.allocateRegister(getStorageTuple());
+    }
+
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+        pw.println("");
+    }
+
+    @Override
+    public CFG generateCFG(CFGContext context) {
+        return BasicBlock.create(this);
+    }
+    
+    @Override
+    public void generateAssembly(AssemblyContext ctx) {
+    	
+    }
+    
+    @Override
+    public long getNumStackAllocations() {
+    	return 0;
     }
 
     public static ExternArg create(DecafSemanticChecker checker, DecafParser.Extern_argContext ctx) {

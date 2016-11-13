@@ -3,23 +3,19 @@ package edu.mit.compilers.highir.nodes;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import edu.mit.compilers.grammar.DecafParser;
-import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
-import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storable;
-import edu.mit.compilers.lowir.Storage;
-import edu.mit.compilers.lowir.instructions.Idiv;
-import edu.mit.compilers.lowir.instructions.Imul;
-import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Mov;
-import edu.mit.compilers.lowir.instructions.Xor;
-import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.grammar.DecafParser;
+import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Mov;
 import exceptions.TypeMismatchError;
 
 public class AssignStmt extends Statement {
@@ -114,5 +110,15 @@ public class AssignStmt extends Statement {
 	@Override
 	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + location.getNumStackAllocations();
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return expression.getConsumedDescriptors();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return location.getGeneratedDescriptors();
 	}
 }

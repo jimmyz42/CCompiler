@@ -1,7 +1,6 @@
 package edu.mit.compilers.highir.nodes;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
-import edu.mit.compilers.highir.DecafSemanticChecker;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;

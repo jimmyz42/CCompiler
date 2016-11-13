@@ -2,20 +2,17 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
-import edu.mit.compilers.grammar.DecafParser.ExprContext;
-import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.descriptor.MethodDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
-import exceptions.TypeMismatchError;
 
 
 abstract public class BinOpExpr extends Expression {
@@ -43,7 +40,7 @@ abstract public class BinOpExpr extends Expression {
     public void cfgPrint(PrintWriter pw, String prefix) {
     	pw.print(prefix);
     	lhs.cfgPrint(pw, "");
-    	operator.cfgPrint(pw, " ");
+    	pw.print(" " + operator.getTerminal());;
     	rhs.cfgPrint(pw, " ");
     }
 
@@ -64,4 +61,17 @@ abstract public class BinOpExpr extends Expression {
     	
         return new CFG(lhsCFG.getEntryBlock(), thisCFG.getExitBlock());
     }
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		Set<Descriptor> consumed = new HashSet<>();
+		consumed.addAll(lhs.getConsumedDescriptors());
+		consumed.addAll(rhs.getConsumedDescriptors());
+		return consumed;
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
+	}
 }

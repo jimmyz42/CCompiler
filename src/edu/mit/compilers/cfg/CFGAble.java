@@ -1,11 +1,11 @@
 package edu.mit.compilers.cfg;
 
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.instructions.Instruction;
 
 public interface CFGAble {
     public abstract CFG generateCFG(CFGContext context);
@@ -17,4 +17,6 @@ public interface CFGAble {
      */
 	public void generateAssembly(AssemblyContext ctx);
     public long getNumStackAllocations();
+    public Set<Descriptor> getConsumedDescriptors();
+    public Set<Descriptor> getGeneratedDescriptors();
 }

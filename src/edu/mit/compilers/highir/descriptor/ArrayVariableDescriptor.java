@@ -3,10 +3,7 @@ package edu.mit.compilers.highir.descriptor;
 import java.util.ArrayList;
 
 import edu.mit.compilers.highir.nodes.ArrayType;
-import edu.mit.compilers.highir.nodes.ScalarType;
-import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;

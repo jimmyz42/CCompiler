@@ -2,8 +2,6 @@ package edu.mit.compilers.lowir.instructions;
 
 import java.io.PrintWriter;
 
-import edu.mit.compilers.lowir.Storage;
-
 public class Directive extends Instruction {
 	String text;
 	

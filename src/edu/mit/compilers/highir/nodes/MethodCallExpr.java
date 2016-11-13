@@ -1,24 +1,24 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
-import edu.mit.compilers.cfg.components.EnterBlock;
-import edu.mit.compilers.cfg.components.LeaveBlock;
-import edu.mit.compilers.cfg.components.NonVoidBlock;
 import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
 import edu.mit.compilers.grammar.DecafParser.Method_callContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.descriptor.*;
+import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.ExternDescriptor;
+import edu.mit.compilers.highir.descriptor.FunctionDescriptor;
+import edu.mit.compilers.highir.descriptor.MethodDescriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
@@ -26,11 +26,8 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Add;
 import edu.mit.compilers.lowir.instructions.Call;
 import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Lea;
 import edu.mit.compilers.lowir.instructions.Mov;
-import edu.mit.compilers.lowir.instructions.Pop;
 import edu.mit.compilers.lowir.instructions.Push;
-import edu.mit.compilers.lowir.instructions.Sub;
 import edu.mit.compilers.lowir.instructions.Xor;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
@@ -117,12 +114,8 @@ public class MethodCallExpr extends Expression {
 
 	@Override
 	public CFG generateCFG(CFGContext context) {
-    	VariableDescriptor temp = context.generateNewTemporary(getType());
-    	List<CFGAble> components = new ArrayList<>();
-    	components.add(temp);
-    	components.add(AssignStmt.create(IdLocation.create(temp), "=", this));
-    	BasicBlock thisCFG = BasicBlock.create(components);
-
+//    	BasicBlock thisCFG = BasicBlock.create(this);
+		if(arguments.size() > 0) {
 		CFG firstCFG = arguments.get(0).generateCFG(context);
 		CFG currentCFG = firstCFG;
 		for(int i =1; i < arguments.size(); i++) {
@@ -132,11 +125,13 @@ public class MethodCallExpr extends Expression {
 			nextCFG.setPreviousBlock(currentCFG.getExitBlock());
 			currentCFG = nextCFG;
 		}
-		
-		currentCFG.setNextBlock(thisCFG.getEntryBlock());
-		thisCFG.addPreviousBlock(currentCFG.getExitBlock());
+//		currentCFG.setNextBlock(thisCFG.getEntryBlock());
+//		thisCFG.addPreviousBlock(currentCFG.getExitBlock());
 
-		return new CFG(firstCFG.getEntryBlock(), thisCFG.getExitBlock());
+		return new CFG(firstCFG.getEntryBlock(), currentCFG.getExitBlock());
+		} else {
+			return BasicBlock.createEmpty();
+		}
 	}
 
 	@Override
@@ -197,5 +192,20 @@ public class MethodCallExpr extends Expression {
 		}
 		numStackAllocations++;
 		return numStackAllocations;
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		Set<Descriptor> consumed = new HashSet<>();
+		consumed.add(function);
+		for(ExternArg argument: arguments) {
+			consumed.addAll(argument.getConsumedDescriptors());
+		}
+		return consumed;
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
 	}
 }

@@ -2,28 +2,29 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.BlockContext;
-import edu.mit.compilers.grammar.DecafParser.Field_declContext;
-import edu.mit.compilers.grammar.DecafParser.StatementContext;
 import edu.mit.compilers.grammar.DecafParser.BreakStmtContext;
 import edu.mit.compilers.grammar.DecafParser.ContinueStmtContext;
+import edu.mit.compilers.grammar.DecafParser.Field_declContext;
+import edu.mit.compilers.grammar.DecafParser.StatementContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.symboltable.SymbolTable;
-import edu.mit.compilers.highir.symboltable.LocalSymbolTable;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
-
-import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.components.CFG;
-import edu.mit.compilers.cfg.components.BasicBlock;
-
-import exceptions.SemanticError;
+import edu.mit.compilers.highir.symboltable.LocalSymbolTable;
+import edu.mit.compilers.highir.symboltable.SymbolTable;
+import edu.mit.compilers.lowir.AssemblyContext;
 import exceptions.ImproperEscapeError;
+import exceptions.SemanticError;
 
-public class Block extends Ir {
+public class Block extends Ir implements CFGAble {
     private final LocalSymbolTable symbolTable;
     private List<Statement> statements;
     private boolean isLocalBlock;
@@ -121,4 +122,28 @@ public class Block extends Ir {
 
         return new CFG(symbolBlock, currentCFG.getExitBlock());
     }
+
+	@Override
+	public void cfgPrint(PrintWriter pw, String prefix) {
+	}
+
+	@Override
+	public void generateAssembly(AssemblyContext ctx) {
+		
+	}
+
+	@Override
+	public long getNumStackAllocations() {
+		return 0;
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
+	}
 }

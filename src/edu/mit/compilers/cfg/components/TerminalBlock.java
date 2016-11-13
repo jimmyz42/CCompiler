@@ -3,7 +3,6 @@ package edu.mit.compilers.cfg.components;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.CFGAble;
 
 public class TerminalBlock extends BasicBlock {

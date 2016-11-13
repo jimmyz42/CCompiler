@@ -3,33 +3,23 @@ package edu.mit.compilers.highir.descriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import edu.mit.compilers.Util;
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.Method_argument_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.nodes.Block;
-import edu.mit.compilers.highir.nodes.Ir;
-import edu.mit.compilers.highir.nodes.ReturnStmt;
+import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.nodes.VoidType;
-import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.instructions.Directive;
-import edu.mit.compilers.lowir.instructions.Enter;
-import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Label;
-import edu.mit.compilers.lowir.instructions.Mov;
-import edu.mit.compilers.lowir.instructions.Push;
-import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.cfg.components.CFG;
-import edu.mit.compilers.cfg.components.BasicBlock;
-import edu.mit.compilers.cfg.components.LeaveBlock;
 import exceptions.TypeMismatchError;
 
 public class MethodDescriptor extends FunctionDescriptor {
@@ -154,5 +144,15 @@ public class MethodDescriptor extends FunctionDescriptor {
 	@Override
 	public long getNumStackAllocations() {
 		return Math.min(arguments.size(), 6);
+	}
+	
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return new HashSet<>(arguments);
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
 	}
 }

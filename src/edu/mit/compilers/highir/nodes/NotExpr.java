@@ -2,7 +2,9 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
@@ -10,13 +12,12 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Not;
-import edu.mit.compilers.lowir.instructions.Or;
 import exceptions.TypeMismatchError;
 
 public class NotExpr extends Expression {
@@ -84,5 +85,15 @@ public class NotExpr extends Expression {
 	@Override
 	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + 1;
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return expression.getConsumedDescriptors();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
 	}
 }

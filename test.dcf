@@ -1,26 +1,13 @@
-#define int long long
+a#define int long long
 
 extern printf();
-int add ( int a, int b ) {
-  return ( a + b );
-}
-int sub ( int a, int b ) {
-  return ( a - b );
-}
-int sum ( int a, int b, int c, int d, int e, int f, int g, int h ) {
-  return ( a + b + c + d + e + f + g + h );
-}
+// This should produce a runtime error
+int a[10];
 void main ( ) {
-  int a, b, c, d;
-  a = 1;
-  b = 2;
-  c = add ( a, b );
-  d = sub ( c, b );
-  if ( d == a ) {
-    printf ( "correct\n" );
+  int i, j;
+  j = 11;
+  for ( i = 0; i < j; i += 1 ) {
+    a[i] = i;
+    printf ( "%d\n", i );
   }
-  else {
-    printf ( "INCORRECT\n" );
-  }
-  printf ( "sum of 1 - 8 is %d (36)\n", sum ( 1, 2, 3, 4, 5, 6, 7, 8 ) );
 }

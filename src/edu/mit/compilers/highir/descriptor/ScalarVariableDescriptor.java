@@ -1,8 +1,6 @@
 package edu.mit.compilers.highir.descriptor;
 
-import edu.mit.compilers.highir.nodes.ArrayType;
 import edu.mit.compilers.highir.nodes.ScalarType;
-import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;

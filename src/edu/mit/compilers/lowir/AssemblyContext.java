@@ -2,18 +2,13 @@
 
 package edu.mit.compilers.lowir;
 
-import java.util.Stack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
-import edu.mit.compilers.highir.nodes.Expression;
-import edu.mit.compilers.highir.nodes.Ir;
-import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Add;
-import edu.mit.compilers.lowir.instructions.Enter;
 import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Leave;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Pop;
 import edu.mit.compilers.lowir.instructions.Push;

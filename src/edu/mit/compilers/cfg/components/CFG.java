@@ -4,47 +4,40 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
-import java.util.HashSet;
 
-import edu.mit.compilers.highir.nodes.Expression;
-import edu.mit.compilers.cfg.CFGAble;
+import org.jgrapht.ext.DOTExporter;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedPseudograph;
+
 import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
-import edu.mit.compilers.lowir.instructions.Call;
-import edu.mit.compilers.lowir.instructions.Cmp;
-import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Je;
-import edu.mit.compilers.lowir.instructions.Jmp;
-import edu.mit.compilers.lowir.instructions.Jne;
-import edu.mit.compilers.lowir.instructions.Label;
-import edu.mit.compilers.lowir.instructions.Mov;
-import edu.mit.compilers.lowir.instructions.Syscall;
 import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
-
-import org.jgrapht.ext.DOTExporter;
-import org.jgrapht.ext.StringEdgeNameProvider;
-import org.jgrapht.ext.StringNameProvider;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedPseudograph;
-import org.jgrapht.ext.VertexNameProvider;
-import org.jgrapht.ext.EdgeNameProvider;
+import edu.mit.compilers.lowir.instructions.Cmp;
+import edu.mit.compilers.lowir.instructions.Je;
+import edu.mit.compilers.lowir.instructions.Jmp;
+import edu.mit.compilers.lowir.instructions.Label;
+import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Syscall;
 
 
-public class CFG implements CFGAble {
+public class CFG {
 	protected BasicBlock entryBlock;
 	protected BasicBlock exitBlock;
+	private List<BasicBlock> orderedBlocks;
 
 	public CFG(BasicBlock entryBlock, BasicBlock exitBlock) {
 		this.entryBlock = entryBlock;
@@ -55,6 +48,7 @@ public class CFG implements CFGAble {
 	// to link to, note that entry and exit block are not linked
 	// when creating the actual interior CFG link to the NOPs appropriately
 	public CFG() {
+		this.orderedBlocks = Collections.emptyList();
 	}
 
 	public BasicBlock getEntryBlock() {
@@ -128,13 +122,12 @@ public class CFG implements CFGAble {
 	public void addNextBlock(BasicBlock nextBlock) {
 		addNextBlocks(Collections.singletonList(nextBlock));
 	}
-
-	@Override
+	
 	public CFG generateCFG(CFGContext context) {
 		return this;
 	}
 	
-	private List<BasicBlock> getOrderedBlocks() {
+	private void orderBlocks() {
 		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
 		Stack<BasicBlock> blockStack = new Stack<>();
 		Stack<Stack<BasicBlock>> blockStackStack = new Stack<>();
@@ -194,10 +187,10 @@ public class CFG implements CFGAble {
 
 		}
 
-		return orderedBlocks;
+		this.orderedBlocks = orderedBlocks;
 	}
 
-	private void giveAllBlocksIds(List<BasicBlock> orderedBlocks){
+	private void giveAllBlocksIds(){
 		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 			currentBlock.setID("block" +  blockNum);
@@ -246,7 +239,7 @@ public class CFG implements CFGAble {
 	}
 
 	// Merge basic blocks optimization
-	public List<BasicBlock> getMergedBlocks(List<BasicBlock> orderedBlocks){
+	public void mergeBlocks(){
 		List<BasicBlock> mergedBlocks = new ArrayList<>();
 		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
 			BasicBlock b1 = orderedBlocks.get(blockNum);
@@ -275,10 +268,10 @@ public class CFG implements CFGAble {
 		}
 
 		mergedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
-		return mergedBlocks;
+		this.orderedBlocks = mergedBlocks;
 	}
 
-	public List<BasicBlock> getPrunedBlocks(List<BasicBlock> orderedBlocks){
+	public void pruneBlocks(){
 		List<BasicBlock> prunedBlocks = new ArrayList<>();
 		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
 			BasicBlock b1 = orderedBlocks.get(blockNum);
@@ -299,7 +292,7 @@ public class CFG implements CFGAble {
 		}
 
 		prunedBlocks.add(orderedBlocks.get(orderedBlocks.size()-1));
-		return prunedBlocks;
+		this.orderedBlocks = prunedBlocks;
 	}
 
 	public void exportDOT(String fileName){
@@ -371,15 +364,7 @@ public class CFG implements CFGAble {
 		return g;
 	}
 
-	@Override
 	public void cfgPrint(PrintWriter pw, String prefix) {
-		clearPrevBlocks();
-		genPrevBlocks();
-		List<BasicBlock> orderedBlocks = getOrderedBlocks();
-		orderedBlocks = getMergedBlocks(orderedBlocks);
-		orderedBlocks = getPrunedBlocks(orderedBlocks);
-		giveAllBlocksIds(orderedBlocks);
-
 		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 
@@ -392,16 +377,7 @@ public class CFG implements CFGAble {
 		}
 	}
 
-	@Override
 	public void generateAssembly(AssemblyContext ctx) {
-		clearPrevBlocks();
-		genPrevBlocks();
-		List<BasicBlock> orderedBlocks = getOrderedBlocks();
-		orderedBlocks = getMergedBlocks(orderedBlocks);
-		orderedBlocks = getPrunedBlocks(orderedBlocks);
-		giveAllBlocksIds(orderedBlocks);
-
-
 		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 			ctx.addInstruction(Label.create(currentBlock.getID()));
@@ -441,7 +417,6 @@ public class CFG implements CFGAble {
 		ctx.addInstruction(Syscall.create());
 	}
 
-	@Override
 	public long getNumStackAllocations() {
 		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
 		Queue<BasicBlock> blockQueue = new ArrayDeque<>();
@@ -466,10 +441,31 @@ public class CFG implements CFGAble {
 		return numStackAllocations;
 	}
 
+	public void doDeadCodeEliminiation() {
+		HashSet<Descriptor> consumed = new HashSet<>();
+		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
+			BasicBlock currentBlock = orderedBlocks.get(blockNum);
+
+			consumed = currentBlock.doDeadCodeEliminiation(consumed);
+		}
+	}
+	
 	@Override
 	public String toString() {
 		StringWriter sw = new StringWriter();
 		cfgPrint(new PrintWriter(sw), "");
 		return sw.toString();
+	}
+	
+	public static CFG createWithOptimizations(BasicBlock entryBlock, BasicBlock exitBlock) {
+		CFG cfg = new CFG(entryBlock, exitBlock);
+		cfg.clearPrevBlocks();
+		cfg.genPrevBlocks();
+		cfg.orderBlocks();
+		cfg.mergeBlocks();
+		cfg.pruneBlocks();
+		cfg.giveAllBlocksIds();
+		
+		return cfg;
 	}
 }

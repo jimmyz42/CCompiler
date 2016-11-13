@@ -1,24 +1,19 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.List;
 import java.util.Collections;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.Memory;
 import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
-import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.lowir.instructions.Leave;
 import edu.mit.compilers.lowir.instructions.Mov;
-import edu.mit.compilers.lowir.instructions.Ret;
 import exceptions.TypeMismatchError;
 
 public class ReturnStmt extends Statement {
@@ -95,5 +90,18 @@ public class ReturnStmt extends Statement {
 	public long getNumStackAllocations() {
 		if(expression == null) return 0;
 		return expression.getNumStackAllocations();
+	}
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		if(expression != null) {
+			return expression.getConsumedDescriptors();
+		}
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
 	}
 }

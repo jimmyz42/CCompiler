@@ -3,11 +3,11 @@ package edu.mit.compilers.cfg;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
 import edu.mit.compilers.cfg.components.CFG;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
-import edu.mit.compilers.highir.nodes.IdLocation;
-import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.highir.descriptor.FunctionDescriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.highir.nodes.Type;
 
 public class CFGContext {
 	private Stack<CFG> loops;

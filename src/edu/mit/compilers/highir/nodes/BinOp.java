@@ -23,9 +23,4 @@ abstract public class BinOp extends Ir {
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + terminal);
     }
-
-    @Override
-    public void cfgPrint(PrintWriter pw, String prefix) {
-        pw.print(prefix + terminal);
-    }
 }

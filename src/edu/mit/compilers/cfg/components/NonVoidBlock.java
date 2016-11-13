@@ -1,22 +1,13 @@
 package edu.mit.compilers.cfg.components;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-import edu.mit.compilers.cfg.*;
-import edu.mit.compilers.highir.nodes.BoolLiteral;
-import edu.mit.compilers.highir.nodes.Statement;
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
-import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Jmp;
-import edu.mit.compilers.lowir.instructions.Label;
-import edu.mit.compilers.lowir.instructions.Mov;
-import edu.mit.compilers.lowir.instructions.Syscall;
 
 public class NonVoidBlock extends BasicBlock {
 	

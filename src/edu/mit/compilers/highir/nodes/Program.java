@@ -1,27 +1,30 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
+import edu.mit.compilers.PrettyPrintable;
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.cfg.components.EnterBlock;
+import edu.mit.compilers.cfg.components.LeaveBlock;
+import edu.mit.compilers.cfg.components.NonVoidBlock;
 import edu.mit.compilers.grammar.DecafParser.Extern_declContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.Method_declContext;
 import edu.mit.compilers.grammar.DecafParser.ProgramContext;
-
-import edu.mit.compilers.PrettyPrintable;
-
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.descriptor.*;
+import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.ExternDescriptor;
+import edu.mit.compilers.highir.descriptor.FunctionDescriptor;
+import edu.mit.compilers.highir.descriptor.MethodDescriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
-
-import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.cfg.components.CFG;
-import edu.mit.compilers.cfg.components.EnterBlock;
-import edu.mit.compilers.cfg.components.BasicBlock;
-import edu.mit.compilers.cfg.components.LeaveBlock;
-import edu.mit.compilers.cfg.components.NonVoidBlock;
+import edu.mit.compilers.lowir.AssemblyContext;
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
 
@@ -133,6 +136,31 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
                 currentCFG = methodCFG;
             }
         }
-        return new CFG(symbolBlock, currentCFG.getExitBlock());
+        return CFG.createWithOptimizations(symbolBlock, currentCFG.getExitBlock());
     }
+
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+        pw.println("");
+    }
+    
+    @Override
+    public void generateAssembly(AssemblyContext ctx) {
+    	
+    }
+    
+    @Override
+    public long getNumStackAllocations() {
+    	return 0;
+    }
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
+	}
 }

@@ -2,16 +2,15 @@ package edu.mit.compilers.highir.symboltable;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import edu.mit.compilers.grammar.DecafParser.FieldContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.descriptor.*;
-import edu.mit.compilers.highir.nodes.Type;
+import edu.mit.compilers.highir.descriptor.FunctionDescriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.ArrayType;
-import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.nodes.IntLiteral;
-
+import edu.mit.compilers.highir.nodes.ScalarType;
+import edu.mit.compilers.highir.nodes.Type;
 import exceptions.BadArraySizeError;
 
 public abstract class SymbolTable {

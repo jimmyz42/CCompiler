@@ -1,9 +1,12 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Set;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 
@@ -44,4 +47,14 @@ public class SizeofTypeExpr extends Expression {
     public ImmediateValue getLocation(AssemblyContext ctx) {
         return ImmediateValue.create(this.type.getSize());
     }
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
+	}
 }

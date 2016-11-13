@@ -1,13 +1,15 @@
 package edu.mit.compilers.highir.descriptor;
 
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Set;
 
 import edu.mit.compilers.PrettyPrintable;
-import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storable;
@@ -62,4 +64,14 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
     public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation) {
     	return getLocation(ctx);
     }
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.emptySet();
+	}
 }

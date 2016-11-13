@@ -122,7 +122,10 @@ class Main {
 						Program ir = (Program)loader.visit(context);
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
-
+						
+						//OPTIMIZATIONS
+						cfg.doDeadCodeEliminiation();
+						
 						StringWriter sw = new StringWriter();
 						cfg.cfgPrint(new PrintWriter(sw), "");
 						System.out.println(sw.toString());
@@ -139,6 +142,9 @@ class Main {
 						Program ir = (Program)loader.visit(context);
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
+						
+						//OPTIMIZATIONS
+						cfg.doDeadCodeEliminiation();
 
 						AssemblyContext actx = new AssemblyContext();
 						cfg.generateAssembly(actx);

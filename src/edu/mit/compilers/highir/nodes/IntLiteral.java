@@ -1,14 +1,12 @@
 package edu.mit.compilers.highir.nodes;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
-import edu.mit.compilers.lowir.Storage;
-import edu.mit.compilers.lowir.instructions.And;
-import edu.mit.compilers.lowir.instructions.Instruction;
 import exceptions.IntegerSizeError;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 public class IntLiteral extends Literal {
     private long terminal;

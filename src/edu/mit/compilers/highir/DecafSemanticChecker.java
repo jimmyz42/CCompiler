@@ -13,11 +13,36 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import edu.mit.compilers.grammar.DecafBaseVisitor;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.grammar.DecafVisitor;
-import exceptions.SemanticError;
-
-import edu.mit.compilers.highir.nodes.*;
 import edu.mit.compilers.highir.descriptor.MethodDescriptor;
+import edu.mit.compilers.highir.nodes.AddOpExpr;
+import edu.mit.compilers.highir.nodes.AndOpExpr;
+import edu.mit.compilers.highir.nodes.ArrayLocation;
+import edu.mit.compilers.highir.nodes.AssignStmt;
+import edu.mit.compilers.highir.nodes.BoolLiteral;
+import edu.mit.compilers.highir.nodes.BreakStmt;
+import edu.mit.compilers.highir.nodes.CharLiteral;
+import edu.mit.compilers.highir.nodes.ContStmt;
+import edu.mit.compilers.highir.nodes.EqOpExpr;
+import edu.mit.compilers.highir.nodes.Expression;
+import edu.mit.compilers.highir.nodes.ForStmt;
+import edu.mit.compilers.highir.nodes.IdLocation;
+import edu.mit.compilers.highir.nodes.IfStmt;
+import edu.mit.compilers.highir.nodes.IntLiteral;
+import edu.mit.compilers.highir.nodes.Literal;
+import edu.mit.compilers.highir.nodes.MethodCallExpr;
+import edu.mit.compilers.highir.nodes.MethodCallStmt;
+import edu.mit.compilers.highir.nodes.MulOpExpr;
+import edu.mit.compilers.highir.nodes.NegExpr;
+import edu.mit.compilers.highir.nodes.NotExpr;
+import edu.mit.compilers.highir.nodes.OrOpExpr;
+import edu.mit.compilers.highir.nodes.Program;
+import edu.mit.compilers.highir.nodes.RelOpExpr;
+import edu.mit.compilers.highir.nodes.ReturnStmt;
+import edu.mit.compilers.highir.nodes.SizeofIdExpr;
+import edu.mit.compilers.highir.nodes.SizeofTypeExpr;
+import edu.mit.compilers.highir.nodes.WhileStmt;
 import edu.mit.compilers.highir.symboltable.SymbolTable;
+import exceptions.SemanticError;
 
 /**
 * This class provides an empty implementation of {@link DecafVisitor},

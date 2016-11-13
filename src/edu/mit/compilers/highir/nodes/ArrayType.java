@@ -2,8 +2,6 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 
-import exceptions.BadArraySizeError;
-
 public class ArrayType implements Type {
     private final long length;
     private final ScalarType elementType;

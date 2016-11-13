@@ -1,19 +1,14 @@
 package edu.mit.compilers.highir.descriptor;
 
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Set;
 
-import edu.mit.compilers.PrettyPrintable;
-import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.cfg.components.BasicBlock;
-import edu.mit.compilers.cfg.components.CFG;
-import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.nodes.ArrayType;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storage;
 
 public abstract class VariableDescriptor extends Descriptor {
 	public boolean isGlobal;
@@ -43,6 +38,16 @@ public abstract class VariableDescriptor extends Descriptor {
 
 	abstract public void storeStack(int index, Register reg, AssemblyContext ctx);
 	abstract public void setStackPosition(int index, int position, AssemblyContext ctx);
+
+	@Override
+	public Set<Descriptor> getConsumedDescriptors() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<Descriptor> getGeneratedDescriptors() {
+		return Collections.singleton(this);
+	}
 
 	public static VariableDescriptor create(String name, Type type, boolean isGlobal) {
 		if(type instanceof ScalarType) {

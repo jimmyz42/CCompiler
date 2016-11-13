@@ -1,17 +1,15 @@
 package edu.mit.compilers.highir.nodes;
 
-import java.util.Arrays;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storage;
-import edu.mit.compilers.lowir.StorageTuple;
 
 abstract public class Location extends Expression {
     protected VariableDescriptor variable;
@@ -31,11 +29,6 @@ abstract public class Location extends Expression {
     @Override
     public Type getType() {
         return variable.getType();
-    }
-
-    @Override
-    public CFG generateCFG(CFGContext context) {
-        return BasicBlock.createEmpty();
     }
 
     @Override

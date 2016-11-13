@@ -3,22 +3,21 @@ package edu.mit.compilers.highir.nodes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.PrintWriter;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
-import edu.mit.compilers.lowir.instructions.Cmp;
+import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Cmove;
 import edu.mit.compilers.lowir.instructions.Cmovne;
-import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.lowir.instructions.Mov;
 import exceptions.TypeMismatchError;
 
 public class EqOpExpr extends BinOpExpr implements Condition {
