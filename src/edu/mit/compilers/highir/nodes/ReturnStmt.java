@@ -61,7 +61,7 @@ public class ReturnStmt extends Statement {
     public void cfgPrint(PrintWriter pw, String prefix) {
         pw.print(prefix + "return ");
         if(expression != null) {
-        	expression.cfgPrint(pw, prefix);
+        	expression.cfgPrint(pw, "");
         }
         pw.println();
     }
@@ -72,6 +72,13 @@ public class ReturnStmt extends Statement {
         BasicBlock methodEnd = context.currentMethodCFG().getExitBlock();
         block.setNextBlock(methodEnd);
         methodEnd.addPreviousBlock(block);
+        
+    	if(expression != null) {
+    		CFG expressionCFG = expression.generateCFG(context);
+    		expressionCFG.setNextBlock(block);
+    		block.setPreviousBlock(expressionCFG.getExitBlock());
+    		return new CFG(expressionCFG.getEntryBlock(), block);
+    	}
         return block;
     }
 

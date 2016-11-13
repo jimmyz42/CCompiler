@@ -133,7 +133,7 @@ public class CFG implements CFGAble {
 	public CFG generateCFG(CFGContext context) {
 		return this;
 	}
-
+	
 	private List<BasicBlock> getOrderedBlocks() {
 		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
 		Stack<BasicBlock> blockStack = new Stack<>();

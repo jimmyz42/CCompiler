@@ -32,7 +32,6 @@ public class SizeofTypeExpr extends Expression {
     
     @Override
     public void generateAssembly(AssemblyContext ctx) {
-    	System.out.println("size of " + this.type.toString() + " is " + this.type.getSize());
 		ctx.storeStack(getStorageTuple(), ImmediateValue.create(this.type.getSize()));
     }
 

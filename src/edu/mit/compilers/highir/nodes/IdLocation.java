@@ -31,6 +31,10 @@ public class IdLocation extends Location {
         return new IdLocation(variable);
     }
 
+    public static IdLocation create(VariableDescriptor variable) {
+        return new IdLocation(variable);
+    }
+
     @Override
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + getClass().getSimpleName());

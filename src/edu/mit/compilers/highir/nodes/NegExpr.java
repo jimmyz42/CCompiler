@@ -1,9 +1,12 @@
 package edu.mit.compilers.highir.nodes;
 
+import edu.mit.compilers.cfg.CFGAble;
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
@@ -13,6 +16,8 @@ import edu.mit.compilers.lowir.instructions.Not;
 import edu.mit.compilers.lowir.instructions.Or;
 import exceptions.TypeMismatchError;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NegExpr extends Expression {
     private Expression expression;
@@ -38,8 +43,29 @@ public class NegExpr extends Expression {
     @Override
     public void prettyPrint(PrintWriter pw, String prefix){
     	super.prettyPrint(pw, prefix);
-    	pw.println(prefix + "-expression:");
+    	pw.print(prefix + "-expression:");
     	expression.prettyPrint(pw, prefix + "    ");
+    }
+
+    @Override
+    public void cfgPrint(PrintWriter pw, String prefix) {
+    	pw.print(prefix + "-");
+    	expression.cfgPrint(pw, "");
+    }
+
+    @Override
+    public CFG generateCFG(CFGContext context) {
+    	CFG expressionCFG =  expression.generateCFG(context);
+    	VariableDescriptor temp = context.generateNewTemporary(getType());
+    	List<CFGAble> components = new ArrayList<>();
+    	components.add(BasicBlock.create(temp));
+    	components.add(AssignStmt.create(IdLocation.create(temp), "=", this));
+    	BasicBlock thisCFG = BasicBlock.create(components);
+    	
+    	expressionCFG.addNextBlock(thisCFG.getEntryBlock());
+    	thisCFG.addPreviousBlock(expressionCFG.getExitBlock());
+    	
+        return new CFG(expressionCFG.getEntryBlock(), thisCFG.getExitBlock());
     }
 
     @Override

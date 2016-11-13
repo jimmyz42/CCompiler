@@ -2,6 +2,7 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 
+import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
