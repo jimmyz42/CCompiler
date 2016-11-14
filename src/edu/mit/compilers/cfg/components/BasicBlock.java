@@ -183,14 +183,11 @@ public class BasicBlock extends CFG {
 			Set<Descriptor> compGen = component.getGeneratedDescriptors();
 			Set<Descriptor> compCon = component.getConsumedDescriptors();
 
-			System.out.println(component);
 			if(compGen.isEmpty() ||
 					!Collections.disjoint(consumed, compGen) ||
 					!Collections.disjoint(compGen, compCon)) {
 				consumed.addAll(component.getConsumedDescriptors());
-			} else {
-				System.out.println("dead component");
-				
+			} else {				
 				deadComponents.add(component);
 			}
 
