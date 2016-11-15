@@ -181,6 +181,7 @@ public class BasicBlock extends CFG {
 		this.components = newComponents;
 	}
 
+	
 	public HashSet<Descriptor> doDeadCodeEliminiation(HashSet<Descriptor> consumed) {
 		List<CFGAble> deadComponents = new ArrayList<>();
 

@@ -89,7 +89,7 @@ public class NegExpr extends Expression {
 		List<CFGAble> temps = new ArrayList<>();
 		
     	temps.addAll(expression.generateTemporaries(context));
-    	VariableDescriptor temp = context.generateNewTemporary(getType());
+    	VariableDescriptor temp = context.addExpression(expression);
     	temps.add(temp);
     	temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
     	

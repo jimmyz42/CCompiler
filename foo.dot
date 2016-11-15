@@ -1,14 +1,13 @@
 digraph G {
-  block0 [ label="block0: int[10]\ a\l\l" ];
-  block1 [ label="block1: *start\ of\ method*\l" ];
-  block2 [ label="block2: void\ main\lint\ i\lint\ j\lint\ t1\lj\ =\ 11\lt1\ =\ j\lint\ t2\li\ =\ 0\lt2\ =\ i\l\l" ];
-  block3 [ label="block3: i\ \<\ j\l" ];
-  block4 [ label="block4: int\ t3\la[i]\ =\ i\lt3\ =\ a[i]\lint\ t4\lt4\ =\ i\ +\ 1\lint\ t5\li\ =\ i\ +\ 1\lt5\ =\ i\l\l" ];
-  block5 [ label="block5: *end\ of\ method*\l" ];
+  block0 [ label="block0: *start\ of\ method*\l" ];
+  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ t0\la\ =\ get_int\(2\)\lt0\ =\ a\lint\ t1\lb\ =\ get_int\(3\)\lt1\ =\ b\lint\ t2\lc\ =\ 0\lt2\ =\ c\lint\ t3\ld\ =\ 0\lt3\ =\ d\lint\ t4\lt4\ =\ a\ +\ b\lint\ t5\lc\ =\ a\ +\ b\lt5\ =\ c\lint\ t6\lt6\ =\ a\ +\ b\lint\ t7\ld\ =\ a\ +\ b\lt7\ =\ d\l\l" ];
+  block2 [ label="block2: *end\ of\ method*\l" ];
+  block3 [ label="block3: *start\ of\ method*\l" ];
+  block4 [ label="block4: int\ get_int\l\l" ];
+  block5 [ label="block5: NOT\ VOID\l*end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
   block3 -> block4;
-  block4 -> block3;
-  block3 -> block5;
+  block4 -> block5;
 }

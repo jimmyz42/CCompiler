@@ -64,8 +64,8 @@ abstract public class BinOpExpr extends Expression {
 		
     	temps.addAll(lhs.generateTemporaries(context));
     	temps.addAll(rhs.generateTemporaries(context));
-    	
-    	VariableDescriptor temp = context.generateNewTemporary(getType());
+
+    	VariableDescriptor temp = context.addExpression(this);
     	temps.add(temp);
     	temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
     	

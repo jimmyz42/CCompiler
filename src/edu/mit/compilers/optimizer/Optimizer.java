@@ -9,6 +9,7 @@ import java.util.List;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
@@ -26,7 +27,7 @@ public class Optimizer {
 	private List<BasicBlock> orderedBlocks;
 	private HashMap<Descriptor, Integer> varToVal = new HashMap<>();
 	private HashMap<Expression, Integer> exprToVal = new HashMap<>();
-	private HashMap<Descriptor, Integer> exprToTemp = new HashMap<>();
+	private HashMap<Expression, VariableDescriptor> exprToTemp = new HashMap<>();
 	
 	
 	public Optimizer(List<BasicBlock> orderedBlocks) {
@@ -34,12 +35,7 @@ public class Optimizer {
 	}
 
 	public void run() {
-		doValueNumbering();
 		//doDeadCodeEliminiation();
-	}
-
-	public void doValueNumbering() {
-		
 	}
 
 	public void doDeadCodeEliminiation() {
@@ -111,7 +107,11 @@ public class Optimizer {
 		return sw.toString();
 	}
 
-	public static Optimizer create(List<BasicBlock> orderedBlocks) {
-		return new Optimizer(orderedBlocks);
+	public static Optimizer create(OptimizerContext ctx, List<BasicBlock> orderedBlocks) {
+		Optimizer optimizer = new Optimizer(orderedBlocks);
+		optimizer.varToVal = ctx.getVarToVal();
+		optimizer.exprToVal = ctx.getExprToVal();
+		optimizer.exprToTemp = ctx.getExprToTemp();
+		return optimizer;
 	}
 }

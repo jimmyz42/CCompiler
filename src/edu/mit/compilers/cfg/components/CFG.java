@@ -406,10 +406,10 @@ public class CFG {
 		return cfg;
 	}
 
-	public Optimizer generateOptimizer(OptimizerContext octx) {
+	public Optimizer generateOptimizer(OptimizerContext ctx) {
 		for(BasicBlock block: orderedBlocks) {
-			block.generateTemporaries(octx);
+			block.generateTemporaries(ctx);
 		}
-		return Optimizer.create(orderedBlocks);
+		return Optimizer.create(ctx, orderedBlocks);
 	}
 }

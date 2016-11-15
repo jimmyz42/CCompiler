@@ -1,13 +1,17 @@
-a#define int long long
-
+#include <stdbool.h>
+#define int long long
 extern printf();
-// This should produce a runtime error
-int a[10];
+int get_int ( int x ) {
+  return x;
+}
 void main ( ) {
-  int i, j;
-  j = 11;
-  for ( i = 0; i < j; i += 1 ) {
-    a[i] = i;
-    printf ( "%d\n", i );
-  }
+  int a, b, c, d;
+  a = get_int ( 2 );
+  b = get_int ( 3 );
+  c = 0;
+  d = 0;
+  c = a + b;
+  d = a + b;
+  printf ( "%d\n", c );
+  printf ( "%d\n", d );
 }
