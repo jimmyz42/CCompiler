@@ -66,6 +66,6 @@ public class MethodCallStmt extends Statement {
 
 	@Override
 	public List<CFGAble> generateTemporaries(OptimizerContext context) {
-		return methodCall.generateTemporaries(context);
+		return Collections.singletonList(this);
 	}
 }

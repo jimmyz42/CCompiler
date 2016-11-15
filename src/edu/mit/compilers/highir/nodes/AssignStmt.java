@@ -113,12 +113,12 @@ public class AssignStmt extends Statement {
 
 	@Override
 	public List<CFGAble> generateTemporaries(OptimizerContext context) {
-		context.addVariable(location.getVariable(), expression);
 		
 		List<CFGAble> temps = new ArrayList<>();
 		temps.addAll(expression.generateTemporaries(context));
 
     	VariableDescriptor temp = context.addExpression(expression);
+		context.addVariable(location.getVariable(), expression);
 		temps.add(temp);
 		temps.add(this);
 		temps.add(AssignStmt.create(IdLocation.create(temp), "=", location));

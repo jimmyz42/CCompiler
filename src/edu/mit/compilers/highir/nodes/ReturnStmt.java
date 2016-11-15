@@ -110,9 +110,6 @@ public class ReturnStmt extends Statement {
 
 	@Override
 	public List<CFGAble> generateTemporaries(OptimizerContext context) {
-    	if(expression != null) {
-    		return expression.generateTemporaries(context);
-    	}
-    	return Collections.emptyList();
+    	return Collections.singletonList(this);
 	}
 }

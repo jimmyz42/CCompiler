@@ -71,4 +71,9 @@ abstract public class BinOpExpr extends Expression {
     	
         return temps;
 	}
+	
+	@Override
+    public int hashCode() {
+        return lhs.hashCode() + operator.hashCode() + rhs.hashCode();
+    }
 }

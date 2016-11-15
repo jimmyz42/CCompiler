@@ -173,15 +173,15 @@ public class BasicBlock extends CFG {
 
 	public void generateTemporaries(OptimizerContext octx) {
 		List<CFGAble> newComponents = new ArrayList<>();
-		
+
 		for(CFGAble component: components) {
 			newComponents.addAll(component.generateTemporaries(octx));
 		}
-		
+
 		this.components = newComponents;
 	}
 
-	
+
 	public HashSet<Descriptor> doDeadCodeEliminiation(HashSet<Descriptor> consumed) {
 		List<CFGAble> deadComponents = new ArrayList<>();
 
@@ -198,7 +198,7 @@ public class BasicBlock extends CFG {
 					!Collections.disjoint(consumed, compGen) ||
 					!Collections.disjoint(compGen, compCon)) {
 				consumed.addAll(component.getConsumedDescriptors());
-			} else {				
+			} else {
 				deadComponents.add(component);
 			}
 
@@ -206,5 +206,5 @@ public class BasicBlock extends CFG {
 
 		this.components.removeAll(deadComponents);
 		return consumed;
-	} 
+	}
 }

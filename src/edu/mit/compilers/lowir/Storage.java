@@ -32,4 +32,9 @@ abstract public class Storage {
     public void printAssembly(PrintWriter pw, String prefix){
     	pw.print(prefix + this.name); 
     }
+	
+	@Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

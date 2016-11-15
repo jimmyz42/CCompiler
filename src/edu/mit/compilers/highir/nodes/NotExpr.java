@@ -94,4 +94,9 @@ public class NotExpr extends Expression {
     	
         return temps;
 	}
+	
+	@Override
+    public int hashCode() {
+        return -expression.hashCode();
+    }
 }

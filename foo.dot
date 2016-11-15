@@ -1,13 +1,32 @@
 digraph G {
   block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ t0\la\ =\ get_int\(2\)\lt0\ =\ a\lint\ t1\lb\ =\ get_int\(3\)\lt1\ =\ b\lint\ t2\lc\ =\ 0\lt2\ =\ c\lint\ t3\ld\ =\ 0\lt3\ =\ d\lint\ t4\lt4\ =\ a\ +\ b\lint\ t5\lc\ =\ a\ +\ b\lt5\ =\ c\lint\ t6\lt6\ =\ a\ +\ b\lint\ t7\ld\ =\ a\ +\ b\lt7\ =\ d\l\l" ];
-  block2 [ label="block2: *end\ of\ method*\l" ];
+  block1 [ label="block1: int\ add\lint\ t0\lt0\ =\ a\ +\ b\lreturn\ a\ +\ b\l\l" ];
+  block2 [ label="block2: NOT\ VOID\l*end\ of\ method*\l" ];
   block3 [ label="block3: *start\ of\ method*\l" ];
-  block4 [ label="block4: int\ get_int\l\l" ];
+  block4 [ label="block4: int\ sub\lint\ t1\lt1\ =\ a\ -\ b\lreturn\ a\ -\ b\l\l" ];
   block5 [ label="block5: NOT\ VOID\l*end\ of\ method*\l" ];
+  block6 [ label="block6: *start\ of\ method*\l" ];
+  block7 [ label="block7: int\ sum\lint\ t2\lt2\ =\ a\ +\ b\lint\ t3\lt3\ =\ a\ +\ b\ +\ c\lint\ t4\lt4\ =\ a\ +\ b\ +\ c\ +\ d\lint\ t5\lt5\ =\ a\ +\ b\ +\ c\ +\ d\ +\ e\lint\ t6\lt6\ =\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\lint\ t7\lt7\ =\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\ +\ g\lint\ t8\lt8\ =\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\ +\ g\ +\ h\lreturn\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\ +\ g\ +\ h\l\l" ];
+  block8 [ label="block8: NOT\ VOID\l*end\ of\ method*\l" ];
+  block9 [ label="block9: *start\ of\ method*\l" ];
+  block10 [ label="block10: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ t9\la\ =\ 1\lt9\ =\ a\lint\ t10\lb\ =\ 2\lt10\ =\ b\lint\ t11\lc\ =\ add\(a\,\ b\)\lt11\ =\ c\lint\ t12\ld\ =\ sub\(c\,\ b\)\lt12\ =\ d\ld\ ==\ a\l" ];
+  block11 [ label="block11: printf\(\"correct\\n\"\)\l\l" ];
+  block13 [ label="block13: printf\(\"sum\ of\ 1\ -\ 8\ is\ %d\ \(36\)\\n\"\,\ sum\(1\,\ 2\,\ 3\,\ 4\,\ 5\,\ 6\,\ 7\,\ 8\)\)\l\l" ];
+  block14 [ label="block14: *end\ of\ method*\l" ];
+  block12 [ label="block12: printf\(\"INCORRECT\\n\"\)\l\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
   block3 -> block4;
   block4 -> block5;
+  block5 -> block6;
+  block6 -> block7;
+  block7 -> block8;
+  block8 -> block9;
+  block9 -> block10;
+  block10 -> block11;
+  block11 -> block13;
+  block13 -> block14;
+  block10 -> block12;
+  block12 -> block13;
 }

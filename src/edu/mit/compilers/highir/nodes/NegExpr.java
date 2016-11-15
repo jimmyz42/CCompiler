@@ -95,4 +95,9 @@ public class NegExpr extends Expression {
     	
         return temps;
 	}
+	
+	@Override
+    public int hashCode() {
+        return -expression.hashCode();
+    }
 }

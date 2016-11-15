@@ -67,4 +67,9 @@ public class SizeofTypeExpr extends Expression {
 	public List<CFGAble> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
 	}
+	
+	@Override
+    public int hashCode() {
+        return ImmediateValue.create(this.type.getSize()).hashCode();
+    }
 }
