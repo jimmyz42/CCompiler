@@ -106,7 +106,6 @@ public class BasicBlock extends CFG {
 		return branchCondition;
 	}
 
-	@Override
 	public void cfgPrint(PrintWriter pw, String prefix) {
 		if(description.length() > 0) {
 			pw.println("*"+description+"*");
@@ -120,7 +119,6 @@ public class BasicBlock extends CFG {
 		pw.println();
 	}
 
-	@Override
 	public void generateAssembly(AssemblyContext ctx) {
 		for(CFGAble component: components) {
 			component.generateAssembly(ctx);

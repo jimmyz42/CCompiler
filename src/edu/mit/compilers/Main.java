@@ -28,6 +28,7 @@ import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.highir.nodes.Program;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
+import edu.mit.compilers.optimize.Optimizer;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
 import exceptions.SemanticError;
@@ -122,12 +123,12 @@ class Main {
 						Program ir = (Program)loader.visit(context);
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
-						
-						//OPTIMIZATIONS
-						cfg.doDeadCodeEliminiation();
+
+						Optimizer optimizer = Optimizer.create(cfg);
+						optimizer.run();
 						
 						StringWriter sw = new StringWriter();
-						cfg.cfgPrint(new PrintWriter(sw), "");
+						optimizer.cfgPrint(new PrintWriter(sw), "");
 						System.out.println(sw.toString());
 						if(CLI.debug){
 							//pretty graphics!
@@ -143,11 +144,11 @@ class Main {
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
 						
-						//OPTIMIZATIONS
-						cfg.doDeadCodeEliminiation();
+						Optimizer optimizer = Optimizer.create(cfg);
+						optimizer.run();
 
 						AssemblyContext actx = new AssemblyContext();
-						cfg.generateAssembly(actx);
+						optimizer.generateAssembly(actx);
 						List<Instruction> instructions = actx.getInstructions();
 						StringWriter sw = new StringWriter();
 						for(Instruction instruction: instructions) {

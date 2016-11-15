@@ -84,6 +84,10 @@ public class CFG {
 	public List<BasicBlock> getNextBlocks() {
 		return exitBlock.getNextBlocks();
 	}
+	
+	public List<BasicBlock> getOrderedBlocks() {
+		return orderedBlocks;
+	}
 
 	public void setPreviousBlocks(List<BasicBlock> prevBlocks) {
 		entryBlock.setPreviousBlocks(prevBlocks);
@@ -364,59 +368,6 @@ public class CFG {
 		return g;
 	}
 
-	public void cfgPrint(PrintWriter pw, String prefix) {
-		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
-			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-
-			pw.println(prefix + "BasicBlock " + currentBlock.getID() + ":");
-			currentBlock.cfgPrint(pw, prefix + "    ");
-			pw.println(prefix + currentBlock.getID() + " points to:");
-			for(BasicBlock block : currentBlock.getNextBlocks()){
-				pw.println(prefix + "    " + block.getID());
-			}
-		}
-	}
-
-	public void generateAssembly(AssemblyContext ctx) {
-		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
-			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-			ctx.addInstruction(Label.create(currentBlock.getID()));
-			currentBlock.generateAssembly(ctx);
-
-			//get conditional value generated at the end of currentBlock
-			if(currentBlock.getCondition() != null) {
-				Register val = ((Expression) currentBlock.getCondition()).allocateRegister(ctx);
-				//compare to 1
-				Storage temp = Register.create("%rax");
-				Storage btrue = ImmediateValue.create(true);
-				ctx.addInstruction(Mov.create(btrue, temp));
-				ctx.addInstruction(new Cmp(val, temp));
-				ctx.deallocateRegister(val);
-				//if its == 1, go down true branch
-				ctx.addInstruction(Je.create(Memory.create(currentBlock.getNextBlock(true).getID())));
-				//else, go down TRUE branch
-				ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(false).getID())));
-			} else {
-				ctx.addInstruction(Jmp.create(Memory.create(currentBlock.getNextBlock(true).getID())));
-			}
-		}
-		BasicBlock currentBlock = orderedBlocks.get(orderedBlocks.size()-1);
-		ctx.addInstruction(Label.create(currentBlock.getID()));
-		currentBlock.generateAssembly(ctx);
-
-		// Array Index Out Of Bounds Handler
-		ctx.addInstruction(Label.create("array_index_error"));
-		ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
-		ctx.addInstruction(Mov.create(ImmediateValue.create(-1), Register.create("%rdi")));
-		ctx.addInstruction(Syscall.create());
-
-		// Fall Off Method Handler
-		ctx.addInstruction(Label.create("fall_off_error"));
-		ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
-		ctx.addInstruction(Mov.create(ImmediateValue.create(-2), Register.create("%rdi")));
-		ctx.addInstruction(Syscall.create());
-	}
-
 	public long getNumStackAllocations() {
 		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
 		Queue<BasicBlock> blockQueue = new ArrayDeque<>();
@@ -439,22 +390,6 @@ public class CFG {
 		}
 
 		return numStackAllocations;
-	}
-
-	public void doDeadCodeEliminiation() {
-		HashSet<Descriptor> consumed = new HashSet<>();
-		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
-			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-
-			consumed = currentBlock.doDeadCodeEliminiation(consumed);
-		}
-	}
-	
-	@Override
-	public String toString() {
-		StringWriter sw = new StringWriter();
-		cfgPrint(new PrintWriter(sw), "");
-		return sw.toString();
 	}
 	
 	public static CFG createWithOptimizations(BasicBlock entryBlock, BasicBlock exitBlock) {
