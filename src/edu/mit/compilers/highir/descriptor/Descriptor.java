@@ -2,6 +2,7 @@ package edu.mit.compilers.highir.descriptor;
 
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import edu.mit.compilers.PrettyPrintable;
@@ -15,8 +16,10 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.StorageTuple;
+import edu.mit.compilers.optimizer.Optimizable;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
-public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
+public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, Optimizable {
     private final String name;
     private final Type returnType;
     private StorageTuple storageTuple;
@@ -73,5 +76,10 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+		return Collections.singletonList(this);
 	}
 }

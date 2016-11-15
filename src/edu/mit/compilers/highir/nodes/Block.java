@@ -21,6 +21,7 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.symboltable.LocalSymbolTable;
 import edu.mit.compilers.highir.symboltable.SymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.ImproperEscapeError;
 import exceptions.SemanticError;
 
@@ -145,5 +146,10 @@ public class Block extends Ir implements CFGAble {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+		return Collections.emptyList();
 	}
 }

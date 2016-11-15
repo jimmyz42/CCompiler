@@ -1,16 +1,21 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.MethodCallStmtContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class MethodCallStmt extends Statement {
     private final MethodCallExpr methodCall;
@@ -36,13 +41,7 @@ public class MethodCallStmt extends Statement {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-    	CFG callCFG =  methodCall.generateCFG(context);
-    	BasicBlock thisCFG = BasicBlock.create(this);
-    	
-    	callCFG.addNextBlock(thisCFG.getEntryBlock());
-    	thisCFG.addPreviousBlock(callCFG.getExitBlock());
-    	
-        return new CFG(callCFG.getEntryBlock(), thisCFG.getExitBlock());
+    	return BasicBlock.create(this);
     }
 
     @Override
@@ -63,5 +62,10 @@ public class MethodCallStmt extends Statement {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+		return methodCall.generateTemporaries(context);
 	}
 }

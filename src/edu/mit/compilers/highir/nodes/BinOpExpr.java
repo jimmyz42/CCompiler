@@ -13,6 +13,7 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 
 abstract public class BinOpExpr extends Expression {
@@ -44,24 +45,6 @@ abstract public class BinOpExpr extends Expression {
     	rhs.cfgPrint(pw, " ");
     }
 
-    @Override
-    public CFG generateCFG(CFGContext context) {
-    	CFG lhsCFG =  lhs.generateCFG(context);
-    	CFG rhsCFG = rhs.generateCFG(context);
-    	VariableDescriptor temp = context.generateNewTemporary(getType());
-    	List<CFGAble> components = new ArrayList<>();
-    	components.add(temp);
-    	components.add(AssignStmt.create(IdLocation.create(temp), "=", this));
-    	BasicBlock thisCFG = BasicBlock.create(components);
-    	
-    	lhsCFG.addNextBlock(rhsCFG.getEntryBlock());
-    	rhsCFG.addPreviousBlock(lhsCFG.getExitBlock());
-    	rhsCFG.addNextBlock(thisCFG.getEntryBlock());
-    	thisCFG.addPreviousBlock(rhsCFG.getExitBlock());
-    	
-        return new CFG(lhsCFG.getEntryBlock(), thisCFG.getExitBlock());
-    }
-
 	@Override
 	public Set<Descriptor> getConsumedDescriptors() {
 		Set<Descriptor> consumed = new HashSet<>();
@@ -73,5 +56,19 @@ abstract public class BinOpExpr extends Expression {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+		List<CFGAble> temps = new ArrayList<>();
+		
+    	temps.addAll(lhs.generateTemporaries(context));
+    	temps.addAll(rhs.generateTemporaries(context));
+    	
+    	VariableDescriptor temp = context.generateNewTemporary(getType());
+    	temps.add(temp);
+    	temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
+    	
+        return temps;
 	}
 }

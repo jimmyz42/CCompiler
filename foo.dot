@@ -1,9 +1,9 @@
 digraph G {
-  block0 [ label="block0: \l" ];
+  block0 [ label="block0: int[10]\ a\l\l" ];
   block1 [ label="block1: *start\ of\ method*\l" ];
-  block2 [ label="block2: void\ main\lint\ i\lint\ j\lj\ =\ 11\li\ =\ 0\l\l" ];
+  block2 [ label="block2: void\ main\lint\ i\lint\ j\lint\ t1\lj\ =\ 11\lt1\ =\ j\lint\ t2\li\ =\ 0\lt2\ =\ i\l\l" ];
   block3 [ label="block3: i\ \<\ j\l" ];
-  block4 [ label="block4: printf\(\"%d\\n\"\,\ i\)\li\ =\ i\ +\ 1\l\l" ];
+  block4 [ label="block4: int\ t3\la[i]\ =\ i\lt3\ =\ a[i]\lint\ t4\lt4\ =\ i\ +\ 1\lint\ t5\li\ =\ i\ +\ 1\lt5\ =\ i\l\l" ];
   block5 [ label="block5: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;

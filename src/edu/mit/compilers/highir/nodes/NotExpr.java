@@ -18,6 +18,7 @@ import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Not;
+import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 
 public class NotExpr extends Expression {
@@ -54,21 +55,6 @@ public class NotExpr extends Expression {
     }
 
     @Override
-    public CFG generateCFG(CFGContext context) {
-    	CFG expressionCFG =  expression.generateCFG(context);
-    	VariableDescriptor temp = context.generateNewTemporary(getType());
-    	List<CFGAble> components = new ArrayList<>();
-    	components.add(temp);
-    	components.add(AssignStmt.create(IdLocation.create(temp), "=", this));
-    	BasicBlock thisCFG = BasicBlock.create(components);
-    	
-    	expressionCFG.addNextBlock(thisCFG.getEntryBlock());
-    	thisCFG.addPreviousBlock(expressionCFG.getExitBlock());
-    	
-        return new CFG(expressionCFG.getEntryBlock(), thisCFG.getExitBlock());
-    }
-
-    @Override
     public void generateAssembly(AssemblyContext ctx){
         expression.generateAssembly(ctx);
 
@@ -95,5 +81,17 @@ public class NotExpr extends Expression {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+		List<CFGAble> temps = new ArrayList<>();
+		
+    	temps.addAll(expression.generateTemporaries(context));
+    	VariableDescriptor temp = context.generateNewTemporary(getType());
+    	temps.add(temp);
+    	temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
+    	
+        return temps;
 	}
 }

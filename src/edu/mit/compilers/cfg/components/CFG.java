@@ -32,6 +32,8 @@ import edu.mit.compilers.lowir.instructions.Jmp;
 import edu.mit.compilers.lowir.instructions.Label;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Syscall;
+import edu.mit.compilers.optimizer.Optimizer;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 
 public class CFG {
@@ -402,5 +404,12 @@ public class CFG {
 		cfg.giveAllBlocksIds();
 		
 		return cfg;
+	}
+
+	public Optimizer generateOptimizer(OptimizerContext octx) {
+		for(BasicBlock block: orderedBlocks) {
+			block.generateTemporaries(octx);
+		}
+		return Optimizer.create(orderedBlocks);
 	}
 }

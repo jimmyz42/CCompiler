@@ -2,8 +2,10 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
@@ -14,6 +16,7 @@ import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 
 public class ReturnStmt extends Statement {
@@ -103,5 +106,13 @@ public class ReturnStmt extends Statement {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+    	if(expression != null) {
+    		return expression.generateTemporaries(context);
+    	}
+    	return Collections.emptyList();
 	}
 }

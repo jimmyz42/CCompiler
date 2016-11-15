@@ -11,6 +11,8 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.optimizer.Optimizer;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class BasicBlock extends CFG {
 
@@ -167,6 +169,16 @@ public class BasicBlock extends CFG {
 		combined.setNextBlocks(b2.getNextBlocks());
 		combined.setCondition(b2.getCondition());
 		return combined;
+	}
+
+	public void generateTemporaries(OptimizerContext octx) {
+		List<CFGAble> newComponents = new ArrayList<>();
+		
+		for(CFGAble component: components) {
+			newComponents.addAll(component.generateTemporaries(octx));
+		}
+		
+		this.components = newComponents;
 	}
 
 	public HashSet<Descriptor> doDeadCodeEliminiation(HashSet<Descriptor> consumed) {

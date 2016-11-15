@@ -1,4 +1,11 @@
-package edu.mit.compilers.optimize;
+package edu.mit.compilers.optimizer;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.descriptor.Descriptor;
@@ -15,20 +22,24 @@ import edu.mit.compilers.lowir.instructions.Label;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Syscall;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.HashSet;
-import java.util.List;
-
 public class Optimizer {
 	private List<BasicBlock> orderedBlocks;
-
+	private HashMap<Descriptor, Integer> varToVal = new HashMap<>();
+	private HashMap<Expression, Integer> exprToVal = new HashMap<>();
+	private HashMap<Descriptor, Integer> exprToTemp = new HashMap<>();
+	
+	
 	public Optimizer(List<BasicBlock> orderedBlocks) {
 		this.orderedBlocks = orderedBlocks;
 	}
 
 	public void run() {
-		doDeadCodeEliminiation();;
+		doValueNumbering();
+		//doDeadCodeEliminiation();
+	}
+
+	public void doValueNumbering() {
+		
 	}
 
 	public void doDeadCodeEliminiation() {
@@ -100,7 +111,7 @@ public class Optimizer {
 		return sw.toString();
 	}
 
-	public static Optimizer create(CFG cfg) {
-		return new Optimizer(cfg.getOrderedBlocks());
+	public static Optimizer create(List<BasicBlock> orderedBlocks) {
+		return new Optimizer(orderedBlocks);
 	}
 }

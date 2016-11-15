@@ -1,9 +1,14 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.Collections;
+import java.util.List;
+
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class CharLiteral extends Literal {
     private char terminal;
@@ -43,4 +48,9 @@ public class CharLiteral extends Literal {
     public ImmediateValue getLocation(AssemblyContext ctx) {
         return ImmediateValue.create(terminal);
     }
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+		return Collections.emptyList();
+	}
 }

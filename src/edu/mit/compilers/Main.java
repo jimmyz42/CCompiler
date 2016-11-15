@@ -28,7 +28,8 @@ import edu.mit.compilers.highir.nodes.Ir;
 import edu.mit.compilers.highir.nodes.Program;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Instruction;
-import edu.mit.compilers.optimize.Optimizer;
+import edu.mit.compilers.optimizer.Optimizer;
+import edu.mit.compilers.optimizer.OptimizerContext;
 import edu.mit.compilers.tools.CLI;
 import edu.mit.compilers.tools.CLI.Action;
 import exceptions.SemanticError;
@@ -124,7 +125,8 @@ class Main {
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
 
-						Optimizer optimizer = Optimizer.create(cfg);
+						OptimizerContext octx = new OptimizerContext();
+						Optimizer optimizer = cfg.generateOptimizer(octx);
 						optimizer.run();
 						
 						StringWriter sw = new StringWriter();
@@ -143,8 +145,9 @@ class Main {
 						Program ir = (Program)loader.visit(context);
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
-						
-						Optimizer optimizer = Optimizer.create(cfg);
+
+						OptimizerContext octx = new OptimizerContext();
+						Optimizer optimizer = cfg.generateOptimizer(octx);
 						optimizer.run();
 
 						AssemblyContext actx = new AssemblyContext();

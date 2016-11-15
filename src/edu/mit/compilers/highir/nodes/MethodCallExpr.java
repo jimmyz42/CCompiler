@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
@@ -29,6 +30,7 @@ import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Push;
 import edu.mit.compilers.lowir.instructions.Xor;
+import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
 
@@ -207,5 +209,10 @@ public class MethodCallExpr extends Expression {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+		return Collections.emptyList();
 	}
 }

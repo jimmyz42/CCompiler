@@ -13,8 +13,9 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.StorageTuple;
+import edu.mit.compilers.optimizer.Optimizable;
 
-abstract public class ExternArg extends Ir implements Storable, CFGAble {
+abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimizable {
 
 	private final StorageTuple storageTuple;
 

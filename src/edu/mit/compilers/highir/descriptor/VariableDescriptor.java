@@ -2,13 +2,17 @@ package edu.mit.compilers.highir.descriptor;
 
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.highir.nodes.ArrayType;
 import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.optimizer.Optimizer;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 public abstract class VariableDescriptor extends Descriptor {
 	public boolean isGlobal;
