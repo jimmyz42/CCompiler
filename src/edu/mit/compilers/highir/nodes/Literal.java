@@ -10,6 +10,7 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 abstract public class Literal extends Expression {
     public static Literal create(DecafSemanticChecker checker, DecafParser.LiteralContext ctx) {
@@ -40,5 +41,9 @@ abstract public class Literal extends Expression {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+	
+	@Override
+	public void doCSE(OptimizerContext ctx) {
 	}
 }

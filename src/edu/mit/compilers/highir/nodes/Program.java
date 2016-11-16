@@ -2,9 +2,6 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 import edu.mit.compilers.PrettyPrintable;
 import edu.mit.compilers.cfg.CFGAble;
@@ -26,7 +23,7 @@ import edu.mit.compilers.highir.descriptor.MethodDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.symboltable.GlobalSymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.optimizer.OptimizerContext;
+import edu.mit.compilers.optimizer.Optimizable;
 import exceptions.SemanticError;
 import exceptions.UndeclaredIdentifierError;
 
@@ -93,7 +90,7 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
     }
 
     public CFG generateCFG(CFGContext context) {
-        ArrayList<CFGAble> components = new ArrayList<>();
+        ArrayList<Optimizable> components = new ArrayList<>();
         for(Descriptor desc: symbolTable.getDescriptors().values()) {
             if(desc instanceof VariableDescriptor) {
                 components.add(desc);
@@ -155,19 +152,4 @@ public class Program extends Ir implements PrettyPrintable, CFGAble {
     public long getNumStackAllocations() {
     	return 0;
     }
-
-	@Override
-	public Set<Descriptor> getConsumedDescriptors() {
-		return Collections.emptySet();
-	}
-
-	@Override
-	public Set<Descriptor> getGeneratedDescriptors() {
-		return Collections.emptySet();
-	}
-
-	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
-		return Collections.emptyList();
-	}
 }

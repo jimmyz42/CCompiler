@@ -23,4 +23,14 @@ abstract public class BinOp extends Ir {
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + terminal);
     }
+    
+    @Override
+    public int hashCode() {
+    	return terminal.hashCode();
+    }
+
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
+	}
 }

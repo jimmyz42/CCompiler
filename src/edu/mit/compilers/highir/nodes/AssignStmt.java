@@ -2,10 +2,11 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
@@ -16,10 +17,11 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 
-public class AssignStmt extends Statement {
+public class AssignStmt extends Statement implements Optimizable {
 	private Location location;
 	private Expression expression;
 	private String assignOp;
@@ -112,17 +114,64 @@ public class AssignStmt extends Statement {
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
-		
-		List<CFGAble> temps = new ArrayList<>();
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+
+		List<Optimizable> temps = new ArrayList<>();
 		temps.addAll(expression.generateTemporaries(context));
 
-    	VariableDescriptor temp = context.addExpression(expression);
-		context.addVariable(location.getVariable(), expression);
-		temps.add(temp);
-		temps.add(this);
-		temps.add(AssignStmt.create(IdLocation.create(temp), "=", location));
-
+		if(context.addExpression(expression)) {
+			VariableDescriptor temp = context.getExprToTemp().get(expression);
+			context.addVariable(location.getVariable(), expression);
+			temps.add(temp);
+			temps.add(this);
+		} else {
+			VariableDescriptor temp = context.getExprToTemp().get(expression);
+			temps.add(AssignStmt.create(location, assignOp, IdLocation.create(temp)));
+		}
 		return temps;
+	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {
+		VariableDescriptor temp = ctx.getCSEExprToVar().get(expression);
+			
+		System.out.println("assign");
+		System.out.println(this);
+		System.out.println(location);
+		System.out.println(temp);
+		if(temp != null) {
+			expression = new IdLocation(temp);
+			ctx.getCSEExprToVar().put(expression, temp);
+			ctx.getCSEExprToVar().put(location, temp);
+
+
+			if(ctx.getCSEVarToExprs().containsKey(location.getVariable())) {
+				for(Expression expr: ctx.getCSEVarToExprs().get(location.getVariable())) {
+					ctx.getCSEExprToVar().remove(expr);
+				}
+				ctx.getCSEVarToExprs().get(temp).add(expression);
+				ctx.getCSEVarToExprs().get(temp).add(location);
+			} else {
+				ctx.getCSEVarToExprs().put(location.getVariable(), new HashSet<>());
+				ctx.getCSEVarToExprs().get(location.getVariable()).add(expression);
+				ctx.getCSEVarToExprs().get(location.getVariable()).add(location);
+			}
+		} else {
+			expression.doCSE(ctx);
+			ctx.getCSEExprToVar().put(expression, location.getVariable());
+			ctx.getCSEExprToVar().put(location, location.getVariable());
+
+			if(ctx.getCSEVarToExprs().containsKey(location.getVariable())) {
+				for(Expression expr: ctx.getCSEVarToExprs().get(location.getVariable())) {
+					ctx.getCSEExprToVar().remove(expr);
+				}
+				ctx.getCSEVarToExprs().get(location.getVariable()).add(expression);
+				ctx.getCSEVarToExprs().get(location.getVariable()).add(location);
+			} else {
+				ctx.getCSEVarToExprs().put(location.getVariable(), new HashSet<>());
+				ctx.getCSEVarToExprs().get(location.getVariable()).add(expression);
+				ctx.getCSEVarToExprs().get(location.getVariable()).add(location);
+			}
+		}
 	}
 }

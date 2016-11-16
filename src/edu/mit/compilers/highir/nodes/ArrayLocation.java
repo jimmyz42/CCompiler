@@ -1,15 +1,12 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
@@ -25,6 +22,7 @@ import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Jae;
 import edu.mit.compilers.lowir.instructions.Sub;
 import edu.mit.compilers.lowir.instructions.Xor;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
@@ -147,7 +145,7 @@ public class ArrayLocation extends Location {
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return index.generateTemporaries(context);
 	}
 }

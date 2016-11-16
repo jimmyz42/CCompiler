@@ -1,15 +1,12 @@
 package edu.mit.compilers.highir.nodes;
 
-import java.util.Set;
-
-import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 abstract public class Location extends Expression {
     protected VariableDescriptor variable;
@@ -45,4 +42,13 @@ abstract public class Location extends Expression {
 	public long getNumStackAllocations() {
 		return 0;
 	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {	
+	}
+	
+	@Override
+    public int hashCode() {
+        return variable.hashCode();
+    }
 }

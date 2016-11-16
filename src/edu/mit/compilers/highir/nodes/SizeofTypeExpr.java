@@ -1,18 +1,16 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class SizeofTypeExpr extends Expression {
@@ -64,12 +62,21 @@ public class SizeofTypeExpr extends Expression {
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {
 	}
 	
 	@Override
     public int hashCode() {
         return ImmediateValue.create(this.type.getSize()).hashCode();
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
+	}
 }

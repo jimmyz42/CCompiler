@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
@@ -17,6 +16,7 @@ import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Lea;
 import edu.mit.compilers.lowir.instructions.StringInstruction;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class StringLiteral extends ExternArg {
@@ -69,7 +69,16 @@ public class StringLiteral extends ExternArg {
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {
+	}
+	
+	@Override
+	public int hashCode() {
+		return terminal.hashCode();
 	}
 }

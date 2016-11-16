@@ -1,23 +1,21 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.MethodCallStmtContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
-public class MethodCallStmt extends Statement {
+public class MethodCallStmt extends Statement implements Optimizable {
     private final MethodCallExpr methodCall;
     public MethodCallStmt(MethodCallExpr methodCall) {
         this.methodCall = methodCall;
@@ -65,7 +63,12 @@ public class MethodCallStmt extends Statement {
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.singletonList(this);
+	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {
+		methodCall.doCSE(ctx);
 	}
 }

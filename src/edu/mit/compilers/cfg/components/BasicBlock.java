@@ -11,19 +11,19 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.optimizer.Optimizer;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class BasicBlock extends CFG {
 
-	private List<CFGAble> components;
+	private List<Optimizable> components;
 	private List<BasicBlock> prevBlocks;
 	private List<BasicBlock> nextBlocks;
 	private Condition branchCondition;
 	private String id;
 	private String description;
 
-	public BasicBlock(List<CFGAble> components) {
+	public BasicBlock(List<Optimizable> components) {
 		this.components = components;
 		this.entryBlock = this;
 		this.exitBlock = this;
@@ -33,12 +33,12 @@ public class BasicBlock extends CFG {
 		this.description = "";
 	}
 
-	public static BasicBlock create(List<CFGAble> components) {
+	public static BasicBlock create(List<Optimizable> components) {
 		return new BasicBlock(components);
 	}
 
-	public static BasicBlock create(CFGAble component) {
-		ArrayList<CFGAble> components = new ArrayList<>();
+	public static BasicBlock create(Optimizable component) {
+		ArrayList<Optimizable> components = new ArrayList<>();
 		components.add(component);
 		return BasicBlock.create(components);
 	}
@@ -60,13 +60,13 @@ public class BasicBlock extends CFG {
 	}
 
 	public static BasicBlock createEmpty(String description) {
-		BasicBlock block = new BasicBlock(new ArrayList<CFGAble>());
+		BasicBlock block = new BasicBlock(new ArrayList<Optimizable>());
 		block.setDescription(description);
 		return block;
 	}
 
 	public static BasicBlock createEmpty() {
-		return new BasicBlock(new ArrayList<CFGAble>());
+		return new BasicBlock(new ArrayList<Optimizable>());
 	}
 
 	public static BasicBlock createWithCondition(Condition condition) {
@@ -161,7 +161,7 @@ public class BasicBlock extends CFG {
 	// Precondition: b1.getNextBlocks() = [b2], b2.getPreviousBlocks() = [b1]
 	// Aka b1 only points to b2, b2 is only pointed to by b1
 	public static BasicBlock merge(BasicBlock b1, BasicBlock b2) {
-		List<CFGAble> both = new ArrayList<>();
+		List<Optimizable> both = new ArrayList<>();
 		both.addAll(b1.components);
 		both.addAll(b2.components);
 		BasicBlock combined = BasicBlock.create(both);
@@ -172,9 +172,9 @@ public class BasicBlock extends CFG {
 	}
 
 	public void generateTemporaries(OptimizerContext octx) {
-		List<CFGAble> newComponents = new ArrayList<>();
+		List<Optimizable> newComponents = new ArrayList<>();
 
-		for(CFGAble component: components) {
+		for(Optimizable component: components) {
 			newComponents.addAll(component.generateTemporaries(octx));
 		}
 
@@ -183,14 +183,14 @@ public class BasicBlock extends CFG {
 
 
 	public HashSet<Descriptor> doDeadCodeEliminiation(HashSet<Descriptor> consumed) {
-		List<CFGAble> deadComponents = new ArrayList<>();
+		List<Optimizable> deadComponents = new ArrayList<>();
 
 		if(branchCondition != null) {
 			consumed.addAll(branchCondition.getConsumedDescriptors());
 		}
 
 		for(int i = components.size() -1; i >= 0; i--) {
-			CFGAble component = components.get(i);
+			Optimizable component = components.get(i);
 			Set<Descriptor> compGen = component.getGeneratedDescriptors();
 			Set<Descriptor> compCon = component.getConsumedDescriptors();
 
@@ -206,5 +206,13 @@ public class BasicBlock extends CFG {
 
 		this.components.removeAll(deadComponents);
 		return consumed;
+	}
+	
+	public void doCSE(OptimizerContext ctx) {
+		
+		
+		for(Optimizable component: components) {
+			component.doCSE(ctx);
+		}
 	}
 }

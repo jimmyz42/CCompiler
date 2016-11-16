@@ -6,8 +6,6 @@ import java.util.Stack;
 
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.descriptor.FunctionDescriptor;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
-import edu.mit.compilers.highir.nodes.Type;
 
 public class CFGContext {
 	private Stack<CFG> loops;

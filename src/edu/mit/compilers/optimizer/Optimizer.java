@@ -2,14 +2,11 @@ package edu.mit.compilers.optimizer;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import edu.mit.compilers.cfg.components.BasicBlock;
-import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
@@ -25,17 +22,16 @@ import edu.mit.compilers.lowir.instructions.Syscall;
 
 public class Optimizer {
 	private List<BasicBlock> orderedBlocks;
-	private HashMap<Descriptor, Integer> varToVal = new HashMap<>();
-	private HashMap<Expression, Integer> exprToVal = new HashMap<>();
-	private HashMap<Expression, VariableDescriptor> exprToTemp = new HashMap<>();
+	private OptimizerContext ctx;
 	
-	
-	public Optimizer(List<BasicBlock> orderedBlocks) {
+	public Optimizer(OptimizerContext ctx, List<BasicBlock> orderedBlocks) {
 		this.orderedBlocks = orderedBlocks;
+		this.ctx = ctx;
 	}
 
 	public void run() {
-		//doDeadCodeEliminiation();
+		doCSE();
+		doDeadCodeEliminiation();
 	}
 
 	public void doDeadCodeEliminiation() {
@@ -44,6 +40,14 @@ public class Optimizer {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 
 			consumed = currentBlock.doDeadCodeEliminiation(consumed);
+		}
+	}
+	
+	public void doCSE() {
+		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
+			BasicBlock currentBlock = orderedBlocks.get(blockNum);
+
+			currentBlock.doCSE(ctx);
 		}
 	}
 
@@ -108,10 +112,7 @@ public class Optimizer {
 	}
 
 	public static Optimizer create(OptimizerContext ctx, List<BasicBlock> orderedBlocks) {
-		Optimizer optimizer = new Optimizer(orderedBlocks);
-		optimizer.varToVal = ctx.getVarToVal();
-		optimizer.exprToVal = ctx.getExprToVal();
-		optimizer.exprToTemp = ctx.getExprToTemp();
+		Optimizer optimizer = new Optimizer(ctx, orderedBlocks);
 		return optimizer;
 	}
 }

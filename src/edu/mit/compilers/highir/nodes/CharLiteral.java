@@ -3,11 +3,11 @@ package edu.mit.compilers.highir.nodes;
 import java.util.Collections;
 import java.util.List;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class CharLiteral extends Literal {
@@ -50,7 +50,12 @@ public class CharLiteral extends Literal {
     }
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
+	}
+	
+	@Override
+	public int hashCode() {
+		return terminal;
 	}
 }

@@ -2,9 +2,7 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
@@ -16,12 +14,11 @@ import edu.mit.compilers.grammar.DecafParser.ContinueStmtContext;
 import edu.mit.compilers.grammar.DecafParser.Field_declContext;
 import edu.mit.compilers.grammar.DecafParser.StatementContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.symboltable.LocalSymbolTable;
 import edu.mit.compilers.highir.symboltable.SymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.optimizer.OptimizerContext;
+import edu.mit.compilers.optimizer.Optimizable;
 import exceptions.ImproperEscapeError;
 import exceptions.SemanticError;
 
@@ -107,7 +104,7 @@ public class Block extends Ir implements CFGAble {
 
     @Override
     public CFG generateCFG(CFGContext context) {
-        ArrayList<CFGAble> components = new ArrayList<>();
+        ArrayList<Optimizable> components = new ArrayList<>();
         for(VariableDescriptor desc: symbolTable.getDescriptors().values()) {
             components.add(desc);
         }
@@ -136,20 +133,5 @@ public class Block extends Ir implements CFGAble {
 	@Override
 	public long getNumStackAllocations() {
 		return 0;
-	}
-
-	@Override
-	public Set<Descriptor> getConsumedDescriptors() {
-		return Collections.emptySet();
-	}
-
-	@Override
-	public Set<Descriptor> getGeneratedDescriptors() {
-		return Collections.emptySet();
-	}
-
-	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
-		return Collections.emptyList();
 	}
 }

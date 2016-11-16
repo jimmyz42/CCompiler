@@ -19,19 +19,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.nodes.Expression;
-import edu.mit.compilers.lowir.AssemblyContext;
-import edu.mit.compilers.lowir.ImmediateValue;
-import edu.mit.compilers.lowir.Memory;
-import edu.mit.compilers.lowir.Register;
-import edu.mit.compilers.lowir.Storage;
-import edu.mit.compilers.lowir.instructions.Cmp;
-import edu.mit.compilers.lowir.instructions.Je;
-import edu.mit.compilers.lowir.instructions.Jmp;
-import edu.mit.compilers.lowir.instructions.Label;
-import edu.mit.compilers.lowir.instructions.Mov;
-import edu.mit.compilers.lowir.instructions.Syscall;
 import edu.mit.compilers.optimizer.Optimizer;
 import edu.mit.compilers.optimizer.OptimizerContext;
 

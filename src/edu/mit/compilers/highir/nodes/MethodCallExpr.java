@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
@@ -30,6 +29,7 @@ import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Push;
 import edu.mit.compilers.lowir.instructions.Xor;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
@@ -141,35 +141,35 @@ public class MethodCallExpr extends Expression {
 		List<Instruction> instructions = new ArrayList<>();
 		int PARAMS_IN_REGISTER = 6;
 		for(int i = 0; i < arguments.size() && i < PARAMS_IN_REGISTER; i++) {
-			ExternArg node = arguments.get(i);
-			node.generateAssembly(ctx);
+			ExternArg argument = arguments.get(i);
+			argument.generateAssembly(ctx);
 			switch(i) {
 			case 0:
-				instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rdi")));
+				instructions.add(Mov.create(argument.getLocation(ctx, true), Register.create("%rdi")));
 				break;
 			case 1:
-				instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rsi")));
+				instructions.add(Mov.create(argument.getLocation(ctx, true), Register.create("%rsi")));
 				break;
 			case 2:
-				instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rdx")));
+				instructions.add(Mov.create(argument.getLocation(ctx, true), Register.create("%rdx")));
 				break;
 			case 3:
-				instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%rcx")));
+				instructions.add(Mov.create(argument.getLocation(ctx, true), Register.create("%rcx")));
 				break;
 			case 4:
-				instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%r8")));
+				instructions.add(Mov.create(argument.getLocation(ctx, true), Register.create("%r8")));
 				break;
 			case 5:
-				instructions.add(Mov.create(node.getLocation(ctx, true), Register.create("%r9")));
+				instructions.add(Mov.create(argument.getLocation(ctx, true), Register.create("%r9")));
 				break;
 			}
 		}
 
 		//int position = 0;
 		for(int i = arguments.size()-1; i >= PARAMS_IN_REGISTER; i--) {
-			ExternArg node = arguments.get(i);
-			node.generateAssembly(ctx);
-			instructions.add(Push.create(node.getLocation(ctx, true)));
+			ExternArg argument = arguments.get(i);
+			argument.generateAssembly(ctx);
+			instructions.add(Push.create(argument.getLocation(ctx, true)));
 		}
 
 		if(function instanceof ExternDescriptor) {
@@ -189,8 +189,8 @@ public class MethodCallExpr extends Expression {
 	@Override
 	public long getNumStackAllocations() {
 		int numStackAllocations = 0;
-		for(ExternArg node: arguments) {
-			numStackAllocations += node.getNumStackAllocations();
+		for(ExternArg argument: arguments) {
+			numStackAllocations += argument.getNumStackAllocations();
 		}
 		numStackAllocations++;
 		return numStackAllocations;
@@ -212,7 +212,27 @@ public class MethodCallExpr extends Expression {
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {
+		for(int i =0; i < arguments.size(); i++) {
+			if(! (arguments.get(i) instanceof Expression) )
+				continue;
+			Expression argument = (Expression) arguments.get(i);
+			VariableDescriptor temp = ctx.getCSEExprToVar().get(argument);
+			System.out.println(argument + " " + argument.hashCode());
+			System.out.println(temp);	
+
+			if(temp != null) {
+				argument = new IdLocation(temp);
+				arguments.set(i, argument);
+				ctx.getCSEExprToVar().put(argument, temp);
+			} else {
+				argument.doCSE(ctx);
+			}
+		}
 	}
 }

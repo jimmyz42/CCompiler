@@ -10,6 +10,7 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.highir.nodes.IdLocation;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
@@ -20,53 +21,53 @@ import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
 public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, Optimizable {
-    private final String name;
-    private final Type returnType;
-    private StorageTuple storageTuple;
+	private final String name;
+	private final Type returnType;
+	private StorageTuple storageTuple;
 
-    public Descriptor(String name, Type returnType) {
-        this.name = name;
-        this.returnType = returnType;
+	public Descriptor(String name, Type returnType) {
+		this.name = name;
+		this.returnType = returnType;
 
-        this.storageTuple = StorageTuple.create(this);
-    }
+		this.storageTuple = StorageTuple.create(this);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public Type getType() {
-        return returnType;
-    }
+	public Type getType() {
+		return returnType;
+	}
 
-    public StorageTuple getStorageTuple() {
-    	return storageTuple;
-    }
+	public StorageTuple getStorageTuple() {
+		return storageTuple;
+	}
 
-    @Override
-    public CFG generateCFG(CFGContext context) {
-        return BasicBlock.create(this);
-    }
+	@Override
+	public CFG generateCFG(CFGContext context) {
+		return BasicBlock.create(this);
+	}
 
-    @Override
-    public void cfgPrint(PrintWriter pw, String prefix) {
-        pw.println(prefix + getType() + " " + getName());
-    }
+	@Override
+	public void cfgPrint(PrintWriter pw, String prefix) {
+		pw.println(prefix + getType() + " " + getName());
+	}
 
-    @Override
-    public Register allocateRegister(AssemblyContext ctx) {
-    	return ctx.allocateRegister(getStorageTuple());
-    }
+	@Override
+	public Register allocateRegister(AssemblyContext ctx) {
+		return ctx.allocateRegister(getStorageTuple());
+	}
 
-    @Override
-    public Storage getLocation(AssemblyContext ctx) {
-    	return ctx.getStackLocation(getStorageTuple());
-    }
+	@Override
+	public Storage getLocation(AssemblyContext ctx) {
+		return ctx.getStackLocation(getStorageTuple());
+	}
 
-    @Override
-    public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation) {
-    	return getLocation(ctx);
-    }
+	@Override
+	public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation) {
+		return getLocation(ctx);
+	}
 
 	@Override
 	public Set<Descriptor> getConsumedDescriptors() {
@@ -79,7 +80,21 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.singletonList(this);
+	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {
+	}
+
+	@Override
+	public int hashCode() {
+		return this.name.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
 	}
 }

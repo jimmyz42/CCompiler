@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.IntegerSizeError;
 
@@ -61,7 +61,12 @@ public class IntLiteral extends Literal {
     }
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int) terminal;
 	}
 }

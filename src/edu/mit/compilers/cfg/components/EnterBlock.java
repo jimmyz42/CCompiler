@@ -4,22 +4,22 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.instructions.Directive;
 import edu.mit.compilers.lowir.instructions.Label;
+import edu.mit.compilers.optimizer.Optimizable;
 
 public class EnterBlock extends BasicBlock {
 	private String name;
 	private long numStackAllocations;
 
-    public EnterBlock(String name, List<CFGAble> components) {
+    public EnterBlock(String name, List<Optimizable> components) {
         super(components);
         this.name = name;
     }
 
     public static EnterBlock create(String name) {
-        return new EnterBlock(name, new ArrayList<CFGAble>());
+        return new EnterBlock(name, new ArrayList<Optimizable>());
     }
 
     // For detecting NOPs

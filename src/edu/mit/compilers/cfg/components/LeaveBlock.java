@@ -4,20 +4,20 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.lowir.AssemblyContext;
+import edu.mit.compilers.optimizer.Optimizable;
 
 public class LeaveBlock extends BasicBlock {
 	private long numStackAllocations;
 	boolean notVoid;
 	
-    public LeaveBlock(List<CFGAble> components, boolean isNotVoid) {
+    public LeaveBlock(List<Optimizable> components, boolean isNotVoid) {
         super(components);
         this.notVoid = isNotVoid;
     }
 
     public static LeaveBlock create(boolean isNotVoid) {
-        return new LeaveBlock(new ArrayList<CFGAble>(), isNotVoid);
+        return new LeaveBlock(new ArrayList<Optimizable>(), isNotVoid);
     }
 
     // For detecting NOPs

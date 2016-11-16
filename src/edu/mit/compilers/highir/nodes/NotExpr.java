@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import edu.mit.compilers.cfg.CFGAble;
-import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
@@ -18,6 +16,7 @@ import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Not;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 
@@ -84,19 +83,39 @@ public class NotExpr extends Expression {
 	}
 
 	@Override
-	public List<CFGAble> generateTemporaries(OptimizerContext context) {
-		List<CFGAble> temps = new ArrayList<>();
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+		List<Optimizable> temps = new ArrayList<>();
 		
     	temps.addAll(expression.generateTemporaries(context));
-    	VariableDescriptor temp = context.addExpression(expression);
-    	temps.add(temp);
-    	temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
+		if(context.addExpression(this)) {
+			VariableDescriptor temp = context.getExprToTemp().get(this);
+			temps.add(temp);
+			temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
+		}
     	
         return temps;
+	}
+
+	@Override
+	public void doCSE(OptimizerContext ctx) {
+		VariableDescriptor temp = ctx.getCSEExprToVar().get(expression);
+
+		if(temp != null) {
+			expression = new IdLocation(temp);
+			ctx.getCSEExprToVar().put(expression, temp);
+
+		} else {
+			expression.doCSE(ctx);
+		}
 	}
 	
 	@Override
     public int hashCode() {
         return -expression.hashCode();
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
+	}
 }
