@@ -148,4 +148,9 @@ public class ArrayLocation extends Location {
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return index.generateTemporaries(context);
 	}
+	
+	@Override
+    public int hashCode() {
+        return ("" + variable.hashCode() + index.hashCode()).hashCode();
+    }
 }

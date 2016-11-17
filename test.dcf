@@ -1,17 +1,11 @@
-#include <stdbool.h>
 #define int long long
+
 extern printf();
-int get_int ( int x ) {
-  return x;
-}
+int array[10];
 void main ( ) {
-  int a, b, c, d;
-  a = get_int ( 2 );
-  b = get_int ( 3 );
-  c = 0;
-  d = 0;
-  c = ( a + b ) * ( a + b );
-  d = ( a + b ) * ( a + b );
-  printf ( "%d\n", c );
-  printf ( "%d\n", d );
+  int j;
+  printf ( "below output should be 18 16 14 12 10 8 6 4 2 0\n" );
+  j = j+1;
+  j = j+1;
+  j = j+1;
 }

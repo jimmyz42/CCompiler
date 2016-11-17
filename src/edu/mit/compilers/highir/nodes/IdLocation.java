@@ -82,4 +82,9 @@ public class IdLocation extends Location {
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
 	}
+	
+	@Override
+    public int hashCode() {
+        return variable.hashCode();
+    }
 }

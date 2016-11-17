@@ -111,7 +111,7 @@ public class NotExpr extends Expression {
 	
 	@Override
     public int hashCode() {
-        return -expression.hashCode();
+        return ~expression.hashCode();
     }
 
 	@Override

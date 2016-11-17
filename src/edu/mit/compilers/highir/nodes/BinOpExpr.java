@@ -94,7 +94,7 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public int hashCode() {
-		return lhs.hashCode() + operator.hashCode() + rhs.hashCode();
+		return ("" + lhs.hashCode() + operator.hashCode() + rhs.hashCode()).hashCode();
 	}
 
 	@Override

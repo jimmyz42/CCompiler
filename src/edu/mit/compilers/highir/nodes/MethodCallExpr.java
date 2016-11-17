@@ -40,7 +40,7 @@ public class MethodCallExpr extends Expression {
 
 	public MethodCallExpr(FunctionDescriptor function, List<ExternArg> arguments) {
 		this.function = function;
-		this.arguments = Collections.unmodifiableList(arguments);
+		this.arguments = arguments;
 	}
 
 	@Override

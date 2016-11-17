@@ -46,9 +46,9 @@ abstract public class Location extends Expression {
 	@Override
 	public void doCSE(OptimizerContext ctx) {	
 	}
-	
+
 	@Override
-    public int hashCode() {
-        return variable.hashCode();
-    }
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
+	}
 }

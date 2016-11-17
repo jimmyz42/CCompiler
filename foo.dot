@@ -1,13 +1,9 @@
 digraph G {
-  block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\la\ =\ get_int\(2\)\lb\ =\ get_int\(3\)\lc\ =\ 0\ld\ =\ 0\lint\ t4\lt4\ =\ a\ +\ b\lint\ t5\lt5\ =\ t4\ *\ t4\lc\ =\ t5\ld\ =\ t5\lprintf\(\"%d\\n\"\,\ c\)\lprintf\(\"%d\\n\"\,\ d\)\l\l" ];
-  block2 [ label="block2: *end\ of\ method*\l" ];
-  block3 [ label="block3: *start\ of\ method*\l" ];
-  block4 [ label="block4: int\ get_int\lreturn\ x\l\l" ];
-  block5 [ label="block5: NOT\ VOID\l*end\ of\ method*\l" ];
+  block0 [ label="block0: int[10]\ array\l\l" ];
+  block1 [ label="block1: *start\ of\ method*\l" ];
+  block2 [ label="block2: void\ main\lint\ j\lprintf\(\"below\ output\ should\ be\ 18\ 16\ 14\ 12\ 10\ 8\ 6\ 4\ 2\ 0\\n\"\)\lint\ t0\lt0\ =\ j\ +\ 1\lj\ =\ t0\lj\ =\ t0\lj\ =\ t0\l\l" ];
+  block3 [ label="block3: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
-  block3 -> block4;
-  block4 -> block5;
 }
