@@ -46,7 +46,7 @@ public abstract class VariableDescriptor extends Descriptor {
 
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
-		return Collections.singleton(this);
+		return Collections.singleton((Descriptor)this);
 	}
 
 	public static VariableDescriptor create(String name, Type type, boolean isGlobal) {

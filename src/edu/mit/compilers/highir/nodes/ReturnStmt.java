@@ -11,7 +11,6 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
@@ -111,7 +110,7 @@ public class ReturnStmt extends Statement implements Optimizable {
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
-		return Collections.singletonList(this);
+		return Collections.singletonList((Optimizable)this);
 	}
 
 	@Override

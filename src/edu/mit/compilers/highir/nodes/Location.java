@@ -4,8 +4,6 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
 import edu.mit.compilers.highir.DecafSemanticChecker;
-import edu.mit.compilers.highir.descriptor.ArrayVariableDescriptor;
-import edu.mit.compilers.highir.descriptor.ScalarVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.optimizer.OptimizerContext;

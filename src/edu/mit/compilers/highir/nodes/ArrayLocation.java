@@ -12,7 +12,6 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.ArrayVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.descriptor.ScalarVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
@@ -124,7 +123,7 @@ public class ArrayLocation extends Location {
 
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
-		return Collections.singleton(variable);
+		return Collections.singleton((Descriptor)variable);
 	}
 
 	@Override

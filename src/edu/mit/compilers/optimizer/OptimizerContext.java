@@ -3,7 +3,6 @@ package edu.mit.compilers.optimizer;
 import java.util.HashMap;
 import java.util.Set;
 
-import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.IdLocation;
