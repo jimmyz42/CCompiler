@@ -63,36 +63,36 @@ abstract public class BinOpExpr extends Expression {
 		temps.addAll(rhs.generateTemporaries(context));
 
 		if(context.addExpression(lhs)) {
-			VariableDescriptor lhsTemp = context.getExprToTemp().get(lhs);
-			temps.add(lhsTemp);
+			Location lhsTemp = context.getExprToTemp().get(lhs);
+			temps.add(lhsTemp.getVariable());
 		}
 		if(context.addExpression(rhs)) {
-			VariableDescriptor rhsTemp = context.getExprToTemp().get(rhs);
-			temps.add(rhsTemp);
+			Location rhsTemp = context.getExprToTemp().get(rhs);
+			temps.add(rhsTemp.getVariable());
 		}
-		VariableDescriptor lhsTemp = context.getExprToTemp().get(lhs);
-		VariableDescriptor rhsTemp = context.getExprToTemp().get(rhs);
+		Location lhsTemp = context.getExprToTemp().get(lhs);
+		Location rhsTemp = context.getExprToTemp().get(rhs);
 
-		temps.add(AssignStmt.create(IdLocation.create(lhsTemp), "=", lhs));
-		temps.add(AssignStmt.create(IdLocation.create(rhsTemp), "=", rhs));
+		temps.add(AssignStmt.create(lhsTemp, "=", lhs));
+		temps.add(AssignStmt.create(rhsTemp, "=", rhs));
 
 		return temps;
 	}
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		VariableDescriptor lhsTemp = ctx.getCSEExprToVar().get(lhs);
-		VariableDescriptor rhsTemp = ctx.getCSEExprToVar().get(rhs);
+		Location lhsTemp = ctx.getCSEExprToVar().get(lhs);
+		Location rhsTemp = ctx.getCSEExprToVar().get(rhs);
 
 		if(lhsTemp != null) {
-			lhs = new IdLocation(lhsTemp);
+			lhs = lhsTemp;
 			ctx.getCSEExprToVar().put(lhs, lhsTemp);
 
 		} else {
 			lhs.doCSE(ctx);
 		}
 		if(rhsTemp != null) {
-			rhs = new IdLocation(rhsTemp);
+			rhs = rhsTemp;
 			ctx.getCSEExprToVar().put(rhs, rhsTemp);
 
 		} else {

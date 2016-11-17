@@ -6,18 +6,20 @@ import java.util.Set;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
+import edu.mit.compilers.highir.nodes.IdLocation;
+import edu.mit.compilers.highir.nodes.Location;
 
 public class OptimizerContext {
 	private int tempVarNonce;
 
-	private HashMap<Descriptor, Integer> varToVal = new HashMap<>();
+	private HashMap<Location, Integer> varToVal = new HashMap<>();
 	private HashMap<Expression, Integer> exprToVal = new HashMap<>();
-	private HashMap<Expression, VariableDescriptor> exprToTemp = new HashMap<>();
+	private HashMap<Expression, Location> exprToTemp = new HashMap<>();
 
-	private HashMap<Expression, VariableDescriptor> cseExprToVar = new HashMap<>();
-	private HashMap<Descriptor, Set<Expression>> cseVarToExprs = new HashMap<>();
+	private HashMap<Expression, Location> cseExprToVar = new HashMap<>();
+	private HashMap<Location, Set<Expression>> cseVarToExprs = new HashMap<>();
 
-	public HashMap<Descriptor, Integer> getVarToVal() {
+	public HashMap<Location, Integer> getVarToVal() {
 		return varToVal;
 	}
 
@@ -25,20 +27,20 @@ public class OptimizerContext {
 		return exprToVal;
 	}
 
-	public HashMap<Expression, VariableDescriptor> getExprToTemp() {
+	public HashMap<Expression, Location> getExprToTemp() {
 		return exprToTemp;
 	}
 	
-	public HashMap<Expression, VariableDescriptor> getCSEExprToVar() {
+	public HashMap<Expression, Location> getCSEExprToVar() {
 		return cseExprToVar;
 	}
 	
-	public HashMap<Descriptor, Set<Expression>> getCSEVarToExprs() {
+	public HashMap<Location, Set<Expression>> getCSEVarToExprs() {
 		return cseVarToExprs;
 	}
 	
-	public void addVariable(Descriptor desc, Expression expr) {
-		varToVal.put(desc, exprToVal.get(expr));
+	public void addVariable(Location loc, Expression expr) {
+		varToVal.put(loc, exprToVal.get(expr));
 	}
 	
 	/**
@@ -50,10 +52,11 @@ public class OptimizerContext {
 		if(exprToVal.containsKey(expr)) {
 			return false;
 		} else {
-			VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);
-			varToVal.put(desc, tempVarNonce);
+			VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);;
+			IdLocation loc = IdLocation.create(desc);
+			varToVal.put(loc, tempVarNonce);
 			exprToVal.put(expr, tempVarNonce);
-			exprToTemp.put(expr, desc);
+			exprToTemp.put(expr, loc);
 			tempVarNonce++;
 			return true;
 		}

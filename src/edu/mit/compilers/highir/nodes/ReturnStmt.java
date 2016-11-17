@@ -117,10 +117,10 @@ public class ReturnStmt extends Statement implements Optimizable {
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 		if(expression != null) {
-			VariableDescriptor temp = ctx.getCSEExprToVar().get(expression);
+			Location temp = ctx.getCSEExprToVar().get(expression);
 
 			if(temp != null) {
-				expression = new IdLocation(temp);
+				expression = temp;
 				ctx.getCSEExprToVar().put(expression, temp);
 
 			} else {

@@ -89,22 +89,22 @@ public class NotExpr extends Expression {
 		temps.addAll(expression.generateTemporaries(context));
 
 		if(context.addExpression(expression)) {
-			VariableDescriptor temp = context.getExprToTemp().get(expression);
-			temps.add(temp);
+			Location temp = context.getExprToTemp().get(expression);
+			temps.add(temp.getVariable());
 		}
 
-		VariableDescriptor temp = context.getExprToTemp().get(expression);
-		temps.add(AssignStmt.create(IdLocation.create(temp), "=", expression));
+		Location temp = context.getExprToTemp().get(expression);
+		temps.add(AssignStmt.create(temp, "=", expression));
 
 		return temps;
 	}
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		VariableDescriptor temp = ctx.getCSEExprToVar().get(expression);
+		Location temp = ctx.getCSEExprToVar().get(expression);
 
 		if(temp != null) {
-			expression = new IdLocation(temp);
+			expression =  temp;
 			ctx.getCSEExprToVar().put(expression, temp);
 
 		} else {

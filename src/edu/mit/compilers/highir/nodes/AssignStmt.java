@@ -2,7 +2,6 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -118,26 +117,28 @@ public class AssignStmt extends Statement implements Optimizable {
 
 		List<Optimizable> temps = new ArrayList<>();
 		temps.addAll(expression.generateTemporaries(context));
-
-		if(context.addExpression(expression)) {
-			VariableDescriptor temp = context.getExprToTemp().get(expression);
-			temps.add(temp);
+		if(location.getVariable().isGlobal()) {
+			temps.add(this);
+		} else {
+			if(context.addExpression(expression)) {
+				Location temp = context.getExprToTemp().get(expression);
+				temps.add(temp.getVariable());
+			}
+			Location temp = context.getExprToTemp().get(expression);
+			context.addVariable(location, expression);
+			temps.add(this);
+			temps.add(AssignStmt.create(temp, assignOp, location));
 		}
-		VariableDescriptor temp = context.getExprToTemp().get(expression);
-		context.addVariable(location.getVariable(), expression);
-		temps.add(this);
-		temps.add(AssignStmt.create(IdLocation.create(temp), assignOp, location));
-
 		return temps;
 	}
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		VariableDescriptor temp = ctx.getCSEExprToVar().get(expression);
+		Location temp = ctx.getCSEExprToVar().get(expression);
 		if(temp != null) {
 			ctx.getCSEExprToVar().remove(location);
 
-			expression = new IdLocation(temp);
+			expression = temp;
 
 			for(Expression expr: ctx.getCSEVarToExprs().get(temp)) {
 				ctx.getCSEExprToVar().remove(expr);
@@ -146,17 +147,17 @@ public class AssignStmt extends Statement implements Optimizable {
 			ctx.getCSEVarToExprs().get(temp).add(location);
 		} else {
 			expression.doCSE(ctx);
-			ctx.getCSEExprToVar().put(expression, location.getVariable());
+			ctx.getCSEExprToVar().put(expression, location);
 			ctx.getCSEExprToVar().remove(location);
 
-			if(ctx.getCSEVarToExprs().containsKey(location.getVariable())) {
-				for(Expression expr: ctx.getCSEVarToExprs().get(location.getVariable())) {
+			if(ctx.getCSEVarToExprs().containsKey(location)) {
+				for(Expression expr: ctx.getCSEVarToExprs().get(location)) {
 					ctx.getCSEExprToVar().remove(expr);
 				}
-				ctx.getCSEVarToExprs().get(location.getVariable()).add(expression);
+				ctx.getCSEVarToExprs().get(location).add(expression);
 			} else {
-				ctx.getCSEVarToExprs().put(location.getVariable(), new HashSet<>());
-				ctx.getCSEVarToExprs().get(location.getVariable()).add(expression);
+				ctx.getCSEVarToExprs().put(location, new HashSet<>());
+				ctx.getCSEVarToExprs().get(location).add(expression);
 			}
 		}
 	}

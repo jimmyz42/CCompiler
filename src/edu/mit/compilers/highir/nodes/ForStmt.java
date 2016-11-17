@@ -26,7 +26,7 @@ public class ForStmt extends Statement {
     public static ForStmt create(DecafSemanticChecker checker, DecafParser.ForStmtContext ctx) {
         SymbolTable symbolTable = checker.currentSymbolTable();
 
-        IdLocation iterator = new IdLocation(symbolTable.getVariable(ctx.init_id.getText(), ctx));
+        IdLocation iterator = IdLocation.create(symbolTable.getVariable(ctx.init_id.getText(), ctx));
         if (iterator.getType() != ScalarType.INT) {
             throw new TypeMismatchError("For loop iterator must be an int", ctx);
         }
@@ -42,7 +42,7 @@ public class ForStmt extends Statement {
         }
 
         AssignStmt update = AssignStmt.create(
-                new IdLocation(symbolTable.getVariable(ctx.update_id.getText(), ctx)),
+                IdLocation.create(symbolTable.getVariable(ctx.update_id.getText(), ctx)),
                 ctx.update_op.getText(),
                 Expression.create(checker, ctx.update_expr),
                 ctx);

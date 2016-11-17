@@ -11,6 +11,7 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.ScalarVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
@@ -22,25 +23,8 @@ import exceptions.UndeclaredIdentifierError;
 
 public class IdLocation extends Location {
 
-    public IdLocation(VariableDescriptor variable) {
+    public IdLocation(ScalarVariableDescriptor variable) {
         super(variable);
-    }
-
-    public static IdLocation create(DecafSemanticChecker checker, DecafParser.IdLocationContext ctx) {
-    	//TODO this check for if a variable is declared is broken
-        String varName = ctx.ID().getText();
-        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
-        if (variable == null) {
-            throw new UndeclaredIdentifierError("Variable ''" + varName + "' is not declared", ctx);
-        }
-        if (!(variable.getType() instanceof ScalarType)) {
-            throw new TypeMismatchError("Expected a scalar variable, got " + variable.getType(), ctx);
-        }
-        return new IdLocation(variable);
-    }
-
-    public static IdLocation create(VariableDescriptor variable) {
-        return new IdLocation(variable);
     }
 
     @Override
@@ -86,5 +70,22 @@ public class IdLocation extends Location {
 	@Override
     public int hashCode() {
         return ("variablelocation" + variable).hashCode();
+    }
+
+    public static IdLocation create(DecafSemanticChecker checker, DecafParser.IdLocationContext ctx) {
+    	//TODO this check for if a variable is declared is broken
+        String varName = ctx.ID().getText();
+        ScalarVariableDescriptor variable = (ScalarVariableDescriptor) checker.currentSymbolTable().getVariable(varName, ctx);
+        if (variable == null) {
+            throw new UndeclaredIdentifierError("Variable ''" + varName + "' is not declared", ctx);
+        }
+        if (!(variable.getType() instanceof ScalarType)) {
+            throw new TypeMismatchError("Expected a scalar variable, got " + variable.getType(), ctx);
+        }
+        return new IdLocation(variable);
+    }
+
+    public static IdLocation create(VariableDescriptor variable) {
+        return new IdLocation((ScalarVariableDescriptor) variable);
     }
 }

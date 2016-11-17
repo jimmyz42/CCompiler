@@ -32,7 +32,7 @@ public class Optimizer {
 
 	public void run() {
 		doCSE();
-		doDeadCodeEliminiation();
+		//doDeadCodeEliminiation();
 	}
 
 	public void doDeadCodeEliminiation() {

@@ -12,6 +12,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.ArrayVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.ScalarVariableDescriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
@@ -33,24 +34,6 @@ public class ArrayLocation extends Location {
     public ArrayLocation(ArrayVariableDescriptor variable, Expression index) {
         super(variable);
         this.index = index;
-    }
-
-    public static ArrayLocation create(DecafSemanticChecker checker, DecafParser.ArrayLocationContext ctx) {
-        String varName = ctx.ID().getText();
-        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
-        Expression index = Expression.create(checker, ctx.expr());
-
-        if (variable == null) {
-            throw new UndeclaredIdentifierError("Array is not declared", ctx);
-        }
-        if (!(variable.getType() instanceof ArrayType)) {
-            throw new TypeMismatchError("Can only index variables", ctx);
-        }
-        if (index.getType() != ScalarType.INT) {
-            throw new TypeMismatchError("Array index must be an int", ctx.expr());
-        }
-
-        return new ArrayLocation((ArrayVariableDescriptor) variable, index);
     }
 
     @Override
@@ -152,5 +135,23 @@ public class ArrayLocation extends Location {
 	@Override
     public int hashCode() {
         return ("arraylocation" + variable.hashCode() + index.hashCode()).hashCode();
+    }
+
+    public static ArrayLocation create(DecafSemanticChecker checker, DecafParser.ArrayLocationContext ctx) {
+        String varName = ctx.ID().getText();
+        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
+        Expression index = Expression.create(checker, ctx.expr());
+
+        if (variable == null) {
+            throw new UndeclaredIdentifierError("Array is not declared", ctx);
+        }
+        if (!(variable.getType() instanceof ArrayType)) {
+            throw new TypeMismatchError("Can only index variables", ctx);
+        }
+        if (index.getType() != ScalarType.INT) {
+            throw new TypeMismatchError("Array index must be an int", ctx.expr());
+        }
+
+        return new ArrayLocation((ArrayVariableDescriptor) variable, index);
     }
 }

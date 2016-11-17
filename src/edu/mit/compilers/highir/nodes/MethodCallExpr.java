@@ -222,12 +222,10 @@ public class MethodCallExpr extends Expression {
 			if(! (arguments.get(i) instanceof Expression) )
 				continue;
 			Expression argument = (Expression) arguments.get(i);
-			VariableDescriptor temp = ctx.getCSEExprToVar().get(argument);
-			System.out.println(argument + " " + argument.hashCode());
-			System.out.println(temp);
+			Location temp = ctx.getCSEExprToVar().get(argument);
 
 			if(temp != null) {
-				argument = new IdLocation(temp);
+				argument = temp;
 				arguments.set(i, argument);
 				ctx.getCSEExprToVar().put(argument, temp);
 			} else {
