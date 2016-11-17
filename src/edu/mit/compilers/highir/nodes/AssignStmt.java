@@ -155,7 +155,7 @@ public class AssignStmt extends Statement implements Optimizable {
 				}
 				ctx.getCSEVarToExprs().get(location.getVariable()).add(expression);
 			} else {
-				ctx.getCSEVarToExprs().put(location.getVariable(), new HashSet<>());
+				ctx.getCSEVarToExprs().put(location.getVariable(), new HashSet<Expression>());
 				ctx.getCSEVarToExprs().get(location.getVariable()).add(expression);
 			}
 		}

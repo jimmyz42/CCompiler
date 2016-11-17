@@ -141,7 +141,7 @@ public class ArrayLocation extends Location {
 
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
-		return Collections.singleton(variable);
+		return Collections.singleton((Descriptor)variable);
 	}
 
 	@Override
