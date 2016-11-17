@@ -122,7 +122,7 @@ public class MethodCallExpr extends Expression {
 		CFG currentCFG = firstCFG;
 		for(int i =1; i < arguments.size(); i++) {
 			CFG nextCFG = arguments.get(i).generateCFG(context);
-			
+
 			currentCFG.setNextBlock(nextCFG.getEntryBlock());
 			nextCFG.setPreviousBlock(currentCFG.getExitBlock());
 			currentCFG = nextCFG;
@@ -224,7 +224,7 @@ public class MethodCallExpr extends Expression {
 			Expression argument = (Expression) arguments.get(i);
 			VariableDescriptor temp = ctx.getCSEExprToVar().get(argument);
 			System.out.println(argument + " " + argument.hashCode());
-			System.out.println(temp);	
+			System.out.println(temp);
 
 			if(temp != null) {
 				argument = new IdLocation(temp);

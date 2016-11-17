@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.List;
 
+import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.nodes.Expression;
@@ -23,7 +24,7 @@ import edu.mit.compilers.lowir.instructions.Syscall;
 public class Optimizer {
 	private List<BasicBlock> orderedBlocks;
 	private OptimizerContext ctx;
-	
+
 	public Optimizer(OptimizerContext ctx, List<BasicBlock> orderedBlocks) {
 		this.orderedBlocks = orderedBlocks;
 		this.ctx = ctx;
@@ -38,11 +39,15 @@ public class Optimizer {
 		HashSet<Descriptor> consumed = new HashSet<>();
 		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-
+			if(currentBlock.getPreviousBlock() != null) {
+				Condition branchCondition = currentBlock.getPreviousBlock().getCondition();
+				if(branchCondition != null)
+					consumed.addAll(branchCondition.getConsumedDescriptors());
+			}
 			consumed = currentBlock.doDeadCodeEliminiation(consumed);
 		}
 	}
-	
+
 	public void doCSE() {
 		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);

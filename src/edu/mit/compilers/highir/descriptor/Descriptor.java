@@ -90,7 +90,7 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 
 	@Override
 	public int hashCode() {
-		return this.name.hashCode();
+		return super.hashCode();
 	}
 
 	@Override

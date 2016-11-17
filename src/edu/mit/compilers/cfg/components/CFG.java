@@ -49,7 +49,7 @@ public class CFG {
 	}
 
 	public BasicBlock getPreviousBlock() {
-		return getPreviousBlocks().get(0);
+		return getPreviousBlocks().isEmpty()? null: getPreviousBlocks().get(0);
 	}
 
 	public BasicBlock getNextBlock() {

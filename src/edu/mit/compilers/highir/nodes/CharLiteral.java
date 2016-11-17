@@ -22,13 +22,13 @@ public class CharLiteral extends Literal {
         Character terminal = Character.valueOf(text.charAt(0));
         return new CharLiteral(terminal);
     }
-    
+
     @Override
     public Type getType() {
         // Chars are treated as ints in decaf
         return ScalarType.INT;
     }
-    
+
     @Override
     public String toString() {
         return "'" + terminal + "' /*" + (int)terminal + "*/";
@@ -53,9 +53,9 @@ public class CharLiteral extends Literal {
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return terminal;
+		return ("charterminal" + terminal).hashCode();
 	}
 }

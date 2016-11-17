@@ -186,31 +186,32 @@ public class BasicBlock extends CFG {
 		List<Optimizable> deadComponents = new ArrayList<>();
 
 		if(branchCondition != null) {
+			System.out.println(branchCondition.getConsumedDescriptors());
 			consumed.addAll(branchCondition.getConsumedDescriptors());
 		}
-
 		for(int i = components.size() -1; i >= 0; i--) {
 			Optimizable component = components.get(i);
 			Set<Descriptor> compGen = component.getGeneratedDescriptors();
 			Set<Descriptor> compCon = component.getConsumedDescriptors();
 
+			System.out.println(component);
 			if(compGen.isEmpty() ||
 					!Collections.disjoint(consumed, compGen) ||
 					!Collections.disjoint(compGen, compCon)) {
-				consumed.addAll(component.getConsumedDescriptors());
-			} else {
+				consumed.addAll(compCon);
+			} else
 				deadComponents.add(component);
-			}
 
 		}
 
 		this.components.removeAll(deadComponents);
 		return consumed;
 	}
-	
+
 	public void doCSE(OptimizerContext ctx) {
-		
-		
+		ctx.getCSEExprToVar().clear();
+		ctx.getCSEVarToExprs().clear();
+
 		for(Optimizable component: components) {
 			component.doCSE(ctx);
 		}

@@ -24,17 +24,17 @@ public class BoolLiteral extends Literal {
          Boolean terminal = Boolean.valueOf(text);
          return new BoolLiteral(terminal);
     }
-    
+
     @Override
     public Type getType() {
         return ScalarType.BOOL;
     }
-    
+
     @Override
     public String toString() {
         return Boolean.toString(terminal);
     }
-    
+
     @Override
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {
     	return (terminal ? trueBranch : falseBranch).getEntryBlock();
@@ -59,9 +59,9 @@ public class BoolLiteral extends Literal {
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return terminal?1:0;
+		return ("intterminal" + terminal).hashCode();
 	}
 }

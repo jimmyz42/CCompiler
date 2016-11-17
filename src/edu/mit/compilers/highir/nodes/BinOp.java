@@ -23,10 +23,10 @@ abstract public class BinOp extends Ir {
     public void prettyPrint(PrintWriter pw, String prefix) {
         pw.println(prefix + terminal);
     }
-    
+
     @Override
     public int hashCode() {
-    	return terminal.hashCode();
+    	return ("binop" + terminal).hashCode();
     }
 
 	@Override

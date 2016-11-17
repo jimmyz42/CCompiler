@@ -20,6 +20,8 @@ import edu.mit.compilers.highir.nodes.VoidType;
 import edu.mit.compilers.highir.symboltable.ArgumentSymbolTable;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.optimizer.Optimizable;
+import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 
 public class MethodDescriptor extends FunctionDescriptor {
@@ -154,5 +156,13 @@ public class MethodDescriptor extends FunctionDescriptor {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+		context.getExprToTemp().clear();
+		context.getExprToVal().clear();
+		context.getVarToVal().clear();
+		return Collections.singletonList(this);
 	}
 }

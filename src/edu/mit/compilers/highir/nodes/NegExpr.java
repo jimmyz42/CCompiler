@@ -86,11 +86,14 @@ public class NegExpr extends Expression {
 		List<Optimizable> temps = new ArrayList<>();
 
 		temps.addAll(expression.generateTemporaries(context));
-		if(context.addExpression(this)) {
-			VariableDescriptor temp = context.getExprToTemp().get(this);
+
+		if(context.addExpression(expression)) {
+			VariableDescriptor temp = context.getExprToTemp().get(expression);
 			temps.add(temp);
-			temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
 		}
+		
+		VariableDescriptor temp = context.getExprToTemp().get(expression);
+		temps.add(AssignStmt.create(IdLocation.create(temp), "=", expression));
 
 		return temps;
 	}

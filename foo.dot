@@ -1,9 +1,23 @@
 digraph G {
   block0 [ label="block0: int[10]\ array\l\l" ];
   block1 [ label="block1: *start\ of\ method*\l" ];
-  block2 [ label="block2: void\ main\lint\ j\lprintf\(\"below\ output\ should\ be\ 18\ 16\ 14\ 12\ 10\ 8\ 6\ 4\ 2\ 0\\n\"\)\lint\ t0\lt0\ =\ j\ +\ 1\lj\ =\ t0\lj\ =\ t0\lj\ =\ t0\l\l" ];
-  block3 [ label="block3: *end\ of\ method*\l" ];
+  block2 [ label="block2: void\ main\lint\ j\lprintf\(\"below\ output\ should\ be\ 18\ 16\ 14\ 12\ 10\ 8\ 6\ 4\ 2\ 0\\n\"\)\lj\ =\ 0\l\l" ];
+  block3 [ label="block3: j\ \<\ sizeof\(array\)\ /\ sizeof\(int\)\l" ];
+  block4 [ label="block4: int\ t1\lint\ t2\lt1\ =\ j\lt2\ =\ 2\larray[j]\ =\ t1\ *\ t2\lint\ t4\lt1\ =\ t1\lt4\ =\ 1\lj\ =\ j\ +\ t4\l\l" ];
+  block5 [ label="block5: j\ =\ 0\l\l" ];
+  block6 [ label="block6: j\ \<\ 10\l" ];
+  block7 [ label="block7: printf\(\"%d\ \"\,\ array[9\ -\ j]\)\lt1\ =\ j\lt4\ =\ 1\lj\ =\ t1\ +\ t4\l\l" ];
+  block8 [ label="block8: printf\(\"\\n\"\)\l\l" ];
+  block9 [ label="block9: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
+  block3 -> block4;
+  block4 -> block3;
+  block3 -> block5;
+  block5 -> block6;
+  block6 -> block7;
+  block7 -> block6;
+  block6 -> block8;
+  block8 -> block9;
 }

@@ -95,12 +95,12 @@ public class ArrayLocation extends Location {
 
     public Storage getLocation(AssemblyContext ctx) {
     	Register src = index.allocateRegister(ctx);
-    	
+
     	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
     	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
     	ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
         ctx.addInstruction(Sub.create(src, Register.create("%rax")));
-        
+
         Storage result =  getVariable().getLocation(ctx, Register.create("%rax"));
         ctx.deallocateRegister(src);
     	return result;
@@ -120,12 +120,12 @@ public class ArrayLocation extends Location {
     @Override
     public Register allocateRegister(AssemblyContext ctx) {
     	Register src = index.allocateRegister(ctx);
-    	
+
     	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
     	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
     	ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
         ctx.addInstruction(Sub.create(src, Register.create("%rax")));
-        
+
         Register result = getVariable().allocateRegister(ctx, Register.create("%rax"));
         ctx.deallocateRegister(src);
     	return result;
@@ -148,9 +148,9 @@ public class ArrayLocation extends Location {
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return index.generateTemporaries(context);
 	}
-	
+
 	@Override
     public int hashCode() {
-        return ("" + variable.hashCode() + index.hashCode()).hashCode();
+        return ("arraylocation" + variable.hashCode() + index.hashCode()).hashCode();
     }
 }

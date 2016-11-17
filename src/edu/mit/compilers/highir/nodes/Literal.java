@@ -46,4 +46,9 @@ abstract public class Literal extends Expression {
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
+	}
 }

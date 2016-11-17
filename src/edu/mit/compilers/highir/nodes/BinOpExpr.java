@@ -62,11 +62,19 @@ abstract public class BinOpExpr extends Expression {
 		temps.addAll(lhs.generateTemporaries(context));
 		temps.addAll(rhs.generateTemporaries(context));
 
-		if(context.addExpression(this)) {
-			VariableDescriptor temp = context.getExprToTemp().get(this);
-			temps.add(temp);
-			temps.add(AssignStmt.create(IdLocation.create(temp), "=", this));
+		if(context.addExpression(lhs)) {
+			VariableDescriptor lhsTemp = context.getExprToTemp().get(lhs);
+			temps.add(lhsTemp);
 		}
+		if(context.addExpression(rhs)) {
+			VariableDescriptor rhsTemp = context.getExprToTemp().get(rhs);
+			temps.add(rhsTemp);
+		}
+		VariableDescriptor lhsTemp = context.getExprToTemp().get(lhs);
+		VariableDescriptor rhsTemp = context.getExprToTemp().get(rhs);
+
+		temps.add(AssignStmt.create(IdLocation.create(lhsTemp), "=", lhs));
+		temps.add(AssignStmt.create(IdLocation.create(rhsTemp), "=", rhs));
 
 		return temps;
 	}
@@ -94,7 +102,7 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public int hashCode() {
-		return ("" + lhs.hashCode() + operator.hashCode() + rhs.hashCode()).hashCode();
+		return ("binop" + lhs.hashCode() + operator.hashCode() + rhs.hashCode()).hashCode();
 	}
 
 	@Override

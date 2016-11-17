@@ -76,9 +76,14 @@ public class StringLiteral extends ExternArg {
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return terminal.hashCode();
+		return ("stringterminal" + terminal).hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
 	}
 }
