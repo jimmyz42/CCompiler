@@ -1,15 +1,9 @@
 digraph G {
-  block0 [ label="block0: int\ x\l\l" ];
+  block0 [ label="block0: int\ x\lint\ y\l\l" ];
   block1 [ label="block1: *start\ of\ method*\l" ];
-  block2 [ label="block2: void\ foo\lx\ =\ 42\l\l" ];
+  block2 [ label="block2: void\ main\lint\ t0\lt0\ =\ x\lt0\ =\ t0\lint\ t1\lt1\ =\ x\ -\ x\lint\ t2\lint\ t3\lt2\ =\ t1\ *\ t1\lt3\ =\ 23\lint\ t4\lt4\ =\ 42\lint\ t5\lint\ t6\lt5\ =\ t4\ -\ x\lt6\ =\ 2\lint\ t7\lt7\ =\ t5\ -\ t6\lint\ t8\lint\ t9\lt8\ =\ x\ *\ t7\lt9\ =\ 1\lint\ t10\lint\ t11\lt10\ =\ t2\ +\ t3\lt11\ =\ t8\ /\ t9\ly\ =\ t10\ -\ t11\lprintf\(\"%d\\n\"\,\ y\)\l\l" ];
   block3 [ label="block3: *end\ of\ method*\l" ];
-  block4 [ label="block4: *start\ of\ method*\l" ];
-  block5 [ label="block5: void\ main\lx\ =\ 0\lfoo\(\)\lprintf\(\"should\ be\ 42\:\ %d\\n\"\,\ x\)\l\l" ];
-  block6 [ label="block6: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
-  block3 -> block4;
-  block4 -> block5;
-  block5 -> block6;
 }

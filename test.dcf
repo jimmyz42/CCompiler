@@ -1,13 +1,7 @@
-
-#define int long long
-
 extern printf();
 int x;
-void foo ( ) {
-  x = 42;
-}
+int y;
 void main ( ) {
-  x = 0;
-  foo ( );
-  printf ( "should be 42: %d\n", x );
+   y = (x - x) * (x-x) + 23 - x * (42-x-2) / 1;
+   printf("%d\n", y);
 }
