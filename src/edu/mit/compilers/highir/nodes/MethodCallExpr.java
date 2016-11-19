@@ -233,4 +233,12 @@ public class MethodCallExpr extends Expression {
 			}
 		}
 	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		for(int i=0;i<arguments.size();i++) {
+			arguments.set(i, (ExternArg)arguments.get(i).algebraSimplify());
+		}
+		return this;
+	}
 }

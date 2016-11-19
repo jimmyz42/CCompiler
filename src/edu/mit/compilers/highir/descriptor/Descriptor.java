@@ -10,6 +10,7 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
+import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
@@ -85,6 +86,11 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		return this;
 	}
 
 	@Override

@@ -19,6 +19,10 @@ public class IntLiteral extends Literal {
     public IntLiteral(long terminal) {
         this.terminal = terminal;
     }
+    
+    public long getValue() {
+    	return terminal;
+    }
 
     public static IntLiteral create(DecafSemanticChecker checker, DecafParser.IntLiteralContext ctx) {
          String text = ctx.INT_LITERAL().getText();

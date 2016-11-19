@@ -79,4 +79,9 @@ public class SizeofTypeExpr extends Expression {
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
 	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		return new IntLiteral(type.getSize());
+	}
 }
