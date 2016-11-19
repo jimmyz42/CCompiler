@@ -71,4 +71,9 @@ public class MethodCallStmt extends Statement implements Optimizable {
 	public void doCSE(OptimizerContext ctx) {
 		methodCall.doCSE(ctx);
 	}
+
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx) {
+        methodCall.doCopyPropagation(ctx); //TODO: maybe not needed
+    }
 }

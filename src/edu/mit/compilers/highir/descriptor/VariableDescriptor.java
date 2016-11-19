@@ -12,10 +12,20 @@ import edu.mit.compilers.lowir.Register;
 
 public abstract class VariableDescriptor extends Descriptor {
 	public boolean isGlobal;
+	private boolean isTemp;
 	
 	public VariableDescriptor(String name, Type type, boolean isGlobal) {
 		super(name, type);
 		this.isGlobal = isGlobal;
+		this.isTemp = false;
+	}
+
+	public void setToTemp(){
+		this.isTemp = true;
+	}
+	
+	public boolean isTemp(){
+		return this.isTemp;
 	}
 
 	@Override

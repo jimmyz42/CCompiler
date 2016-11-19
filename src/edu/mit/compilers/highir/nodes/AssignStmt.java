@@ -2,6 +2,7 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,8 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
+import edu.mit.compilers.highir.nodes.Location;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Mov;
@@ -129,6 +132,33 @@ public class AssignStmt extends Statement implements Optimizable {
 			temps.add(AssignStmt.create(temp, assignOp, location));
 		}
 		return temps;
+	}
+
+	@Override
+	public void doCopyPropagation(OptimizerContext ctx){
+		VariableDescriptor var = location.getVariable();
+		if (var.isTemp()){
+			if(expression instanceof Location){ //just a var, not a binOpExpr
+				Location temp = location;
+				Location mappedToVar = (Location)expression;
+				ctx.getCPTempToVar().put(temp, mappedToVar);
+				if(ctx.getCPVarToSet().containsKey(mappedToVar)){ //if already in map, add temp to set
+					ctx.getCPVarToSet().get(mappedToVar).add(temp);
+				} else { //create var entry
+					ctx.getCPVarToSet().put(mappedToVar, new HashSet<Location>(Arrays.asList(temp)));
+				}
+			}
+		} else {
+			Location reassignedVar = location;
+			if(ctx.getCPVarToSet().containsKey(reassignedVar)){
+				Set<Location> temps = ctx.getCPVarToSet().get(reassignedVar);
+				for(Location temp : temps){
+					ctx.getCPTempToVar().remove(temp); //Or to we reassign temp -> temp? 
+				}
+				//clear the set associated with the reassignedVar 
+				ctx.getCPVarToSet().get(reassignedVar).clear();
+			}
+		}		
 	}
 
 	@Override

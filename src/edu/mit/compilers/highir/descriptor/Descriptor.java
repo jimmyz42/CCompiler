@@ -88,6 +88,10 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	}
 
 	@Override
+	public void doCopyPropagation(OptimizerContext ctx){
+	}
+
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}

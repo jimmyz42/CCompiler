@@ -1,0 +1,34 @@
+BasicBlock block0:
+*start of method*
+block0 points to:
+    block1
+BasicBlock block1:
+void main
+    int b
+    int a
+    int y
+    int x
+    int t0
+    x = 1
+    t0 = x
+    int t1
+    y = 2
+    t1 = y
+    int t2
+    int t3
+    t2 = x
+    t3 = y
+    int t4
+    a = x + y
+    t4 = a
+    t2 = x
+    t3 = y
+    b = x + y
+    t4 = b
+
+block1 points to:
+    block2
+BasicBlock block2:
+*end of method*
+block2 points to:
+

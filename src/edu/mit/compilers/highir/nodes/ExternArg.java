@@ -14,6 +14,8 @@ import edu.mit.compilers.lowir.Storable;
 import edu.mit.compilers.lowir.Storage;
 import edu.mit.compilers.lowir.StorageTuple;
 import edu.mit.compilers.optimizer.Optimizable;
+import edu.mit.compilers.optimizer.OptimizerContext;
+
 
 abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimizable {
 
@@ -60,6 +62,10 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
     @Override
     public long getNumStackAllocations() {
     	return 0;
+    }
+
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
     }
 
     public static ExternArg create(DecafSemanticChecker checker, DecafParser.Extern_argContext ctx) {

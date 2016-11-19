@@ -127,7 +127,7 @@ class Main {
 
 						OptimizerContext octx = new OptimizerContext();
 						Optimizer optimizer = cfg.generateOptimizer(octx);
-						optimizer.run();
+						//optimizer.run();
 						
 						StringWriter sw = new StringWriter();
 						optimizer.cfgPrint(new PrintWriter(sw), "");

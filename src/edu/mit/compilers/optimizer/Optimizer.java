@@ -32,7 +32,8 @@ public class Optimizer {
 
 	public void run() {
 		doCSE();
-		doDeadCodeEliminiation();
+		//doCopyPropagation();	
+		//doDeadCodeEliminiation();
 	}
 
 	public void doDeadCodeEliminiation() {
@@ -45,6 +46,14 @@ public class Optimizer {
 					consumed.addAll(branchCondition.getConsumedDescriptors());
 			}
 			consumed = currentBlock.doDeadCodeEliminiation(consumed);
+		}
+	}
+
+	public void doCopyPropagation(){
+		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
+			BasicBlock currentBlock = orderedBlocks.get(blockNum);
+
+			currentBlock.doCopyPropagation(ctx);
 		}
 	}
 

@@ -18,6 +18,18 @@ public class OptimizerContext {
 	private HashMap<Expression, Location> cseExprToVar = new HashMap<>();
 	private HashMap<Location, Set<Expression>> cseVarToExprs = new HashMap<>();
 
+	//Copy Propagation Maps
+	private HashMap<Location, Location> cpTempToVar = new HashMap<>();
+	private HashMap<Location, Set<Location>> cpVarToSet = new HashMap<>();
+
+	public HashMap<Location, Location> getCPTempToVar() {
+		return cpTempToVar;
+	}
+	
+	public HashMap<Location, Set<Location>> getCPVarToSet() {
+		return cpVarToSet;
+	}
+
 	public HashMap<Location, Integer> getVarToVal() {
 		return varToVal;
 	}
@@ -52,6 +64,7 @@ public class OptimizerContext {
 			return false;
 		} else {
 			VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);;
+			desc.setToTemp();
 			IdLocation loc = IdLocation.create(desc);
 			varToVal.put(loc, tempVarNonce);
 			exprToVal.put(expr, tempVarNonce);

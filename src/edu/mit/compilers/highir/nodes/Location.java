@@ -43,6 +43,10 @@ abstract public class Location extends Expression {
 		return 0;
 	}
 
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx) {   
+    }
+
 	@Override
 	public void doCSE(OptimizerContext ctx) {	
 	}

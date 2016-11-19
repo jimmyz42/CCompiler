@@ -127,4 +127,9 @@ public class ReturnStmt extends Statement implements Optimizable {
 			}
 		}
 	}
+
+	@Override
+	public void doCopyPropagation(OptimizerContext ctx){
+		expression.doCopyPropagation(ctx);
+	}
 }

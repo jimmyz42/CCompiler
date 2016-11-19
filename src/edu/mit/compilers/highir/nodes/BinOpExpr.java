@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.nodes.Location;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
@@ -76,6 +77,28 @@ abstract public class BinOpExpr extends Expression {
 		temps.add(AssignStmt.create(rhsTemp, "=", rhs));
 
 		return temps;
+	}
+
+	@Override
+	public void doCopyPropagation(OptimizerContext ctx){
+		if(lhs instanceof Location){
+			Location lhsLoc = (Location)lhs;
+			if(lhsLoc.getVariable().isTemp()){
+				if(ctx.getCPTempToVar().containsKey(lhsLoc)){
+					Location var = ctx.getCPTempToVar().get(lhsLoc);
+					lhs = var; //put var there instead of temp
+				}
+			}
+		}
+		if(rhs instanceof Location){
+			Location rhsLoc = (Location)rhs;
+			if(rhsLoc.getVariable().isTemp()){
+				if(ctx.getCPTempToVar().containsKey(rhsLoc)){
+					Location var = ctx.getCPTempToVar().get(rhsLoc);
+					rhs = var; //put var there instead of temp
+				}
+			}
+		}
 	}
 
 	@Override
