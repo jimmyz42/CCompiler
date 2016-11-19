@@ -186,7 +186,6 @@ public class BasicBlock extends CFG {
 		List<Optimizable> deadComponents = new ArrayList<>();
 
 		if(branchCondition != null) {
-			System.out.println(branchCondition.getConsumedDescriptors());
 			consumed.addAll(branchCondition.getConsumedDescriptors());
 		}
 		for(int i = components.size() -1; i >= 0; i--) {
@@ -194,7 +193,6 @@ public class BasicBlock extends CFG {
 			Set<Descriptor> compGen = component.getGeneratedDescriptors();
 			Set<Descriptor> compCon = component.getConsumedDescriptors();
 
-			System.out.println(component);
 			if(compGen.isEmpty() ||
 					!Collections.disjoint(consumed, compGen) ||
 					!Collections.disjoint(compGen, compCon)) {
@@ -223,6 +221,12 @@ public class BasicBlock extends CFG {
 		
 		for(Optimizable component: components) {
 			component.doCopyPropagation(ctx);
+		}
+	}
+	
+	public void doAlgebraicSimplification() {
+		for(int i=0;i<components.size();i++) {
+			components.set(i, components.get(i).algebraSimplify());
 		}
 	}
 }

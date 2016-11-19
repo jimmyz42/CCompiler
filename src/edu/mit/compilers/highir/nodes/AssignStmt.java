@@ -190,4 +190,10 @@ public class AssignStmt extends Statement implements Optimizable {
 			}
 		}
 	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		this.expression = (Expression)expression.algebraSimplify();
+		return this;
+	}
 }

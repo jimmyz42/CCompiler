@@ -75,4 +75,9 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
             return new StringLiteral(ctx.STRING_LITERAL().getText());
         }
     }
+    
+	@Override
+	public Optimizable algebraSimplify() {
+		return this;
+	}
 }

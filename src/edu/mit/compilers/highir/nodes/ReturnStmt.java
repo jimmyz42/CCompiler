@@ -131,5 +131,13 @@ public class ReturnStmt extends Statement implements Optimizable {
 	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
 		expression.doCopyPropagation(ctx);
+	}	
+
+	@Override
+	public Optimizable algebraSimplify() {
+		if(expression != null) {
+			this.expression = (Expression)expression.algebraSimplify();
+		}
+		return this;
 	}
 }

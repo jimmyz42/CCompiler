@@ -392,11 +392,4 @@ public class CFG {
 		
 		return cfg;
 	}
-
-	public Optimizer generateOptimizer(OptimizerContext ctx) {
-		for(BasicBlock block: orderedBlocks) {
-			block.generateTemporaries(ctx);
-		}
-		return Optimizer.create(ctx, orderedBlocks);
-	}
 }

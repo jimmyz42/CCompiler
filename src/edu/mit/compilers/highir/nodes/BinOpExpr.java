@@ -57,6 +57,7 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+		System.out.println("generateTemporaries");
 		List<Optimizable> temps = new ArrayList<>();
 
 		temps.addAll(lhs.generateTemporaries(context));
@@ -73,9 +74,12 @@ abstract public class BinOpExpr extends Expression {
 		Location lhsTemp = context.getExprToTemp().get(lhs);
 		Location rhsTemp = context.getExprToTemp().get(rhs);
 
-		temps.add(AssignStmt.create(lhsTemp, "=", lhs));
-		temps.add(AssignStmt.create(rhsTemp, "=", rhs));
-
+		if(lhsTemp == rhsTemp) {
+			temps.add(AssignStmt.create(lhsTemp, "=", lhs));
+		} else {
+			temps.add(AssignStmt.create(lhsTemp, "=", lhs));
+			temps.add(AssignStmt.create(rhsTemp, "=", rhs));
+		}
 		return temps;
 	}
 
@@ -103,9 +107,14 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
+		System.out.println("doCSE");
 		Location lhsTemp = ctx.getCSEExprToVar().get(lhs);
 		Location rhsTemp = ctx.getCSEExprToVar().get(rhs);
-
+		System.out.println(lhs);
+		System.out.println(lhs.hashCode());
+		System.out.println(rhs);
+		System.out.println(rhs.hashCode());
+		
 		if(lhsTemp != null) {
 			lhs = lhsTemp;
 			ctx.getCSEExprToVar().put(lhs, lhsTemp);

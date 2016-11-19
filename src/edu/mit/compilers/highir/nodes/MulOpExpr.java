@@ -12,6 +12,7 @@ import edu.mit.compilers.lowir.instructions.Imul;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Xor;
+import edu.mit.compilers.optimizer.Optimizable;
 import exceptions.TypeMismatchError;
 
 public class MulOpExpr extends BinOpExpr {
@@ -84,5 +85,45 @@ public class MulOpExpr extends BinOpExpr {
 	@Override
 	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		// a*0 = 0*a = 0, 1*a = a*1 = a/1 = a, -1*a = a*(-1) = a/(-1) = -a, a%1 = a%(-1) = 0
+		if(operator.getTerminal().equals("*")) {
+			if(lhs instanceof IntLiteral && ((IntLiteral)lhs).getValue() == 0) {
+				return new IntLiteral(0);
+			}
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == 0) {
+				return new IntLiteral(0);
+			}
+			if(lhs instanceof IntLiteral && ((IntLiteral)lhs).getValue() == 1) {
+				return rhs;
+			}
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == 1) {
+				return lhs;
+			}
+			if(lhs instanceof IntLiteral && ((IntLiteral)lhs).getValue() == -1) {
+				return new NegExpr(rhs);
+			}
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == -1) {
+				return new NegExpr(lhs);
+			}
+		} else if(operator.getTerminal().equals("/")) {
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == 1) {
+				return lhs;
+			}
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == -1) {
+				return new NegExpr(lhs);
+			}
+		} else { // %
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == 1) {
+				return new IntLiteral(0);
+			}
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == -1) {
+				return new IntLiteral(0);
+			}
+		}
+		return this; //cannot simplify
 	}
 }
