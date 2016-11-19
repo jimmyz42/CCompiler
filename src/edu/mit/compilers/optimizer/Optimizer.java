@@ -30,12 +30,14 @@ public class Optimizer {
 		this.ctx = ctx;
 	}
 
+	// generateTemporaries and doCSE combined make expressions linear
 	public void run() {
-		doAlgebraicSimplification();
+		generateTemporaries();
 		doCSE();
+		doAlgebraicSimplification();
 		doDeadCodeEliminiation();
 	}
-	
+
 	public void doAlgebraicSimplification() {
 		for(BasicBlock block: orderedBlocks) {
 			block.doAlgebraicSimplification();
@@ -61,6 +63,12 @@ public class Optimizer {
 
 			currentBlock.doCSE(ctx);
 		}
+	}
+	
+	public void generateTemporaries() {
+		for(BasicBlock block: orderedBlocks) {
+			block.generateTemporaries(ctx);
+		}		
 	}
 
 	public void cfgPrint(PrintWriter pw, String prefix) {

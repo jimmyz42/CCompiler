@@ -126,7 +126,7 @@ class Main {
 						CFG cfg = ir.generateCFG(ctx);
 
 						OptimizerContext octx = new OptimizerContext();
-						Optimizer optimizer = cfg.generateOptimizer(octx);
+						Optimizer optimizer = Optimizer.create(octx, cfg.getOrderedBlocks());
 						optimizer.run();
 						
 						StringWriter sw = new StringWriter();
@@ -147,7 +147,7 @@ class Main {
 						CFG cfg = ir.generateCFG(ctx);
 
 						OptimizerContext octx = new OptimizerContext();
-						Optimizer optimizer = cfg.generateOptimizer(octx);
+						Optimizer optimizer = Optimizer.create(octx, cfg.getOrderedBlocks());
 						optimizer.run();
 
 						AssemblyContext actx = new AssemblyContext();
