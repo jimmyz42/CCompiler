@@ -8,6 +8,7 @@ import edu.mit.compilers.lowir.instructions.Add;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Sub;
+import edu.mit.compilers.optimizer.Optimizable;
 import exceptions.TypeMismatchError;
 
 public class AddOpExpr extends BinOpExpr {
@@ -64,5 +65,32 @@ public class AddOpExpr extends BinOpExpr {
 	@Override
 	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		// a+0 = 0+a = a-0 = a, 0-a = -a, a+a = 2*a, a-a=0
+		if(operator.getTerminal().equals("+")) {
+			if(lhs instanceof IntLiteral && ((IntLiteral)lhs).getValue() == 0) {
+				return rhs;
+			}
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == 0) {
+				return lhs;
+			}
+			if(lhs.equals(rhs)) {
+				return new MulOpExpr(new MulOp("*"), new IntLiteral(2), lhs);
+			}
+		} else { // -
+			if(lhs instanceof IntLiteral && ((IntLiteral)lhs).getValue() == 0) {
+				return new NegExpr(rhs);
+			}
+			if(rhs instanceof IntLiteral && ((IntLiteral)rhs).getValue() == 0) {
+				return lhs;
+			}
+			if(lhs.equals(rhs)) {
+				return new IntLiteral(0);
+			}
+		}
+		return this; //cannot simplify
 	}
 }

@@ -16,7 +16,7 @@ import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
 public class MethodCallStmt extends Statement implements Optimizable {
-    private final MethodCallExpr methodCall;
+    private MethodCallExpr methodCall;
     public MethodCallStmt(MethodCallExpr methodCall) {
         this.methodCall = methodCall;
     }
@@ -70,5 +70,11 @@ public class MethodCallStmt extends Statement implements Optimizable {
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 		methodCall.doCSE(ctx);
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		this.methodCall = (MethodCallExpr)methodCall.algebraSimplify();
+		return this;
 	}
 }

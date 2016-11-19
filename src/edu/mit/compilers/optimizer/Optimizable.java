@@ -13,4 +13,5 @@ public interface Optimizable extends CFGAble {
     public Set<Descriptor> getConsumedDescriptors();
     public Set<Descriptor> getGeneratedDescriptors();
     public void doCSE(OptimizerContext ctx);
+    public Optimizable algebraSimplify();
 }
