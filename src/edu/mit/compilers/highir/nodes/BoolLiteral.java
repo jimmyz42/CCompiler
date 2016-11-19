@@ -18,6 +18,10 @@ public class BoolLiteral extends Literal {
     public BoolLiteral(boolean terminal) {
         this.terminal = terminal;
     }
+    
+    public boolean getValue() {
+    	return terminal;
+    }
 
     public static BoolLiteral create(DecafSemanticChecker checker, DecafParser.BoolLiteralContext ctx) {
          String text = ctx.BOOL_LITERAL().getText();

@@ -85,4 +85,9 @@ public class SizeofIdExpr extends Expression {
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
 	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		return new IntLiteral(variable.getType().getSize());
+	}
 }

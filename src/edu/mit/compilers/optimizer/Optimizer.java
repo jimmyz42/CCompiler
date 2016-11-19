@@ -31,8 +31,15 @@ public class Optimizer {
 	}
 
 	public void run() {
+		doAlgebraicSimplification();
 		doCSE();
 		doDeadCodeEliminiation();
+	}
+	
+	public void doAlgebraicSimplification() {
+		for(BasicBlock block: orderedBlocks) {
+			block.doAlgebraicSimplification();
+		}
 	}
 
 	public void doDeadCodeEliminiation() {

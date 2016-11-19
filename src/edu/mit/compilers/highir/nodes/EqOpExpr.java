@@ -18,6 +18,7 @@ import edu.mit.compilers.lowir.instructions.Cmovne;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.optimizer.Optimizable;
 import exceptions.TypeMismatchError;
 
 public class EqOpExpr extends BinOpExpr implements Condition {
@@ -98,5 +99,44 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 	@Override
 	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		// a==true: a, a==false: !a, a!=true: !a, a!=false: a, a==a: true, a!=a: false
+		if(operator.getTerminal().equals("==")) {
+			if(lhs instanceof BoolLiteral && ((BoolLiteral)lhs).getValue()) {
+				return rhs;
+			}
+			if(rhs instanceof BoolLiteral && ((BoolLiteral)rhs).getValue()) {
+				return lhs;
+			}
+			if(lhs instanceof BoolLiteral && !((BoolLiteral)lhs).getValue()) {
+				return new NotExpr(rhs);
+			}
+			if(rhs instanceof BoolLiteral && !((BoolLiteral)rhs).getValue()) {
+				return new NotExpr(lhs);
+			}
+			if(lhs.equals(rhs)) {
+				return new BoolLiteral(true);
+			}
+		} else { // !=
+			if(lhs instanceof BoolLiteral && !((BoolLiteral)lhs).getValue()) {
+				return rhs;
+			}
+			if(rhs instanceof BoolLiteral && !((BoolLiteral)rhs).getValue()) {
+				return lhs;
+			}
+			if(lhs instanceof BoolLiteral && ((BoolLiteral)lhs).getValue()) {
+				return new NotExpr(rhs);
+			}
+			if(rhs instanceof BoolLiteral && ((BoolLiteral)rhs).getValue()) {
+				return new NotExpr(lhs);
+			}
+			if(lhs.equals(rhs)) {
+				return new BoolLiteral(false);
+			}
+		}
+		return this; //cannot simplify
 	}
 }
