@@ -65,6 +65,7 @@ public class OptimizerContext {
 		} else {
 			VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);;
 			desc.setToTemp();
+			System.out.println("Setting " + desc.toString() + " to isTemp");
 			IdLocation loc = IdLocation.create(desc);
 			varToVal.put(loc, tempVarNonce);
 			exprToVal.put(expr, tempVarNonce);

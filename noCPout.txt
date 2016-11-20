@@ -1,8 +1,17 @@
+Setting int t0 to isTemp
+Setting int t1 to isTemp
+generateTemporaries
+Setting int t2 to isTemp
+Setting int t3 to isTemp
+Setting int t4 to isTemp
 generateTemporaries
 generateTemporaries
 generateTemporaries
+Setting int t5 to isTemp
 generateTemporaries
-generateTemporaries
+Setting int t6 to isTemp
+Setting int t7 to isTemp
+Setting int t8 to isTemp
 generateTemporaries
 doCSE
 IdLocation

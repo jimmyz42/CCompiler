@@ -136,6 +136,9 @@ public class AssignStmt extends Statement implements Optimizable {
 
 	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
+		//TODO: handle temp reassignments 
+		//TODO: handle temps assigned to temps
+
 		VariableDescriptor var = location.getVariable();
 		if (var.isTemp()){
 			if(expression instanceof Location){ //just a var, not a binOpExpr
@@ -158,7 +161,22 @@ public class AssignStmt extends Statement implements Optimizable {
 				//clear the set associated with the reassignedVar 
 				ctx.getCPVarToSet().get(reassignedVar).clear();
 			}
-		}		
+		}
+
+		if(expression instanceof IdLocation){ //just one, gotta check for replacements 
+			System.out.println("-expression is idlocation");
+			Location exprLoc = (Location)expression;
+			if(exprLoc.getVariable().isTemp()){
+				System.out.println("---exprLoc is temp");
+				System.out.println("------" + exprLoc.getVariable().toString());
+				
+				if(ctx.getCPTempToVar().containsKey(exprLoc)){
+					Location exprVar = ctx.getCPTempToVar().get(exprLoc);
+					expression = exprVar; //put var there instead of temp
+				}
+			}
+		}
+		expression.doCopyPropagation(ctx);
 	}
 
 	@Override

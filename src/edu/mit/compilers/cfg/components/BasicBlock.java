@@ -14,6 +14,11 @@ import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
+//TODO: delete
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class BasicBlock extends CFG {
 
 	private List<Optimizable> components;
@@ -220,7 +225,26 @@ public class BasicBlock extends CFG {
 		ctx.getCPVarToSet().clear();
 		
 		for(Optimizable component: components) {
+			System.out.println("__________________START______________________");
+
+			StringWriter sw = new StringWriter();
+			component.cfgPrint(new PrintWriter(sw), "");
+			System.out.println("Before CP: " + sw.toString());
+
 			component.doCopyPropagation(ctx);
+			
+			sw = new StringWriter();
+			component.cfgPrint(new PrintWriter(sw), "");
+			System.out.println("After CP: " + sw.toString());
+
+
+
+
+			System.out.println("TempToVar: " + ctx.getCPTempToVar().toString());
+			System.out.println();
+			System.out.println("VarToSet: " + ctx.getCPVarToSet().toString());
+
+			System.out.println("____________________END____________________");
 		}
 	}
 	

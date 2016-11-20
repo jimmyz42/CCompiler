@@ -1,3 +1,60 @@
+generateTemporaries
+generateTemporaries
+generateTemporaries
+generateTemporaries
+generateTemporaries
+generateTemporaries
+doCSE
+IdLocation
+-name: x
+
+1296194806
+IdLocation
+-name: y
+
+1296194807
+doCSE
+IdLocation
+-name: x
+
+1296194806
+IdLocation
+-name: y
+
+1296194807
+doCSE
+AddOpExpr
+-lhs:
+    IdLocation
+    -name: x
+-operator: +
+-rhs:
+    IdLocation
+    -name: y
+
+1239533380
+IdLocation
+-name: y
+
+1296194807
+doCSE
+IdLocation
+-name: a
+
+1296194783
+IdLocation
+-name: b
+
+1296194784
+doCSE
+IdLocation
+-name: a
+
+1296194783
+IdLocation
+-name: b
+
+1296194784
 BasicBlock block0:
 *start of method*
 block0 points to:
@@ -6,6 +63,7 @@ BasicBlock block1:
 void main
     int b
     int a
+    int z
     int y
     int x
     int t0
@@ -16,15 +74,35 @@ void main
     t1 = y
     int t2
     int t3
-    t2 = x
-    t3 = y
+    t2 = t0
+    t3 = t1
     int t4
     a = x + y
     t4 = a
     t2 = x
     t3 = y
-    b = x + y
+    b = a
     t4 = b
+    t2 = t2
+    t3 = t3
+    t4 = x + y
+    t3 = y
+    int t5
+    z = t4 + y
+    t5 = z
+    int t6
+    int t7
+    t6 = a
+    t7 = b
+    int t8
+    z = t6 + t7
+    t8 = z
+    t6 = t6
+    t7 = t7
+    a = a + b
+    t8 = a
+    b = t8
+    t6 = b
 
 block1 points to:
     block2

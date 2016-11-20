@@ -32,11 +32,11 @@ public class Optimizer {
 
 	// generateTemporaries and doCSE combined make expressions linear
 	public void run() {
+		doAlgebraicSimplification();
 		generateTemporaries();
 		doCSE();
-		//doCopyPropagation();	
-		doAlgebraicSimplification();
-		doDeadCodeEliminiation();
+		doCopyPropagation();
+		//doDeadCodeEliminiation();
 	}
 
 	public void doAlgebraicSimplification() {

@@ -85,9 +85,15 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
+		System.out.println("WE GOT A BinOpExpr !");
+
 		if(lhs instanceof Location){
+			System.out.println("-lhs is location");
 			Location lhsLoc = (Location)lhs;
 			if(lhsLoc.getVariable().isTemp()){
+				System.out.println("---lhs is temp");
+				System.out.println("------" + lhsLoc.getVariable().toString());
+				
 				if(ctx.getCPTempToVar().containsKey(lhsLoc)){
 					Location var = ctx.getCPTempToVar().get(lhsLoc);
 					lhs = var; //put var there instead of temp
@@ -95,8 +101,12 @@ abstract public class BinOpExpr extends Expression {
 			}
 		}
 		if(rhs instanceof Location){
+			System.out.println("-rhs is location");
 			Location rhsLoc = (Location)rhs;
 			if(rhsLoc.getVariable().isTemp()){
+				System.out.println("---rhs is temp");
+				System.out.println("------" + rhsLoc.getVariable().toString());
+
 				if(ctx.getCPTempToVar().containsKey(rhsLoc)){
 					Location var = ctx.getCPTempToVar().get(rhsLoc);
 					rhs = var; //put var there instead of temp
