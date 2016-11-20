@@ -6,6 +6,7 @@ import java.util.Set;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.IdLocation;
+import edu.mit.compilers.highir.nodes.IntLiteral;
 import edu.mit.compilers.highir.nodes.Location;
 
 public class OptimizerContext {
@@ -21,6 +22,13 @@ public class OptimizerContext {
 	//Copy Propagation Maps
 	private HashMap<Location, Location> cpTempToVar = new HashMap<>();
 	private HashMap<Location, Set<Location>> cpVarToSet = new HashMap<>();
+
+	//Constant Propagation Maps
+	private HashMap<Location, IntLiteral> varToConst = new HashMap<>();
+
+	public HashMap<Location, IntLiteral> getVarToConst(){
+		return varToConst;
+	}
 
 	public HashMap<Location, Location> getCPTempToVar() {
 		return cpTempToVar;

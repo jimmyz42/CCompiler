@@ -220,6 +220,14 @@ public class BasicBlock extends CFG {
 		}
 	}
 
+	public void doConstantPropagation(OptimizerContext ctx) {
+		ctx.getVarToConst().clear();
+
+		for(Optimizable component: components) {
+			component.doConstantPropagation(ctx);
+		}
+	}
+
 	public void doCopyPropagation(OptimizerContext ctx){
 		ctx.getCPTempToVar().clear();
 		ctx.getCPVarToSet().clear();

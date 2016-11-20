@@ -36,6 +36,7 @@ public class Optimizer {
 		generateTemporaries();
 		doCSE();
 		doCopyPropagation();
+		doConstantPropagation();
 		//doDeadCodeEliminiation();
 	}
 
@@ -63,6 +64,12 @@ public class Optimizer {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 
 			currentBlock.doCopyPropagation(ctx);
+		}
+	}
+
+	public void doConstantPropagation(){
+		for(BasicBlock block: orderedBlocks) {
+			block.doConstantPropagation(ctx);
 		}
 	}
 

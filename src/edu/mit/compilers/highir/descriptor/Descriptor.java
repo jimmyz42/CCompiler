@@ -87,6 +87,10 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 	}
+
+	@Override
+	public void doConstantPropagation(OptimizerContext ctx){
+	}
 	
 	@Override
 	public Optimizable algebraSimplify() {

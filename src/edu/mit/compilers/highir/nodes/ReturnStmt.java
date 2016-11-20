@@ -134,6 +134,11 @@ public class ReturnStmt extends Statement implements Optimizable {
 	}	
 
 	@Override
+	public void doConstantPropagation(OptimizerContext ctx){
+		expression.doConstantPropagation(ctx);
+	}	
+
+	@Override
 	public Optimizable algebraSimplify() {
 		if(expression != null) {
 			this.expression = (Expression)expression.algebraSimplify();

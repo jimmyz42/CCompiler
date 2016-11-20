@@ -135,6 +135,26 @@ public class AssignStmt extends Statement implements Optimizable {
 	}
 
 	@Override
+	public void doConstantPropagation(OptimizerContext ctx){
+		//if variable is being assigned OR reassigned to a constant, update map
+		if(expression instanceof IntLiteral){ //variable is being assigned to a constant
+			ctx.getVarToConst().put(location, (IntLiteral)expression);
+		}else if (ctx.getVarToConst().containsKey(location)){ //if variable is in our map, but not getting reassigned to a constant, remove from map
+			ctx.getVarToConst().remove(location);
+		}
+
+		//if expression is a variable, check to see if variable is in map, replace
+		if(expression instanceof IdLocation){
+			Location exprLoc = (Location)expression;
+			if(ctx.getVarToConst().containsKey(exprLoc)){
+				expression = ctx.getVarToConst().get(exprLoc);
+			}
+		}
+
+		expression.doConstantPropagation(ctx);
+	}
+
+	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
 		//TODO: handle temp reassignments 
 		//TODO: handle temps assigned to temps

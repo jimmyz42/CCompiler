@@ -75,7 +75,12 @@ public class MethodCallStmt extends Statement implements Optimizable {
     	@Override
    	public void doCopyPropagation(OptimizerContext ctx) {
         	methodCall.doCopyPropagation(ctx); //TODO: maybe not needed
-    	}
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+        methodCall.doConstantPropagation(ctx);
+    }   
 	
 	@Override
 	public Optimizable algebraSimplify() {

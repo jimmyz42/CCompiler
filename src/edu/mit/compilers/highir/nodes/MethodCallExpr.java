@@ -233,6 +233,28 @@ public class MethodCallExpr extends Expression {
 			}
 		}
 	}
+
+	@Override
+	public void doConstantPropagation(OptimizerContext ctx){
+
+		for(int i =0; i < arguments.size(); i++) {
+			if(arguments.get(i) instanceof Expression){
+				Expression expr = (Expression)arguments.get(i);
+				expr.doConstantPropagation(ctx);
+			}
+		}
+	}	
+
+	@Override
+	public void doCopyPropagation(OptimizerContext ctx){
+
+		for(int i =0; i < arguments.size(); i++) {
+			if(arguments.get(i) instanceof Expression){
+				Expression expr = (Expression)arguments.get(i);
+				expr.doCopyPropagation(ctx);
+			}
+		}
+	}	
 	
 	@Override
 	public Optimizable algebraSimplify() {

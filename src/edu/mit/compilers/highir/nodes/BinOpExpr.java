@@ -84,6 +84,24 @@ abstract public class BinOpExpr extends Expression {
 	}
 
 	@Override
+	public void doConstantPropagation(OptimizerContext ctx){
+		if(lhs instanceof Location){
+			Location lhsLoc = (Location)lhs;
+			//is it in the map? 
+			if(ctx.getVarToConst().containsKey(lhsLoc)){
+				lhs = ctx.getVarToConst().get(lhsLoc); //replace var with const
+			}
+		}
+		if(rhs instanceof Location){
+			Location rhsLoc = (Location)rhs;
+			//is it in the map? 
+			if(ctx.getVarToConst().containsKey(rhsLoc)){
+				rhs = ctx.getVarToConst().get(rhsLoc); //replace var with const
+			}
+		}
+	}
+
+	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
 		System.out.println("WE GOT A BinOpExpr !");
 
