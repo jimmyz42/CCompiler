@@ -1,0 +1,2314 @@
+Setting int t0 to isTemp
+Setting int t1 to isTemp
+generateTemporaries
+Setting int t2 to isTemp
+Setting int t3 to isTemp
+Setting int t4 to isTemp
+generateTemporaries
+generateTemporaries
+generateTemporaries
+Setting int t5 to isTemp
+generateTemporaries
+Setting int t6 to isTemp
+Setting int t7 to isTemp
+Setting int t8 to isTemp
+generateTemporaries
+doCSE
+IdLocation
+-name: x
+
+1296194806
+IdLocation
+-name: y
+
+1296194807
+doCSE
+IdLocation
+-name: x
+
+1296194806
+IdLocation
+-name: y
+
+1296194807
+doCSE
+AddOpExpr
+-lhs:
+    IdLocation
+    -name: x
+-operator: +
+-rhs:
+    IdLocation
+    -name: y
+
+1239533380
+IdLocation
+-name: y
+
+1296194807
+doCSE
+IdLocation
+-name: a
+
+1296194783
+IdLocation
+-name: b
+
+1296194784
+doCSE
+IdLocation
+-name: a
+
+1296194783
+IdLocation
+-name: b
+
+1296194784
+__________________START______________________
+Before CP: void main
+
+After CP: void main
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: int b
+
+After CP: int b
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: int a
+
+After CP: int a
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: int z
+
+After CP: int z
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: int y
+
+After CP: int y
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: int x
+
+After CP: int x
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: int t0
+
+After CP: int t0
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: x = 1
+
+After CP: x = 1
+
+TempToVar: {}
+
+VarToSet: {}
+____________________END____________________
+__________________START______________________
+Before CP: t0 = x
+
+-expression is idlocation
+After CP: t0 = x
+
+TempToVar: {IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t1
+
+After CP: int t1
+
+TempToVar: {IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: y = 2
+
+After CP: y = 2
+
+TempToVar: {IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t1 = y
+
+-expression is idlocation
+After CP: t1 = y
+
+TempToVar: {IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t2
+
+After CP: int t2
+
+TempToVar: {IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t3
+
+After CP: int t3
+
+TempToVar: {IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t2 = t0
+
+-expression is idlocation
+---exprLoc is temp
+------int t0
+After CP: t2 = x
+
+TempToVar: {IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t0
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t3 = t1
+
+-expression is idlocation
+---exprLoc is temp
+------int t1
+After CP: t3 = y
+
+TempToVar: {IdLocation
+-name: t3
+=IdLocation
+-name: t1
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t0
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t4
+
+After CP: int t4
+
+TempToVar: {IdLocation
+-name: t3
+=IdLocation
+-name: t1
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t0
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: a = x + y
+
+WE GOT A BinOpExpr !
+-lhs is location
+-rhs is location
+After CP: a = x + y
+
+TempToVar: {IdLocation
+-name: t3
+=IdLocation
+-name: t1
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t0
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t4 = a
+
+-expression is idlocation
+After CP: t4 = a
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: a
+, IdLocation
+-name: t3
+=IdLocation
+-name: t1
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t0
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t2 = x
+
+-expression is idlocation
+After CP: t2 = x
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: a
+, IdLocation
+-name: t3
+=IdLocation
+-name: t1
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: x
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t3 = y
+
+-expression is idlocation
+After CP: t3 = y
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: a
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: x
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: b = a
+
+-expression is idlocation
+After CP: b = a
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: a
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: x
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t4 = b
+
+-expression is idlocation
+After CP: t4 = b
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: x
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t2 = t2
+
+-expression is idlocation
+---exprLoc is temp
+------int t2
+After CP: t2 = t2
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t3 = t3
+
+-expression is idlocation
+---exprLoc is temp
+------int t3
+After CP: t3 = t3
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: t3
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t4 = x + y
+
+WE GOT A BinOpExpr !
+-lhs is location
+-rhs is location
+After CP: t4 = x + y
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: t3
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t3 = y
+
+-expression is idlocation
+After CP: t3 = y
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t5
+
+After CP: int t5
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: z = t4 + y
+
+WE GOT A BinOpExpr !
+-lhs is location
+---lhs is temp
+------int t4
+-rhs is location
+After CP: z = b + y
+
+TempToVar: {IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t5 = z
+
+-expression is idlocation
+After CP: t5 = z
+
+TempToVar: {IdLocation
+-name: t5
+=IdLocation
+-name: z
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t5
+], IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t6
+
+After CP: int t6
+
+TempToVar: {IdLocation
+-name: t5
+=IdLocation
+-name: z
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t5
+], IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t7
+
+After CP: int t7
+
+TempToVar: {IdLocation
+-name: t5
+=IdLocation
+-name: z
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t5
+], IdLocation
+-name: a
+=[IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t6 = a
+
+-expression is idlocation
+After CP: t6 = a
+
+TempToVar: {IdLocation
+-name: t6
+=IdLocation
+-name: a
+, IdLocation
+-name: t5
+=IdLocation
+-name: z
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t5
+], IdLocation
+-name: a
+=[IdLocation
+-name: t6
+, IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t7 = b
+
+-expression is idlocation
+After CP: t7 = b
+
+TempToVar: {IdLocation
+-name: t7
+=IdLocation
+-name: b
+, IdLocation
+-name: t6
+=IdLocation
+-name: a
+, IdLocation
+-name: t5
+=IdLocation
+-name: z
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t5
+], IdLocation
+-name: a
+=[IdLocation
+-name: t6
+, IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: int t8
+
+After CP: int t8
+
+TempToVar: {IdLocation
+-name: t7
+=IdLocation
+-name: b
+, IdLocation
+-name: t6
+=IdLocation
+-name: a
+, IdLocation
+-name: t5
+=IdLocation
+-name: z
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t5
+], IdLocation
+-name: a
+=[IdLocation
+-name: t6
+, IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: z = t6 + t7
+
+WE GOT A BinOpExpr !
+-lhs is location
+---lhs is temp
+------int t6
+-rhs is location
+---rhs is temp
+------int t7
+After CP: z = a + b
+
+TempToVar: {IdLocation
+-name: t7
+=IdLocation
+-name: b
+, IdLocation
+-name: t6
+=IdLocation
+-name: a
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[], IdLocation
+-name: a
+=[IdLocation
+-name: t6
+, IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t8 = z
+
+-expression is idlocation
+After CP: t8 = z
+
+TempToVar: {IdLocation
+-name: t8
+=IdLocation
+-name: z
+, IdLocation
+-name: t7
+=IdLocation
+-name: b
+, IdLocation
+-name: t6
+=IdLocation
+-name: a
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t8
+], IdLocation
+-name: a
+=[IdLocation
+-name: t6
+, IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t6 = t6
+
+-expression is idlocation
+---exprLoc is temp
+------int t6
+After CP: t6 = t6
+
+TempToVar: {IdLocation
+-name: t8
+=IdLocation
+-name: z
+, IdLocation
+-name: t7
+=IdLocation
+-name: b
+, IdLocation
+-name: t6
+=IdLocation
+-name: t6
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t6
+=[IdLocation
+-name: t6
+], IdLocation
+-name: a
+=[IdLocation
+-name: t6
+, IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t7 = t7
+
+-expression is idlocation
+---exprLoc is temp
+------int t7
+After CP: t7 = t7
+
+TempToVar: {IdLocation
+-name: t8
+=IdLocation
+-name: z
+, IdLocation
+-name: t7
+=IdLocation
+-name: t7
+, IdLocation
+-name: t6
+=IdLocation
+-name: t6
+, IdLocation
+-name: t4
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t7
+=[IdLocation
+-name: t7
+], IdLocation
+-name: t6
+=[IdLocation
+-name: t6
+], IdLocation
+-name: a
+=[IdLocation
+-name: t6
+, IdLocation
+-name: t4
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: a = a + b
+
+WE GOT A BinOpExpr !
+-lhs is location
+-rhs is location
+After CP: a = a + b
+
+TempToVar: {IdLocation
+-name: t8
+=IdLocation
+-name: z
+, IdLocation
+-name: t7
+=IdLocation
+-name: t7
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t7
+=[IdLocation
+-name: t7
+], IdLocation
+-name: t6
+=[IdLocation
+-name: t6
+], IdLocation
+-name: a
+=[], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t8 = a
+
+-expression is idlocation
+After CP: t8 = a
+
+TempToVar: {IdLocation
+-name: t8
+=IdLocation
+-name: a
+, IdLocation
+-name: t7
+=IdLocation
+-name: t7
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t7
+=[IdLocation
+-name: t7
+], IdLocation
+-name: t6
+=[IdLocation
+-name: t6
+], IdLocation
+-name: a
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t7
+, IdLocation
+-name: t4
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: b = t8
+
+-expression is idlocation
+---exprLoc is temp
+------int t8
+After CP: b = a
+
+TempToVar: {IdLocation
+-name: t8
+=IdLocation
+-name: a
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t7
+=[IdLocation
+-name: t7
+], IdLocation
+-name: t6
+=[IdLocation
+-name: t6
+], IdLocation
+-name: a
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+__________________START______________________
+Before CP: t6 = b
+
+-expression is idlocation
+After CP: t6 = b
+
+TempToVar: {IdLocation
+-name: t8
+=IdLocation
+-name: a
+, IdLocation
+-name: t6
+=IdLocation
+-name: b
+, IdLocation
+-name: t3
+=IdLocation
+-name: y
+, IdLocation
+-name: t1
+=IdLocation
+-name: y
+, IdLocation
+-name: t2
+=IdLocation
+-name: t2
+, IdLocation
+-name: t0
+=IdLocation
+-name: x
+}
+
+VarToSet: {IdLocation
+-name: z
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t7
+=[IdLocation
+-name: t7
+], IdLocation
+-name: t6
+=[IdLocation
+-name: t6
+], IdLocation
+-name: a
+=[IdLocation
+-name: t8
+], IdLocation
+-name: t3
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t1
+=[IdLocation
+-name: t3
+], IdLocation
+-name: t2
+=[IdLocation
+-name: t2
+], IdLocation
+-name: t0
+=[IdLocation
+-name: t2
+], IdLocation
+-name: b
+=[IdLocation
+-name: t6
+], IdLocation
+-name: y
+=[IdLocation
+-name: t3
+, IdLocation
+-name: t1
+], IdLocation
+-name: x
+=[IdLocation
+-name: t2
+, IdLocation
+-name: t0
+]}
+____________________END____________________
+BasicBlock block0:
+*start of method*
+block0 points to:
+    block1
+BasicBlock block1:
+void main
+    int b
+    int a
+    int z
+    int y
+    int x
+    int t0
+    x = 1
+    t0 = 1
+    int t1
+    y = 2
+    t1 = 2
+    int t2
+    int t3
+    t2 = 1
+    t3 = 2
+    int t4
+    a = 1 + 2
+    t4 = a
+    t2 = 1
+    t3 = 2
+    b = a
+    t4 = b
+    t2 = t2
+    t3 = t3
+    t4 = 1 + 2
+    t3 = 2
+    int t5
+    z = b + 2
+    t5 = z
+    int t6
+    int t7
+    t6 = a
+    t7 = b
+    int t8
+    z = a + b
+    t8 = z
+    t6 = t6
+    t7 = t7
+    a = a + b
+    t8 = a
+    b = a
+    t6 = b
+
+block1 points to:
+    block2
+BasicBlock block2:
+*end of method*
+block2 points to:
+

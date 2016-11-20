@@ -1,6 +1,6 @@
 digraph G {
   block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ b\lint\ a\lint\ z\lint\ y\lint\ x\lint\ t0\lx\ =\ 1\lt0\ =\ x\lint\ t1\ly\ =\ 2\lt1\ =\ y\lint\ t2\lint\ t3\lt2\ =\ t0\lt3\ =\ t1\lint\ t4\la\ =\ x\ +\ y\lt4\ =\ a\lt2\ =\ x\lt3\ =\ y\lb\ =\ a\lt4\ =\ b\lt2\ =\ t2\lt3\ =\ t3\lt4\ =\ x\ +\ y\lt3\ =\ y\lint\ t5\lz\ =\ t4\ +\ y\lt5\ =\ z\lint\ t6\lint\ t7\lt6\ =\ a\lt7\ =\ b\lint\ t8\lz\ =\ t6\ +\ t7\lt8\ =\ z\lt6\ =\ t6\lt7\ =\ t7\la\ =\ a\ +\ b\lt8\ =\ a\lb\ =\ t8\lt6\ =\ b\l\l" ];
+  block1 [ label="block1: void\ main\lint\ b\lint\ a\lint\ z\lint\ y\lint\ x\lint\ t0\lx\ =\ 1\lt0\ =\ x\lint\ t1\ly\ =\ 2\lt1\ =\ y\lint\ t2\lint\ t3\lt2\ =\ x\lt3\ =\ y\lint\ t4\la\ =\ x\ +\ y\lt4\ =\ a\lt2\ =\ x\lt3\ =\ y\lb\ =\ a\lt4\ =\ b\lt2\ =\ t2\lt3\ =\ t3\lt4\ =\ x\ +\ y\lt3\ =\ y\lint\ t5\lz\ =\ b\ +\ y\lt5\ =\ z\lint\ t6\lint\ t7\lt6\ =\ a\lt7\ =\ b\lint\ t8\lz\ =\ a\ +\ b\lt8\ =\ z\lt6\ =\ t6\lt7\ =\ t7\la\ =\ a\ +\ b\lt8\ =\ a\lb\ =\ a\lt6\ =\ b\l\l" ];
   block2 [ label="block2: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;

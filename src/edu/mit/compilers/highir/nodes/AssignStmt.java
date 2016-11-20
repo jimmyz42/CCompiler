@@ -184,12 +184,8 @@ public class AssignStmt extends Statement implements Optimizable {
 		}
 
 		if(expression instanceof IdLocation){ //just one, gotta check for replacements 
-			System.out.println("-expression is idlocation");
 			Location exprLoc = (Location)expression;
 			if(exprLoc.getVariable().isTemp()){
-				System.out.println("---exprLoc is temp");
-				System.out.println("------" + exprLoc.getVariable().toString());
-				
 				if(ctx.getCPTempToVar().containsKey(exprLoc)){
 					Location exprVar = ctx.getCPTempToVar().get(exprLoc);
 					expression = exprVar; //put var there instead of temp

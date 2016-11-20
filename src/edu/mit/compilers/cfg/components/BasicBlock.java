@@ -233,26 +233,23 @@ public class BasicBlock extends CFG {
 		ctx.getCPVarToSet().clear();
 		
 		for(Optimizable component: components) {
-			System.out.println("__________________START______________________");
+			// System.out.println("__________________START______________________");
 
-			StringWriter sw = new StringWriter();
-			component.cfgPrint(new PrintWriter(sw), "");
-			System.out.println("Before CP: " + sw.toString());
+			// StringWriter sw = new StringWriter();
+			// component.cfgPrint(new PrintWriter(sw), "");
+			// System.out.println("Before CP: " + sw.toString());
 
 			component.doCopyPropagation(ctx);
 			
-			sw = new StringWriter();
-			component.cfgPrint(new PrintWriter(sw), "");
-			System.out.println("After CP: " + sw.toString());
+			// sw = new StringWriter();
+			// component.cfgPrint(new PrintWriter(sw), "");
+			// System.out.println("After CP: " + sw.toString());
 
+			// System.out.println("TempToVar: " + ctx.getCPTempToVar().toString());
+			// System.out.println();
+			// System.out.println("VarToSet: " + ctx.getCPVarToSet().toString());
 
-
-
-			System.out.println("TempToVar: " + ctx.getCPTempToVar().toString());
-			System.out.println();
-			System.out.println("VarToSet: " + ctx.getCPVarToSet().toString());
-
-			System.out.println("____________________END____________________");
+			// System.out.println("____________________END____________________");
 		}
 	}
 	
