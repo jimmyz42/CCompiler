@@ -7,6 +7,7 @@ import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Or;
+import edu.mit.compilers.optimizer.Optimizable;
 import exceptions.TypeMismatchError;
 
 public class OrOpExpr extends BinOpExpr {
@@ -59,5 +60,13 @@ public class OrOpExpr extends BinOpExpr {
 	@Override
 	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
+	}
+
+	@Override
+	public Optimizable doConstantFolding() {
+		if(lhs instanceof BoolLiteral && rhs instanceof BoolLiteral) {
+			return new BoolLiteral(((BoolLiteral)lhs).getValue() || ((BoolLiteral)rhs).getValue());
+		}
+		return this;
 	}
 }

@@ -113,6 +113,18 @@ public class AssignStmt extends Statement implements Optimizable {
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return location.getGeneratedDescriptors();
 	}
+	
+	@Override
+	public Optimizable doConstantFolding() {
+		this.expression = (Expression)expression.doConstantFolding();
+		return this;
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		this.expression = (Expression)expression.algebraSimplify();
+		return this;
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
@@ -223,11 +235,5 @@ public class AssignStmt extends Statement implements Optimizable {
 				ctx.getCSEVarToExprs().get(location).add(expression);
 			}
 		}
-	}
-	
-	@Override
-	public Optimizable algebraSimplify() {
-		this.expression = (Expression)expression.algebraSimplify();
-		return this;
 	}
 }

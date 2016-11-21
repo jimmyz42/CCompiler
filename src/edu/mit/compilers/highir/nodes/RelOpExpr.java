@@ -20,6 +20,7 @@ import edu.mit.compilers.lowir.instructions.Cmovle;
 import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
+import edu.mit.compilers.optimizer.Optimizable;
 import exceptions.TypeMismatchError;
 
 public class RelOpExpr extends BinOpExpr implements Condition {
@@ -114,5 +115,24 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 	@Override
 	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
+	}
+
+	@Override
+	public Optimizable doConstantFolding() {
+		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
+			if(operator.getTerminal().equals(">")) {
+				return new BoolLiteral(((IntLiteral)lhs).getValue() > ((IntLiteral)rhs).getValue());
+			}
+			if(operator.getTerminal().equals("<")) {
+				return new BoolLiteral(((IntLiteral)lhs).getValue() < ((IntLiteral)rhs).getValue());
+			}
+			if(operator.getTerminal().equals(">=")) {
+				return new BoolLiteral(((IntLiteral)lhs).getValue() >= ((IntLiteral)rhs).getValue());
+			}
+			if(operator.getTerminal().equals(">=")) {
+				return new BoolLiteral(((IntLiteral)lhs).getValue() <= ((IntLiteral)rhs).getValue());
+			}
+		}
+		return this; //cannot simplify
 	}
 }

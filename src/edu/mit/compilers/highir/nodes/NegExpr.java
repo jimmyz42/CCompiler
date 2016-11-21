@@ -81,6 +81,14 @@ public class NegExpr extends Expression {
 	}
 
 	@Override
+	public Optimizable doConstantFolding() {
+		if(expression instanceof IntLiteral) {
+			return new IntLiteral(-((IntLiteral)expression).getValue());
+		}
+		return this; //cannot simplify
+	}
+
+	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		List<Optimizable> temps = new ArrayList<>();
 

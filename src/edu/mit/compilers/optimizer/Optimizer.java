@@ -32,12 +32,19 @@ public class Optimizer {
 
 	// generateTemporaries and doCSE combined make expressions linear
 	public void run() {
+		doConstantFolding();
 		doAlgebraicSimplification();
 		generateTemporaries();
 		doCSE();
 		doCopyPropagation();
 		doConstantPropagation();
 		doDeadCodeEliminiation();
+	}
+	
+	public void doConstantFolding() {
+		for(BasicBlock block: orderedBlocks) {
+			block.doConstantFolding();
+		}
 	}
 
 	public void doAlgebraicSimplification() {

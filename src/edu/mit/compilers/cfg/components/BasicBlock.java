@@ -175,6 +175,18 @@ public class BasicBlock extends CFG {
 		combined.setCondition(b2.getCondition());
 		return combined;
 	}
+	
+	public void doAlgebraicSimplification() {
+		for(int i=0;i<components.size();i++) {
+			components.set(i, components.get(i).algebraSimplify());
+		}
+	}
+	
+	public void doConstantFolding() {
+		for(int i=0;i<components.size();i++) {
+			components.set(i, components.get(i).doConstantFolding());
+		}
+	}
 
 	public void generateTemporaries(OptimizerContext octx) {
 		List<Optimizable> newComponents = new ArrayList<>();
@@ -250,12 +262,6 @@ public class BasicBlock extends CFG {
 			// System.out.println("VarToSet: " + ctx.getCPVarToSet().toString());
 
 			// System.out.println("____________________END____________________");
-		}
-	}
-	
-	public void doAlgebraicSimplification() {
-		for(int i=0;i<components.size();i++) {
-			components.set(i, components.get(i).algebraSimplify());
 		}
 	}
 }

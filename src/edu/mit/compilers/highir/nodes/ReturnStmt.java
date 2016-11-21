@@ -109,6 +109,22 @@ public class ReturnStmt extends Statement implements Optimizable {
 	}
 
 	@Override
+	public Optimizable doConstantFolding() {
+		if(expression != null) {
+			this.expression = (Expression)expression.doConstantFolding();
+		}
+		return this;
+	}
+
+	@Override
+	public Optimizable algebraSimplify() {
+		if(expression != null) {
+			this.expression = (Expression)expression.algebraSimplify();
+		}
+		return this;
+	}
+
+	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.singletonList((Optimizable)this);
 	}
@@ -130,19 +146,15 @@ public class ReturnStmt extends Statement implements Optimizable {
 
 	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
-		expression.doCopyPropagation(ctx);
+		if(expression != null) {
+			expression.doCopyPropagation(ctx);
+		}
 	}	
 
 	@Override
 	public void doConstantPropagation(OptimizerContext ctx){
-		expression.doConstantPropagation(ctx);
-	}	
-
-	@Override
-	public Optimizable algebraSimplify() {
 		if(expression != null) {
-			this.expression = (Expression)expression.algebraSimplify();
+			expression.doConstantPropagation(ctx);
 		}
-		return this;
-	}
+	}	
 }

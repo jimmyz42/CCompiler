@@ -86,6 +86,22 @@ public class MulOpExpr extends BinOpExpr {
 	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
 	}
+
+	@Override
+	public Optimizable doConstantFolding() {
+		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
+			if(operator.getTerminal().equals("*")) {
+				return new IntLiteral(((IntLiteral)lhs).getValue() * ((IntLiteral)rhs).getValue());
+			}
+			if(operator.getTerminal().equals("/")) {
+				return new IntLiteral(((IntLiteral)lhs).getValue() / ((IntLiteral)rhs).getValue());
+			}
+			if(operator.getTerminal().equals("%")) {
+				return new IntLiteral(((IntLiteral)lhs).getValue() % ((IntLiteral)rhs).getValue());
+			}
+		}
+		return this; //cannot simplify
+	}
 	
 	@Override
 	public Optimizable algebraSimplify() {

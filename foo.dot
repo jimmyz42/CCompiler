@@ -1,7 +1,23 @@
 digraph G {
-  block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ b\lint\ a\lint\ z\lint\ y\lint\ x\lint\ t0\lx\ =\ 1\lt0\ =\ x\lint\ t1\ly\ =\ 2\lt1\ =\ y\lint\ t2\lint\ t3\lt2\ =\ x\lt3\ =\ y\lint\ t4\la\ =\ x\ +\ y\lt4\ =\ a\lt2\ =\ x\lt3\ =\ y\lb\ =\ a\lt4\ =\ b\lt2\ =\ t2\lt3\ =\ t3\lt4\ =\ x\ +\ y\lt3\ =\ y\lint\ t5\lz\ =\ b\ +\ y\lt5\ =\ z\lint\ t6\lint\ t7\lt6\ =\ a\lt7\ =\ b\lint\ t8\lz\ =\ a\ +\ b\lt8\ =\ z\lt6\ =\ t6\lt7\ =\ t7\la\ =\ a\ +\ b\lt8\ =\ a\lb\ =\ a\lt6\ =\ b\l\l" ];
-  block2 [ label="block2: *end\ of\ method*\l" ];
+  block0 [ label="block0: int[10]\ a\lint[10]\ b\l\l" ];
+  block1 [ label="block1: *start\ of\ method*\l" ];
+  block2 [ label="block2: void\ main\lint\ i\li\ =\ 9\l\l" ];
+  block3 [ label="block3: i\ \>=\ 0\l" ];
+  block4 [ label="block4: int\ t1\lint\ t2\lt1\ =\ i\lt2\ =\ 2\la[i]\ =\ i\ +\ 2\lt1\ =\ t1\lt2\ =\ t2\li\ =\ i\ -\ 2\l\l" ];
+  block5 [ label="block5: i\ =\ 9\l\l" ];
+  block6 [ label="block6: i\ \>=\ 0\l" ];
+  block7 [ label="block7: t1\ =\ i\lb[i]\ =\ a[i]\ +\ i\lt1\ =\ t1\li\ =\ i\ -\ 2\l\l" ];
+  block8 [ label="block8: printf\(\"The\ value\ of\ i\ should\ be\ -1\,\ actual\:\ %lld\\n\"\,\ i\)\lprintf\(\"The\ value\ of\ a[]\ should\ be\:\ 2\ 3\ 4\ 5\ 6\ 7\ 8\ 9\ 10\ 11\\n\"\)\lprintf\(\"\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ actual\:\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\\n\"\,\ a[0]\,\ a[1]\,\ a[2]\,\ a[3]\,\ a[4]\,\ a[5]\,\ a[6]\,\ a[7]\,\ a[8]\,\ a[9]\)\lprintf\(\"The\ value\ of\ b[]\ should\ be\:\ 0\ 0\ 6\ 0\ 0\ 12\ 0\ 0\ 18\ 0\\n\"\)\lprintf\(\"\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ actual\:\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\ %lld\\n\"\,\ b[0]\,\ b[1]\,\ b[2]\,\ b[3]\,\ b[4]\,\ b[5]\,\ b[6]\,\ b[7]\,\ b[8]\,\ b[9]\)\l\l" ];
+  block9 [ label="block9: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
+  block2 -> block3;
+  block3 -> block4;
+  block4 -> block3;
+  block3 -> block5;
+  block5 -> block6;
+  block6 -> block7;
+  block7 -> block6;
+  block6 -> block8;
+  block8 -> block9;
 }

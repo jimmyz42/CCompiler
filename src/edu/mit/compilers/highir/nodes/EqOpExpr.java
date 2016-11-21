@@ -100,6 +100,26 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 	public long getNumStackAllocations() {
 		return lhs.getNumStackAllocations() + rhs.getNumStackAllocations() + 1;
 	}
+
+	@Override
+	public Optimizable doConstantFolding() {
+		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
+			if(operator.getTerminal().equals(">")) {
+				return new BoolLiteral(((IntLiteral)lhs).getValue() == ((IntLiteral)rhs).getValue());
+			}
+		}
+		if(lhs instanceof BoolLiteral && rhs instanceof BoolLiteral) {
+			if(operator.getTerminal().equals(">")) {
+				return new BoolLiteral(((BoolLiteral)lhs).getValue() == ((BoolLiteral)rhs).getValue());
+			}
+		}
+		if(lhs instanceof CharLiteral && rhs instanceof CharLiteral) {
+			if(operator.getTerminal().equals(">")) {
+				return new BoolLiteral(((CharLiteral)lhs).getValue() == ((CharLiteral)rhs).getValue());
+			}
+		}
+		return this; //cannot simplify
+	}
 	
 	@Override
 	public Optimizable algebraSimplify() {

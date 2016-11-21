@@ -61,6 +61,18 @@ public class MethodCallStmt extends Statement implements Optimizable {
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
 	}
+	
+	@Override
+	public Optimizable doConstantFolding() {
+		this.methodCall = (MethodCallExpr)methodCall.doConstantFolding();
+		return this;
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		this.methodCall = (MethodCallExpr)methodCall.algebraSimplify();
+		return this;
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
@@ -81,10 +93,4 @@ public class MethodCallStmt extends Statement implements Optimizable {
     public void doConstantPropagation(OptimizerContext ctx){
         methodCall.doConstantPropagation(ctx);
     }   
-	
-	@Override
-	public Optimizable algebraSimplify() {
-		this.methodCall = (MethodCallExpr)methodCall.algebraSimplify();
-		return this;
-	}
 }

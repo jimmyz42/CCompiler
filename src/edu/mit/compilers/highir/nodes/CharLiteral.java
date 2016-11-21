@@ -16,6 +16,10 @@ public class CharLiteral extends Literal {
     public CharLiteral(char terminal) {
         this.terminal = terminal;
     }
+    
+    public char getValue() {
+    	return terminal;
+    }
 
     public static CharLiteral create(DecafSemanticChecker checker, DecafParser.CharLiteralContext ctx) {
         String text = ctx.CHAR_LITERAL().getText();

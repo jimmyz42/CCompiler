@@ -66,6 +66,11 @@ public class SizeofIdExpr extends Expression {
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
 	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		return new IntLiteral(variable.getType().getSize());
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
@@ -84,10 +89,5 @@ public class SizeofIdExpr extends Expression {
 	@Override
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
-	}
-	
-	@Override
-	public Optimizable algebraSimplify() {
-		return new IntLiteral(variable.getType().getSize());
 	}
 }

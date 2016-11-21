@@ -82,6 +82,14 @@ public class NotExpr extends Expression {
 	}
 
 	@Override
+	public Optimizable doConstantFolding() {
+		if(expression instanceof BoolLiteral) {
+			return new BoolLiteral(!((BoolLiteral)expression).getValue());
+		}
+		return this; //cannot simplify
+	}
+
+	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		List<Optimizable> temps = new ArrayList<>();
 

@@ -214,6 +214,22 @@ public class MethodCallExpr extends Expression {
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
 		return Collections.emptyList();
+	}		
+	
+	@Override
+	public Optimizable doConstantFolding() {
+		for(int i=0;i<arguments.size();i++) {
+			arguments.set(i, (ExternArg)arguments.get(i).doConstantFolding());
+		}
+		return this;
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		for(int i=0;i<arguments.size();i++) {
+			arguments.set(i, (ExternArg)arguments.get(i).algebraSimplify());
+		}
+		return this;
 	}
 
 	@Override
@@ -254,13 +270,5 @@ public class MethodCallExpr extends Expression {
 				expr.doCopyPropagation(ctx);
 			}
 		}
-	}	
-	
-	@Override
-	public Optimizable algebraSimplify() {
-		for(int i=0;i<arguments.size();i++) {
-			arguments.set(i, (ExternArg)arguments.get(i).algebraSimplify());
-		}
-		return this;
 	}
 }

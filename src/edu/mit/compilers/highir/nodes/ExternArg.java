@@ -63,6 +63,16 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
     public long getNumStackAllocations() {
     	return 0;
     }
+    
+	@Override
+	public Optimizable doConstantFolding() {
+		return this;
+	}
+    
+	@Override
+	public Optimizable algebraSimplify() {
+		return this;
+	}
 
     @Override
     public void doCopyPropagation(OptimizerContext ctx){
@@ -79,9 +89,4 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
             return new StringLiteral(ctx.STRING_LITERAL().getText());
         }
     }
-    
-	@Override
-	public Optimizable algebraSimplify() {
-		return this;
-	}
 }

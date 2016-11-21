@@ -9,11 +9,12 @@ import edu.mit.compilers.lowir.AssemblyContext;
 
 public interface Optimizable extends CFGAble {
 	public void generateAssembly(AssemblyContext ctx);
-    public List<Optimizable> generateTemporaries(OptimizerContext context);
     public Set<Descriptor> getConsumedDescriptors();
     public Set<Descriptor> getGeneratedDescriptors();
+    public Optimizable doConstantFolding();
+    public Optimizable algebraSimplify();
+    public List<Optimizable> generateTemporaries(OptimizerContext context);
     public void doCSE(OptimizerContext ctx);
     public void doCopyPropagation(OptimizerContext ctx);
     public void doConstantPropagation(OptimizerContext ctx);
-    public Optimizable algebraSimplify();
 }

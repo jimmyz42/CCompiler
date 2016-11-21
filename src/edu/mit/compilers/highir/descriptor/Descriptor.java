@@ -78,6 +78,16 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
 	}
+    
+	@Override
+	public Optimizable doConstantFolding() {
+		return this;
+	}
+	
+	@Override
+	public Optimizable algebraSimplify() {
+		return this;
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
@@ -90,11 +100,6 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 
 	@Override
 	public void doConstantPropagation(OptimizerContext ctx){
-	}
-	
-	@Override
-	public Optimizable algebraSimplify() {
-		return this;
 	}
 
 	@Override

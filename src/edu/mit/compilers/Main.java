@@ -122,6 +122,17 @@ class Main {
 						ProgramContext context = parser.program();
 						DecafSemanticChecker loader = new DecafSemanticChecker();
 						Program ir = (Program)loader.visit(context);
+						List<SemanticError> errors = loader.getSemanticErrors();
+						if (!errors.isEmpty()) {
+							for (SemanticError e : errors) {
+								if (CLI.debug) {
+									e.printStackTrace();
+								} else {
+									System.err.println(e);
+								}
+							}
+							System.exit(1);
+						}
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
 
@@ -143,6 +154,17 @@ class Main {
 						ProgramContext context = parser.program();
 						DecafSemanticChecker loader = new DecafSemanticChecker();
 						Program ir = (Program)loader.visit(context);
+						List<SemanticError> errors = loader.getSemanticErrors();
+						if (!errors.isEmpty()) {
+							for (SemanticError e : errors) {
+								if (CLI.debug) {
+									e.printStackTrace();
+								} else {
+									System.err.println(e);
+								}
+							}
+							System.exit(1);
+						}
 						CFGContext ctx = new CFGContext();
 						CFG cfg = ir.generateCFG(ctx);
 
