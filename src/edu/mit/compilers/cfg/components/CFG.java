@@ -19,8 +19,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import edu.mit.compilers.cfg.CFGContext;
-import edu.mit.compilers.optimizer.Optimizer;
-import edu.mit.compilers.optimizer.OptimizerContext;
 
 
 public class CFG {

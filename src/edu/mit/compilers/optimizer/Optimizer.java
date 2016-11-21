@@ -2,8 +2,11 @@ package edu.mit.compilers.optimizer;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -101,7 +104,82 @@ public class Optimizer {
 	}
 
 	public void doUnreachableCodeElimination() {
+		HashSet<BasicBlock> reachable = new HashSet<BasicBlock>();
+		List<BasicBlock> newBlocks = new ArrayList<BasicBlock>();
+		
+		if(orderedBlocks.size() == 0) {
+			return;
+		}
+		orderedBlocks.get(0).doUnreachableCodeElimination();
+		newBlocks.add(orderedBlocks.get(0));
+		reachable.addAll(orderedBlocks.get(0).getNextBlocks());
+		
+		for(int blockNum = 1; blockNum < orderedBlocks.size(); blockNum++) {
+			BasicBlock currentBlock = orderedBlocks.get(blockNum);
+			if(!reachable.contains(currentBlock)) {
+				continue;
+			}
+			currentBlock.doUnreachableCodeElimination();
+			if(BasicBlock.canMerge(currentBlock, currentBlock.getNextBlock())) {
+				currentBlock = BasicBlock.merge(currentBlock, currentBlock.getNextBlock());
+			}
+			reachable.addAll(currentBlock.getNextBlocks());
+			newBlocks.add(currentBlock);
+		}
+		
+		this.orderedBlocks = newBlocks;
 
+		clearPrevBlocks();
+		genPrevBlocks();
+		giveAllBlocksIds();
+	}
+
+	private void giveAllBlocksIds(){
+		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
+			BasicBlock currentBlock = orderedBlocks.get(blockNum);
+			currentBlock.setID("block" +  blockNum);
+		}
+	}
+
+	public void clearPrevBlocks(){
+		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+		Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+		blockQueue.add(orderedBlocks.get(0));
+
+		while(blockQueue.size() > 0) {
+			BasicBlock currentBlock = blockQueue.poll();
+			if(visited.contains(currentBlock)) continue;
+			else visited.add(currentBlock);
+
+			currentBlock.setPreviousBlocks(new ArrayList<BasicBlock>());
+			if(currentBlock.getNextBlocks().size() > 0){
+				blockQueue.add(currentBlock.getNextBlock(true));
+			}
+			if(currentBlock.getNextBlocks().size() > 1) {
+				blockQueue.add(currentBlock.getNextBlock(false));
+			}
+		}
+	}
+
+	public void genPrevBlocks(){
+		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+		Queue<BasicBlock> blockQueue = new ArrayDeque<>();
+		blockQueue.add(orderedBlocks.get(0));
+
+		while(blockQueue.size() > 0) {
+			BasicBlock currentBlock = blockQueue.poll();
+			if(visited.contains(currentBlock)) continue;
+			else visited.add(currentBlock);
+
+			if(currentBlock.getNextBlocks().size() > 0){
+				currentBlock.getNextBlock(true).addPreviousBlock(currentBlock);
+				blockQueue.add(currentBlock.getNextBlock(true));
+			}
+			if(currentBlock.getNextBlocks().size() > 1) {
+				currentBlock.getNextBlock(false).addPreviousBlock(currentBlock);
+				blockQueue.add(currentBlock.getNextBlock(false));
+			}
+		}
 	}
 
 	public void cfgPrint(PrintWriter pw, String prefix) {

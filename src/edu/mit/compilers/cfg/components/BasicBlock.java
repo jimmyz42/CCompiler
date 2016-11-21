@@ -11,6 +11,7 @@ import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.nodes.AssignStmt;
+import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
@@ -259,6 +260,15 @@ public class BasicBlock extends CFG {
 		}
 		if(branchCondition != null) {
 			branchCondition.doCopyPropagation(ctx);
+		}
+	}
+	
+	public void doUnreachableCodeElimination() { 
+		if(branchCondition instanceof BoolLiteral) {
+			BasicBlock leftBlock = getNextBlock(true);
+			BasicBlock rightBlock = getNextBlock(false);
+			nextBlocks = Collections.singletonList((((BoolLiteral) branchCondition).getValue()? leftBlock:rightBlock));
+			branchCondition = null;
 		}
 	}
 }

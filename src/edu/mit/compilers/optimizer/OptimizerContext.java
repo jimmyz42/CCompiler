@@ -6,7 +6,6 @@ import java.util.Set;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.IdLocation;
-import edu.mit.compilers.highir.nodes.IntLiteral;
 import edu.mit.compilers.highir.nodes.Literal;
 import edu.mit.compilers.highir.nodes.Location;
 

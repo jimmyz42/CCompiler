@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.nodes.Location;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
