@@ -1,0 +1,169 @@
+Setting bool t0 to isTemp
+Setting bool t1 to isTemp
+generateTemporaries
+Setting bool t2 to isTemp
+Setting bool t3 to isTemp
+Setting bool t4 to isTemp
+generateTemporaries
+Setting bool t5 to isTemp
+Setting int t6 to isTemp
+Setting int t7 to isTemp
+generateTemporaries
+Setting int t8 to isTemp
+Setting int t9 to isTemp
+Setting int t10 to isTemp
+generateTemporaries
+generateTemporaries
+generateTemporaries
+Setting int t11 to isTemp
+generateTemporaries
+Setting int t12 to isTemp
+Setting int t13 to isTemp
+Setting int t14 to isTemp
+generateTemporaries
+doCSE
+IdLocation
+-name: h
+
+1327774243
+IdLocation
+-name: i
+
+1327774244
+doCSE
+IdLocation
+-name: h
+
+1327774243
+IdLocation
+-name: i
+
+1327774244
+doCSE
+IdLocation
+-name: x
+
+1296194806
+IdLocation
+-name: y
+
+1296194807
+doCSE
+IdLocation
+-name: x
+
+1296194806
+IdLocation
+-name: y
+
+1296194807
+doCSE
+AddOpExpr
+-lhs:
+    IdLocation
+    -name: x
+-operator: +
+-rhs:
+    IdLocation
+    -name: y
+
+1239533380
+IdLocation
+-name: y
+
+1296194807
+doCSE
+IdLocation
+-name: a
+
+1296194783
+IdLocation
+-name: b
+
+1296194784
+doCSE
+IdLocation
+-name: a
+
+1296194783
+IdLocation
+-name: b
+
+1296194784
+BasicBlock block0:
+*start of method*
+block0 points to:
+    block1
+BasicBlock block1:
+void main
+    int b
+    int a
+    bool j
+    bool k
+    int z
+    bool h
+    int y
+    bool i
+    int x
+    bool t0
+    h = false
+    t0 = false
+    bool t1
+    i = true
+    t1 = true
+    bool t2
+    bool t3
+    t2 = false
+    t3 = true
+    bool t4
+    j = false || true
+    t4 = j
+    t2 = false
+    t3 = true
+    bool t5
+    k = false && true
+    t5 = k
+    int t6
+    x = 1
+    t6 = 1
+    int t7
+    y = 2
+    t7 = 2
+    int t8
+    int t9
+    t8 = 1
+    t9 = 2
+    int t10
+    a = 1 + 2
+    t10 = a
+    t8 = 1
+    t9 = 2
+    b = a
+    t10 = b
+    t8 = t8
+    t9 = t9
+    t10 = 1 + 2
+    t9 = 2
+    int t11
+    z = b + 2
+    t11 = z
+    int t12
+    int t13
+    t12 = a
+    t13 = b
+    int t14
+    z = a + b
+    t14 = z
+    t12 = t12
+    t13 = t13
+    a = a + b
+    t14 = a
+    b = a
+    t12 = b
+
+block1 points to:
+    block2
+BasicBlock block2:
+*end of method*
+block2 points to:
+

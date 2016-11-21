@@ -1,5 +1,12 @@
 void main(){
 int a, b, x, y, z;
+bool h,i,j,k;
+
+h = false;
+i = true;
+j = h || i;
+k = h && i;
+
 x = 1; 
 y = 2; 
 a = x+y; 

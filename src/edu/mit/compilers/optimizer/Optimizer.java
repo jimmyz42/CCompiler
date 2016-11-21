@@ -37,7 +37,7 @@ public class Optimizer {
 		doCSE();
 		doCopyPropagation();
 		doConstantPropagation();
-		doDeadCodeEliminiation();
+		//doDeadCodeEliminiation();
 	}
 
 	public void doAlgebraicSimplification() {
