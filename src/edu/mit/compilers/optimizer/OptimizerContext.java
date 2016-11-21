@@ -7,6 +7,7 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.IdLocation;
 import edu.mit.compilers.highir.nodes.IntLiteral;
+import edu.mit.compilers.highir.nodes.Literal;
 import edu.mit.compilers.highir.nodes.Location;
 
 public class OptimizerContext {
@@ -24,9 +25,9 @@ public class OptimizerContext {
 	private HashMap<Location, Set<Location>> cpVarToSet = new HashMap<>();
 
 	//Constant Propagation Maps
-	private HashMap<Location, IntLiteral> varToConst = new HashMap<>();
+	private HashMap<Location, Literal> varToConst = new HashMap<>();
 
-	public HashMap<Location, IntLiteral> getVarToConst(){
+	public HashMap<Location, Literal> getVarToConst(){
 		return varToConst;
 	}
 
