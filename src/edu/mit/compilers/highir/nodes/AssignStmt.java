@@ -102,7 +102,7 @@ public class AssignStmt extends Statement implements Optimizable {
 	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + location.getNumStackAllocations();
 	}
-	
+
 	public boolean isReflexive() {
 		return location == expression;
 	}
@@ -116,13 +116,13 @@ public class AssignStmt extends Statement implements Optimizable {
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return location.getGeneratedDescriptors();
 	}
-	
+
 	@Override
 	public Optimizable doConstantFolding() {
 		this.expression = (Expression)expression.doConstantFolding();
 		return this;
 	}
-	
+
 	@Override
 	public Optimizable algebraSimplify() {
 		this.expression = (Expression)expression.algebraSimplify();
@@ -130,22 +130,25 @@ public class AssignStmt extends Statement implements Optimizable {
 	}
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+	public boolean isLinearizable() {
+		return false;
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 
 		List<Optimizable> temps = new ArrayList<>();
-		temps.addAll(expression.generateTemporaries(context));
-		if(location.getVariable().isGlobal()) {
-			temps.add(this);
-		} else {
+		temps.addAll(expression.generateTemporaries(context, true));
+		temps.add(this);
+
+		if(!location.getVariable().isGlobal() && expression.isLinearizable()) {
 			if(context.addExpression(expression)) {
 				Location temp = context.getExprToTemp().get(expression);
 				temps.add(temp.getVariable());
+				temps.add(AssignStmt.create(temp, assignOp, location));
 			}
-			Location temp = context.getExprToTemp().get(expression);
-			context.addVariable(location, expression);
-			temps.add(this);
-			temps.add(AssignStmt.create(temp, assignOp, location));
 		}
+		
 		return temps;
 	}
 

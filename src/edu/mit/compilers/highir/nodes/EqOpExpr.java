@@ -103,7 +103,6 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 
 	@Override
 	public Optimizable doConstantFolding() {
-		System.out.println(this);
 		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
 			if(operator.getTerminal().equals("==")) {
 				return new BoolLiteral(((IntLiteral)lhs).getValue() == ((IntLiteral)rhs).getValue());
@@ -111,7 +110,6 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 				return new BoolLiteral(((IntLiteral)lhs).getValue() != ((IntLiteral)rhs).getValue());
 		}
 		if(lhs instanceof BoolLiteral && rhs instanceof BoolLiteral) {
-			System.out.println("here");
 			if(operator.getTerminal().equals("==")) {
 				return new BoolLiteral(((BoolLiteral)lhs).getValue() == ((BoolLiteral)rhs).getValue());
 			} else

@@ -65,11 +65,6 @@ public class IntLiteral extends Literal {
     }
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public int hashCode() {
 		return ("intterminal" + terminal).hashCode();
 	}

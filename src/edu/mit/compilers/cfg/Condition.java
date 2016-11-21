@@ -20,7 +20,7 @@ public interface Condition {
     public Set<Descriptor> getConsumedDescriptors();
     public Optimizable doConstantFolding();
     public Optimizable algebraSimplify();
-    public List<Optimizable> generateTemporaries(OptimizerContext context);
+    public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration);
     public void doCSE(OptimizerContext ctx);
     public void doCopyPropagation(OptimizerContext ctx);
     public void doConstantPropagation(OptimizerContext ctx);

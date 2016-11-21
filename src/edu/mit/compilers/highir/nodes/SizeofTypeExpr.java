@@ -62,7 +62,12 @@ public class SizeofTypeExpr extends Expression {
 	}
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+	public boolean isLinearizable() {
+		return true;
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		return Collections.emptyList();
 	}
 

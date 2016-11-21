@@ -89,18 +89,23 @@ public class NegExpr extends Expression {
 	}
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+	public boolean isLinearizable() {
+		return expression.isLinearizable();
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		List<Optimizable> temps = new ArrayList<>();
 
-		temps.addAll(expression.generateTemporaries(context));
+		temps.addAll(expression.generateTemporaries(context, false));
 
-		if(context.addExpression(expression)) {
-			Location temp = context.getExprToTemp().get(expression);
-			temps.add(temp.getVariable());
+		if(!skipGeneration && isLinearizable()) {
+			if(context.addExpression(this)) {
+				Location temp = context.getExprToTemp().get(this);
+				temps.add(temp.getVariable());
+				temps.add(AssignStmt.create(temp, "=", this));
+			}
 		}
-
-		Location temp = context.getExprToTemp().get(expression);
-		temps.add(AssignStmt.create(temp, "=", expression));
 
 		return temps;
 	}

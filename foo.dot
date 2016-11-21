@@ -1,27 +1,9 @@
 digraph G {
   block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: int\ inception\lint\ t30\lt30\ =\ 7\lt30\ =\ 7\lt30\ =\ 7\llevel\ ==\ t30\l" ];
-  block2 [ label="block2: int\ i\li\ =\ 0\l\l" ];
-  block3 [ label="block3: int\ t3\lint\ t4\lt3\ =\ exit\(level\ -\ 7\)\lt4\ =\ exit\(i\ +\ 100\)\lint\ t5\lint\ t6\lt5\ =\ printf\(\"Synchronized\ kick!\\n\"\)\lt6\ =\ t3\ *\ t4\lint\ t7\lint\ t8\lt7\ =\ i\lint\ t103\lt103\ =\ t7\lt103\ =\ t7\lt8\ =\ t5\ +\ t6\li\ !=\ t8\l" ];
-  block4 [ label="block4: printf\(\"????\"\)\lint\ t9\lt7\ =\ i\lt103\ =\ t7\lt103\ =\ t7\lt9\ =\ inception\(t103\)\li\ =\ t7\ +\ t9\l\l" ];
-  block5 [ label="block5: return\ i\l\l" ];
-  block8 [ label="block8: NOT\ VOID\l*end\ of\ method*\l" ];
-  block9 [ label="block9: *start\ of\ method*\l" ];
-  block10 [ label="block10: void\ main\linception\(1\)\l\l" ];
-  block11 [ label="block11: *end\ of\ method*\l" ];
-  block6 [ label="block6: printf\(\"Entering\ inception\ level\ %lld\ ...\\n\"\,\ level\)\linception\(level\ +\ 1\)\lprintf\(\"You\ are\ trapped\ in\ the\ limbo!\"\)\l\l" ];
-  block7 [ label="block7: exit\(-2\)\l" ];
+  block1 [ label="block1: void\ main\l\l" ];
+  block2 [ label="block2: printf\(\"control\ flow\ OK\ if\ no\ previous\ output\\n\"\)\l\l" ];
+  block3 [ label="block3: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
-  block3 -> block4;
-  block4 -> block3;
-  block3 -> block5;
-  block5 -> block8;
-  block8 -> block9;
-  block9 -> block10;
-  block10 -> block11;
-  block1 -> block6;
-  block6 -> block7;
-  block7 -> block8;
 }

@@ -28,90 +28,90 @@ import exceptions.TypeMismatchError;
 import exceptions.UndeclaredIdentifierError;
 
 public class ArrayLocation extends Location {
-    private Expression index;
+	private Expression index;
 
-    public ArrayLocation(ArrayVariableDescriptor variable, Expression index) {
-        super(variable);
-        this.index = index;
-    }
+	public ArrayLocation(ArrayVariableDescriptor variable, Expression index) {
+		super(variable);
+		this.index = index;
+	}
 
-    @Override
-    public Type getType() {
-        return ((ArrayType) getVariable().getType()).getElementType();
-    }
+	@Override
+	public Type getType() {
+		return ((ArrayType) getVariable().getType()).getElementType();
+	}
 
-    @Override
-    public ArrayVariableDescriptor getVariable() {
-    	return (ArrayVariableDescriptor) super.getVariable();
-    }
+	@Override
+	public ArrayVariableDescriptor getVariable() {
+		return (ArrayVariableDescriptor) super.getVariable();
+	}
 
-    @Override
-    public void prettyPrint(PrintWriter pw, String prefix) {
-        super.prettyPrint(pw, prefix);
-        pw.println(prefix + getVariable().getName() + "[");
-        index.prettyPrint(pw, prefix + "  ");
-        pw.println(prefix + "] ");
-    }
+	@Override
+	public void prettyPrint(PrintWriter pw, String prefix) {
+		super.prettyPrint(pw, prefix);
+		pw.println(prefix + getVariable().getName() + "[");
+		index.prettyPrint(pw, prefix + "  ");
+		pw.println(prefix + "] ");
+	}
 
-    @Override
-    public void cfgPrint(PrintWriter pw, String prefix) {
-        pw.print(prefix + getVariable().getName() + "[");
-        index.cfgPrint(pw,"");
-        pw.print("]");
-    }
+	@Override
+	public void cfgPrint(PrintWriter pw, String prefix) {
+		pw.print(prefix + getVariable().getName() + "[");
+		index.cfgPrint(pw,"");
+		pw.print("]");
+	}
 
-    @Override
-    public CFG generateCFG(CFGContext context) {
-        return index.generateCFG(context);
-    }
+	@Override
+	public CFG generateCFG(CFGContext context) {
+		return index.generateCFG(context);
+	}
 
-    @Override
-    public void generateAssembly(AssemblyContext ctx) {
-    	index.generateAssembly(ctx);
-    }
+	@Override
+	public void generateAssembly(AssemblyContext ctx) {
+		index.generateAssembly(ctx);
+	}
 
 	@Override
 	public long getNumStackAllocations() {
 		return index.getNumStackAllocations();
 	}
 
-    public Storage getLocation(AssemblyContext ctx) {
-    	Register src = index.allocateRegister(ctx);
+	public Storage getLocation(AssemblyContext ctx) {
+		Register src = index.allocateRegister(ctx);
 
-    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
-    	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
-    	ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
-        ctx.addInstruction(Sub.create(src, Register.create("%rax")));
+		ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
+		ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
+		ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
+		ctx.addInstruction(Sub.create(src, Register.create("%rax")));
 
-        Storage result =  getVariable().getLocation(ctx, Register.create("%rax"));
-        ctx.deallocateRegister(src);
-    	return result;
-    }
+		Storage result =  getVariable().getLocation(ctx, Register.create("%rax"));
+		ctx.deallocateRegister(src);
+		return result;
+	}
 
-    public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation) {
-    	if(forceStackLocation) {
-    		Register reg = allocateRegister(ctx);
-    		ctx.storeStack(getStorageTuple(), reg);
-    		ctx.deallocateRegister(reg);
-    		return ctx.getStackLocation(getStorageTuple());
-    	} else {
-    		return getLocation(ctx);
-    	}
-    }
+	public Storage getLocation(AssemblyContext ctx, boolean forceStackLocation) {
+		if(forceStackLocation) {
+			Register reg = allocateRegister(ctx);
+			ctx.storeStack(getStorageTuple(), reg);
+			ctx.deallocateRegister(reg);
+			return ctx.getStackLocation(getStorageTuple());
+		} else {
+			return getLocation(ctx);
+		}
+	}
 
-    @Override
-    public Register allocateRegister(AssemblyContext ctx) {
-    	Register src = index.allocateRegister(ctx);
+	@Override
+	public Register allocateRegister(AssemblyContext ctx) {
+		Register src = index.allocateRegister(ctx);
 
-    	ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
-    	ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
-    	ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
-        ctx.addInstruction(Sub.create(src, Register.create("%rax")));
+		ctx.addInstruction(Cmp.create(ImmediateValue.create(variable.getType().getLength()),src));
+		ctx.addInstruction(Jae.create(Memory.create("array_index_error")));
+		ctx.addInstruction(Xor.create(Register.create("%rax"), Register.create("%rax")));
+		ctx.addInstruction(Sub.create(src, Register.create("%rax")));
 
-        Register result = getVariable().allocateRegister(ctx, Register.create("%rax"));
-        ctx.deallocateRegister(src);
-    	return result;
-    }
+		Register result = getVariable().allocateRegister(ctx, Register.create("%rax"));
+		ctx.deallocateRegister(src);
+		return result;
+	}
 
 	@Override
 	public Set<Descriptor> getConsumedDescriptors() {
@@ -127,30 +127,35 @@ public class ArrayLocation extends Location {
 	}
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
-		return index.generateTemporaries(context);
+	public boolean isLinearizable() {
+		return index.isLinearizable();
 	}
 
 	@Override
-    public int hashCode() {
-        return ("arraylocation" + variable.hashCode() + index.hashCode()).hashCode();
-    }
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
+		return index.generateTemporaries(context, false);
+	}
 
-    public static ArrayLocation create(DecafSemanticChecker checker, DecafParser.ArrayLocationContext ctx) {
-        String varName = ctx.ID().getText();
-        VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
-        Expression index = Expression.create(checker, ctx.expr());
+	@Override
+	public int hashCode() {
+		return ("arraylocation" + variable.hashCode() + index.hashCode()).hashCode();
+	}
 
-        if (variable == null) {
-            throw new UndeclaredIdentifierError("Array is not declared", ctx);
-        }
-        if (!(variable.getType() instanceof ArrayType)) {
-            throw new TypeMismatchError("Can only index variables", ctx);
-        }
-        if (index.getType() != ScalarType.INT) {
-            throw new TypeMismatchError("Array index must be an int", ctx.expr());
-        }
+	public static ArrayLocation create(DecafSemanticChecker checker, DecafParser.ArrayLocationContext ctx) {
+		String varName = ctx.ID().getText();
+		VariableDescriptor variable = checker.currentSymbolTable().getVariable(varName, ctx);
+		Expression index = Expression.create(checker, ctx.expr());
 
-        return new ArrayLocation((ArrayVariableDescriptor) variable, index);
-    }
+		if (variable == null) {
+			throw new UndeclaredIdentifierError("Array is not declared", ctx);
+		}
+		if (!(variable.getType() instanceof ArrayType)) {
+			throw new TypeMismatchError("Can only index variables", ctx);
+		}
+		if (index.getType() != ScalarType.INT) {
+			throw new TypeMismatchError("Array index must be an int", ctx.expr());
+		}
+
+		return new ArrayLocation((ArrayVariableDescriptor) variable, index);
+	}
 }

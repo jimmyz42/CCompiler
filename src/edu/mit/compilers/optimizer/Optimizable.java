@@ -13,7 +13,8 @@ public interface Optimizable extends CFGAble {
     public Set<Descriptor> getGeneratedDescriptors();
     public Optimizable doConstantFolding();
     public Optimizable algebraSimplify();
-    public List<Optimizable> generateTemporaries(OptimizerContext context);
+    public boolean isLinearizable();
+    public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration);
     public void doCSE(OptimizerContext ctx);
     public void doCopyPropagation(OptimizerContext ctx);
     public void doConstantPropagation(OptimizerContext ctx);

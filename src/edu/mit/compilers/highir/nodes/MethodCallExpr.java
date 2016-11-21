@@ -212,7 +212,12 @@ public class MethodCallExpr extends Expression {
 	}
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+	public boolean isLinearizable() {
+		return false;
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		return Collections.emptyList();
 	}		
 	

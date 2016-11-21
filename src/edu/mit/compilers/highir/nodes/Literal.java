@@ -2,6 +2,7 @@ package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import edu.mit.compilers.cfg.CFGContext;
@@ -10,6 +11,7 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
 abstract public class Literal extends Expression {
@@ -41,6 +43,16 @@ abstract public class Literal extends Expression {
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public boolean isLinearizable() {
+		return true;
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
+		return Collections.emptyList();
 	}
 	
 	@Override

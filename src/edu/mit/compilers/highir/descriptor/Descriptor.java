@@ -89,7 +89,12 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	}
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+	public boolean isLinearizable() {
+		return true;
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		return Collections.singletonList((Optimizable)this);
 	}
 

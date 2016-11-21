@@ -54,11 +54,6 @@ public class CharLiteral extends Literal {
     }
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public int hashCode() {
 		return ("charterminal" + terminal).hashCode();
 	}

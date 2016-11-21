@@ -61,11 +61,6 @@ public class BoolLiteral extends Literal implements Condition {
     }
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public int hashCode() {
 		return ("intterminal" + terminal).hashCode();
 	}

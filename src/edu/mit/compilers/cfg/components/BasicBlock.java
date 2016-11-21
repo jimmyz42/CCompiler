@@ -192,10 +192,10 @@ public class BasicBlock extends CFG {
 		List<Optimizable> newComponents = new ArrayList<>();
 
 		for(Optimizable component: components) {
-			newComponents.addAll(component.generateTemporaries(octx));
+			newComponents.addAll(component.generateTemporaries(octx, false));
 		}
 		if(branchCondition != null) {
-			newComponents.addAll(branchCondition.generateTemporaries(octx));
+			newComponents.addAll(branchCondition.generateTemporaries(octx, false));
 		}
 
 		this.components = newComponents;

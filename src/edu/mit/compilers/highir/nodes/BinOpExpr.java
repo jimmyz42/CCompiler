@@ -55,28 +55,23 @@ abstract public class BinOpExpr extends Expression {
 	}
 
 	@Override
-	public List<Optimizable> generateTemporaries(OptimizerContext context) {
+	public boolean isLinearizable() {
+		return lhs.isLinearizable() && rhs.isLinearizable();
+	}
+
+	@Override
+	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		List<Optimizable> temps = new ArrayList<>();
 
-		temps.addAll(lhs.generateTemporaries(context));
-		temps.addAll(rhs.generateTemporaries(context));
+		temps.addAll(lhs.generateTemporaries(context, false));
+		temps.addAll(rhs.generateTemporaries(context, false));
 
-		if(context.addExpression(lhs)) {
-			Location lhsTemp = context.getExprToTemp().get(lhs);
-			temps.add(lhsTemp.getVariable());
-		}
-		if(context.addExpression(rhs)) {
-			Location rhsTemp = context.getExprToTemp().get(rhs);
-			temps.add(rhsTemp.getVariable());
-		}
-		Location lhsTemp = context.getExprToTemp().get(lhs);
-		Location rhsTemp = context.getExprToTemp().get(rhs);
-
-		if(lhsTemp == rhsTemp) {
-			temps.add(AssignStmt.create(lhsTemp, "=", lhs));
-		} else {
-			temps.add(AssignStmt.create(lhsTemp, "=", lhs));
-			temps.add(AssignStmt.create(rhsTemp, "=", rhs));
+		if(!skipGeneration && isLinearizable()) {
+			if(context.addExpression(this)) {
+				Location temp = context.getExprToTemp().get(this);
+				temps.add(temp.getVariable());
+				temps.add(AssignStmt.create(temp, "=", this));
+			}
 		}
 		return temps;
 	}
