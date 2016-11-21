@@ -57,7 +57,6 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context) {
-		System.out.println("generateTemporaries");
 		List<Optimizable> temps = new ArrayList<>();
 
 		temps.addAll(lhs.generateTemporaries(context));
@@ -87,14 +86,14 @@ abstract public class BinOpExpr extends Expression {
 	public void doConstantPropagation(OptimizerContext ctx){
 		if(lhs instanceof Location){
 			Location lhsLoc = (Location)lhs;
-			//is it in the map? 
+			//is it in the map?
 			if(ctx.getVarToConst().containsKey(lhsLoc)){
 				lhs = ctx.getVarToConst().get(lhsLoc); //replace var with const
 			}
 		}
 		if(rhs instanceof Location){
 			Location rhsLoc = (Location)rhs;
-			//is it in the map? 
+			//is it in the map?
 			if(ctx.getVarToConst().containsKey(rhsLoc)){
 				rhs = ctx.getVarToConst().get(rhsLoc); //replace var with const
 			}
@@ -125,14 +124,9 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		System.out.println("doCSE");
 		Location lhsTemp = ctx.getCSEExprToVar().get(lhs);
 		Location rhsTemp = ctx.getCSEExprToVar().get(rhs);
-		System.out.println(lhs);
-		System.out.println(lhs.hashCode());
-		System.out.println(rhs);
-		System.out.println(rhs.hashCode());
-		
+
 		if(lhsTemp != null) {
 			lhs = lhsTemp;
 			ctx.getCSEExprToVar().put(lhs, lhsTemp);

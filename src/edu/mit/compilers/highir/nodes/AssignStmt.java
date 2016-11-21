@@ -103,6 +103,10 @@ public class AssignStmt extends Statement implements Optimizable {
 	public long getNumStackAllocations() {
 		return expression.getNumStackAllocations() + location.getNumStackAllocations();
 	}
+	
+	public boolean isReflexive() {
+		return location == expression;
+	}
 
 	@Override
 	public Set<Descriptor> getConsumedDescriptors() {

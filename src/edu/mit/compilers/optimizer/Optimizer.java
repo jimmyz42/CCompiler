@@ -32,15 +32,21 @@ public class Optimizer {
 
 	// generateTemporaries and doCSE combined make expressions linear
 	public void run() {
-		doConstantFolding();
-		doAlgebraicSimplification();
-		generateTemporaries();
-		doCSE();
-		doCopyPropagation();
-		doConstantPropagation();
-		//doDeadCodeEliminiation();
+		//TODO: keep looping through these until modifications are no longer being made by keeping track of whether
+		//modifications have been made in Optimizer Context
+		//using a constant like this is a dirty Hack
+		for(int i = 0; i < 5; i++) {
+			doConstantFolding();
+			doAlgebraicSimplification();
+			generateTemporaries();
+			doCSE();
+			doCopyPropagation();
+			doConstantPropagation();
+		}
+		doUnreachableCodeElimination();
+		doDeadCodeEliminiation();
 	}
-	
+
 	public void doConstantFolding() {
 		for(BasicBlock block: orderedBlocks) {
 			block.doConstantFolding();
@@ -51,6 +57,12 @@ public class Optimizer {
 		for(BasicBlock block: orderedBlocks) {
 			block.doAlgebraicSimplification();
 		}
+	}
+
+	public void generateTemporaries() {
+		for(BasicBlock block: orderedBlocks) {
+			block.generateTemporaries(ctx);
+		}		
 	}
 
 	public void doDeadCodeEliminiation() {
@@ -87,11 +99,9 @@ public class Optimizer {
 			currentBlock.doCSE(ctx);
 		}
 	}
-	
-	public void generateTemporaries() {
-		for(BasicBlock block: orderedBlocks) {
-			block.generateTemporaries(ctx);
-		}		
+
+	public void doUnreachableCodeElimination() {
+
 	}
 
 	public void cfgPrint(PrintWriter pw, String prefix) {

@@ -34,7 +34,7 @@ public class OptimizerContext {
 	public HashMap<Location, Location> getCPTempToVar() {
 		return cpTempToVar;
 	}
-	
+
 	public HashMap<Location, Set<Location>> getCPVarToSet() {
 		return cpVarToSet;
 	}
@@ -50,21 +50,21 @@ public class OptimizerContext {
 	public HashMap<Expression, Location> getExprToTemp() {
 		return exprToTemp;
 	}
-	
+
 	public HashMap<Expression, Location> getCSEExprToVar() {
 		return cseExprToVar;
 	}
-	
+
 	public HashMap<Location, Set<Expression>> getCSEVarToExprs() {
 		return cseVarToExprs;
 	}
-	
+
 	public void addVariable(Location loc, Expression expr) {
 		varToVal.put(loc, exprToVal.get(expr));
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param expr
 	 * @return true if a new variable was created
 	 */
@@ -74,7 +74,6 @@ public class OptimizerContext {
 		} else {
 			VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);;
 			desc.setToTemp();
-			System.out.println("Setting " + desc.toString() + " to isTemp");
 			IdLocation loc = IdLocation.create(desc);
 			varToVal.put(loc, tempVarNonce);
 			exprToVal.put(expr, tempVarNonce);

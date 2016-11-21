@@ -10,14 +10,10 @@ import java.util.Set;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.nodes.AssignStmt;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
-
-//TODO: delete
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 public class BasicBlock extends CFG {
 
@@ -186,6 +182,9 @@ public class BasicBlock extends CFG {
 		for(int i=0;i<components.size();i++) {
 			components.set(i, components.get(i).doConstantFolding());
 		}
+		if(branchCondition != null) {
+			branchCondition = (Condition) branchCondition.doConstantFolding();
+		}
 	}
 
 	public void generateTemporaries(OptimizerContext octx) {
@@ -193,6 +192,9 @@ public class BasicBlock extends CFG {
 
 		for(Optimizable component: components) {
 			newComponents.addAll(component.generateTemporaries(octx));
+		}
+		if(branchCondition != null) {
+			newComponents.addAll(branchCondition.generateTemporaries(octx));
 		}
 
 		this.components = newComponents;
@@ -207,16 +209,18 @@ public class BasicBlock extends CFG {
 		}
 		for(int i = components.size() -1; i >= 0; i--) {
 			Optimizable component = components.get(i);
+			
 			Set<Descriptor> compGen = component.getGeneratedDescriptors();
 			Set<Descriptor> compCon = component.getConsumedDescriptors();
-
-			if(compGen.isEmpty() ||
+			
+			if(component instanceof AssignStmt && ((AssignStmt) component).isReflexive()) {
+				deadComponents.add(component);
+			} else if(compGen.isEmpty() ||
 					!Collections.disjoint(consumed, compGen) ||
 					!Collections.disjoint(compGen, compCon)) {
 				consumed.addAll(compCon);
 			} else
 				deadComponents.add(component);
-
 		}
 
 		this.components.removeAll(deadComponents);
@@ -230,6 +234,9 @@ public class BasicBlock extends CFG {
 		for(Optimizable component: components) {
 			component.doCSE(ctx);
 		}
+		if(branchCondition != null) {
+			branchCondition.doCSE(ctx);
+		}
 	}
 
 	public void doConstantPropagation(OptimizerContext ctx) {
@@ -238,6 +245,9 @@ public class BasicBlock extends CFG {
 		for(Optimizable component: components) {
 			component.doConstantPropagation(ctx);
 		}
+		if(branchCondition != null) {
+			branchCondition.doConstantPropagation(ctx);
+		}
 	}
 
 	public void doCopyPropagation(OptimizerContext ctx){
@@ -245,23 +255,10 @@ public class BasicBlock extends CFG {
 		ctx.getCPVarToSet().clear();
 		
 		for(Optimizable component: components) {
-			// System.out.println("__________________START______________________");
-
-			// StringWriter sw = new StringWriter();
-			// component.cfgPrint(new PrintWriter(sw), "");
-			// System.out.println("Before CP: " + sw.toString());
-
 			component.doCopyPropagation(ctx);
-			
-			// sw = new StringWriter();
-			// component.cfgPrint(new PrintWriter(sw), "");
-			// System.out.println("After CP: " + sw.toString());
-
-			// System.out.println("TempToVar: " + ctx.getCPTempToVar().toString());
-			// System.out.println();
-			// System.out.println("VarToSet: " + ctx.getCPVarToSet().toString());
-
-			// System.out.println("____________________END____________________");
+		}
+		if(branchCondition != null) {
+			branchCondition.doCopyPropagation(ctx);
 		}
 	}
 }

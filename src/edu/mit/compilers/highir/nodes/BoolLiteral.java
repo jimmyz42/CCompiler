@@ -3,6 +3,7 @@ package edu.mit.compilers.highir.nodes;
 import java.util.Collections;
 import java.util.List;
 
+import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
@@ -12,7 +13,7 @@ import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
-public class BoolLiteral extends Literal {
+public class BoolLiteral extends Literal implements Condition {
     private boolean terminal;
 
     public BoolLiteral(boolean terminal) {
