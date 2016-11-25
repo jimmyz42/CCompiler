@@ -1,16 +1,11 @@
 package edu.mit.compilers.highir.nodes;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
-import edu.mit.compilers.optimizer.Optimizable;
-import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.IntegerSizeError;
 
 public class IntLiteral extends Literal {

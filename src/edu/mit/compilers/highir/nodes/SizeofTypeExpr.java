@@ -75,6 +75,14 @@ public class SizeofTypeExpr extends Expression {
 	public void doCSE(OptimizerContext ctx) {
 	}
 
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+    }
+
 	@Override
     public int hashCode() {
         return ("sizeoftype" + ImmediateValue.create(this.type.getSize()).hashCode()).hashCode();

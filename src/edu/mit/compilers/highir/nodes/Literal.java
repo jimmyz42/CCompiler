@@ -54,6 +54,14 @@ abstract public class Literal extends Expression {
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		return Collections.emptyList();
 	}
+
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+    }
 	
 	@Override
 	public void doCSE(OptimizerContext ctx) {

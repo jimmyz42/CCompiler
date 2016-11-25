@@ -124,6 +124,31 @@ public class NotExpr extends Expression {
 		}
 	}
 
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
+		if(expression instanceof Location){
+			Location loc = (Location) expression;
+			if(ctx.getCPTempToVar().containsKey(loc)){
+				Location var = ctx.getCPTempToVar().get(loc);
+				expression = var; //put var there instead of temp
+			}
+		} else {
+			expression.doCopyPropagation(ctx);
+		}
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+		if(expression instanceof Location){
+			Location loc = (Location) expression;
+			//is it in the map?
+			if(ctx.getVarToConst().containsKey(loc)){
+				expression = ctx.getVarToConst().get(loc); //replace var with const
+			}
+		} else
+			expression.doConstantPropagation(ctx);
+    }
+
 	@Override
     public int hashCode() {
         return ("not" + expression.hashCode()).hashCode();

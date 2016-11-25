@@ -86,6 +86,14 @@ public class SizeofIdExpr extends Expression {
 	public void doCSE(OptimizerContext ctx) {
 	}
 
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+    }
+
 	@Override
     public int hashCode() {
         return ("sizeofid" + ImmediateValue.create(this.variable.getType().getSize()).hashCode()).hashCode();

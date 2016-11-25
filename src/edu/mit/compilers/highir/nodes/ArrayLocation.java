@@ -136,6 +136,31 @@ public class ArrayLocation extends Location {
 		return index.generateTemporaries(context, false);
 	}
 
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
+		if(index instanceof Location){
+			Location loc = (Location) index;
+			if(ctx.getCPTempToVar().containsKey(loc)){
+				Location var = ctx.getCPTempToVar().get(loc);
+				index = var; //put var there instead of temp
+			}
+		} else {
+			index.doCopyPropagation(ctx);
+		}
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+		if(index instanceof Location){
+			Location loc = (Location) index;
+			//is it in the map?
+			if(ctx.getVarToConst().containsKey(loc)){
+				index = ctx.getVarToConst().get(loc); //replace var with const
+			}
+		} else
+			index.doConstantPropagation(ctx);
+    }
+
 	@Override
 	public int hashCode() {
 		return ("arraylocation" + variable.hashCode() + index.hashCode()).hashCode();

@@ -138,6 +138,7 @@ public class AssignStmt extends Statement implements Optimizable {
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 
 		List<Optimizable> temps = new ArrayList<>();
+		temps.addAll(location.generateTemporaries(context, false));
 		temps.addAll(expression.generateTemporaries(context, true));
 		temps.add(this);
 
@@ -154,6 +155,8 @@ public class AssignStmt extends Statement implements Optimizable {
 
 	@Override
 	public void doConstantPropagation(OptimizerContext ctx){
+		if(location.getVariable().isGlobal)
+			return;
 		//if variable is being assigned OR reassigned to a constant, update map
 		if(expression instanceof Literal){ //variable is being assigned to a constant
 			ctx.getVarToConst().put(location, (Literal)expression);
@@ -174,43 +177,36 @@ public class AssignStmt extends Statement implements Optimizable {
 
 	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
-		//TODO: handle temp reassignments 
-		//TODO: handle temps assigned to temps
+		if(location.getVariable().isGlobal)
+			return;
+		
+		Location var;
+		if(expression instanceof Location) {
+			var = (Location) expression;
+		} else {
+			expression.doCopyPropagation(ctx);
+			var = location;
+		}
 
-		VariableDescriptor var = location.getVariable();
-		if (var.isTemp()){
-			if(expression instanceof Location){ //just a var, not a binOpExpr
-				Location temp = location;
-				Location mappedToVar = (Location)expression;
-				ctx.getCPTempToVar().put(temp, mappedToVar);
-				if(ctx.getCPVarToSet().containsKey(mappedToVar)){ //if already in map, add temp to set
-					ctx.getCPVarToSet().get(mappedToVar).add(temp);
-				} else { //create var entry
-					ctx.getCPVarToSet().put(mappedToVar, new HashSet<Location>(Arrays.asList(temp)));
-				}
+		if(ctx.getCPVarToSet().containsKey(location)) {
+			for(Location loc: ctx.getCPVarToSet().get(location)) {
+				ctx.getCPTempToVar().remove(loc);
 			}
 		} else {
-			Location reassignedVar = location;
-			if(ctx.getCPVarToSet().containsKey(reassignedVar)){
-				Set<Location> temps = ctx.getCPVarToSet().get(reassignedVar);
-				for(Location temp : temps){
-					ctx.getCPTempToVar().remove(temp); //Or to we reassign temp -> temp? 
-				}
-				//clear the set associated with the reassignedVar 
-				ctx.getCPVarToSet().get(reassignedVar).clear();
-			}
+			ctx.getCPVarToSet().put(location, new HashSet<Location>());
 		}
 
-		if(expression instanceof IdLocation){ //just one, gotta check for replacements 
-			Location exprLoc = (Location)expression;
-			if(exprLoc.getVariable().isTemp()){
-				if(ctx.getCPTempToVar().containsKey(exprLoc)){
-					Location exprVar = ctx.getCPTempToVar().get(exprLoc);
-					expression = exprVar; //put var there instead of temp
-				}
+
+		if(ctx.getCPVarToSet().containsKey(var)) {
+			for(Location loc: ctx.getCPVarToSet().get(var)) {
+				ctx.getCPTempToVar().remove(loc);
 			}
+		} else {
+			ctx.getCPVarToSet().put(var, new HashSet<Location>());
 		}
-		expression.doCopyPropagation(ctx);
+		
+		ctx.getCPVarToSet().get(var).add(location);
+		ctx.getCPTempToVar().put(location, var);
 	}
 
 	@Override
@@ -235,11 +231,11 @@ public class AssignStmt extends Statement implements Optimizable {
 				for(Expression expr: ctx.getCSEVarToExprs().get(location)) {
 					ctx.getCSEExprToVar().remove(expr);
 				}
-				ctx.getCSEVarToExprs().get(location).add(expression);
 			} else {
 				ctx.getCSEVarToExprs().put(location, new HashSet<Expression>());
-				ctx.getCSEVarToExprs().get(location).add(expression);
 			}
+
+			ctx.getCSEVarToExprs().get(location).add(expression);
 		}
 	}
 }

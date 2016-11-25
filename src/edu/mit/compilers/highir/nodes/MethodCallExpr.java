@@ -257,12 +257,15 @@ public class MethodCallExpr extends Expression {
 
 	@Override
 	public void doConstantPropagation(OptimizerContext ctx){
-
 		for(int i =0; i < arguments.size(); i++) {
-			if(arguments.get(i) instanceof Expression){
-				Expression expr = (Expression)arguments.get(i);
-				expr.doConstantPropagation(ctx);
-			}
+			if(arguments.get(i) instanceof Location){
+				Location loc = (Location) arguments.get(i);
+				//is it in the map?
+				if(ctx.getVarToConst().containsKey(loc)){
+					arguments.set(i, ctx.getVarToConst().get(loc)); //replace var with const
+				}
+			} else
+				arguments.get(i).doConstantPropagation(ctx);
 		}
 	}	
 
@@ -270,9 +273,13 @@ public class MethodCallExpr extends Expression {
 	public void doCopyPropagation(OptimizerContext ctx){
 
 		for(int i =0; i < arguments.size(); i++) {
-			if(arguments.get(i) instanceof Expression){
-				Expression expr = (Expression)arguments.get(i);
-				expr.doCopyPropagation(ctx);
+			if(arguments.get(i) instanceof Location) {
+				Location temp = ctx.getCPTempToVar().get((Location) arguments.get(i));
+				if(temp != null)
+					arguments.set(i, temp);
+			}
+			else {
+				arguments.get(i).doCopyPropagation(ctx);
 			}
 		}
 	}

@@ -38,16 +38,18 @@ public class Optimizer {
 		//TODO: keep looping through these until modifications are no longer being made by keeping track of whether
 		//modifications have been made in Optimizer Context
 		//using a constant like this is a dirty Hack
-		for(int i = 0; i < 5; i++) {
+		for(int i = 0; i < 1; i++) {
 			doConstantFolding();
 			doAlgebraicSimplification();
 			generateTemporaries();
 			doCSE();
-			doCopyPropagation();
+			for(int j = 0; j < 5; j++) {
+				doCopyPropagation();
+			}
 			doConstantPropagation();
+			doUnreachableCodeElimination();
+			//doDeadCodeEliminiation();
 		}
-		doUnreachableCodeElimination();
-		doDeadCodeEliminiation();
 	}
 
 	public void doConstantFolding() {
@@ -70,6 +72,7 @@ public class Optimizer {
 
 	public void doDeadCodeEliminiation() {
 		HashSet<Descriptor> consumed = new HashSet<>();
+		
 		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 			if(currentBlock.getPreviousBlock() != null) {

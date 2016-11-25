@@ -74,14 +74,6 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
 		return this;
 	}
 
-    @Override
-    public void doCopyPropagation(OptimizerContext ctx){
-    }
-
-    @Override
-    public void doConstantPropagation(OptimizerContext ctx){
-    }
-
     public static ExternArg create(DecafSemanticChecker checker, DecafParser.Extern_argContext ctx) {
         if (ctx.expr() != null) {
             return Expression.create(checker, ctx.expr());

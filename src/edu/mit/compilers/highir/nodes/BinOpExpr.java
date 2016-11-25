@@ -77,43 +77,45 @@ abstract public class BinOpExpr extends Expression {
 	}
 
 	@Override
-	public void doConstantPropagation(OptimizerContext ctx){
+	public void doConstantPropagation(OptimizerContext ctx) {
 		if(lhs instanceof Location){
 			Location lhsLoc = (Location)lhs;
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(lhsLoc)){
 				lhs = ctx.getVarToConst().get(lhsLoc); //replace var with const
 			}
-		}
+		} else
+			lhs.doConstantPropagation(ctx);
+		
 		if(rhs instanceof Location){
 			Location rhsLoc = (Location)rhs;
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(rhsLoc)){
 				rhs = ctx.getVarToConst().get(rhsLoc); //replace var with const
 			}
-		}
+		} else
+			rhs.doConstantPropagation(ctx);
 	}
 
 	@Override
-	public void doCopyPropagation(OptimizerContext ctx){
+	public void doCopyPropagation(OptimizerContext ctx) {
 		if(lhs instanceof Location){
 			Location lhsLoc = (Location)lhs;
-			if(lhsLoc.getVariable().isTemp()){
-				if(ctx.getCPTempToVar().containsKey(lhsLoc)){
-					Location var = ctx.getCPTempToVar().get(lhsLoc);
-					lhs = var; //put var there instead of temp
-				}
+			if(ctx.getCPTempToVar().containsKey(lhsLoc)){
+				Location var = ctx.getCPTempToVar().get(lhsLoc);
+				lhs = var; //put var there instead of temp
 			}
-		}
+		} else
+			lhs.doCopyPropagation(ctx);
+		
 		if(rhs instanceof Location){
 			Location rhsLoc = (Location)rhs;
-			if(rhsLoc.getVariable().isTemp()){
-				if(ctx.getCPTempToVar().containsKey(rhsLoc)){
-					Location var = ctx.getCPTempToVar().get(rhsLoc);
-					rhs = var; //put var there instead of temp
-				}
+			if(ctx.getCPTempToVar().containsKey(rhsLoc)){
+				Location var = ctx.getCPTempToVar().get(rhsLoc);
+				rhs = var; //put var there instead of temp
 			}
-		}
+		} else
+			rhs.doCopyPropagation(ctx);
 	}
 
 	@Override

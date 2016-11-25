@@ -82,6 +82,14 @@ public class StringLiteral extends ExternArg {
 	public void doCSE(OptimizerContext ctx) {
 	}
 
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+    }
+
 	@Override
 	public int hashCode() {
 		return ("stringterminal" + terminal).hashCode();

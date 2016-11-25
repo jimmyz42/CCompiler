@@ -68,17 +68,13 @@ public class OptimizerContext {
 	 * @return true if a new variable was created
 	 */
 	public boolean addExpression(Expression expr) {
-		if(exprToVal.containsKey(expr)) {
-			return false;
-		} else {
-			VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);;
-			desc.setToTemp();
-			IdLocation loc = IdLocation.create(desc);
-			varToVal.put(loc, tempVarNonce);
-			exprToVal.put(expr, tempVarNonce);
-			exprToTemp.put(expr, loc);
-			tempVarNonce++;
-			return true;
-		}
+		VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);;
+		desc.setToTemp();
+		IdLocation loc = IdLocation.create(desc);
+		varToVal.put(loc, tempVarNonce);
+		exprToVal.put(expr, tempVarNonce);
+		exprToTemp.put(expr, loc);
+		tempVarNonce++;
+		return true;
 	}
 }

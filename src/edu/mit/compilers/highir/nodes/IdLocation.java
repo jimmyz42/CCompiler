@@ -72,6 +72,14 @@ public class IdLocation extends Location {
 		return Collections.emptyList();
 	}
 
+    @Override
+    public void doCopyPropagation(OptimizerContext ctx){
+    }
+
+    @Override
+    public void doConstantPropagation(OptimizerContext ctx){
+    }
+
 	@Override
     public int hashCode() {
         return ("variablelocation" + variable).hashCode();
