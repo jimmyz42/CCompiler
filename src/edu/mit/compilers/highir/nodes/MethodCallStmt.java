@@ -81,7 +81,7 @@ public class MethodCallStmt extends Statement implements Optimizable {
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
-		return Collections.singletonList(this);
+		return Collections.singletonList((Optimizable) this);
 	}
 
 	@Override

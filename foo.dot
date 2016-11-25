@@ -1,9 +1,7 @@
 digraph G {
   block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\l\l" ];
-  block2 [ label="block2: printf\(\"control\ flow\ OK\ if\ no\ previous\ output\\n\"\)\l\l" ];
-  block3 [ label="block3: *end\ of\ method*\l" ];
+  block1 [ label="block1: void\ main\lint\ j\lint\ t4\lint\ t15\lt15\ =\ 256\ *\ 16\lint\ t16\lt16\ =\ t15\ *\ 16\lt4\ =\ t16\ *\ 16\lint\ t5\lt5\ =\ t4\ *\ 16\lj\ =\ t5\ +\ 1\lint\ t7\lint\ t21\lint\ t42\lt42\ =\ 16\ *\ 16\lint\ t43\lt43\ =\ t42\ *\ 16\lint\ t44\lt44\ =\ t43\ *\ 16\lt21\ =\ t44\ *\ 16\lint\ t22\lt22\ =\ t21\ *\ 16\lt7\ =\ 4\ -\ t22\lj\ =\ t7\ +\ 1\lint\ t8\lt8\ =\ j\lprintf\(\"%d\\n\"\,\ t8\)\l\l" ];
+  block2 [ label="block2: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
-  block2 -> block3;
 }

@@ -163,6 +163,6 @@ public class MethodDescriptor extends FunctionDescriptor {
 		context.getExprToTemp().clear();
 		context.getExprToVal().clear();
 		context.getVarToVal().clear();
-		return Collections.singletonList(this);
+		return Collections.singletonList((Optimizable) this);
 	}
 }

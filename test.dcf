@@ -1,11 +1,9 @@
-#define int long long
-
 extern printf();
 void main ( ) {
-  int i, sum;
-  int j;
-  if ( 1 > 2 ) {
-    printf ( "ERROR: true branch is bad (2)\n" );
-  }
-  printf ( "control flow OK if no previous output\n" );
+ int i, j;
+ i = 2;
+ i = i*i*i*i
+ j = i*i*i*i*i*i + 1;
+ j = (4-i*i*i*i*i*i) + 1;
+ printf("%d\n", j);
 }
