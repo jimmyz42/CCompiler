@@ -1,5 +1,9 @@
 package edu.mit.compilers.highir.nodes;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
@@ -27,6 +31,11 @@ abstract public class Location extends Expression {
     public Type getType() {
         return variable.getType();
     }
+    
+	@Override
+	public Set<Location> getLocationsUsed() {
+		return Collections.singleton(this);
+	}
 
     @Override
     public BasicBlock shortCircuit(CFG trueBranch, CFG falseBranch) {

@@ -68,6 +68,11 @@ public class SizeofIdExpr extends Expression {
 	}
 	
 	@Override
+	public Set<Location> getLocationsUsed() {
+		return Collections.emptySet();
+	}
+	
+	@Override
 	public Optimizable algebraSimplify() {
 		return new IntLiteral(variable.getType().getSize());
 	}

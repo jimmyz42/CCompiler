@@ -79,7 +79,12 @@ public class NegExpr extends Expression {
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
 	}
-
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		return expression.getLocationsUsed();
+	}
+	
 	@Override
 	public Optimizable doConstantFolding() {
 		if(expression instanceof IntLiteral) {

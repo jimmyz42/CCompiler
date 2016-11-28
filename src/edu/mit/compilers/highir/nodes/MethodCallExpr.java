@@ -215,6 +215,17 @@ public class MethodCallExpr extends Expression {
 	public boolean isLinearizable() {
 		return false;
 	}
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		Set<Location> locs = new HashSet<>();
+		for(ExternArg argument: arguments) {
+			if(argument instanceof Expression) {
+				locs.addAll(((Expression)argument).getLocationsUsed());
+			}
+		}
+		return locs;
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {

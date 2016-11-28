@@ -58,6 +58,14 @@ abstract public class BinOpExpr extends Expression {
 	public boolean isLinearizable() {
 		return lhs.isLinearizable() && rhs.isLinearizable();
 	}
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		Set<Location> locs = new HashSet<>();
+		locs.addAll(lhs.getLocationsUsed());
+		locs.addAll(rhs.getLocationsUsed());
+		return locs;		
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
