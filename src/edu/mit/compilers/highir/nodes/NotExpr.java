@@ -118,16 +118,26 @@ public class NotExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		Location temp = ctx.getCSEExprToVar().get(expression);
-
-		if(temp != null) {
-			expression =  temp;
-			ctx.getCSEExprToVar().put(expression, temp);
-
+		if(ctx.getCSEAvailableExprs().contains(expression)) {
+			expression = ctx.getExprToTemp().get(expression);
 		} else {
 			expression.doCSE(ctx);
 		}
+		ctx.getCSEAvailableExprs().add(expression);
 	}
+	
+//	@Override
+//	public void doCSE(OptimizerContext ctx) {
+//		Location temp = ctx.getCSEExprToVar().get(expression);
+//
+//		if(temp != null) {
+//			expression =  temp;
+//			ctx.getCSEExprToVar().put(expression, temp);
+//
+//		} else {
+//			expression.doCSE(ctx);
+//		}
+//	}
 
     @Override
     public void doCopyPropagation(OptimizerContext ctx){

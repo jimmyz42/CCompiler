@@ -229,7 +229,13 @@ public class MethodCallExpr extends Expression {
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
-		return Collections.emptyList();
+		List<Optimizable> temps = new ArrayList<>();
+		for(ExternArg argument: arguments) {
+			if(argument instanceof Expression) {
+				temps.addAll(argument.generateTemporaries(context, false));
+			}
+		}
+		return temps;
 	}		
 	
 	@Override
@@ -251,20 +257,35 @@ public class MethodCallExpr extends Expression {
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 		for(int i =0; i < arguments.size(); i++) {
-			if(! (arguments.get(i) instanceof Expression) )
-				continue;
-			Expression argument = (Expression) arguments.get(i);
-			Location temp = ctx.getCSEExprToVar().get(argument);
-
-			if(temp != null) {
-				argument = temp;
-				arguments.set(i, argument);
-				ctx.getCSEExprToVar().put(argument, temp);
-			} else {
-				argument.doCSE(ctx);
+			if(arguments.get(i) instanceof Expression) {
+				Expression expression = (Expression) arguments.get(i);
+				if(ctx.getCSEAvailableExprs().contains(expression)) {
+					arguments.set(i, ctx.getExprToTemp().get(expression));
+				} else {
+					expression.doCSE(ctx);
+				}
+				ctx.getCSEAvailableExprs().add(expression);
 			}
 		}
 	}
+	
+//	@Override
+//	public void doCSE(OptimizerContext ctx) {
+//		for(int i =0; i < arguments.size(); i++) {
+//			if(! (arguments.get(i) instanceof Expression) )
+//				continue;
+//			Expression argument = (Expression) arguments.get(i);
+//			Location temp = ctx.getCSEExprToVar().get(argument);
+//
+//			if(temp != null) {
+//				argument = temp;
+//				arguments.set(i, argument);
+//				ctx.getCSEExprToVar().put(argument, temp);
+//			} else {
+//				argument.doCSE(ctx);
+//			}
+//		}
+//	}
 
 	@Override
 	public void doConstantPropagation(OptimizerContext ctx){

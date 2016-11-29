@@ -22,7 +22,8 @@ public class BasicBlock extends CFG {
 	private List<BasicBlock> prevBlocks;
 	private List<BasicBlock> nextBlocks;
 	private Condition branchCondition;
-	private String id;
+	private String id; // id = "block" + numID
+	private int numID;
 	private String description;
 
 	public BasicBlock(List<Optimizable> components) {
@@ -43,6 +44,14 @@ public class BasicBlock extends CFG {
 		ArrayList<Optimizable> components = new ArrayList<>();
 		components.add(component);
 		return BasicBlock.create(components);
+	}
+	
+	public void setNumID(int num) {
+		this.numID = num;
+	}
+	
+	public int getNumID() {
+		return this.numID;
 	}
 
 	public void setID(String id){
@@ -229,9 +238,8 @@ public class BasicBlock extends CFG {
 	}
 
 	public void doCSE(OptimizerContext ctx) {
-		ctx.getCSEExprToVar().clear();
-		ctx.getCSEVarToExprs().clear();
-
+//		ctx.getCSEExprToVar().clear();
+//		ctx.getCSEVarToExprs().clear();
 		for(Optimizable component: components) {
 			component.doCSE(ctx);
 		}

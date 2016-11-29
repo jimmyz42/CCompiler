@@ -128,27 +128,49 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		Location lhsTemp = ctx.getCSEExprToVar().get(lhs);
-		Location rhsTemp = ctx.getCSEExprToVar().get(rhs);
-
-		if(lhsTemp != null) {
-			lhs = lhsTemp;
-			ctx.getCSEExprToVar().put(lhs, lhsTemp);
-
+		if(ctx.getCSEAvailableExprs().contains(lhs)) {
+			System.out.println(lhs);
+			System.out.println(ctx.getExprToTemp());
+			lhs = ctx.getExprToTemp().get(lhs);
 		} else {
 			lhs.doCSE(ctx);
 		}
-		if(rhsTemp != null) {
-			rhs = rhsTemp;
-			ctx.getCSEExprToVar().put(rhs, rhsTemp);
-
+		ctx.getCSEAvailableExprs().add(lhs);
+		
+		if(ctx.getCSEAvailableExprs().contains(rhs)) {
+			rhs = ctx.getExprToTemp().get(rhs);
 		} else {
 			rhs.doCSE(ctx);
 		}
+		ctx.getCSEAvailableExprs().add(rhs);
 	}
+	
+//	@Override
+//	public void doCSE(OptimizerContext ctx) {
+//		Location lhsTemp = ctx.getCSEExprToVar().get(lhs);
+//		Location rhsTemp = ctx.getCSEExprToVar().get(rhs);
+//
+//		if(lhsTemp != null) {
+//			lhs = lhsTemp;
+//			ctx.getCSEExprToVar().put(lhs, lhsTemp);
+//
+//		} else {
+//			lhs.doCSE(ctx);
+//		}
+//		if(rhsTemp != null) {
+//			rhs = rhsTemp;
+//			ctx.getCSEExprToVar().put(rhs, rhsTemp);
+//
+//		} else {
+//			rhs.doCSE(ctx);
+//		}
+//	}
 
 	@Override
 	public int hashCode() {
+		System.out.println("*********************************************");
+		System.out.println(lhs);
+		System.out.println(rhs);
 		return ("binop" + lhs.hashCode() + operator.hashCode() + rhs.hashCode()).hashCode();
 	}
 
