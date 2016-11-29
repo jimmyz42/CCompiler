@@ -1,6 +1,6 @@
 digraph G {
   block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ t0\lt0\ =\ b\ +\ c\la\ =\ t0\ *\ d\lint\ t1\lt1\ =\ a\lb\ =\ c\ -\ d\lint\ t2\lt2\ =\ b\lint\ t3\lt3\ =\ t0\la\ =\ b\ +\ c\ *\ d\lint\ t4\lt4\ =\ a\l\l" ];
+  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ t0\lt0\ =\ b\ +\ c\la\ =\ t0\ *\ d\lint\ t1\lt1\ =\ a\lb\ =\ c\ -\ d\lint\ t2\lt2\ =\ b\lint\ t0\lt0\ =\ b\ +\ c\la\ =\ t0\ *\ d\lint\ t1\lt1\ =\ a\l\l" ];
   block2 [ label="block2: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;

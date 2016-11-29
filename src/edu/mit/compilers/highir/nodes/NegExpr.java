@@ -117,7 +117,8 @@ public class NegExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		if(ctx.getCSEAvailableExprs().contains(expression)) {
+		if(ctx.getCSEAvailableExprs().contains(expression) 
+				&& ctx.getExprToTemp().get(expression) != null) {
 			expression = ctx.getExprToTemp().get(expression);
 		} else {
 			expression.doCSE(ctx);

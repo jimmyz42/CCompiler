@@ -128,16 +128,16 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		if(ctx.getCSEAvailableExprs().contains(lhs)) {
-			System.out.println(lhs);
-			System.out.println(ctx.getExprToTemp());
+		if(ctx.getCSEAvailableExprs().contains(lhs) 
+				&& ctx.getExprToTemp().get(lhs) != null) {
 			lhs = ctx.getExprToTemp().get(lhs);
 		} else {
 			lhs.doCSE(ctx);
 		}
 		ctx.getCSEAvailableExprs().add(lhs);
 		
-		if(ctx.getCSEAvailableExprs().contains(rhs)) {
+		if(ctx.getCSEAvailableExprs().contains(rhs) 
+				&& ctx.getExprToTemp().get(rhs) != null) {
 			rhs = ctx.getExprToTemp().get(rhs);
 		} else {
 			rhs.doCSE(ctx);
@@ -168,9 +168,6 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public int hashCode() {
-		System.out.println("*********************************************");
-		System.out.println(lhs);
-		System.out.println(rhs);
 		return ("binop" + lhs.hashCode() + operator.hashCode() + rhs.hashCode()).hashCode();
 	}
 

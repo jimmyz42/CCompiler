@@ -259,7 +259,8 @@ public class MethodCallExpr extends Expression {
 		for(int i =0; i < arguments.size(); i++) {
 			if(arguments.get(i) instanceof Expression) {
 				Expression expression = (Expression) arguments.get(i);
-				if(ctx.getCSEAvailableExprs().contains(expression)) {
+				if(ctx.getCSEAvailableExprs().contains(expression) 
+						&& ctx.getExprToTemp().get(expression) != null) {
 					arguments.set(i, ctx.getExprToTemp().get(expression));
 				} else {
 					expression.doCSE(ctx);
