@@ -77,7 +77,10 @@ abstract public class BinOpExpr extends Expression {
 		if(!skipGeneration && isLinearizable()) {
 			if(context.addExpression(this)) {
 				Location temp = context.getExprToTemp().get(this);
-				temps.add(temp.getVariable());
+				if(!context.getCSEDeclaredTemps().contains(temp)) {
+					temps.add(temp.getVariable());
+					context.getCSEDeclaredTemps().add(temp);
+				}
 				temps.add(AssignStmt.create(temp, "=", this));
 			}
 		}

@@ -145,7 +145,10 @@ public class AssignStmt extends Statement implements Optimizable {
 		if(!location.getVariable().isGlobal() && expression.isLinearizable()) {
 			if(context.addExpression(expression)) {
 				Location temp = context.getExprToTemp().get(expression);
-				temps.add(temp.getVariable());
+				if(!context.getCSEDeclaredTemps().contains(temp)) {
+					temps.add(temp.getVariable());
+					context.getCSEDeclaredTemps().add(temp);
+				}
 				temps.add(AssignStmt.create(temp, assignOp, location));
 			}
 		}

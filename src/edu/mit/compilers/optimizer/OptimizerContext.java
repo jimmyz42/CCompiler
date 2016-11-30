@@ -19,6 +19,8 @@ public class OptimizerContext {
 	private HashMap<Expression, Location> exprToTemp = new HashMap<>();
 	
 	// Common Subexpression Elimination Maps
+	// Temps declared in method so far
+	private Set<Location> cseDeclaredTemps = new HashSet<>();
 	// Set of expressions containing a given variable
 	private HashMap<Location, Set<Expression>> exprsContainingVar = new HashMap<>();
 	// Expressions generated
@@ -66,6 +68,10 @@ public class OptimizerContext {
 		return tempVarNonce;
 	}
 
+	public Set<Location> getCSEDeclaredTemps() {
+		return cseDeclaredTemps;
+	}
+	
 	public Set<Expression> getCSEGenExprs() {
 		return cseGenExprs;
 	}
@@ -112,7 +118,7 @@ public class OptimizerContext {
 			
 			for(Location var: expr.getLocationsUsed()) {
 				if(!exprsContainingVar.containsKey(var)) {
-					exprsContainingVar.put(var, new HashSet<>());
+					exprsContainingVar.put(var, new HashSet<Expression>());
 				}
 				exprsContainingVar.get(var).add(expr);
 			}

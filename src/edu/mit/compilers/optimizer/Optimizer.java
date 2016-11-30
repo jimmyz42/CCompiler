@@ -62,7 +62,7 @@ public class Optimizer {
 //			}
 //			doConstantPropagation();
 //			doUnreachableCodeElimination();
-			//doDeadCodeEliminiation();
+//			doDeadCodeEliminiation();
 		}
 	}
 
