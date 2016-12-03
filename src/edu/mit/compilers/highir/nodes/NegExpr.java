@@ -79,7 +79,12 @@ public class NegExpr extends Expression {
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
 	}
-
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		return expression.getLocationsUsed();
+	}
+	
 	@Override
 	public Optimizable doConstantFolding() {
 		if(expression instanceof IntLiteral) {
@@ -102,8 +107,11 @@ public class NegExpr extends Expression {
 		if(!skipGeneration && isLinearizable()) {
 			if(context.addExpression(this)) {
 				Location temp = context.getExprToTemp().get(this);
-				temps.add(temp.getVariable());
-				temps.add(AssignStmt.create(temp, "=", this));
+				if(!context.getCSEDeclaredTemps().contains(temp)) {
+					temps.add(temp.getVariable());
+					context.getCSEDeclaredTemps().add(temp);
+				}
+				temps.add(AssignStmt.create(temp, "=", this.clone()));
 			}
 		}
 
@@ -112,15 +120,14 @@ public class NegExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		Location temp = ctx.getCSEExprToVar().get(expression);
-
-		if(temp != null) {
-			expression =  temp;
-			ctx.getCSEExprToVar().put(expression, temp);
-
+		Expression origExpr = expression.clone();
+		if(ctx.getCSEAvailableExprs().contains(expression) 
+				&& ctx.getExprToTemp().get(expression) != null) {
+			expression = ctx.getExprToTemp().get(expression);
 		} else {
 			expression.doCSE(ctx);
 		}
+		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 
     @Override
@@ -147,14 +154,27 @@ public class NegExpr extends Expression {
 		} else
 			expression.doConstantPropagation(ctx);
     }
+    
+    @Override
+	public Optimizable algebraSimplify() {
+    	if(expression instanceof NegExpr) {
+    		return ((NegExpr)expression).expression;
+    	}
+    	return this;
+    }
 
 	@Override
 	public int hashCode() {
-		return -expression.hashCode();
+		return ("neg" + expression.hashCode()).hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
+	}
+	
+	@Override
+	public Expression clone() {
+		return new NegExpr(expression.clone());
 	}
 }

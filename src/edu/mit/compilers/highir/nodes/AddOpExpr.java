@@ -106,4 +106,10 @@ public class AddOpExpr extends BinOpExpr {
 		}
 		return this; //cannot simplify
 	}
+	
+	
+	@Override
+	public Expression clone() {
+		return new AddOpExpr(new AddOp(operator.getTerminal()), lhs.clone(), rhs.clone());
+	}
 }

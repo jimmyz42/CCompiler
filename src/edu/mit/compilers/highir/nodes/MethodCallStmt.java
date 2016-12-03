@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +82,10 @@ public class MethodCallStmt extends Statement implements Optimizable {
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
-		return Collections.singletonList((Optimizable) this);
+		List<Optimizable> temps = new ArrayList<>();
+		temps.addAll(methodCall.generateTemporaries(context, false));
+		temps.add((Optimizable) this);
+		return temps;
 	}
 
 	@Override

@@ -58,6 +58,14 @@ abstract public class BinOpExpr extends Expression {
 	public boolean isLinearizable() {
 		return lhs.isLinearizable() && rhs.isLinearizable();
 	}
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		Set<Location> locs = new HashSet<>();
+		locs.addAll(lhs.getLocationsUsed());
+		locs.addAll(rhs.getLocationsUsed());
+		return locs;		
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
@@ -69,8 +77,11 @@ abstract public class BinOpExpr extends Expression {
 		if(!skipGeneration && isLinearizable()) {
 			if(context.addExpression(this)) {
 				Location temp = context.getExprToTemp().get(this);
-				temps.add(temp.getVariable());
-				temps.add(AssignStmt.create(temp, "=", this));
+				if(!context.getCSEDeclaredTemps().contains(temp)) {
+					temps.add(temp.getVariable());
+					context.getCSEDeclaredTemps().add(temp);
+				}
+				temps.add(AssignStmt.create(temp, "=", this.clone()));
 			}
 		}
 		return temps;
@@ -120,23 +131,23 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		Location lhsTemp = ctx.getCSEExprToVar().get(lhs);
-		Location rhsTemp = ctx.getCSEExprToVar().get(rhs);
-
-		if(lhsTemp != null) {
-			lhs = lhsTemp;
-			ctx.getCSEExprToVar().put(lhs, lhsTemp);
-
+		Expression origLHS = lhs.clone();
+		if(ctx.getCSEAvailableExprs().contains(lhs) 
+				&& ctx.getExprToTemp().get(lhs) != null) {
+			lhs = ctx.getExprToTemp().get(lhs);
 		} else {
 			lhs.doCSE(ctx);
 		}
-		if(rhsTemp != null) {
-			rhs = rhsTemp;
-			ctx.getCSEExprToVar().put(rhs, rhsTemp);
-
+		ctx.getCSEAvailableExprs().add(origLHS);
+		
+		Expression origRHS = rhs.clone();
+		if(ctx.getCSEAvailableExprs().contains(rhs) 
+				&& ctx.getExprToTemp().get(rhs) != null) {
+			rhs = ctx.getExprToTemp().get(rhs);
 		} else {
 			rhs.doCSE(ctx);
 		}
+		ctx.getCSEAvailableExprs().add(origRHS);
 	}
 
 	@Override

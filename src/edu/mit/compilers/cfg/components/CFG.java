@@ -185,6 +185,7 @@ public class CFG {
 		for(int blockNum = 0; blockNum < orderedBlocks.size(); blockNum++) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 			currentBlock.setID("block" +  blockNum);
+			currentBlock.setNumID(blockNum);
 		}
 	}
 

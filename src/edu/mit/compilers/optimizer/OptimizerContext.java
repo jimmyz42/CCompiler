@@ -1,6 +1,8 @@
 package edu.mit.compilers.optimizer;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
@@ -15,9 +17,18 @@ public class OptimizerContext {
 	private HashMap<Location, Integer> varToVal = new HashMap<>();
 	private HashMap<Expression, Integer> exprToVal = new HashMap<>();
 	private HashMap<Expression, Location> exprToTemp = new HashMap<>();
-
-	private HashMap<Expression, Location> cseExprToVar = new HashMap<>();
-	private HashMap<Location, Set<Expression>> cseVarToExprs = new HashMap<>();
+	
+	// Common Subexpression Elimination Maps
+	// Temps declared in method so far
+	private Set<Location> cseDeclaredTemps = new HashSet<>();
+	// Set of expressions containing a given variable
+	private HashMap<Location, Set<Expression>> exprsContainingVar = new HashMap<>();
+	// Expressions generated
+	private Set<Expression> cseGenExprs = new HashSet<>();
+	// Locations re-assigned (thus killing any expressions containing it
+	// that are not re-generated)
+	private Set<Location> cseKillVars = new HashSet<>();
+	private Set<Expression> cseAvailableExprs = new HashSet<>();
 
 	//Copy Propagation Maps
 	private HashMap<Location, Location> cpTempToVar = new HashMap<>();
@@ -49,13 +60,33 @@ public class OptimizerContext {
 	public HashMap<Expression, Location> getExprToTemp() {
 		return exprToTemp;
 	}
-
-	public HashMap<Expression, Location> getCSEExprToVar() {
-		return cseExprToVar;
+	
+	public int getNumberOfTemps() {
+		return tempVarNonce;
 	}
 
-	public HashMap<Location, Set<Expression>> getCSEVarToExprs() {
-		return cseVarToExprs;
+	public Set<Location> getCSEDeclaredTemps() {
+		return cseDeclaredTemps;
+	}
+	
+	public Set<Expression> getCSEGenExprs() {
+		return cseGenExprs;
+	}
+
+	public Set<Location> getCSEKillVars() {
+		return cseKillVars;
+	}
+	
+	public Set<Expression> getCSEAvailableExprs() {
+		return cseAvailableExprs;
+	}
+	
+	public Set<Expression> getExprsContainingVar(Location loc) {
+		if(exprsContainingVar.containsKey(loc)) {
+			return exprsContainingVar.get(loc);
+		} else {
+			return Collections.emptySet();
+		}
 	}
 
 	public void addVariable(Location loc, Expression expr) {
@@ -68,13 +99,32 @@ public class OptimizerContext {
 	 * @return true if a new variable was created
 	 */
 	public boolean addExpression(Expression expr) {
-		VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);;
-		desc.setToTemp();
-		IdLocation loc = IdLocation.create(desc);
-		varToVal.put(loc, tempVarNonce);
-		exprToVal.put(expr, tempVarNonce);
-		exprToTemp.put(expr, loc);
-		tempVarNonce++;
+		// Clone expression so copy in HashSets/Maps doesn't get modified
+		expr = expr.clone();
+		if(expr instanceof Literal || expr instanceof Location) {
+			return false; // don't do CSE for constants/variables
+		}
+		cseGenExprs.add(expr);
+		
+		// Always add temp assignment statement, but for each expr use same temp
+		// each time. So when variables are reassigned, we are safe (always return true)
+		// CSE will eliminate the extraneous assignments
+		if(!exprToVal.containsKey(expr)) {
+			VariableDescriptor desc = VariableDescriptor.create("t"+tempVarNonce, expr.getType(), false);
+			desc.setToTemp();
+			IdLocation loc = IdLocation.create(desc);
+			varToVal.put(loc, tempVarNonce);
+			exprToVal.put(expr, tempVarNonce);
+			exprToTemp.put(expr, loc);
+			tempVarNonce++;
+			
+			for(Location var: expr.getLocationsUsed()) {
+				if(!exprsContainingVar.containsKey(var)) {
+					exprsContainingVar.put(var, new HashSet<Expression>());
+				}
+				exprsContainingVar.get(var).add(expr);
+			}
+		}
 		return true;
 	}
 }

@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -131,22 +132,25 @@ public class ReturnStmt extends Statement implements Optimizable {
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
-		return Collections.singletonList((Optimizable)  this);
+		List<Optimizable> temps = new ArrayList<>();
+		if(expression != null) {
+			temps.addAll(expression.generateTemporaries(context, false));
+		}
+		temps.add((Optimizable) this);
+		return temps;
 	}
-
+	
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		if(expression != null) {
-			Location temp = ctx.getCSEExprToVar().get(expression);
-
-			if(temp != null) {
-				expression = temp;
-				ctx.getCSEExprToVar().put(expression, temp);
-
-			} else {
-				expression.doCSE(ctx);
-			}
+		if(expression == null) return;
+		Expression origExpr = expression.clone();
+		if(ctx.getCSEAvailableExprs().contains(expression)
+				&& ctx.getExprToTemp().get(expression) != null) {
+			expression = ctx.getExprToTemp().get(expression);
+		} else {
+			expression.doCSE(ctx);
 		}
+		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 
 	@Override

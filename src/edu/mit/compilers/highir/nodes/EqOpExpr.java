@@ -162,4 +162,10 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 		}
 		return this; //cannot simplify
 	}
+	
+	
+	@Override
+	public Expression clone() {
+		return new EqOpExpr(new EqOp(operator.getTerminal()), lhs.clone(), rhs.clone());
+	}
 }
