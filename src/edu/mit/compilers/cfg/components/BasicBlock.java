@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.Condition;
@@ -263,6 +264,44 @@ public class BasicBlock extends CFG {
 		}
 	}
 	
+	public void numberDefinitions(OptimizerContext ctx){
+		for(Optimizable component : components){
+			if(component instanceof AssignStmt){
+				component.numberDefinitions(ctx);
+			}
+		}
+	}
+
+	public void findVarToDefs(OptimizerContext ctx){
+		for(Optimizable component : components){
+			if(component instanceof AssignStmt){
+				component.findVarToDefs(ctx);
+			}
+		}
+	}
+
+	public void makeGenSet(OptimizerContext ctx){
+		BitSet rdGen = new BitSet(ctx.getAssignStmtCount());
+		for(int i = components.size()-1; i>=0; i--){ //go through backwards 
+			if(components.get(i) instanceof AssignStmt){
+				AssignStmt stmt = (AssignStmt)components.get(i);
+				stmt.makeGenSet(ctx, rdGen);
+			}
+		}
+		ctx.getRdGen().put(this, rdGen);
+	}
+
+	public void makeKillSet(OptimizerContext ctx){
+		BitSet rdKill = new BitSet(ctx.getAssignStmtCount());
+		for(Optimizable component : components){
+			if(component instanceof AssignStmt){
+				AssignStmt stmt = (AssignStmt)component;
+				stmt.makeKillSet(ctx, rdKill);
+			}
+		}
+		ctx.getRdKill().put(this, rdKill);
+	}
+
 	public void doUnreachableCodeElimination() { 
 		if(branchCondition instanceof BoolLiteral) {
 			BasicBlock leftBlock = getNextBlock(true);

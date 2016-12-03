@@ -18,4 +18,6 @@ public interface Optimizable extends CFGAble {
     public void doCSE(OptimizerContext ctx);
     public void doCopyPropagation(OptimizerContext ctx);
     public void doConstantPropagation(OptimizerContext ctx);
+    public void numberDefinitions(OptimizerContext ctx);
+    public void findVarToDefs(OptimizerContext ctx);
 }

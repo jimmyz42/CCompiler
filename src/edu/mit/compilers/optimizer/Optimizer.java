@@ -7,10 +7,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
+import java.util.BitSet;
+import java.util.Set;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.EnterBlock;
+import edu.mit.compilers.cfg.components.LeaveBlock;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
@@ -41,13 +46,14 @@ public class Optimizer {
 		for(int i = 0; i < 1; i++) {
 			doConstantFolding();
 			doAlgebraicSimplification();
-			generateTemporaries();
-			doCSE();
-			for(int j = 0; j < 5; j++) {
-				doCopyPropagation();
-			}
-			doConstantPropagation();
-			doUnreachableCodeElimination();
+			// generateTemporaries();
+			// doCSE();
+			// for(int j = 0; j < 5; j++) {
+			// 	doCopyPropagation();
+			// }
+			// doConstantPropagation();
+			doReachingDefinitions();
+			//doUnreachableCodeElimination();
 			//doDeadCodeEliminiation();
 		}
 	}
@@ -90,6 +96,140 @@ public class Optimizer {
 
 			currentBlock.doCopyPropagation(ctx);
 		}
+	}
+
+	//NOTE: different than in lecture because using maps instead of bit vectors
+	public void doReachingDefinitions(){
+		System.out.println("DOING REACHING DEFS");
+
+		//list of methods; contain list of basic blocks in methods
+		List<List<BasicBlock>> methods = new ArrayList<>(); 
+		int methodNum = 0;
+		boolean isGlobal = true; //used to skip over all the global bbs
+
+		//separate the basic blocks into their methods
+		for(BasicBlock block : orderedBlocks){
+
+			if(block instanceof EnterBlock){
+				//new method
+				methods.add(new ArrayList<BasicBlock>());
+				isGlobal = false;
+			} else if (block instanceof LeaveBlock){
+				//end of method
+				methodNum++;
+			} else if(!isGlobal){
+				methods.get(methodNum).add(block);
+			}
+		}
+		
+
+		//for each method, instantiate bit vecotrs 
+		for(List<BasicBlock> method : methods){
+			System.out.println("//////////////// NEW METHOD ////////////");
+			//clear everything in ctx that needs to be cleared 
+
+			//number definitions
+			ctx.resetAssignStmtCount();
+			ctx.getAssignStmtToInt().clear();
+			for(BasicBlock block : method){
+				block.numberDefinitions(ctx);
+			}
+
+			//create map of variables to definitions
+			ctx.getVarToDefs().clear();
+			for(BasicBlock block : method){
+				block.findVarToDefs(ctx);
+			}
+
+			System.out.println("AssignStmtToInt-----------");
+			System.out.println(ctx.prettyPrintAssignStmtToInt());
+
+			System.out.println("VarToDefs-----------------");
+			System.out.println(ctx.prettyPrintVarToDefs());
+
+			//for each basic block, instantiate gen and kill sets
+			for(BasicBlock block : method){
+				block.makeGenSet(ctx);
+				block.makeKillSet(ctx);
+			}
+
+			//calculate in and out sets 
+			for(BasicBlock block : method){
+				ctx.getRdOut().put(block, new BitSet(ctx.getAssignStmtCount()));
+			}
+			BasicBlock entryBlock = method.get(0);
+			ctx.getRdIn().put(entryBlock, new BitSet(ctx.getAssignStmtCount()));
+			ctx.getRdOut().put(entryBlock, ctx.getRdGen().get(entryBlock));
+
+			Set<BasicBlock> changed = new HashSet<>(method);
+			changed.remove(entryBlock);
+
+			while(!changed.isEmpty()){
+				BasicBlock n = changed.iterator().next();
+				changed.remove(n);
+				
+				ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
+
+				for (BasicBlock p : n.getPreviousBlocks()){
+					BitSet in_n = ctx.getRdIn().get(n);
+					BitSet out_p = ctx.getRdOut().get(p);
+					in_n.or(out_p);
+					ctx.getRdIn().put(n, in_n);
+				}
+
+				BitSet in = ctx.getRdIn().get(n);
+				BitSet kill = ctx.getRdKill().get(n);
+				BitSet gen = ctx.getRdGen().get(n);
+				in.xor(kill);
+				gen.or(in);
+				BitSet new_out = gen;
+
+				BitSet old_out = ctx.getRdOut().get(n);
+				ctx.getRdOut().put(n, new_out);
+
+				if (!old_out.equals(new_out)){
+					for(BasicBlock s : n.getNextBlocks()){
+						changed.add(s);
+					}
+				}
+			}
+
+		}
+
+		// for(BasicBlock block: orderedBlocks) {
+		// 	block.getConstOut().clear();
+		// }
+		// //TODO: verify that first block in orderedBlocks is the entry block
+		// BasicBlock entryBlock = orderedBlocks.get(0);
+		// entryBlock.getConstIn().clear();
+		// entryBlock.getConstOut() = entryBlock.getConstGen();
+		// Set<BasicBlock> changed = new HashSet<>(orderedBlocks);
+		// changed.remove(entryBlock);
+
+		// while(!changed.isEmpty()){
+		// 	BasicBlock currentBlock;
+		// 	//choose a node n in changed
+		// 	for(BasicBlock block : changed){
+		// 		currentBlock = block;
+		// 		break;
+		// 	}
+		// 	changed.remove(currentBlock);
+		// 	Map<> in = currentBlock.getConstIn();
+		// 	in.clear(); //emptyset
+		// 	//for all predecessors 
+		// 	for(BasicBlock block : currentBlock.getPreviousBlocks()){
+		// 		// in = in union block.out 
+		// 	}
+		// 	Map<> out = currentBlock.getConstOut();
+		// 	// out = out union (in - kill)
+
+		// 	//if out changed 
+		// 	for(BasicBlock block : currentBlock.getNextBlocks()){
+		// 		changed.add(block);
+		// 	}
+
+
+		// }
 	}
 
 	public void doConstantPropagation(){
