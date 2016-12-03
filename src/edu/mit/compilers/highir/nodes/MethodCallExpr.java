@@ -259,13 +259,14 @@ public class MethodCallExpr extends Expression {
 		for(int i =0; i < arguments.size(); i++) {
 			if(arguments.get(i) instanceof Expression) {
 				Expression expression = (Expression) arguments.get(i);
+				Expression origExpr = expression.clone();
 				if(ctx.getCSEAvailableExprs().contains(expression) 
 						&& ctx.getExprToTemp().get(expression) != null) {
 					arguments.set(i, ctx.getExprToTemp().get(expression));
 				} else {
 					expression.doCSE(ctx);
 				}
-				ctx.getCSEAvailableExprs().add(expression);
+				ctx.getCSEAvailableExprs().add(origExpr);
 			}
 		}
 	}
@@ -315,5 +316,19 @@ public class MethodCallExpr extends Expression {
 				arguments.get(i).doCopyPropagation(ctx);
 			}
 		}
+	}
+	
+	
+	@Override
+	public Expression clone() {
+		List<ExternArg> argumentsCopy = new ArrayList<ExternArg>();
+		for(int i=0; i < arguments.size(); i++) {
+			if(arguments.get(i) instanceof Expression) {
+				argumentsCopy.add(((Expression)arguments.get(i)).clone());
+			} else {
+				argumentsCopy.add(arguments.get(i));
+			}
+		}
+		return new MethodCallExpr(function, argumentsCopy);
 	}
 }

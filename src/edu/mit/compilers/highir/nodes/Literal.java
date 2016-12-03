@@ -76,4 +76,10 @@ abstract public class Literal extends Expression {
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
 	}
+	
+	
+	@Override
+	public Expression clone() {
+		return this;
+	}
 }

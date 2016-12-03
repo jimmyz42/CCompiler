@@ -22,4 +22,6 @@ abstract public class Expression extends ExternArg {
     }
     
     public abstract Set<Location> getLocationsUsed();
+    
+    public abstract Expression clone();
 }

@@ -1,10 +1,12 @@
 #define int long long
 
 extern printf();
-// test as many operators as we can
 void main ( ) {
-    int a, b, c, d;
-    a = (b+c) * d;
-    b = c - d;
-    a = (b+c) * d;
+    int a, b, c, d, e, f;
+    a = (b+c)*d + e;
+    for(a = 1; a <= 10; a += 1) {
+        a = f*(b+c)-4;
+    }
+    f = (e+d)*(b+c);
+    printf("%d %d", a, f);
 }

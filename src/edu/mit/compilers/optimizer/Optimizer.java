@@ -51,18 +51,20 @@ public class Optimizer {
 		//using a constant like this is a dirty Hack
 
 		for(int i = 0; i < 1; i++) {
-//			doConstantFolding();
-//			doAlgebraicSimplification();
+			// reset optimizer to clear set/maps from prev iteration
+			ctx = new OptimizerContext();
+			doConstantFolding();
+			doAlgebraicSimplification();
 			generateTemporaries();
 			doGlobalCSE();
 			doLocalCSE();
 			//doCSE(); 
-//			for(int j = 0; j < 5; j++) {
-//				doCopyPropagation();
-//			}
-//			doConstantPropagation();
-//			doUnreachableCodeElimination();
-//			doDeadCodeEliminiation();
+			for(int j = 0; j < 5; j++) {
+				doCopyPropagation();
+			}
+			doConstantPropagation();
+			doUnreachableCodeElimination();
+			doDeadCodeEliminiation();
 		}
 	}
 

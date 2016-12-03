@@ -102,6 +102,11 @@ public class OptimizerContext {
 	 * @return true if a new variable was created
 	 */
 	public boolean addExpression(Expression expr) {
+		// Clone expression so copy in HashSets/Maps doesn't get modified
+		expr = expr.clone();
+		if(expr instanceof Literal || expr instanceof Location) {
+			return false; // don't do CSE for constants/variables
+		}
 		cseGenExprs.add(expr);
 		
 		// Always add temp assignment statement, but for each expr use same temp

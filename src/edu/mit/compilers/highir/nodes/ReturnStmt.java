@@ -143,13 +143,14 @@ public class ReturnStmt extends Statement implements Optimizable {
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 		if(expression == null) return;
+		Expression origExpr = expression.clone();
 		if(ctx.getCSEAvailableExprs().contains(expression)
 				&& ctx.getExprToTemp().get(expression) != null) {
 			expression = ctx.getExprToTemp().get(expression);
 		} else {
 			expression.doCSE(ctx);
 		}
-		ctx.getCSEAvailableExprs().add(expression);
+		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 
 //	@Override

@@ -142,7 +142,7 @@ public class AssignStmt extends Statement implements Optimizable {
 		temps.addAll(expression.generateTemporaries(context, true));
 		temps.add(this);
 
-		if(!location.getVariable().isGlobal() && expression.isLinearizable()) {
+		if(expression.isLinearizable()) {
 			if(context.addExpression(expression)) {
 				Location temp = context.getExprToTemp().get(expression);
 				if(!context.getCSEDeclaredTemps().contains(temp)) {
@@ -218,6 +218,9 @@ public class AssignStmt extends Statement implements Optimizable {
 	
 	@Override
 	public void doCSE(OptimizerContext ctx) {
+		// Save original expression since it may be modified by
+		// the recursive doCSE calls 
+		Expression origExpr = expression.clone();
 		if(ctx.getCSEAvailableExprs().contains(expression) 
 				&& ctx.getExprToTemp().get(expression) != null) {
 			expression = ctx.getExprToTemp().get(expression);
@@ -225,7 +228,7 @@ public class AssignStmt extends Statement implements Optimizable {
 			expression.doCSE(ctx);
 		}
 		ctx.getCSEAvailableExprs().removeAll(ctx.getExprsContainingVar(location));
-		ctx.getCSEAvailableExprs().add(expression);
+		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 
 //	@Override

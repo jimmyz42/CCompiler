@@ -111,7 +111,7 @@ public class NegExpr extends Expression {
 					temps.add(temp.getVariable());
 					context.getCSEDeclaredTemps().add(temp);
 				}
-				temps.add(AssignStmt.create(temp, "=", this));
+				temps.add(AssignStmt.create(temp, "=", this.clone()));
 			}
 		}
 
@@ -120,13 +120,14 @@ public class NegExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
+		Expression origExpr = expression.clone();
 		if(ctx.getCSEAvailableExprs().contains(expression) 
 				&& ctx.getExprToTemp().get(expression) != null) {
 			expression = ctx.getExprToTemp().get(expression);
 		} else {
 			expression.doCSE(ctx);
 		}
-		ctx.getCSEAvailableExprs().add(expression);
+		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 	
 //	@Override
@@ -166,14 +167,27 @@ public class NegExpr extends Expression {
 		} else
 			expression.doConstantPropagation(ctx);
     }
+    
+    @Override
+	public Optimizable algebraSimplify() {
+    	if(expression instanceof NegExpr) {
+    		return ((NegExpr)expression).expression;
+    	}
+    	return this;
+    }
 
 	@Override
 	public int hashCode() {
-		return -expression.hashCode();
+		return ("neg" + expression.hashCode()).hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
+	}
+	
+	@Override
+	public Expression clone() {
+		return new NegExpr(expression.clone());
 	}
 }

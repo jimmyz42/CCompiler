@@ -81,7 +81,7 @@ abstract public class BinOpExpr extends Expression {
 					temps.add(temp.getVariable());
 					context.getCSEDeclaredTemps().add(temp);
 				}
-				temps.add(AssignStmt.create(temp, "=", this));
+				temps.add(AssignStmt.create(temp, "=", this.clone()));
 			}
 		}
 		return temps;
@@ -131,21 +131,49 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
+//		System.out.println("***********************");
+//		System.out.println(this);
+//		System.out.println(ctx.getExprToTemp().keySet());
+//		System.out.println("***********************$$$$$$$$$");
+//		System.out.println("***********************");
+//		System.out.println(this);
+//		System.out.println(lhs);
+//		System.out.println("************@@@@@@");
+//		System.out.println(ctx.getCSEAvailableExprs());
+//		System.out.println("************%%%%");
+//		System.out.println(ctx.getExprToTemp().keySet());
+//		System.out.println(ctx.getCSEAvailableExprs().contains(lhs));
+//		System.out.println(ctx.getExprToTemp().keySet().contains(lhs));
+//		System.out.println("***********************$$$$$$$$$");
+//		for(Expression expr: ctx.getExprToTemp().keySet()) {
+//			if(expr.toString().equals(lhs.toString())) {
+//				System.out.println("************@@@@@@");
+//				System.out.println(lhs);
+//				System.out.println("*****");
+//				System.out.println(expr);
+//				System.out.println("****");
+//				System.out.println(lhs.equals(expr));
+//				System.out.println(ctx.getExprToTemp().keySet().contains(lhs));
+//				System.out.println("************$$$$$");
+//			}
+//		}
+		Expression origLHS = lhs.clone();
 		if(ctx.getCSEAvailableExprs().contains(lhs) 
 				&& ctx.getExprToTemp().get(lhs) != null) {
 			lhs = ctx.getExprToTemp().get(lhs);
 		} else {
 			lhs.doCSE(ctx);
 		}
-		ctx.getCSEAvailableExprs().add(lhs);
+		ctx.getCSEAvailableExprs().add(origLHS);
 		
+		Expression origRHS = rhs.clone();
 		if(ctx.getCSEAvailableExprs().contains(rhs) 
 				&& ctx.getExprToTemp().get(rhs) != null) {
 			rhs = ctx.getExprToTemp().get(rhs);
 		} else {
 			rhs.doCSE(ctx);
 		}
-		ctx.getCSEAvailableExprs().add(rhs);
+		ctx.getCSEAvailableExprs().add(origRHS);
 	}
 	
 //	@Override
