@@ -161,9 +161,6 @@ public class MethodDescriptor extends FunctionDescriptor {
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		context.getCSEDeclaredTemps().clear();
-//		context.getExprToTemp().clear();
-//		context.getExprToVal().clear();
-//		context.getVarToVal().clear();
 		return Collections.singletonList((Optimizable) this);
 	}
 }

@@ -131,32 +131,6 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-//		System.out.println("***********************");
-//		System.out.println(this);
-//		System.out.println(ctx.getExprToTemp().keySet());
-//		System.out.println("***********************$$$$$$$$$");
-//		System.out.println("***********************");
-//		System.out.println(this);
-//		System.out.println(lhs);
-//		System.out.println("************@@@@@@");
-//		System.out.println(ctx.getCSEAvailableExprs());
-//		System.out.println("************%%%%");
-//		System.out.println(ctx.getExprToTemp().keySet());
-//		System.out.println(ctx.getCSEAvailableExprs().contains(lhs));
-//		System.out.println(ctx.getExprToTemp().keySet().contains(lhs));
-//		System.out.println("***********************$$$$$$$$$");
-//		for(Expression expr: ctx.getExprToTemp().keySet()) {
-//			if(expr.toString().equals(lhs.toString())) {
-//				System.out.println("************@@@@@@");
-//				System.out.println(lhs);
-//				System.out.println("*****");
-//				System.out.println(expr);
-//				System.out.println("****");
-//				System.out.println(lhs.equals(expr));
-//				System.out.println(ctx.getExprToTemp().keySet().contains(lhs));
-//				System.out.println("************$$$$$");
-//			}
-//		}
 		Expression origLHS = lhs.clone();
 		if(ctx.getCSEAvailableExprs().contains(lhs) 
 				&& ctx.getExprToTemp().get(lhs) != null) {
@@ -175,27 +149,6 @@ abstract public class BinOpExpr extends Expression {
 		}
 		ctx.getCSEAvailableExprs().add(origRHS);
 	}
-	
-//	@Override
-//	public void doCSE(OptimizerContext ctx) {
-//		Location lhsTemp = ctx.getCSEExprToVar().get(lhs);
-//		Location rhsTemp = ctx.getCSEExprToVar().get(rhs);
-//
-//		if(lhsTemp != null) {
-//			lhs = lhsTemp;
-//			ctx.getCSEExprToVar().put(lhs, lhsTemp);
-//
-//		} else {
-//			lhs.doCSE(ctx);
-//		}
-//		if(rhsTemp != null) {
-//			rhs = rhsTemp;
-//			ctx.getCSEExprToVar().put(rhs, rhsTemp);
-//
-//		} else {
-//			rhs.doCSE(ctx);
-//		}
-//	}
 
 	@Override
 	public int hashCode() {

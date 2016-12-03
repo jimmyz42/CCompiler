@@ -58,13 +58,12 @@ public class Optimizer {
 			generateTemporaries();
 			doGlobalCSE();
 			doLocalCSE();
-			//doCSE(); 
 			for(int j = 0; j < 5; j++) {
 				doCopyPropagation();
 			}
 			doConstantPropagation();
 			doUnreachableCodeElimination();
-			doDeadCodeEliminiation();
+			//doDeadCodeEliminiation();
 		}
 	}
 
@@ -205,14 +204,6 @@ public class Optimizer {
 			currentBlock.doCSE(ctx);
 		}
 	}
-
-//	public void doCSE() {
-//		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
-//			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-//
-//			currentBlock.doCSE(ctx);
-//		}
-//	}
 
 	public void doUnreachableCodeElimination() {
 		HashSet<BasicBlock> reachable = new HashSet<BasicBlock>();

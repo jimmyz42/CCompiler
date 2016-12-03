@@ -37,7 +37,6 @@ public class NotExpr extends Expression {
 
     @Override
     public Type getType() {
-        // TODO Auto-generated method stub
         return ScalarType.BOOL;
     }
 
@@ -130,19 +129,6 @@ public class NotExpr extends Expression {
 		}
 		ctx.getCSEAvailableExprs().add(origExpr);
 	}
-	
-//	@Override
-//	public void doCSE(OptimizerContext ctx) {
-//		Location temp = ctx.getCSEExprToVar().get(expression);
-//
-//		if(temp != null) {
-//			expression =  temp;
-//			ctx.getCSEExprToVar().put(expression, temp);
-//
-//		} else {
-//			expression.doCSE(ctx);
-//		}
-//	}
 
     @Override
     public void doCopyPropagation(OptimizerContext ctx){

@@ -153,21 +153,6 @@ public class ReturnStmt extends Statement implements Optimizable {
 		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 
-//	@Override
-//	public void doCSE(OptimizerContext ctx) {
-//		if(expression != null) {
-//			Location temp = ctx.getCSEExprToVar().get(expression);
-//
-//			if(temp != null) {
-//				expression = temp;
-//				ctx.getCSEExprToVar().put(expression, temp);
-//
-//			} else {
-//				expression.doCSE(ctx);
-//			}
-//		}
-//	}
-
 	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
 		if(expression != null) {

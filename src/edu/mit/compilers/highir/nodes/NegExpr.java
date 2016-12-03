@@ -129,19 +129,6 @@ public class NegExpr extends Expression {
 		}
 		ctx.getCSEAvailableExprs().add(origExpr);
 	}
-	
-//	@Override
-//	public void doCSE(OptimizerContext ctx) {
-//		Location temp = ctx.getCSEExprToVar().get(expression);
-//
-//		if(temp != null) {
-//			expression =  temp;
-//			ctx.getCSEExprToVar().put(expression, temp);
-//
-//		} else {
-//			expression.doCSE(ctx);
-//		}
-//	}
 
     @Override
     public void doCopyPropagation(OptimizerContext ctx){

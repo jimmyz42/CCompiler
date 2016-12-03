@@ -1,12 +1,9 @@
 #define int long long
 
 extern printf();
+// This should produce a runtime error
+int a[10];
 void main ( ) {
-    int a, b, c, d, e, f;
-    a = (b+c)*d + e;
-    for(a = 1; a <= 10; a += 1) {
-        a = f*(b+c)-4;
-    }
-    f = (e+d)*(b+c);
-    printf("%d %d", a, f);
+  printf ( "expecting an error next:\n" );
+  a[100] = 0;
 }

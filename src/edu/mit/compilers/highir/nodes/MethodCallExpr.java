@@ -270,24 +270,6 @@ public class MethodCallExpr extends Expression {
 			}
 		}
 	}
-	
-//	@Override
-//	public void doCSE(OptimizerContext ctx) {
-//		for(int i =0; i < arguments.size(); i++) {
-//			if(! (arguments.get(i) instanceof Expression) )
-//				continue;
-//			Expression argument = (Expression) arguments.get(i);
-//			Location temp = ctx.getCSEExprToVar().get(argument);
-//
-//			if(temp != null) {
-//				argument = temp;
-//				arguments.set(i, argument);
-//				ctx.getCSEExprToVar().put(argument, temp);
-//			} else {
-//				argument.doCSE(ctx);
-//			}
-//		}
-//	}
 
 	@Override
 	public void doConstantPropagation(OptimizerContext ctx){

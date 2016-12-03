@@ -1,14 +1,9 @@
 digraph G {
-  block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ e\lint\ f\lint\ t0\lt0\ =\ b\ +\ c\lint\ t1\lt1\ =\ t0\ *\ d\la\ =\ t1\ +\ e\la\ =\ 1\l\l" ];
-  block2 [ label="block2: a\ \<=\ 10\l" ];
-  block3 [ label="block3: int\ t4\lt4\ =\ f\ *\ t0\la\ =\ t4\ -\ 4\la\ =\ a\ +\ 1\l\l" ];
-  block4 [ label="block4: int\ t7\lt7\ =\ e\ +\ d\lf\ =\ t7\ *\ t0\lprintf\(\"%d\ %d\"\,\ a\,\ f\)\l\l" ];
-  block5 [ label="block5: *end\ of\ method*\l" ];
+  block0 [ label="block0: int[10]\ a\l\l" ];
+  block1 [ label="block1: *start\ of\ method*\l" ];
+  block2 [ label="block2: void\ main\lprintf\(\"expecting\ an\ error\ next\:\\n\"\)\la[100]\ =\ 0\l\l" ];
+  block3 [ label="block3: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
-  block3 -> block2;
-  block2 -> block4;
-  block4 -> block5;
 }

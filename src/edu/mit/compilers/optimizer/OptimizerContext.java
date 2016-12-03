@@ -29,9 +29,6 @@ public class OptimizerContext {
 	// that are not re-generated)
 	private Set<Location> cseKillVars = new HashSet<>();
 	private Set<Expression> cseAvailableExprs = new HashSet<>();
-	
-	//private HashMap<Expression, Location> cseExprToVar = new HashMap<>();
-	//private HashMap<Location, Set<Expression>> cseVarToExprs = new HashMap<>();
 
 	//Copy Propagation Maps
 	private HashMap<Location, Location> cpTempToVar = new HashMap<>();

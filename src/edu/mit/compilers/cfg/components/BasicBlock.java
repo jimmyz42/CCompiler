@@ -238,8 +238,6 @@ public class BasicBlock extends CFG {
 	}
 
 	public void doCSE(OptimizerContext ctx) {
-//		ctx.getCSEExprToVar().clear();
-//		ctx.getCSEVarToExprs().clear();
 		for(Optimizable component: components) {
 			component.doCSE(ctx);
 		}
