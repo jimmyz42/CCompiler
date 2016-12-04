@@ -75,4 +75,10 @@ public class AndOpExpr extends BinOpExpr {
 		}
 		return this;
 	}
+	
+	
+	@Override
+	public Expression clone() {
+		return new AndOpExpr(new AndOp(operator.getTerminal()), lhs.clone(), rhs.clone());
+	}
 }

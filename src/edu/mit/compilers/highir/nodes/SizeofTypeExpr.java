@@ -65,6 +65,11 @@ public class SizeofTypeExpr extends Expression {
 	public boolean isLinearizable() {
 		return true;
 	}
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		return Collections.emptySet();
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
@@ -96,5 +101,10 @@ public class SizeofTypeExpr extends Expression {
 	@Override
 	public Optimizable algebraSimplify() {
 		return new IntLiteral(type.getSize());
+	}
+	
+	@Override
+	public Expression clone() {
+		return this;
 	}
 }

@@ -148,13 +148,20 @@ public class AssignStmt extends Statement implements Optimizable {
 		temps.addAll(expression.generateTemporaries(context, true));
 		temps.add(this);
 
-		if(!location.getVariable().isGlobal() && expression.isLinearizable()) {
+		if(expression.isLinearizable()) {
 			if(context.addExpression(expression)) {
 				Location temp = context.getExprToTemp().get(expression);
-				temps.add(temp.getVariable());
+				if(!context.getCSEDeclaredTemps().contains(temp)) {
+					temps.add(temp.getVariable());
+					context.getCSEDeclaredTemps().add(temp);
+				}
 				temps.add(AssignStmt.create(temp, assignOp, location));
 			}
 		}
+		
+		// FOR CSE 
+		context.getCSEKillVars().add(location);
+		context.getCSEGenExprs().removeAll(context.getExprsContainingVar(location));
 		
 		return temps;
 	}
@@ -214,7 +221,7 @@ public class AssignStmt extends Statement implements Optimizable {
 		ctx.getCPVarToSet().get(var).add(location);
 		ctx.getCPTempToVar().put(location, var);
 	}
-
+	
 	@Override
 	public void findVarToDefs(OptimizerContext ctx){
 		VariableDescriptor var = location.getVariable();
@@ -265,31 +272,16 @@ public class AssignStmt extends Statement implements Optimizable {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		Location temp = ctx.getCSEExprToVar().get(expression);
-		if(temp != null) {
-			ctx.getCSEExprToVar().remove(location);
-
-			expression = temp;
-
-			for(Expression expr: ctx.getCSEVarToExprs().get(temp)) {
-				ctx.getCSEExprToVar().remove(expr);
-			}
-
-			ctx.getCSEVarToExprs().get(temp).add(location);
+		// Save original expression since it may be modified by
+		// the recursive doCSE calls 
+		Expression origExpr = expression.clone();
+		if(ctx.getCSEAvailableExprs().contains(expression) 
+				&& ctx.getExprToTemp().get(expression) != null) {
+			expression = ctx.getExprToTemp().get(expression);
 		} else {
 			expression.doCSE(ctx);
-			ctx.getCSEExprToVar().put(expression, location);
-			ctx.getCSEExprToVar().remove(location);
-
-			if(ctx.getCSEVarToExprs().containsKey(location)) {
-				for(Expression expr: ctx.getCSEVarToExprs().get(location)) {
-					ctx.getCSEExprToVar().remove(expr);
-				}
-			} else {
-				ctx.getCSEVarToExprs().put(location, new HashSet<Expression>());
-			}
-
-			ctx.getCSEVarToExprs().get(location).add(expression);
 		}
+		ctx.getCSEAvailableExprs().removeAll(ctx.getExprsContainingVar(location));
+		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 }

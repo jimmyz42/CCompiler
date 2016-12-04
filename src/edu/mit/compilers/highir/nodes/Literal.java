@@ -49,6 +49,11 @@ abstract public class Literal extends Expression {
 	public boolean isLinearizable() {
 		return true;
 	}
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		return Collections.emptySet();
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
@@ -70,5 +75,11 @@ abstract public class Literal extends Expression {
 	@Override
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
+	}
+	
+	
+	@Override
+	public Expression clone() {
+		return this;
 	}
 }

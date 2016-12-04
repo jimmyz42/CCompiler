@@ -135,4 +135,10 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 		}
 		return this; //cannot simplify
 	}
+	
+	
+	@Override
+	public Expression clone() {
+		return new RelOpExpr(new RelOp(operator.getTerminal()), lhs.clone(), rhs.clone());
+	}
 }

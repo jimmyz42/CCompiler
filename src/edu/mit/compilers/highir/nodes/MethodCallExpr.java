@@ -215,10 +215,27 @@ public class MethodCallExpr extends Expression {
 	public boolean isLinearizable() {
 		return false;
 	}
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		Set<Location> locs = new HashSet<>();
+		for(ExternArg argument: arguments) {
+			if(argument instanceof Expression) {
+				locs.addAll(((Expression)argument).getLocationsUsed());
+			}
+		}
+		return locs;
+	}
 
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
-		return Collections.emptyList();
+		List<Optimizable> temps = new ArrayList<>();
+		for(ExternArg argument: arguments) {
+			if(argument instanceof Expression) {
+				temps.addAll(argument.generateTemporaries(context, false));
+			}
+		}
+		return temps;
 	}		
 	
 	@Override
@@ -240,17 +257,16 @@ public class MethodCallExpr extends Expression {
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 		for(int i =0; i < arguments.size(); i++) {
-			if(! (arguments.get(i) instanceof Expression) )
-				continue;
-			Expression argument = (Expression) arguments.get(i);
-			Location temp = ctx.getCSEExprToVar().get(argument);
-
-			if(temp != null) {
-				argument = temp;
-				arguments.set(i, argument);
-				ctx.getCSEExprToVar().put(argument, temp);
-			} else {
-				argument.doCSE(ctx);
+			if(arguments.get(i) instanceof Expression) {
+				Expression expression = (Expression) arguments.get(i);
+				Expression origExpr = expression.clone();
+				if(ctx.getCSEAvailableExprs().contains(expression) 
+						&& ctx.getExprToTemp().get(expression) != null) {
+					arguments.set(i, ctx.getExprToTemp().get(expression));
+				} else {
+					expression.doCSE(ctx);
+				}
+				ctx.getCSEAvailableExprs().add(origExpr);
 			}
 		}
 	}
@@ -282,5 +298,19 @@ public class MethodCallExpr extends Expression {
 				arguments.get(i).doCopyPropagation(ctx);
 			}
 		}
+	}
+	
+	
+	@Override
+	public Expression clone() {
+		List<ExternArg> argumentsCopy = new ArrayList<ExternArg>();
+		for(int i=0; i < arguments.size(); i++) {
+			if(arguments.get(i) instanceof Expression) {
+				argumentsCopy.add(((Expression)arguments.get(i)).clone());
+			} else {
+				argumentsCopy.add(arguments.get(i));
+			}
+		}
+		return new MethodCallExpr(function, argumentsCopy);
 	}
 }

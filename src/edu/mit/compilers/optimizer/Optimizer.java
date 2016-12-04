@@ -4,19 +4,29 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+<<<<<<< HEAD
 import java.util.BitSet;
+=======
+>>>>>>> 7766ca4cd9e2fcc6dc4eb5d13670db455e2be01e
 import java.util.Set;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
+<<<<<<< HEAD
 import edu.mit.compilers.cfg.components.EnterBlock;
+=======
+>>>>>>> 7766ca4cd9e2fcc6dc4eb5d13670db455e2be01e
 import edu.mit.compilers.cfg.components.LeaveBlock;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
+import edu.mit.compilers.highir.nodes.Location;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
@@ -32,7 +42,12 @@ import edu.mit.compilers.lowir.instructions.Syscall;
 public class Optimizer {
 	private List<BasicBlock> orderedBlocks;
 	private OptimizerContext ctx;
-
+	
+	// For Global CSE
+	private List<Set<Expression>> cseGenExprs;
+	private List<Set<Location>> cseKillVars;
+	private List<Set<Expression>> availableExpressions;
+	
 	public Optimizer(OptimizerContext ctx, List<BasicBlock> orderedBlocks) {
 		this.orderedBlocks = orderedBlocks;
 		this.ctx = ctx;
@@ -43,17 +58,21 @@ public class Optimizer {
 		//TODO: keep looping through these until modifications are no longer being made by keeping track of whether
 		//modifications have been made in Optimizer Context
 		//using a constant like this is a dirty Hack
+
 		for(int i = 0; i < 1; i++) {
+			// reset optimizer to clear set/maps from prev iteration
+			ctx = new OptimizerContext();
 			doConstantFolding();
 			doAlgebraicSimplification();
-			// generateTemporaries();
-			// doCSE();
-			// for(int j = 0; j < 5; j++) {
-			// 	doCopyPropagation();
-			// }
-			// doConstantPropagation();
+			generateTemporaries();
+			doGlobalCSE();
+			doLocalCSE();
+			for(int j = 0; j < 5; j++) {
+				doCopyPropagation();
+			}
+			doConstantPropagation();
+			doUnreachableCodeElimination();
 			doReachingDefinitions();
-			//doUnreachableCodeElimination();
 			//doDeadCodeEliminiation();
 		}
 	}
@@ -71,8 +90,15 @@ public class Optimizer {
 	}
 
 	public void generateTemporaries() {
+		cseGenExprs = new ArrayList<>();
+		cseKillVars = new ArrayList<>();
+		
 		for(BasicBlock block: orderedBlocks) {
+			ctx.getCSEGenExprs().clear();
+			ctx.getCSEKillVars().clear();
 			block.generateTemporaries(ctx);
+			cseGenExprs.add(new HashSet<Expression>(ctx.getCSEGenExprs()));
+			cseKillVars.add(new HashSet<Location>(ctx.getCSEKillVars()));
 		}		
 	}
 
@@ -223,11 +249,88 @@ public class Optimizer {
 			block.doConstantPropagation(ctx);
 		}
 	}
-
-	public void doCSE() {
-		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
+	
+	public void doGlobalCSE() {
+		List<BitSet> gen = new ArrayList<>();
+		List<BitSet> kill = new ArrayList<>();
+		List<BitSet> in = new ArrayList<>();
+		List<BitSet> out = new ArrayList<>();
+		HashMap<Expression, Integer> exprToVal = ctx.getExprToVal();
+		HashMap<Integer, Expression> valToExpr = new HashMap<>();
+		for(Expression expr: exprToVal.keySet()) {
+			valToExpr.put(exprToVal.get(expr), expr);
+		}
+		int numExprs = ctx.getNumberOfTemps();
+		
+		// Generate GEN/KILL bitvectors
+		for(int i=0; i<orderedBlocks.size(); i++) {
+			BitSet curGen = new BitSet(numExprs);
+			BitSet curKill = new BitSet(numExprs);
+			
+			// If Leave Block, needs to Kill All Expressions
+			// since expressions cannot persist across methods
+			if(orderedBlocks.get(i) instanceof LeaveBlock) {
+				curKill.set(0, numExprs);
+			} else {
+				for(Location loc: cseKillVars.get(i)) {
+					for(Expression expr: ctx.getExprsContainingVar(loc)) {
+						curKill.set(exprToVal.get(expr));
+					}
+				}
+				for(Expression expr: cseGenExprs.get(i)) {
+					curKill.clear(exprToVal.get(expr));
+					curGen.set(exprToVal.get(expr));
+				}
+			}
+			gen.add(curGen);
+			kill.add(curKill);
+			
+			BitSet curIn = new BitSet(numExprs);
+			BitSet curOut = new BitSet(numExprs);
+			curOut.set(0, numExprs);
+			in.add(curIn);
+			out.add(curOut);
+		}
+		
+		// Fixed point algorithm
+		in.get(0).clear();
+		out.get(0).clear();
+		out.get(0).or(gen.get(0));
+		boolean change = true;
+		while(change) {
+			change = false;
+			// Skip Block 0 because it's Entry Block
+			for(int i=1; i<orderedBlocks.size(); i++) {
+				in.get(i).set(0, numExprs);
+				for(BasicBlock prev: orderedBlocks.get(i).getPreviousBlocks()) {
+					in.get(i).and(out.get(prev.getNumID()));
+				}
+				BitSet origOut = (BitSet) out.get(i).clone();
+				out.get(i).clear();
+				out.get(i).or(in.get(i));
+				out.get(i).andNot(kill.get(i));
+				out.get(i).or(gen.get(i));
+				if(!out.get(i).equals(origOut)) change = true;
+			}
+		}
+		
+		availableExpressions = new ArrayList<>();
+		for(int block=0; block<orderedBlocks.size(); block++) {
+			HashSet<Expression> curExprs = new HashSet<>();
+			for(int val=0; val<numExprs; val++) {
+				if(in.get(block).get(val)) {
+					curExprs.add(valToExpr.get(val));
+				}
+			}
+			availableExpressions.add(curExprs);
+		}
+	}
+	
+	public void doLocalCSE() {
+		for(int blockNum=0; blockNum<orderedBlocks.size(); blockNum++) {
+			ctx.getCSEAvailableExprs().clear();
+			ctx.getCSEAvailableExprs().addAll(availableExpressions.get(blockNum));
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-
 			currentBlock.doCSE(ctx);
 		}
 	}

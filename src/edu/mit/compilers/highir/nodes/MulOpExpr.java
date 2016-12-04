@@ -142,4 +142,10 @@ public class MulOpExpr extends BinOpExpr {
 		}
 		return this; //cannot simplify
 	}
+	
+	
+	@Override
+	public Expression clone() {
+		return new MulOpExpr(new MulOp(operator.getTerminal()), lhs.clone(), rhs.clone());
+	}
 }

@@ -69,4 +69,10 @@ public class OrOpExpr extends BinOpExpr {
 		}
 		return this;
 	}
+	
+	
+	@Override
+	public Expression clone() {
+		return new OrOpExpr(new OrOp(operator.getTerminal()), lhs.clone(), rhs.clone());
+	}
 }

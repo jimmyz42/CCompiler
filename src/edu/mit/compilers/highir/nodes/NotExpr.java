@@ -37,7 +37,6 @@ public class NotExpr extends Expression {
 
     @Override
     public Type getType() {
-        // TODO Auto-generated method stub
         return ScalarType.BOOL;
     }
 
@@ -80,6 +79,11 @@ public class NotExpr extends Expression {
 	public Set<Descriptor> getGeneratedDescriptors() {
 		return Collections.emptySet();
 	}
+	
+	@Override
+	public Set<Location> getLocationsUsed() {
+		return expression.getLocationsUsed();
+	}
 
 	@Override
 	public Optimizable doConstantFolding() {
@@ -103,8 +107,11 @@ public class NotExpr extends Expression {
 		if(!skipGeneration && isLinearizable()) {
 			if(context.addExpression(this)) {
 				Location temp = context.getExprToTemp().get(this);
-				temps.add(temp.getVariable());
-				temps.add(AssignStmt.create(temp, "=", this));
+				if(!context.getCSEDeclaredTemps().contains(temp)) {
+					temps.add(temp.getVariable());
+					context.getCSEDeclaredTemps().add(temp);
+				}
+				temps.add(AssignStmt.create(temp, "=", this.clone()));
 			}
 		}
 
@@ -113,15 +120,14 @@ public class NotExpr extends Expression {
 
 	@Override
 	public void doCSE(OptimizerContext ctx) {
-		Location temp = ctx.getCSEExprToVar().get(expression);
-
-		if(temp != null) {
-			expression =  temp;
-			ctx.getCSEExprToVar().put(expression, temp);
-
+		Expression origExpr = expression.clone();
+		if(ctx.getCSEAvailableExprs().contains(expression) 
+				&& ctx.getExprToTemp().get(expression) != null) {
+			expression = ctx.getExprToTemp().get(expression);
 		} else {
 			expression.doCSE(ctx);
 		}
+		ctx.getCSEAvailableExprs().add(origExpr);
 	}
 
     @Override
@@ -148,6 +154,14 @@ public class NotExpr extends Expression {
 		} else
 			expression.doConstantPropagation(ctx);
     }
+    
+    @Override
+	public Optimizable algebraSimplify() {
+    	if(expression instanceof NotExpr) {
+    		return ((NotExpr)expression).expression;
+    	}
+    	return this;
+    }
 
 	@Override
     public int hashCode() {
@@ -157,5 +171,10 @@ public class NotExpr extends Expression {
 	@Override
 	public boolean equals(Object obj) {
 		return hashCode() == obj.hashCode();
+	}
+	
+	@Override
+	public Expression clone() {
+		return new NotExpr(expression.clone());
 	}
 }
