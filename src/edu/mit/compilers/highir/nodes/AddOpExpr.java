@@ -68,7 +68,9 @@ public class AddOpExpr extends BinOpExpr {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		lhs = (Expression) lhs.doAlgebraicSimplification();
+		rhs = (Expression) rhs.doAlgebraicSimplification();
 		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
 			if(operator.getTerminal().equals("+")) {
 				return new IntLiteral(((IntLiteral)lhs).getValue() + ((IntLiteral)rhs).getValue());
@@ -77,11 +79,6 @@ public class AddOpExpr extends BinOpExpr {
 				return new IntLiteral(((IntLiteral)lhs).getValue() - ((IntLiteral)rhs).getValue());
 			}
 		}
-		return this; //cannot simplify
-	}
-
-	@Override
-	public Optimizable algebraSimplify() {
 		// a+0 = 0+a = a-0 = a, 0-a = -a, a+a = 2*a, a-a=0
 		if(operator.getTerminal().equals("+")) {
 			if(lhs instanceof IntLiteral && ((IntLiteral)lhs).getValue() == 0) {
@@ -105,8 +102,7 @@ public class AddOpExpr extends BinOpExpr {
 			}
 		}
 		return this; //cannot simplify
-	}
-	
+	}	
 	
 	@Override
 	public Expression clone() {

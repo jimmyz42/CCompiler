@@ -118,7 +118,9 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		lhs = (Expression) lhs.doAlgebraicSimplification();
+		rhs = (Expression) rhs.doAlgebraicSimplification();
 		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
 			if(operator.getTerminal().equals(">")) {
 				return new BoolLiteral(((IntLiteral)lhs).getValue() > ((IntLiteral)rhs).getValue());

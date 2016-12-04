@@ -65,12 +65,7 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
     }
     
 	@Override
-	public Optimizable doConstantFolding() {
-		return this;
-	}
-    
-	@Override
-	public Optimizable algebraSimplify() {
+	public Optimizable doAlgebraicSimplification() {
 		return this;
 	}
 

@@ -118,14 +118,8 @@ public class AssignStmt extends Statement implements Optimizable {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
-		this.expression = (Expression)expression.doConstantFolding();
-		return this;
-	}
-
-	@Override
-	public Optimizable algebraSimplify() {
-		this.expression = (Expression)expression.algebraSimplify();
+	public Optimizable doAlgebraicSimplification() {
+		this.expression = (Expression) expression.doAlgebraicSimplification();
 		return this;
 	}
 

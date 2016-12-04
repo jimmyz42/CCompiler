@@ -18,8 +18,7 @@ public interface Condition {
 	public void cfgPrint(PrintWriter pw, String prefix);
     public long getNumStackAllocations();
     public Set<Descriptor> getConsumedDescriptors();
-    public Optimizable doConstantFolding();
-    public Optimizable algebraSimplify();
+    public Optimizable doAlgebraicSimplification();
     public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration);
     public void doCSE(OptimizerContext ctx);
     public void doCopyPropagation(OptimizerContext ctx);

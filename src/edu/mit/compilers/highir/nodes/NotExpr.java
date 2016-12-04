@@ -86,10 +86,15 @@ public class NotExpr extends Expression {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		expression = (Expression) expression.doAlgebraicSimplification();
 		if(expression instanceof BoolLiteral) {
 			return new BoolLiteral(!((BoolLiteral)expression).getValue());
 		}
+		// !!a = a
+    	if(expression instanceof NotExpr) {
+    		return ((NotExpr)expression).expression;
+    	}
 		return this; //cannot simplify
 	}
 
@@ -153,14 +158,6 @@ public class NotExpr extends Expression {
 			}
 		} else
 			expression.doConstantPropagation(ctx);
-    }
-    
-    @Override
-	public Optimizable algebraSimplify() {
-    	if(expression instanceof NotExpr) {
-    		return ((NotExpr)expression).expression;
-    	}
-    	return this;
     }
 
 	@Override

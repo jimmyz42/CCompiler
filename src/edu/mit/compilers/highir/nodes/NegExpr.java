@@ -86,10 +86,15 @@ public class NegExpr extends Expression {
 	}
 	
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		expression = (Expression) expression.doAlgebraicSimplification();
 		if(expression instanceof IntLiteral) {
 			return new IntLiteral(-((IntLiteral)expression).getValue());
 		}
+		// --a = a
+		if(expression instanceof NegExpr) {
+    		return ((NegExpr)expression).expression;
+    	}
 		return this; //cannot simplify
 	}
 
@@ -153,14 +158,6 @@ public class NegExpr extends Expression {
 			}
 		} else
 			expression.doConstantPropagation(ctx);
-    }
-    
-    @Override
-	public Optimizable algebraSimplify() {
-    	if(expression instanceof NegExpr) {
-    		return ((NegExpr)expression).expression;
-    	}
-    	return this;
     }
 
 	@Override

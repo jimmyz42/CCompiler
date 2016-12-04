@@ -73,7 +73,7 @@ public class SizeofIdExpr extends Expression {
 	}
 	
 	@Override
-	public Optimizable algebraSimplify() {
+	public Optimizable doAlgebraicSimplification() {
 		return new IntLiteral(variable.getType().getSize());
 	}
 

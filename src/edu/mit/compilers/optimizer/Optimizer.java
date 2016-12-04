@@ -53,8 +53,7 @@ public class Optimizer {
 		for(int i = 0; i < 1; i++) {
 			// reset optimizer to clear set/maps from prev iteration
 			ctx = new OptimizerContext();
-			doConstantFolding();
-			doAlgebraicSimplification();
+			doAlgebraicSimplification(); // includes constant folding
 			generateTemporaries();
 			doGlobalCSE();
 			doLocalCSE();
@@ -64,12 +63,6 @@ public class Optimizer {
 			doConstantPropagation();
 			doUnreachableCodeElimination();
 			//doDeadCodeEliminiation();
-		}
-	}
-
-	public void doConstantFolding() {
-		for(BasicBlock block: orderedBlocks) {
-			block.doConstantFolding();
 		}
 	}
 

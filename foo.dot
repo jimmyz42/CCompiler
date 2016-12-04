@@ -1,9 +1,7 @@
 digraph G {
-  block0 [ label="block0: int[10]\ a\l\l" ];
-  block1 [ label="block1: *start\ of\ method*\l" ];
-  block2 [ label="block2: void\ main\lprintf\(\"expecting\ an\ error\ next\:\\n\"\)\la[100]\ =\ 0\l\l" ];
-  block3 [ label="block3: *end\ of\ method*\l" ];
+  block0 [ label="block0: *start\ of\ method*\l" ];
+  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\lint\ d\lint\ t0\lt0\ =\ b\ +\ c\lint\ t1\lt1\ =\ d\ +\ 33\la\ =\ t0\ *\ t1\lint\ t2\lt2\ =\ a\l\l" ];
+  block2 [ label="block2: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
-  block2 -> block3;
 }
