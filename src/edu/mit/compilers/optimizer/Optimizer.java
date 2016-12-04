@@ -125,7 +125,7 @@ public class Optimizer {
 
 		//for each method, instantiate bit vecotrs 
 		for(List<BasicBlock> method : methods){
-			System.out.println("//////////////// NEW METHOD ////////////");
+			//System.out.println("//////////////// NEW METHOD ////////////");
 			//clear everything in ctx that needs to be cleared 
 
 			//number definitions
@@ -141,11 +141,11 @@ public class Optimizer {
 				block.findVarToDefs(ctx);
 			}
 
-			System.out.println("AssignStmtToInt-----------");
-			System.out.println(ctx.prettyPrintAssignStmtToInt());
+			// System.out.println("AssignStmtToInt-----------");
+			// System.out.println(ctx.prettyPrintAssignStmtToInt());
 
-			System.out.println("VarToDefs-----------------");
-			System.out.println(ctx.prettyPrintVarToDefs());
+			// System.out.println("VarToDefs-----------------");
+			// System.out.println(ctx.prettyPrintVarToDefs());
 
 			//for each basic block, instantiate gen and kill sets
 			for(BasicBlock block : method){
@@ -153,11 +153,11 @@ public class Optimizer {
 				block.makeKillSet(ctx);
 			}
 
-			System.out.println("Gen -----------------");
-			System.out.println(ctx.getRdGen().toString());
+			// System.out.println("Gen -----------------");
+			// System.out.println(ctx.getRdGen().toString());
 
-			System.out.println("Kill -----------------");
-			System.out.println(ctx.getRdKill().toString());
+			// System.out.println("Kill -----------------");
+			// System.out.println(ctx.getRdKill().toString());
 
 			//calculate in and out sets 
 			for(BasicBlock block : method){
@@ -209,11 +209,11 @@ public class Optimizer {
 			}
 
 
-			System.out.println("In -----------------");
-			System.out.println(ctx.getRdIn().toString());
+			// System.out.println("In -----------------");
+			// System.out.println(ctx.getRdIn().toString());
 
-			System.out.println("Out -----------------");
-			System.out.println(ctx.getRdOut().toString());
+			// System.out.println("Out -----------------");
+			// System.out.println(ctx.getRdOut().toString());
 
 		}
 	}
