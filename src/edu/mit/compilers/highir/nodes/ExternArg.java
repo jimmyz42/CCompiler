@@ -58,16 +58,6 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
     public void generateAssembly(AssemblyContext ctx) {
     	
     }
-
-    @Override
-    public void numberDefinitions(OptimizerContext ctx){
-        
-    }
-
-    @Override
-    public void findVarToDefs(OptimizerContext ctx){
-        
-    }
     
     @Override
     public long getNumStackAllocations() {

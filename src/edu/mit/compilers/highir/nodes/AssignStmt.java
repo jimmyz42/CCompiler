@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -26,16 +25,11 @@ public class AssignStmt extends Statement implements Optimizable {
 	private Location location;
 	private Expression expression;
 	private String assignOp;
-	private int number;
 
 	public AssignStmt(Location location, String assignOp, Expression expression) {
 		this.location = location;
 		this.assignOp = assignOp;
 		this.expression = expression;
-	}
-
-	public Location getLocation(){
-		return location;
 	}
 
 	public static AssignStmt create(DecafSemanticChecker checker, DecafParser.AssignStmtContext ctx) {
@@ -213,55 +207,6 @@ public class AssignStmt extends Statement implements Optimizable {
 		
 		ctx.getCPVarToSet().get(var).add(location);
 		ctx.getCPTempToVar().put(location, var);
-	}
-
-	@Override
-	public void findVarToDefs(OptimizerContext ctx){
-		VariableDescriptor var = location.getVariable();
-		if(ctx.getVarToDefs().containsKey(var)){
-			//already exists, so add num to set
-			ctx.getVarToDefs().get(var).add(this.number);
-		} else {
-			//doesn't exists yet, so put
-			ctx.getVarToDefs().put(var, new HashSet<>(Arrays.asList(this.number)));
-		}
-		
-	}
-
-	public void makeGenSet(OptimizerContext ctx, BitSet genSet){
-		//have we already set a gen for this variable? if so, 0.
-		Set<Integer> defsForVar = ctx.getVarToDefs().get(this.location.getVariable());
-		for(Integer def : defsForVar){
-			//if another bit for this variable is already set to true, we set this one to zero
-			//because we are iterating backwards through the bb components
-			if(genSet.get(def)){ 
-				return;
-			}
-		}
-
-		genSet.set(this.number);
-	}
-
-	public void makeKillSet(OptimizerContext ctx, BitSet killSet){
-		//killset: bit is 1 if def is killed 
-		Set<Integer> defsForVar = ctx.getVarToDefs().get(this.location.getVariable());
-		System.out.println("reassigning defs: " + defsForVar);
-		for (Integer def : defsForVar){
-			if (def != this.number){ //def is not for THIS statement 
-				killSet.set(def);
-			}
-		}
-	}
-
-	@Override
-	public void numberDefinitions(OptimizerContext ctx){
-		int count = ctx.incrementAssignStmtCount();
-		this.number = count;
-		ctx.getAssignStmtToInt().put(this, count);
-	}
-
-	public int getNumber(){
-		return number;
 	}
 
 	@Override
