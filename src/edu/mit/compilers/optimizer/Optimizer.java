@@ -153,6 +153,12 @@ public class Optimizer {
 				block.makeKillSet(ctx);
 			}
 
+			System.out.println("Gen -----------------");
+			System.out.println(ctx.getRdGen().toString());
+
+			System.out.println("Kill -----------------");
+			System.out.println(ctx.getRdKill().toString());
+
 			//calculate in and out sets 
 			for(BasicBlock block : method){
 				ctx.getRdOut().put(block, new BitSet(ctx.getAssignStmtCount()));
@@ -162,19 +168,25 @@ public class Optimizer {
 			ctx.getRdOut().put(entryBlock, ctx.getRdGen().get(entryBlock));
 
 			Set<BasicBlock> changed = new HashSet<>(method);
+			Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
 			changed.remove(entryBlock);
 
 			while(!changed.isEmpty()){
 				BasicBlock n = changed.iterator().next();
+
+				System.out.println("Working with " + n.toString() + " " + n.getDescription());
+
 				changed.remove(n);
 				
 				ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
 
 				for (BasicBlock p : n.getPreviousBlocks()){
-					BitSet in_n = ctx.getRdIn().get(n);
-					BitSet out_p = ctx.getRdOut().get(p);
-					in_n.or(out_p);
-					ctx.getRdIn().put(n, in_n);
+					if(allBlocksInMethod.contains(p)){
+						BitSet in_n = ctx.getRdIn().get(n);
+						BitSet out_p = ctx.getRdOut().get(p);
+						in_n.or(out_p);
+						ctx.getRdIn().put(n, in_n);
+					}
 				}
 
 				BitSet in = ctx.getRdIn().get(n);
@@ -189,47 +201,21 @@ public class Optimizer {
 
 				if (!old_out.equals(new_out)){
 					for(BasicBlock s : n.getNextBlocks()){
-						changed.add(s);
+						if(allBlocksInMethod.contains(s)){
+							changed.add(s);
+						}
 					}
 				}
 			}
 
+
+			System.out.println("In -----------------");
+			System.out.println(ctx.getRdIn().toString());
+
+			System.out.println("Out -----------------");
+			System.out.println(ctx.getRdOut().toString());
+
 		}
-
-		// for(BasicBlock block: orderedBlocks) {
-		// 	block.getConstOut().clear();
-		// }
-		// //TODO: verify that first block in orderedBlocks is the entry block
-		// BasicBlock entryBlock = orderedBlocks.get(0);
-		// entryBlock.getConstIn().clear();
-		// entryBlock.getConstOut() = entryBlock.getConstGen();
-		// Set<BasicBlock> changed = new HashSet<>(orderedBlocks);
-		// changed.remove(entryBlock);
-
-		// while(!changed.isEmpty()){
-		// 	BasicBlock currentBlock;
-		// 	//choose a node n in changed
-		// 	for(BasicBlock block : changed){
-		// 		currentBlock = block;
-		// 		break;
-		// 	}
-		// 	changed.remove(currentBlock);
-		// 	Map<> in = currentBlock.getConstIn();
-		// 	in.clear(); //emptyset
-		// 	//for all predecessors 
-		// 	for(BasicBlock block : currentBlock.getPreviousBlocks()){
-		// 		// in = in union block.out 
-		// 	}
-		// 	Map<> out = currentBlock.getConstOut();
-		// 	// out = out union (in - kill)
-
-		// 	//if out changed 
-		// 	for(BasicBlock block : currentBlock.getNextBlocks()){
-		// 		changed.add(block);
-		// 	}
-
-
-		// }
 	}
 
 	public void doConstantPropagation(){

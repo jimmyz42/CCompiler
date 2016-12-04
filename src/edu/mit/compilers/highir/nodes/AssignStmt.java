@@ -245,7 +245,6 @@ public class AssignStmt extends Statement implements Optimizable {
 	public void makeKillSet(OptimizerContext ctx, BitSet killSet){
 		//killset: bit is 1 if def is killed 
 		Set<Integer> defsForVar = ctx.getVarToDefs().get(this.location.getVariable());
-		System.out.println("reassigning defs: " + defsForVar);
 		for (Integer def : defsForVar){
 			if (def != this.number){ //def is not for THIS statement 
 				killSet.set(def);

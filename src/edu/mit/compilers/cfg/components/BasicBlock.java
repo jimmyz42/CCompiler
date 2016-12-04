@@ -310,4 +310,9 @@ public class BasicBlock extends CFG {
 			branchCondition = null;
 		}
 	}
+
+	@Override
+	public String toString(){
+		return id;
+	}
 }
