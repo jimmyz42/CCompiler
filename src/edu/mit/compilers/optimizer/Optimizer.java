@@ -10,18 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-<<<<<<< HEAD
 import java.util.BitSet;
-=======
->>>>>>> 7766ca4cd9e2fcc6dc4eb5d13670db455e2be01e
 import java.util.Set;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
-<<<<<<< HEAD
 import edu.mit.compilers.cfg.components.EnterBlock;
-=======
->>>>>>> 7766ca4cd9e2fcc6dc4eb5d13670db455e2be01e
 import edu.mit.compilers.cfg.components.LeaveBlock;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
