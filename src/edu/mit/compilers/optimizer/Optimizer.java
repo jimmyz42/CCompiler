@@ -149,7 +149,7 @@ public class Optimizer {
 
 		//CTX regains all info PER METHOD. Loses info once new method entered
 		for(List<BasicBlock> method : methods){
-			//System.out.println("//////////////// NEW METHOD ////////////");
+			System.out.println("//////////////// NEW METHOD ////////////");
 			
 			//clear everything in ctx that needs to be cleared 
 			ctx.resetAssignStmtCount();
@@ -175,11 +175,11 @@ public class Optimizer {
 				block.findVarToDefs(ctx);
 			}
 
-			// System.out.println("AssignStmtToInt-----------");
-			// System.out.println(ctx.prettyPrintAssignStmtToInt());
+			System.out.println("AssignStmtToInt-----------");
+			System.out.println(ctx.prettyPrintAssignStmtToInt());
 
-			// System.out.println("VarToDefs-----------------");
-			// System.out.println(ctx.prettyPrintVarToDefs());
+			System.out.println("VarToDefs-----------------");
+			System.out.println(ctx.prettyPrintVarToDefs());
 
 			//for each basic block, instantiate gen and kill sets
 			for(BasicBlock block : method){
@@ -187,11 +187,11 @@ public class Optimizer {
 				block.makeKillSet(ctx);
 			}
 
-			// System.out.println("Gen -----------------");
-			// System.out.println(ctx.getRdGen().toString());
+			System.out.println("Gen -----------------");
+			System.out.println(ctx.getRdGen().toString());
 
-			// System.out.println("Kill -----------------");
-			// System.out.println(ctx.getRdKill().toString());
+			System.out.println("Kill -----------------");
+			System.out.println(ctx.getRdKill().toString());
 
 			//calculate in and out sets 
 			for(BasicBlock block : method){
@@ -208,34 +208,46 @@ public class Optimizer {
 			while(!changed.isEmpty()){
 				BasicBlock n = changed.iterator().next();
 
+				System.out.println("________________________________");
+				System.out.println("currentBlock: " + n.toString());
+
 				changed.remove(n);
 				
 				ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
 
 				for (BasicBlock p : n.getPreviousBlocks()){
 					if(allBlocksInMethod.contains(p)){
-						BitSet in_n = ctx.getRdIn().get(n);
-						BitSet out_p = ctx.getRdOut().get(p);
+						System.out.println("previous " + p);
+						BitSet in_n = (BitSet)ctx.getRdIn().get(n).clone();
+						BitSet out_p = (BitSet)ctx.getRdOut().get(p).clone();
 						in_n.or(out_p);
 						ctx.getRdIn().put(n, in_n);
 					}
 				}
 
-				// TODO: clone 
-
 				BitSet in = (BitSet)ctx.getRdIn().get(n).clone();
 				BitSet kill = (BitSet)ctx.getRdKill().get(n).clone();
 				BitSet gen = (BitSet)ctx.getRdGen().get(n).clone();
-				in.xor(kill);
+
+				System.out.println("in: " + in);
+				System.out.println("gen: " + gen);
+				System.out.println("kill: " + kill);
+
+				in.andNot(kill);
 				gen.or(in);
 				BitSet new_out = gen;
 
 				BitSet old_out = ctx.getRdOut().get(n);
 				ctx.getRdOut().put(n, new_out);
 
+				System.out.println("new_out = " + new_out);
+				System.out.println("old_out = " + old_out);
+
+
 				if (!old_out.equals(new_out)){
 					for(BasicBlock s : n.getNextBlocks()){
 						if(allBlocksInMethod.contains(s)){
+							System.out.println("next " + s);
 							changed.add(s);
 						}
 					}
@@ -243,11 +255,11 @@ public class Optimizer {
 			}
 
 
-			// System.out.println("In -----------------");
-			// System.out.println(ctx.getRdIn().toString());
+			System.out.println("In -----------------");
+			System.out.println(ctx.getRdIn().toString());
 
-			// System.out.println("Out -----------------");
-			// System.out.println(ctx.getRdOut().toString());
+			System.out.println("Out -----------------");
+			System.out.println(ctx.getRdOut().toString());
 
 			//in/out done! 
 

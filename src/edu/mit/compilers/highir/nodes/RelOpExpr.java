@@ -21,6 +21,7 @@ import edu.mit.compilers.lowir.instructions.Cmp;
 import edu.mit.compilers.lowir.instructions.Instruction;
 import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.optimizer.Optimizable;
+import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 
 public class RelOpExpr extends BinOpExpr implements Condition {
@@ -136,7 +137,11 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 		return this; //cannot simplify
 	}
 	
-	
+	@Override
+	public void doGlobalConstantPropagation(OptimizerContext ctx){
+		rhs.doGlobalConstantPropagation(ctx);
+	}
+
 	@Override
 	public Expression clone() {
 		return new RelOpExpr(new RelOp(operator.getTerminal()), lhs.clone(), rhs.clone());

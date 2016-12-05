@@ -1,0 +1,473 @@
+DOING REACHING DEFS
+//////////////// NEW METHOD ////////////
+AssignStmtToInt-----------
+sum = sum + j
+: 3
+i = 11
+: 5
+i = i + 1
+: 7
+sum = 0
+: 1
+j = j + 1
+: 8
+j = j + 1
+: 4
+j = 10
+: 6
+j = 0
+: 2
+
+VarToDefs-----------------
+j: [2, 4, 6, 8]
+i: [5, 7]
+sum: [1, 3]
+
+Gen -----------------
+{block6={5, 6}, block9={}, block15={}, block1={1, 2}, block3={3, 4}, block4={}, block5={}, block11={}, block12={}, block13={}, block8={7, 8}, block10={}, block14={}, block2={}, block7={}}
+Kill -----------------
+{block6={2, 4, 7, 8}, block9={}, block15={}, block1={3, 4, 6, 8}, block3={1, 2, 6, 8}, block4={}, block5={}, block11={}, block12={}, block13={}, block8={2, 4, 5, 6}, block10={}, block14={}, block2={}, block7={}}
+________________________________
+[block6, block9, block15, block3, block4, block5, block11, block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block6
+in: {}
+gen: {5, 6}
+kill: {2, 4, 7, 8}
+new_out = {5, 6}
+old_out = {}
+Adding: block7
+________________________________
+[block9, block15, block3, block4, block5, block11, block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block9
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block15, block3, block4, block5, block11, block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block15
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block3, block4, block5, block11, block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block3
+in: {}
+gen: {3, 4}
+kill: {1, 2, 6, 8}
+new_out = {3, 4}
+old_out = {}
+Adding: block2
+________________________________
+[block4, block5, block11, block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block4
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block5, block11, block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block5
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block11, block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block11
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block12, block13, block8, block10, block14, block7, block2]
+currentBlock: block12
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block13, block8, block10, block14, block7, block2]
+currentBlock: block13
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block8, block10, block14, block7, block2]
+currentBlock: block8
+in: {}
+gen: {7, 8}
+kill: {2, 4, 5, 6}
+new_out = {7, 8}
+old_out = {}
+Adding: block7
+________________________________
+[block10, block14, block7, block2]
+currentBlock: block10
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block14, block7, block2]
+currentBlock: block14
+in: {}
+gen: {}
+kill: {}
+new_out = {}
+old_out = {}
+________________________________
+[block7, block2]
+currentBlock: block7
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+Adding: block8
+Adding: block9
+________________________________
+[block9, block8, block2]
+currentBlock: block9
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+Adding: block10
+Adding: block11
+________________________________
+[block11, block8, block10, block2]
+currentBlock: block11
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+Adding: block12
+Adding: block13
+________________________________
+[block12, block13, block8, block10, block2]
+currentBlock: block12
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+Adding: block13
+________________________________
+[block13, block8, block10, block2]
+currentBlock: block13
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+Adding: block15
+Adding: block14
+________________________________
+[block15, block8, block10, block14, block2]
+currentBlock: block15
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+________________________________
+[block8, block10, block14, block2]
+currentBlock: block8
+in: {5, 6, 7, 8}
+gen: {7, 8}
+kill: {2, 4, 5, 6}
+new_out = {7, 8}
+old_out = {7, 8}
+________________________________
+[block10, block14, block2]
+currentBlock: block10
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+Adding: block11
+________________________________
+[block11, block14, block2]
+currentBlock: block11
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+________________________________
+[block14, block2]
+currentBlock: block14
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {}
+Adding: block15
+________________________________
+[block15, block2]
+currentBlock: block15
+in: {5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+________________________________
+[block2]
+currentBlock: block2
+in: {1, 2, 3, 4}
+gen: {}
+kill: {}
+new_out = {1, 2, 3, 4}
+old_out = {}
+Adding: block3
+Adding: block4
+________________________________
+[block3, block4]
+currentBlock: block3
+in: {1, 2, 3, 4}
+gen: {3, 4}
+kill: {1, 2, 6, 8}
+new_out = {3, 4}
+old_out = {3, 4}
+________________________________
+[block4]
+currentBlock: block4
+in: {1, 2, 3, 4}
+gen: {}
+kill: {}
+new_out = {1, 2, 3, 4}
+old_out = {}
+Adding: block5
+Adding: block6
+________________________________
+[block6, block5]
+currentBlock: block6
+in: {1, 2, 3, 4}
+gen: {5, 6}
+kill: {2, 4, 7, 8}
+new_out = {1, 3, 5, 6}
+old_out = {5, 6}
+Adding: block7
+________________________________
+[block5, block7]
+currentBlock: block5
+in: {1, 2, 3, 4}
+gen: {}
+kill: {}
+new_out = {1, 2, 3, 4}
+old_out = {}
+Adding: block6
+________________________________
+[block6, block7]
+currentBlock: block6
+in: {1, 2, 3, 4}
+gen: {5, 6}
+kill: {2, 4, 7, 8}
+new_out = {1, 3, 5, 6}
+old_out = {1, 3, 5, 6}
+________________________________
+[block7]
+currentBlock: block7
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+Adding: block8
+Adding: block9
+________________________________
+[block9, block8]
+currentBlock: block9
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+Adding: block10
+Adding: block11
+________________________________
+[block11, block8, block10]
+currentBlock: block11
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+Adding: block12
+Adding: block13
+________________________________
+[block12, block13, block8, block10]
+currentBlock: block12
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+Adding: block13
+________________________________
+[block13, block8, block10]
+currentBlock: block13
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+Adding: block15
+Adding: block14
+________________________________
+[block15, block8, block10, block14]
+currentBlock: block15
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+________________________________
+[block8, block10, block14]
+currentBlock: block8
+in: {1, 3, 5, 6, 7, 8}
+gen: {7, 8}
+kill: {2, 4, 5, 6}
+new_out = {1, 3, 7, 8}
+old_out = {7, 8}
+Adding: block7
+________________________________
+[block10, block14, block7]
+currentBlock: block10
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+Adding: block11
+________________________________
+[block11, block14, block7]
+currentBlock: block11
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {1, 3, 5, 6, 7, 8}
+________________________________
+[block14, block7]
+currentBlock: block14
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {5, 6, 7, 8}
+Adding: block15
+________________________________
+[block15, block7]
+currentBlock: block15
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {1, 3, 5, 6, 7, 8}
+________________________________
+[block7]
+currentBlock: block7
+in: {1, 3, 5, 6, 7, 8}
+gen: {}
+kill: {}
+new_out = {1, 3, 5, 6, 7, 8}
+old_out = {1, 3, 5, 6, 7, 8}
+In -----------------
+{block6={1, 2, 3, 4}, block9={1, 3, 5, 6, 7, 8}, block1={}, block15={1, 3, 5, 6, 7, 8}, block3={1, 2, 3, 4}, block4={1, 2, 3, 4}, block5={1, 2, 3, 4}, block11={1, 3, 5, 6, 7, 8}, block12={1, 3, 5, 6, 7, 8}, block13={1, 3, 5, 6, 7, 8}, block8={1, 3, 5, 6, 7, 8}, block10={1, 3, 5, 6, 7, 8}, block14={1, 3, 5, 6, 7, 8}, block2={1, 2, 3, 4}, block7={1, 3, 5, 6, 7, 8}}
+Out -----------------
+{block6={1, 3, 5, 6}, block9={1, 3, 5, 6, 7, 8}, block15={1, 3, 5, 6, 7, 8}, block1={1, 2}, block3={3, 4}, block4={1, 2, 3, 4}, block5={1, 2, 3, 4}, block11={1, 3, 5, 6, 7, 8}, block12={1, 3, 5, 6, 7, 8}, block13={1, 3, 5, 6, 7, 8}, block8={1, 3, 7, 8}, block10={1, 3, 5, 6, 7, 8}, block14={1, 3, 5, 6, 7, 8}, block2={1, 2, 3, 4}, block7={1, 3, 5, 6, 7, 8}}
+BasicBlock block0:
+*start of method*
+block0 points to:
+    block1
+BasicBlock block1:
+void main
+    int sum
+    int j
+    int i
+    sum = 0
+    j = 0
+
+block1 points to:
+    block2
+BasicBlock block2:
+    0 < 10
+block2 points to:
+    block3
+    block4
+BasicBlock block3:
+    sum = 0 + 0
+    j = 0 + 1
+
+block3 points to:
+    block2
+BasicBlock block4:
+    0 != 45
+block4 points to:
+    block5
+    block6
+BasicBlock block5:
+    printf("ERROR: for loop is bad (1)\n")
+
+block5 points to:
+    block6
+BasicBlock block6:
+    i = 11
+    j = 10
+
+block6 points to:
+    block7
+BasicBlock block7:
+    10 < 0
+block7 points to:
+    block8
+    block9
+BasicBlock block8:
+    i = 11 + 1
+    j = 10 + 1
+
+block8 points to:
+    block7
+BasicBlock block9:
+    11 != 11
+block9 points to:
+    block10
+    block11
+BasicBlock block10:
+    printf("ERROR: for loop is bad (2)\n")
+    printf("%d\n", i)
+
+block10 points to:
+    block11
+BasicBlock block11:
+
+block11 points to:
+    block12
+BasicBlock block12:
+
+block12 points to:
+    block13
+BasicBlock block13:
+    printf("control flow OK if no previous output\n")
+
+block13 points to:
+    block14
+BasicBlock block14:
+*end of method*
+block14 points to:
+
