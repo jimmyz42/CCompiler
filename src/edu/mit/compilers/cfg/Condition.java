@@ -11,8 +11,6 @@ import edu.mit.compilers.optimizer.OptimizerContext;
 
 public interface Condition {
 	// Represents a boolean condition for jumping
-	// TODO generate corresponding jump statements
-	// BoolLiteral also implements this TODO generate unconditional jump
 	
 	public void generateAssembly(AssemblyContext ctx);
 	public void cfgPrint(PrintWriter pw, String prefix);

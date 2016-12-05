@@ -186,9 +186,9 @@ public class BasicBlock extends CFG {
 		for(int i=0;i<components.size();i++) {
 			components.set(i, components.get(i).doAlgebraicSimplification());
 		}
-		if(branchCondition != null) {
-			branchCondition = (Condition) branchCondition.doAlgebraicSimplification();
-		}
+//		if(branchCondition != null) {
+//			branchCondition = (Condition) branchCondition.doAlgebraicSimplification();
+//		}
 	}
 
 	public void generateTemporaries(OptimizerContext octx) {
