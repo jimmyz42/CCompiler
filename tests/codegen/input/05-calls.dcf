@@ -12,14 +12,17 @@ int sum ( int a, int b, int c, int d, int e, int f, int g, int h ) {
 }
 void main ( ) {
   int a, b, c, d;
-  a = 1;
-  b = 2;
-  c = add ( a, b );
-  d = sub ( c, b );
+  a = 1; //1
+  b = 2; //2
+  c = add ( a, b ); //3
+  d = sub ( c, b ); //4
   if ( d == a ) {
+    c = a - b; //5
+    b=6; //6
     printf ( "correct\n" );
   }
-  else {
+  if(c==b) {
+    c = a + b; //7
     printf ( "INCORRECT\n" );
   }
   printf ( "sum of 1 - 8 is %d (36)\n", sum ( 1, 2, 3, 4, 5, 6, 7, 8 ) );

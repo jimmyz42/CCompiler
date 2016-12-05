@@ -24,4 +24,5 @@ public interface Condition {
     public void doCSE(OptimizerContext ctx);
     public void doCopyPropagation(OptimizerContext ctx);
     public void doConstantPropagation(OptimizerContext ctx);
+    public void doGlobalConstantPropagation(OptimizerContext ctx);
 }

@@ -44,14 +44,34 @@ public class OptimizerContext {
 	//numbering definitions
 	private int assignStmtCount = 0;
 	private HashMap<AssignStmt, Integer> assignStmtToInt = new HashMap<>();
+	private HashMap<Integer, AssignStmt> intToAssignStmt = new HashMap<>();
+
+	private HashMap<BasicBlock, HashMap<AssignStmt, Integer>> bbInfo;
 	//finding what defs map to a var
 	private HashMap<VariableDescriptor, Set<Integer>> varToDefs = new HashMap<>();
 	//bitsets 
+	//NOTE: each index for a bitset corresponds to an assignStmt in that method. To 
+	//	find which assignStmt the bit correspondes to, you must re-run "number definitions"
+	//	in Optimizer. Then that info will be stored in assignStmtToInt
 	private HashMap<BasicBlock, BitSet> rdIn = new HashMap<>();
 	private HashMap<BasicBlock, BitSet> rdOut = new HashMap<>();
 	private HashMap<BasicBlock, BitSet> rdGen = new HashMap<>();
 	private HashMap<BasicBlock, BitSet> rdKill = new HashMap<>();
+	
+	//global cp
+	private BasicBlock currentBlock;
 
+	public void setCurrentBlock(BasicBlock block){
+		currentBlock = block;
+	}
+
+	public BasicBlock getCurrentBlock(){
+		return currentBlock;
+	}
+
+	public HashMap<Integer, AssignStmt> getIntToAssignStmt(){
+		return intToAssignStmt;
+	}
 
 	public HashMap<VariableDescriptor, Set<Integer>> getVarToDefs(){
 		return varToDefs;

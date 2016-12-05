@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
@@ -103,6 +104,69 @@ abstract public class BinOpExpr extends Expression {
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(rhsLoc)){
 				rhs = ctx.getVarToConst().get(rhsLoc); //replace var with const
+			}
+		} else
+			rhs.doConstantPropagation(ctx);
+	}
+
+	@Override
+	public void doGlobalConstantPropagation(OptimizerContext ctx) {
+		if(lhs instanceof Location){
+			Location lhsLoc = (Location)lhs;
+			VariableDescriptor var = lhsLoc.getVariable();
+			List<Long> consts = new ArrayList<>();
+
+			//check all reaching definitions
+			if(ctx.getVarToDefs().containsKey(var)){
+				for(Integer def : ctx.getVarToDefs().get(var)){
+					//is this definition alive? 
+					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
+						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
+							//does it assign var to const?
+							AssignStmt stmt = ctx.getIntToAssignStmt().get(def);
+							if(stmt.assignsToConstant()){
+								consts.add(stmt.whatConst());
+							}
+						}						
+					}
+				}
+			}
+
+
+			//if all assign var to same const
+			//replace with constant
+			if(consts.size() == 1){
+				lhs = new IntLiteral(consts.get(0));
+			}
+		} else
+			lhs.doConstantPropagation(ctx);
+		
+		if(rhs instanceof Location){
+			Location rhsLoc = (Location)rhs;
+			VariableDescriptor var = rhsLoc.getVariable();
+			List<Long> consts = new ArrayList<>();
+
+			//check all reaching definitions
+			if(ctx.getVarToDefs().containsKey(var)){
+				for(Integer def : ctx.getVarToDefs().get(var)){
+					//is this definition alive? 
+					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
+						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
+							//does it assign var to const?
+							AssignStmt stmt = ctx.getIntToAssignStmt().get(def);
+							if(stmt.assignsToConstant()){
+								consts.add(stmt.whatConst());
+							}
+						}						
+					}
+				}
+			}
+
+
+			//if all assign var to same const
+			//replace with constant
+			if(consts.size() == 1){
+				rhs = new IntLiteral(consts.get(0));
 			}
 		} else
 			rhs.doConstantPropagation(ctx);

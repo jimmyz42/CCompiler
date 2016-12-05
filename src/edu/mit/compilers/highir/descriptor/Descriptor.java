@@ -107,6 +107,9 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	}
 
 	@Override
+	public void doGlobalConstantPropagation(OptimizerContext ctx){}
+	
+	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
 	}
 

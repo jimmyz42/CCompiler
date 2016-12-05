@@ -103,6 +103,11 @@ public class MethodCallStmt extends Statement implements Optimizable {
         methodCall.doConstantPropagation(ctx);
     }
 
+	@Override
+	public void doGlobalConstantPropagation(OptimizerContext ctx){
+		methodCall.doGlobalConstantPropagation(ctx);	
+	}
+	
     @Override
     public void findVarToDefs(OptimizerContext ctx){}
     @Override

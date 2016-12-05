@@ -21,6 +21,7 @@ import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.Location;
+import edu.mit.compilers.highir.nodes.AssignStmt;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
@@ -58,15 +59,15 @@ public class Optimizer {
 			ctx = new OptimizerContext();
 			doConstantFolding();
 			doAlgebraicSimplification();
-			generateTemporaries();
-			doGlobalCSE();
-			doLocalCSE();
-			for(int j = 0; j < 5; j++) {
-				doCopyPropagation();
-			}
+			// generateTemporaries();
+			// doGlobalCSE();
+			// doLocalCSE();
+			// for(int j = 0; j < 5; j++) {
+			// 	doCopyPropagation();
+			// }
 			doConstantPropagation();
-			doUnreachableCodeElimination();
 			doReachingDefinitions();
+			doUnreachableCodeElimination();
 			//doDeadCodeEliminiation();
 		}
 	}
@@ -118,7 +119,7 @@ public class Optimizer {
 		}
 	}
 
-	//NOTE: different than in lecture because using maps instead of bit vectors
+	// this calculates reachindDefs w/in each method, and does constant/copy propagation
 	public void doReachingDefinitions(){
 		System.out.println("DOING REACHING DEFS");
 
@@ -143,29 +144,42 @@ public class Optimizer {
 		}
 		
 
-		//for each method, instantiate bit vecotrs 
-		for(List<BasicBlock> method : methods){
-			//System.out.println("//////////////// NEW METHOD ////////////");
-			//clear everything in ctx that needs to be cleared 
+		//for each method, instantiate bit vecotrs
+		//then, do propagation 
 
-			//number definitions
+		//CTX regains all info PER METHOD. Loses info once new method entered
+		for(List<BasicBlock> method : methods){
+			System.out.println("//////////////// NEW METHOD ////////////");
+			
+			//clear everything in ctx that needs to be cleared 
 			ctx.resetAssignStmtCount();
 			ctx.getAssignStmtToInt().clear();
+			ctx.getVarToDefs().clear();
+			ctx.getRdIn().clear();
+			ctx.getRdOut().clear();
+			ctx.getRdGen().clear();
+			ctx.getRdKill().clear();
+
+			//number definitions
 			for(BasicBlock block : method){
 				block.numberDefinitions(ctx);
 			}
 
-			//create map of variables to definitions
-			ctx.getVarToDefs().clear();
+			//make intToAssignStmt
+			for(AssignStmt stmt : ctx.getAssignStmtToInt().keySet()){
+				ctx.getIntToAssignStmt().put(ctx.getAssignStmtToInt().get(stmt), stmt);
+			}
+
+			//create map of variables to numberDefinitions
 			for(BasicBlock block : method){
 				block.findVarToDefs(ctx);
 			}
 
-			// System.out.println("AssignStmtToInt-----------");
-			// System.out.println(ctx.prettyPrintAssignStmtToInt());
+			System.out.println("AssignStmtToInt-----------");
+			System.out.println(ctx.prettyPrintAssignStmtToInt());
 
-			// System.out.println("VarToDefs-----------------");
-			// System.out.println(ctx.prettyPrintVarToDefs());
+			System.out.println("VarToDefs-----------------");
+			System.out.println(ctx.prettyPrintVarToDefs());
 
 			//for each basic block, instantiate gen and kill sets
 			for(BasicBlock block : method){
@@ -173,11 +187,11 @@ public class Optimizer {
 				block.makeKillSet(ctx);
 			}
 
-			// System.out.println("Gen -----------------");
-			// System.out.println(ctx.getRdGen().toString());
+			System.out.println("Gen -----------------");
+			System.out.println(ctx.getRdGen().toString());
 
-			// System.out.println("Kill -----------------");
-			// System.out.println(ctx.getRdKill().toString());
+			System.out.println("Kill -----------------");
+			System.out.println(ctx.getRdKill().toString());
 
 			//calculate in and out sets 
 			for(BasicBlock block : method){
@@ -194,8 +208,6 @@ public class Optimizer {
 			while(!changed.isEmpty()){
 				BasicBlock n = changed.iterator().next();
 
-				System.out.println("Working with " + n.toString() + " " + n.getDescription());
-
 				changed.remove(n);
 				
 				ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
@@ -209,9 +221,11 @@ public class Optimizer {
 					}
 				}
 
-				BitSet in = ctx.getRdIn().get(n);
-				BitSet kill = ctx.getRdKill().get(n);
-				BitSet gen = ctx.getRdGen().get(n);
+				// TODO: clone 
+
+				BitSet in = (BitSet)ctx.getRdIn().get(n).clone();
+				BitSet kill = (BitSet)ctx.getRdKill().get(n).clone();
+				BitSet gen = (BitSet)ctx.getRdGen().get(n).clone();
 				in.xor(kill);
 				gen.or(in);
 				BitSet new_out = gen;
@@ -229,12 +243,23 @@ public class Optimizer {
 			}
 
 
-			// System.out.println("In -----------------");
-			// System.out.println(ctx.getRdIn().toString());
+			System.out.println("In -----------------");
+			System.out.println(ctx.getRdIn().toString());
 
-			// System.out.println("Out -----------------");
-			// System.out.println(ctx.getRdOut().toString());
+			System.out.println("Out -----------------");
+			System.out.println(ctx.getRdOut().toString());
 
+			//in/out done! 
+
+			//do constant propagation
+			for(BasicBlock block : orderedBlocks){
+				//important info in ctx:
+				//	ctx.getRdIn() - which defs get passed in to this bb
+				//	ctx.getVarToDefs() - which defs reassign var 
+				//	ctx.getAssignStmtToInt()
+				ctx.setCurrentBlock(block);
+				block.doGlobalConstantPropagation(ctx);
+			}
 		}
 	}
 

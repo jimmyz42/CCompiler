@@ -68,6 +68,9 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
     public void findVarToDefs(OptimizerContext ctx){
         
     }
+
+    @Override
+    public void doGlobalConstantPropagation(OptimizerContext ctx){}
     
     @Override
     public long getNumStackAllocations() {

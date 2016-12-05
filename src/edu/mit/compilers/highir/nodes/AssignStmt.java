@@ -34,6 +34,24 @@ public class AssignStmt extends Statement implements Optimizable {
 		this.expression = expression;
 	}
 
+	public Boolean assignsToConstant(){
+		if(expression instanceof IntLiteral){
+			return true;
+		}
+		return false;
+	}
+
+	public long whatConst(){
+		if(this.assignsToConstant()){
+			IntLiteral intLit = (IntLiteral)expression;
+			return intLit.getValue();
+		} else {
+			//error
+			System.out.println("This AssignStmt does not assign to a constant.");
+		}
+		return -1;
+	}
+
 	public Location getLocation(){
 		return location;
 	}
@@ -186,6 +204,11 @@ public class AssignStmt extends Statement implements Optimizable {
 		}
 
 		expression.doConstantPropagation(ctx);
+	}
+
+	@Override
+	public void doGlobalConstantPropagation(OptimizerContext ctx){
+		expression.doGlobalConstantPropagation(ctx);
 	}
 
 	@Override
