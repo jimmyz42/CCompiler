@@ -248,9 +248,6 @@ public class BasicBlock extends CFG {
 	}
 
 	public void doGlobalConstantPropagation(OptimizerContext ctx) {
-//		ctx.getVarToConst().clear();
-		// instead of clearnign here, we clear at the beginning of each method
-
 		for(Optimizable component: components) {
 			component.doGlobalConstantPropagation(ctx);
 		}

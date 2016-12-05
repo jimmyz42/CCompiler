@@ -286,6 +286,46 @@ public class MethodCallExpr extends Expression {
 	}	
 
 	@Override
+	public void doGlobalConstantPropagation(OptimizerContext ctx){
+		for(int i =0; i < arguments.size(); i++) {
+			if(arguments.get(i) instanceof Location){
+				Location loc = (Location) arguments.get(i);
+				VariableDescriptor var = loc.getVariable();
+				List<Long> consts = new ArrayList<>();
+				boolean allConst = true;
+				//TODO: also check w/ gen in block
+				//check all reaching definitions
+				if(ctx.getVarToDefs().containsKey(var)){
+					for(Integer def : ctx.getVarToDefs().get(var)){
+						//is this definition alive?
+						if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
+							if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
+								//does it assign var to const?
+								AssignStmt stmt = ctx.getIntToAssignStmt().get(def);
+								if(stmt.assignsToConstant()){
+									consts.add(stmt.whatConst());
+								} else {
+									allConst = false;
+								}
+							}						
+						}
+					}
+				}
+
+				//if all assign var to same const
+				//replace with constant
+				if(allConst){
+					if(consts.size() == 1){
+						IntLiteral myInt = new IntLiteral(consts.get(0));
+						arguments.set(i, myInt); //replace var with const
+					}
+				}
+			} else
+				arguments.get(i).doConstantPropagation(ctx);
+		}
+	}
+
+	@Override
 	public void doCopyPropagation(OptimizerContext ctx){
 
 		for(int i =0; i < arguments.size(); i++) {
