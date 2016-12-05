@@ -79,12 +79,7 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	}
     
 	@Override
-	public Optimizable doConstantFolding() {
-		return this;
-	}
-	
-	@Override
-	public Optimizable algebraSimplify() {
+	public Optimizable doAlgebraicSimplification() {
 		return this;
 	}
 

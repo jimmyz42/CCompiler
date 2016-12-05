@@ -99,7 +99,7 @@ public class SizeofTypeExpr extends Expression {
 	}
 	
 	@Override
-	public Optimizable algebraSimplify() {
+	public Optimizable doAlgebraicSimplification() {
 		return new IntLiteral(type.getSize());
 	}
 	

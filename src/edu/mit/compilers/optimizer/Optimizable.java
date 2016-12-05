@@ -11,8 +11,7 @@ public interface Optimizable extends CFGAble {
 	public void generateAssembly(AssemblyContext ctx);
     public Set<Descriptor> getConsumedDescriptors();
     public Set<Descriptor> getGeneratedDescriptors();
-    public Optimizable doConstantFolding();
-    public Optimizable algebraSimplify();
+    public Optimizable doAlgebraicSimplification();
     public boolean isLinearizable();
     public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration);
     public void doCSE(OptimizerContext ctx);

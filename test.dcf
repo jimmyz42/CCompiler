@@ -1,9 +1,7 @@
 #define int long long
 
 extern printf();
-// This should produce a runtime error
-int a[10];
 void main ( ) {
-  printf ( "expecting an error next:\n" );
-  a[100] = 0;
+    int a, b, c, d;
+    a = (b+c) * (d + (b-b) * 4 + (1+2-3+3*(4+7)));
 }

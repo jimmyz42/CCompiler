@@ -63,9 +63,24 @@ public class OrOpExpr extends BinOpExpr {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		lhs = (Expression) lhs.doAlgebraicSimplification();
+		rhs = (Expression) rhs.doAlgebraicSimplification();
 		if(lhs instanceof BoolLiteral && rhs instanceof BoolLiteral) {
 			return new BoolLiteral(((BoolLiteral)lhs).getValue() || ((BoolLiteral)rhs).getValue());
+		}
+		// true || a: true, false || a: a
+		if(lhs instanceof BoolLiteral && ((BoolLiteral)lhs).getValue()) {
+			return new BoolLiteral(true);
+		}
+		if(rhs instanceof BoolLiteral && ((BoolLiteral)rhs).getValue()) {
+			return new BoolLiteral(true);
+		}
+		if(lhs instanceof BoolLiteral && !((BoolLiteral)lhs).getValue()) {
+			return rhs;
+		}
+		if(rhs instanceof BoolLiteral && !((BoolLiteral)rhs).getValue()) {
+			return lhs;
 		}
 		return this;
 	}

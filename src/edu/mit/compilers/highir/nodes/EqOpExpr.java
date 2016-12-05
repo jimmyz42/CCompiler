@@ -102,7 +102,9 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		lhs = (Expression) lhs.doAlgebraicSimplification();
+		rhs = (Expression) rhs.doAlgebraicSimplification();
 		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
 			if(operator.getTerminal().equals("==")) {
 				return new BoolLiteral(((IntLiteral)lhs).getValue() == ((IntLiteral)rhs).getValue());
@@ -121,11 +123,6 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 			} else
 				return new BoolLiteral(((CharLiteral)lhs).getValue() != ((CharLiteral)rhs).getValue());
 		}
-		return this; //cannot simplify
-	}
-
-	@Override
-	public Optimizable algebraSimplify() {
 		// a==true: a, a==false: !a, a!=true: !a, a!=false: a, a==a: true, a!=a: false
 		if(operator.getTerminal().equals("==")) {
 			if(lhs instanceof BoolLiteral && ((BoolLiteral)lhs).getValue()) {
@@ -162,7 +159,6 @@ public class EqOpExpr extends BinOpExpr implements Condition {
 		}
 		return this; //cannot simplify
 	}
-	
 	
 	@Override
 	public Expression clone() {

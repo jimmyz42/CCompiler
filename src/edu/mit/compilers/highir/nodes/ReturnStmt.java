@@ -110,17 +110,9 @@ public class ReturnStmt extends Statement implements Optimizable {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
 		if(expression != null) {
-			this.expression = (Expression)expression.doConstantFolding();
-		}
-		return this;
-	}
-
-	@Override
-	public Optimizable algebraSimplify() {
-		if(expression != null) {
-			this.expression = (Expression)expression.algebraSimplify();
+			this.expression = (Expression)expression.doAlgebraicSimplification();
 		}
 		return this;
 	}

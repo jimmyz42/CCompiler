@@ -87,10 +87,15 @@ public class NegExpr extends Expression {
 	}
 	
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		expression = (Expression) expression.doAlgebraicSimplification();
 		if(expression instanceof IntLiteral) {
 			return new IntLiteral(-((IntLiteral)expression).getValue());
 		}
+		// --a = a
+		if(expression instanceof NegExpr) {
+    		return ((NegExpr)expression).expression;
+    	}
 		return this; //cannot simplify
 	}
 
@@ -147,35 +152,10 @@ public class NegExpr extends Expression {
     @Override
     public void doConstantPropagation(OptimizerContext ctx){
 		if(expression instanceof Location){
-			Location indexLoc = (Location)expression;
-			VariableDescriptor var = indexLoc.getVariable();
-			List<Long> consts = new ArrayList<>();
-			boolean allConst = true;
-			//TODO: also check w/ gen in block
-			//check all reaching definitions
-			if(ctx.getVarToDefs().containsKey(var)){
-				for(Integer def : ctx.getVarToDefs().get(var)){
-					//is this definition alive?
-					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
-						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
-							//does it assign var to const?
-							AssignStmt stmt = ctx.getIntToAssignStmt().get(def);
-							if(stmt.assignsToConstant()){
-								consts.add(stmt.whatConst());
-							} else {
-								allConst = false;
-							}
-						}						
-					}
-				}
-			}
-
-			//if all assign var to same const
-			//replace with constant
-			if(allConst){
-				if(consts.size() == 1){
-					expression = new IntLiteral(consts.get(0));
-				}
+			Location loc = (Location)expression;
+			//is it in the map?
+			if(ctx.getVarToConst().containsKey(loc)){
+				expression = ctx.getVarToConst().get(loc); //replace var with const
 			}
 		} else
 			expression.doConstantPropagation(ctx);
@@ -218,7 +198,6 @@ public class NegExpr extends Expression {
 			expression.doGlobalConstantPropagation(ctx);
     }
     
-    @Override
 	public Optimizable algebraSimplify() {
     	if(expression instanceof NegExpr) {
     		return ((NegExpr)expression).expression;

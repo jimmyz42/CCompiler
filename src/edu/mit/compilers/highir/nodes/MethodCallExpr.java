@@ -239,17 +239,9 @@ public class MethodCallExpr extends Expression {
 	}		
 	
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
 		for(int i=0;i<arguments.size();i++) {
-			arguments.set(i, (ExternArg)arguments.get(i).doConstantFolding());
-		}
-		return this;
-	}
-	
-	@Override
-	public Optimizable algebraSimplify() {
-		for(int i=0;i<arguments.size();i++) {
-			arguments.set(i, (ExternArg)arguments.get(i).algebraSimplify());
+			arguments.set(i, (ExternArg)arguments.get(i).doAlgebraicSimplification());
 		}
 		return this;
 	}

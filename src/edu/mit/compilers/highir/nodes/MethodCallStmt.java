@@ -64,14 +64,8 @@ public class MethodCallStmt extends Statement implements Optimizable {
 	}
 	
 	@Override
-	public Optimizable doConstantFolding() {
-		this.methodCall = (MethodCallExpr)methodCall.doConstantFolding();
-		return this;
-	}
-	
-	@Override
-	public Optimizable algebraSimplify() {
-		this.methodCall = (MethodCallExpr)methodCall.algebraSimplify();
+	public Optimizable doAlgebraicSimplification() {
+		this.methodCall = (MethodCallExpr)methodCall.doAlgebraicSimplification();
 		return this;
 	}
 

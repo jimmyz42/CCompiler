@@ -88,7 +88,9 @@ public class MulOpExpr extends BinOpExpr {
 	}
 
 	@Override
-	public Optimizable doConstantFolding() {
+	public Optimizable doAlgebraicSimplification() {
+		lhs = (Expression) lhs.doAlgebraicSimplification();
+		rhs = (Expression) rhs.doAlgebraicSimplification();
 		if(lhs instanceof IntLiteral && rhs instanceof IntLiteral) {
 			if(operator.getTerminal().equals("*")) {
 				return new IntLiteral(((IntLiteral)lhs).getValue() * ((IntLiteral)rhs).getValue());
@@ -100,11 +102,6 @@ public class MulOpExpr extends BinOpExpr {
 				return new IntLiteral(((IntLiteral)lhs).getValue() % ((IntLiteral)rhs).getValue());
 			}
 		}
-		return this; //cannot simplify
-	}
-	
-	@Override
-	public Optimizable algebraSimplify() {
 		// a*0 = 0*a = 0, 1*a = a*1 = a/1 = a, -1*a = a*(-1) = a/(-1) = -a, a%1 = a%(-1) = 0
 		if(operator.getTerminal().equals("*")) {
 			if(lhs instanceof IntLiteral && ((IntLiteral)lhs).getValue() == 0) {
@@ -142,7 +139,6 @@ public class MulOpExpr extends BinOpExpr {
 		}
 		return this; //cannot simplify
 	}
-	
 	
 	@Override
 	public Expression clone() {
