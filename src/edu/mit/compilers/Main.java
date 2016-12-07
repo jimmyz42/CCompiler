@@ -37,7 +37,7 @@ import exceptions.SemanticError;
 class Main {
 	public static void main(String[] args) {
 		try {
-			CLI.parse(args, new String[0]);
+			CLI.parse(args, Optimizer.optimizations);
 			ANTLRInputStream inputStream = CLI.infile == null ?
 					new ANTLRInputStream(System.in) : new ANTLRInputStream(new java.io.FileInputStream(CLI.infile));
 					PrintStream outputStream = CLI.outfile == null ? System.out : new java.io.PrintStream(new java.io.FileOutputStream(CLI.outfile));
@@ -138,6 +138,7 @@ class Main {
 
 						OptimizerContext octx = new OptimizerContext();
 						Optimizer optimizer = Optimizer.create(octx, cfg.getOrderedBlocks());
+						optimizer.setOpts(CLI.opts);
 						optimizer.run();
 						
 						StringWriter sw = new StringWriter();
@@ -170,6 +171,7 @@ class Main {
 
 						OptimizerContext octx = new OptimizerContext();
 						Optimizer optimizer = Optimizer.create(octx, cfg.getOrderedBlocks());
+						optimizer.setOpts(CLI.opts);
 						optimizer.run();
 
 						AssemblyContext actx = new AssemblyContext();

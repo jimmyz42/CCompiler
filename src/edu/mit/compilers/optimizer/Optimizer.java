@@ -8,9 +8,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.BitSet;
 import java.util.Set;
 
 import edu.mit.compilers.cfg.Condition;
@@ -18,7 +16,6 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.EnterBlock;
 import edu.mit.compilers.cfg.components.LeaveBlock;
 import edu.mit.compilers.highir.descriptor.Descriptor;
-import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.Location;
 import edu.mit.compilers.highir.nodes.AssignStmt;
@@ -35,6 +32,9 @@ import edu.mit.compilers.lowir.instructions.Mov;
 import edu.mit.compilers.lowir.instructions.Syscall;
 
 public class Optimizer {
+	public static String[] optimizations = {"alg", "cse", "cp", "dce"};
+	
+	private Set<String> optsUsed;
 	private List<BasicBlock> orderedBlocks;
 	private OptimizerContext ctx;
 	
@@ -44,8 +44,16 @@ public class Optimizer {
 	private List<Set<Expression>> availableExpressions;
 	
 	public Optimizer(OptimizerContext ctx, List<BasicBlock> orderedBlocks) {
+		this.optsUsed = new HashSet<>();
 		this.orderedBlocks = orderedBlocks;
 		this.ctx = ctx;
+	}
+	
+	public void setOpts(boolean[] opts) {
+		optsUsed.clear();
+		for(int i=0; i<optimizations.length; i++) {
+			if(opts[i]) optsUsed.add(optimizations[i]);
+		}
 	}
 
 	// generateTemporaries and doCSE combined make expressions linear
@@ -57,17 +65,23 @@ public class Optimizer {
 		for(int i = 0; i < 1; i++) {
 			// reset optimizer to clear set/maps from prev iteration
 			ctx = new OptimizerContext();
-			doAlgebraicSimplification(); // includes constant folding
-			generateTemporaries();
-			doGlobalCSE();
-			doLocalCSE();
-			for(int j = 0; j < 5; j++) {
-				doCopyPropagation();
+			if(optsUsed.contains("alg")) {
+				doAlgebraicSimplification(); // includes constant folding
+			} if(optsUsed.contains("cse")) {
+				generateTemporaries();
+				doGlobalCSE();
+				doLocalCSE();
+			} if(optsUsed.contains("cp")) {
+				for(int j = 0; j < 5; j++) {
+					doCopyPropagation();
+				}
+				doConstantPropagation();
 			}
-			doConstantPropagation();
-			doReachingDefinitions();
-			doUnreachableCodeElimination();
-			//doDeadCodeEliminiation();
+			doReachingDefinitions(); // is this for loop invariant code?
+			if(optsUsed.contains("dce")) {
+				doUnreachableCodeElimination();
+				//doDeadCodeEliminiation();
+			}
 		}
 	}
 
