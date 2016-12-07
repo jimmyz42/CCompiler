@@ -10,14 +10,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.BitSet;
 import java.util.Set;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
+import edu.mit.compilers.cfg.components.EnterBlock;
 import edu.mit.compilers.cfg.components.LeaveBlock;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.Location;
+import edu.mit.compilers.highir.nodes.AssignStmt;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.ImmediateValue;
 import edu.mit.compilers.lowir.Memory;
@@ -61,6 +65,7 @@ public class Optimizer {
 				doCopyPropagation();
 			}
 			doConstantPropagation();
+			doReachingDefinitions();
 			doUnreachableCodeElimination();
 			//doDeadCodeEliminiation();
 		}
@@ -104,6 +109,162 @@ public class Optimizer {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 
 			currentBlock.doCopyPropagation(ctx);
+		}
+	}
+
+	// this calculates reachindDefs w/in each method, and does constant/copy propagation
+	public void doReachingDefinitions(){
+		System.out.println("DOING REACHING DEFS");
+
+		//list of methods; contain list of basic blocks in methods
+		List<List<BasicBlock>> methods = new ArrayList<>(); 
+		int methodNum = 0;
+		boolean isGlobal = true; //used to skip over all the global bbs
+
+		//separate the basic blocks into their methods
+		for(BasicBlock block : orderedBlocks){
+
+			if(block instanceof EnterBlock){
+				//new method
+				methods.add(new ArrayList<BasicBlock>());
+				isGlobal = false;
+			} else if (block instanceof LeaveBlock){
+				//end of method
+				methodNum++;
+			} else if(!isGlobal){
+				methods.get(methodNum).add(block);
+			}
+		}
+		
+
+		//for each method, instantiate bit vecotrs
+		//then, do propagation 
+
+		//CTX regains all info PER METHOD. Loses info once new method entered
+		for(List<BasicBlock> method : methods){
+			System.out.println("//////////////// NEW METHOD ////////////");
+			
+			//clear everything in ctx that needs to be cleared 
+			ctx.resetAssignStmtCount();
+			ctx.getAssignStmtToInt().clear();
+			ctx.getVarToDefs().clear();
+			ctx.getRdIn().clear();
+			ctx.getRdOut().clear();
+			ctx.getRdGen().clear();
+			ctx.getRdKill().clear();
+
+			//number definitions
+			for(BasicBlock block : method){
+				block.numberDefinitions(ctx);
+			}
+
+			//make intToAssignStmt
+			for(AssignStmt stmt : ctx.getAssignStmtToInt().keySet()){
+				ctx.getIntToAssignStmt().put(ctx.getAssignStmtToInt().get(stmt), stmt);
+			}
+
+			//create map of variables to numberDefinitions
+			for(BasicBlock block : method){
+				block.findVarToDefs(ctx);
+			}
+
+			System.out.println("AssignStmtToInt-----------");
+			System.out.println(ctx.prettyPrintAssignStmtToInt());
+
+			System.out.println("VarToDefs-----------------");
+			System.out.println(ctx.prettyPrintVarToDefs());
+
+			//for each basic block, instantiate gen and kill sets
+			for(BasicBlock block : method){
+				block.makeGenSet(ctx);
+				block.makeKillSet(ctx);
+			}
+
+			System.out.println("Gen -----------------");
+			System.out.println(ctx.getRdGen().toString());
+
+			System.out.println("Kill -----------------");
+			System.out.println(ctx.getRdKill().toString());
+
+			//calculate in and out sets 
+			for(BasicBlock block : method){
+				ctx.getRdOut().put(block, new BitSet(ctx.getAssignStmtCount()));
+			}
+			BasicBlock entryBlock = method.get(0);
+			ctx.getRdIn().put(entryBlock, new BitSet(ctx.getAssignStmtCount()));
+			ctx.getRdOut().put(entryBlock, ctx.getRdGen().get(entryBlock));
+
+			Set<BasicBlock> changed = new HashSet<>(method);
+			Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
+			changed.remove(entryBlock);
+
+			while(!changed.isEmpty()){
+				BasicBlock n = changed.iterator().next();
+
+				System.out.println("________________________________");
+				System.out.println("currentBlock: " + n.toString());
+
+				changed.remove(n);
+				
+				ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
+
+				for (BasicBlock p : n.getPreviousBlocks()){
+					if(allBlocksInMethod.contains(p)){
+						System.out.println("previous " + p);
+						BitSet in_n = (BitSet)ctx.getRdIn().get(n).clone();
+						BitSet out_p = (BitSet)ctx.getRdOut().get(p).clone();
+						in_n.or(out_p);
+						ctx.getRdIn().put(n, in_n);
+					}
+				}
+
+				BitSet in = (BitSet)ctx.getRdIn().get(n).clone();
+				BitSet kill = (BitSet)ctx.getRdKill().get(n).clone();
+				BitSet gen = (BitSet)ctx.getRdGen().get(n).clone();
+
+				System.out.println("in: " + in);
+				System.out.println("gen: " + gen);
+				System.out.println("kill: " + kill);
+
+				in.andNot(kill);
+				gen.or(in);
+				BitSet new_out = gen;
+
+				BitSet old_out = ctx.getRdOut().get(n);
+				ctx.getRdOut().put(n, new_out);
+
+				System.out.println("new_out = " + new_out);
+				System.out.println("old_out = " + old_out);
+
+
+				if (!old_out.equals(new_out)){
+					for(BasicBlock s : n.getNextBlocks()){
+						if(allBlocksInMethod.contains(s)){
+							System.out.println("next " + s);
+							changed.add(s);
+						}
+					}
+				}
+			}
+
+
+			System.out.println("In -----------------");
+			System.out.println(ctx.getRdIn().toString());
+
+			System.out.println("Out -----------------");
+			System.out.println(ctx.getRdOut().toString());
+
+			//in/out done! 
+
+			//do constant propagation
+			for(BasicBlock block : orderedBlocks){
+				//important info in ctx:
+				//	ctx.getRdIn() - which defs get passed in to this bb
+				//	ctx.getVarToDefs() - which defs reassign var 
+				//	ctx.getAssignStmtToInt()
+				ctx.setCurrentBlock(block);
+				block.doGlobalConstantPropagation(ctx);
+			}
 		}
 	}
 

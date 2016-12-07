@@ -4,12 +4,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.BitSet;
 
+import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.IdLocation;
 import edu.mit.compilers.highir.nodes.Literal;
 import edu.mit.compilers.highir.nodes.Location;
+import edu.mit.compilers.highir.nodes.AssignStmt;
 
 public class OptimizerContext {
 	private int tempVarNonce;
@@ -36,6 +39,94 @@ public class OptimizerContext {
 
 	//Constant Propagation Maps
 	private HashMap<Location, Literal> varToConst = new HashMap<>();
+
+	//reaching definitions:
+	//numbering definitions
+	private int assignStmtCount = 0;
+	private HashMap<AssignStmt, Integer> assignStmtToInt = new HashMap<>();
+	private HashMap<Integer, AssignStmt> intToAssignStmt = new HashMap<>();
+
+	private HashMap<BasicBlock, HashMap<AssignStmt, Integer>> bbInfo;
+	//finding what defs map to a var
+	private HashMap<VariableDescriptor, Set<Integer>> varToDefs = new HashMap<>();
+	//bitsets 
+	//NOTE: each index for a bitset corresponds to an assignStmt in that method. To 
+	//	find which assignStmt the bit correspondes to, you must re-run "number definitions"
+	//	in Optimizer. Then that info will be stored in assignStmtToInt
+	private HashMap<BasicBlock, BitSet> rdIn = new HashMap<>();
+	private HashMap<BasicBlock, BitSet> rdOut = new HashMap<>();
+	private HashMap<BasicBlock, BitSet> rdGen = new HashMap<>();
+	private HashMap<BasicBlock, BitSet> rdKill = new HashMap<>();
+	
+	//global cp
+	private BasicBlock currentBlock;
+
+	public void setCurrentBlock(BasicBlock block){
+		currentBlock = block;
+	}
+
+	public BasicBlock getCurrentBlock(){
+		return currentBlock;
+	}
+
+	public HashMap<Integer, AssignStmt> getIntToAssignStmt(){
+		return intToAssignStmt;
+	}
+
+	public HashMap<VariableDescriptor, Set<Integer>> getVarToDefs(){
+		return varToDefs;
+	}
+
+	public HashMap<BasicBlock, BitSet> getRdIn(){
+		return rdIn;
+	}
+	
+	public HashMap<BasicBlock, BitSet> getRdOut(){
+		return rdOut;
+	}
+
+	public HashMap<BasicBlock, BitSet> getRdGen(){
+		return rdGen;
+	}
+
+	public HashMap<BasicBlock, BitSet> getRdKill(){
+		return rdKill;
+	}
+
+	public String prettyPrintVarToDefs(){
+		String s = "";
+		for(VariableDescriptor var : getVarToDefs().keySet()){
+			s += var.getName() + ": ";
+			s += getVarToDefs().get(var).toString() + "\n";
+		}
+		return s;
+	}
+	
+	public String prettyPrintAssignStmtToInt(){
+		String s = "";
+		for(AssignStmt stmt : getAssignStmtToInt().keySet()){
+			s += stmt.toString() + ": ";
+			s += getAssignStmtToInt().get(stmt).toString() + "\n";
+		}
+		return s;
+	}
+
+	public HashMap<AssignStmt, Integer> getAssignStmtToInt(){
+		return assignStmtToInt;
+	}	
+
+	public int getAssignStmtCount(){
+		return assignStmtCount;
+	}
+
+	public int incrementAssignStmtCount(){
+		assignStmtCount = assignStmtCount + 1;
+		return assignStmtCount;
+	}
+
+	public void resetAssignStmtCount(){
+		assignStmtCount = 0;
+	}
 
 	public HashMap<Location, Literal> getVarToConst(){
 		return varToConst;

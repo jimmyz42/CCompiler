@@ -157,5 +157,17 @@ public class ReturnStmt extends Statement implements Optimizable {
 		if(expression != null) {
 			expression.doConstantPropagation(ctx);
 		}
-	}	
+	}
+
+	@Override
+	public void doGlobalConstantPropagation(OptimizerContext ctx){
+		if(expression != null) {
+			expression.doGlobalConstantPropagation(ctx);
+		}
+	}
+
+	@Override
+    public void findVarToDefs(OptimizerContext ctx){}
+    @Override
+    public void numberDefinitions(OptimizerContext ctx){}
 }

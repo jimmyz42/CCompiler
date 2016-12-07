@@ -9,6 +9,7 @@ import java.util.Set;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.instructions.Mov;
@@ -151,13 +152,57 @@ public class NegExpr extends Expression {
     @Override
     public void doConstantPropagation(OptimizerContext ctx){
 		if(expression instanceof Location){
-			Location loc = (Location) expression;
+			Location loc = (Location)expression;
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(loc)){
 				expression = ctx.getVarToConst().get(loc); //replace var with const
 			}
 		} else
 			expression.doConstantPropagation(ctx);
+    }
+
+    @Override
+    public void doGlobalConstantPropagation(OptimizerContext ctx){
+		if(expression instanceof Location){
+			Location indexLoc = (Location)expression;
+			VariableDescriptor var = indexLoc.getVariable();
+			List<Long> consts = new ArrayList<>();
+			boolean allConst = true;
+			//TODO: also check w/ gen in block
+			//check all reaching definitions
+			if(ctx.getVarToDefs().containsKey(var)){
+				for(Integer def : ctx.getVarToDefs().get(var)){
+					//is this definition alive?
+					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
+						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
+							//does it assign var to const?
+							AssignStmt stmt = ctx.getIntToAssignStmt().get(def);
+							if(stmt.assignsToConstant()){
+								consts.add(stmt.whatConst());
+							} else {
+								allConst = false;
+							}
+						}						
+					}
+				}
+			}
+
+			//if all assign var to same const
+			//replace with constant
+			if(allConst){
+				if(consts.size() == 1){
+					expression = new IntLiteral(consts.get(0));
+				}
+			}
+		} else
+			expression.doGlobalConstantPropagation(ctx);
+    }
+    
+	public Optimizable algebraSimplify() {
+    	if(expression instanceof NegExpr) {
+    		return ((NegExpr)expression).expression;
+    	}
+    	return this;
     }
 
 	@Override
