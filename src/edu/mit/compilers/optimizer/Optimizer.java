@@ -78,7 +78,7 @@ public class Optimizer {
 				doConstantPropagation();
 			}
 			doReachingDefinitions(); // is this for loop invariant code?
-			doLiveness();
+			//doLiveness();
 			if(optsUsed.contains("dce")) {
 				doUnreachableCodeElimination();
 				//doDeadCodeEliminiation();
