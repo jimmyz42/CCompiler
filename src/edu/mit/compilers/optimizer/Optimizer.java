@@ -242,10 +242,6 @@ public class Optimizer {
 				block.numberDefinitions(ctx);
 			}
 
-			for(BasicBlock block : method){
-				ctx.getBbInfo().put(block, ctx.getAssignStmtToInt());
-			}
-
 			//make intToAssignStmt
 			for(AssignStmt stmt : ctx.getAssignStmtToInt().keySet()){
 				ctx.getIntToAssignStmt().put(ctx.getAssignStmtToInt().get(stmt), stmt);
@@ -256,8 +252,11 @@ public class Optimizer {
 				block.findVarToDefs(ctx);
 			}
 
+			//populate maps for RD use outside this function
 			for(BasicBlock block : method){
 				ctx.getBbVarToDefs().put(block, ctx.getVarToDefs());
+				ctx.getBbAssToInt().put(block, ctx.getAssignStmtToInt());
+				ctx.getBbIntToAss().put(block, ctx.getIntToAssignStmt());
 			}
 
 			// System.out.println("AssignStmtToInt-----------");
