@@ -58,8 +58,56 @@ public class OptimizerContext {
 	private HashMap<BasicBlock, BitSet> rdGen = new HashMap<>();
 	private HashMap<BasicBlock, BitSet> rdKill = new HashMap<>();
 	
+	//liveness:
+	//numbering variables
+	private int varCount = 0;
+	private HashMap<VariableDescriptor, Integer> livVarToInt = new HashMap<>();
+	private HashMap<Integer, VariableDescriptor> livIntToVar = new HashMap<>();
+	//bitsets
+	private HashMap<BasicBlock, BitSet> livIn = new HashMap<>();
+	private HashMap<BasicBlock, BitSet> livOut = new HashMap<>();
+	private HashMap<BasicBlock, BitSet> livDef = new HashMap<>();
+	private HashMap<BasicBlock, BitSet> livUse = new HashMap<>();
+
 	//global cp
 	private BasicBlock currentBlock;
+
+	public HashMap<BasicBlock, BitSet> getLivIn(){
+		return livIn;
+	}
+
+	public HashMap<BasicBlock, BitSet> getLivOut(){
+		return livOut;
+	}
+
+	public HashMap<BasicBlock, BitSet> getLivUse(){
+		return livUse;
+	}
+
+	public HashMap<BasicBlock, BitSet> getLivDef(){
+		return livDef;
+	}
+
+	public void resetVarCount(){
+		varCount = 0;
+	}
+
+	public int incrementVarCount(){
+		varCount++;
+		return varCount;
+	}
+
+	public int getVarCount(){
+		return varCount;
+	}
+
+	public HashMap<VariableDescriptor, Integer> getLivVarToInt(){
+		return livVarToInt;
+	}
+
+	public HashMap<Integer, VariableDescriptor> getLivIntToVar(){
+		return livIntToVar;
+	}
 
 	public void setCurrentBlock(BasicBlock block){
 		currentBlock = block;

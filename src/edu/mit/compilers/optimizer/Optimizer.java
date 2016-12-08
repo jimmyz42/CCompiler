@@ -78,6 +78,7 @@ public class Optimizer {
 				doConstantPropagation();
 			}
 			doReachingDefinitions(); // is this for loop invariant code?
+			doLiveness();
 			if(optsUsed.contains("dce")) {
 				doUnreachableCodeElimination();
 				//doDeadCodeEliminiation();
@@ -126,11 +127,8 @@ public class Optimizer {
 		}
 	}
 
-	// this calculates reachindDefs w/in each method, and does constant/copy propagation
-	public void doReachingDefinitions(){
-		System.out.println("DOING REACHING DEFS");
-
-		//list of methods; contain list of basic blocks in methods
+	//takes orderedBlocks and splits it into lists by method
+	private List<List<BasicBlock>> getMethods(List<BasicBlock> orderedBlocks){
 		List<List<BasicBlock>> methods = new ArrayList<>(); 
 		int methodNum = 0;
 		boolean isGlobal = true; //used to skip over all the global bbs
@@ -149,19 +147,91 @@ public class Optimizer {
 				methods.get(methodNum).add(block);
 			}
 		}
-		
+		return methods;
+	}
+
+	public void doLiveness(){
+		//list of methods; contain list of basic blocks in methods
+		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
+		for(List<BasicBlock> method : methods){
+			//clear everything in ctx that needs to be cleared 
+			ctx.resetVarCount();
+
+			for(BasicBlock block : method){
+				//number vars
+				block.numberVariables(ctx);
+			}
+
+			System.out.println(ctx.getLivVarToInt());
+			System.out.println(ctx.getLivIntToVar());
+
+			// for(BasicBlock block : method){
+			// 	//create USE and DEF 
+			// }
+
+			// //calculate IN and OUT
+			// for(BasicBlock block : method){
+			// 	ctx.getLivIn().put(block, new BitSet(ctx.getVarCount()));
+			// }
+			// BasicBlock exit = method.get(method.size() - 1);
+			// ctx.getLivOut().put(exit, new BitSet(ctx.getVarCount()));
+			// ctx.getLivIn().put(exit, (BitSet)ctx.getLivUse().get(exit).clone());
+			// Set<BasicBlock> changed = new HashSet<>(method);
+			// Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
+			// changed.remove(exit);
+
+			// while(!changed.isEmpty()){
+			// 	BasicBlock n = changed.iterator().next();
+			// 	changed.remove(n);
+
+			// 	ctx.getLivOut().put(n, new BitSet(ctx.getVarCount()));
+
+			// 	for(BasicBlock s : n.getNextBlocks()){
+			// 		BitSet in_s = (BitSet)ctx.getLivIn().get(s).clone();
+			// 		BitSet out_n = (BitSet)ctx.getLivOut().get(n).clone();
+			// 		out_n.or(in_s);
+			// 		ctx.getLivOut().put(n, out_n);
+			// 	}
+
+			// 	BitSet use_n = (BitSet)ctx.getLivUse().get(n).clone();
+			// 	BitSet out_n = (BitSet)ctx.getLivOut().get(n).clone();
+			// 	BitSet def_n = (BitSet)ctx.getLivDef().get(n).clone();
+			// 	out_n.andNot(def_n);
+			// 	use_n.or(out_n);
+			// 	BitSet new_in = use_n;
+			// 	BitSet old_in = ctx.getLivIn().put(n, new_in); //IN[n] = use[n] U (out[n] - def[n])
+
+			// 	if(!old_in.equals(new_in)){
+			// 		for(BasicBlock p : n.getPreviousBlocks()){
+			// 			changed.add(p);
+			// 		}
+			// 	}
+			// }
+		}
+	}
+
+	// this calculates reachindDefs w/in each method, and does constant/copy propagation
+	public void doReachingDefinitions(){
+		//System.out.println("DOING REACHING DEFS");
+
+		//list of methods; contain list of basic blocks in methods
+		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 
 		//for each method, instantiate bit vecotrs
 		//then, do propagation 
 
 		//CTX regains all info PER METHOD. Loses info once new method entered
 		for(List<BasicBlock> method : methods){
-			System.out.println("//////////////// NEW METHOD ////////////");
+			//System.out.println("//////////////// NEW METHOD ////////////");
 			
 			//clear everything in ctx that needs to be cleared 
 			ctx.resetAssignStmtCount();
 			ctx.getAssignStmtToInt().clear();
 			ctx.getVarToDefs().clear();
+
+			//clearing these is not necessary
+			//if we don't clear, then we will have IN and OUT for most bbs
+			//will need to renumber vars to get var->bit
 			ctx.getRdIn().clear();
 			ctx.getRdOut().clear();
 			ctx.getRdGen().clear();
@@ -182,11 +252,11 @@ public class Optimizer {
 				block.findVarToDefs(ctx);
 			}
 
-			System.out.println("AssignStmtToInt-----------");
-			System.out.println(ctx.prettyPrintAssignStmtToInt());
+			// System.out.println("AssignStmtToInt-----------");
+			// System.out.println(ctx.prettyPrintAssignStmtToInt());
 
-			System.out.println("VarToDefs-----------------");
-			System.out.println(ctx.prettyPrintVarToDefs());
+			// System.out.println("VarToDefs-----------------");
+			// System.out.println(ctx.prettyPrintVarToDefs());
 
 			//for each basic block, instantiate gen and kill sets
 			for(BasicBlock block : method){
@@ -194,11 +264,11 @@ public class Optimizer {
 				block.makeKillSet(ctx);
 			}
 
-			System.out.println("Gen -----------------");
-			System.out.println(ctx.getRdGen().toString());
+			// System.out.println("Gen -----------------");
+			// System.out.println(ctx.getRdGen().toString());
 
-			System.out.println("Kill -----------------");
-			System.out.println(ctx.getRdKill().toString());
+			// System.out.println("Kill -----------------");
+			// System.out.println(ctx.getRdKill().toString());
 
 			//calculate in and out sets 
 			for(BasicBlock block : method){
@@ -215,8 +285,8 @@ public class Optimizer {
 			while(!changed.isEmpty()){
 				BasicBlock n = changed.iterator().next();
 
-				System.out.println("________________________________");
-				System.out.println("currentBlock: " + n.toString());
+				// System.out.println("________________________________");
+				// System.out.println("currentBlock: " + n.toString());
 
 				changed.remove(n);
 				
@@ -224,7 +294,7 @@ public class Optimizer {
 
 				for (BasicBlock p : n.getPreviousBlocks()){
 					if(allBlocksInMethod.contains(p)){
-						System.out.println("previous " + p);
+						//System.out.println("previous " + p);
 						BitSet in_n = (BitSet)ctx.getRdIn().get(n).clone();
 						BitSet out_p = (BitSet)ctx.getRdOut().get(p).clone();
 						in_n.or(out_p);
@@ -236,9 +306,9 @@ public class Optimizer {
 				BitSet kill = (BitSet)ctx.getRdKill().get(n).clone();
 				BitSet gen = (BitSet)ctx.getRdGen().get(n).clone();
 
-				System.out.println("in: " + in);
-				System.out.println("gen: " + gen);
-				System.out.println("kill: " + kill);
+				// System.out.println("in: " + in);
+				// System.out.println("gen: " + gen);
+				// System.out.println("kill: " + kill);
 
 				in.andNot(kill);
 				gen.or(in);
@@ -246,10 +316,6 @@ public class Optimizer {
 
 				BitSet old_out = ctx.getRdOut().get(n);
 				ctx.getRdOut().put(n, new_out);
-
-				System.out.println("new_out = " + new_out);
-				System.out.println("old_out = " + old_out);
-
 
 				if (!old_out.equals(new_out)){
 					for(BasicBlock s : n.getNextBlocks()){
@@ -262,11 +328,11 @@ public class Optimizer {
 			}
 
 
-			System.out.println("In -----------------");
-			System.out.println(ctx.getRdIn().toString());
+			// System.out.println("In -----------------");
+			// System.out.println(ctx.getRdIn().toString());
 
-			System.out.println("Out -----------------");
-			System.out.println(ctx.getRdOut().toString());
+			// System.out.println("Out -----------------");
+			// System.out.println(ctx.getRdOut().toString());
 
 			//in/out done! 
 

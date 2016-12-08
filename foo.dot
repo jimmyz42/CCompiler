@@ -1,35 +1,7 @@
 digraph G {
   block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ sum\lint\ j\lint\ i\lsum\ =\ 0\lj\ =\ 0\l\l" ];
-  block2 [ label="block2: j\ \<\ 10\l" ];
-  block3 [ label="block3: sum\ =\ sum\ +\ j\lj\ =\ j\ +\ 1\l\l" ];
-  block4 [ label="block4: sum\ !=\ 45\l" ];
-  block5 [ label="block5: printf\(\"ERROR\:\ for\ loop\ is\ bad\ \(1\)\\n\"\)\l\l" ];
-  block6 [ label="block6: i\ =\ 11\lj\ =\ 10\l\l" ];
-  block7 [ label="block7: j\ \<\ 0\l" ];
-  block8 [ label="block8: i\ =\ i\ +\ 1\lj\ =\ j\ +\ 1\l\l" ];
-  block9 [ label="block9: i\ !=\ 11\l" ];
-  block10 [ label="block10: printf\(\"ERROR\:\ for\ loop\ is\ bad\ \(2\)\\n\"\)\lprintf\(\"%d\\n\"\,\ i\)\l\l" ];
-  block11 [ label="block11: \l" ];
-  block12 [ label="block12: \l" ];
-  block13 [ label="block13: printf\(\"control\ flow\ OK\ if\ no\ previous\ output\\n\"\)\l\l" ];
-  block14 [ label="block14: *end\ of\ method*\l" ];
+  block1 [ label="block1: void\ main\lint\ d\lint\ e\lint\ b\lint\ c\lint\ a\la\ =\ 10\lb\ =\ 20\lc\ =\ 30\ld\ =\ a\ +\ b\le\ =\ c\ *\ 3\le\ =\ d\ *\ e\ -\ 100\lprintf\(\"%d\ %d\\n\"\,\ d\,\ e\)\l\l" ];
+  block2 [ label="block2: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
-  block2 -> block3;
-  block3 -> block2;
-  block2 -> block4;
-  block4 -> block5;
-  block5 -> block6;
-  block6 -> block7;
-  block7 -> block8;
-  block8 -> block7;
-  block7 -> block9;
-  block9 -> block10;
-  block10 -> block11;
-  block11 -> block12;
-  block12 -> block13;
-  block13 -> block14;
-  block9 -> block11;
-  block4 -> block6;
 }

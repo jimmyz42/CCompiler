@@ -9,6 +9,7 @@ import edu.mit.compilers.highir.nodes.ScalarType;
 import edu.mit.compilers.highir.nodes.Type;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 public abstract class VariableDescriptor extends Descriptor {
 	public boolean isGlobal;
@@ -64,5 +65,11 @@ public abstract class VariableDescriptor extends Descriptor {
 			return ScalarVariableDescriptor.create(name, (ScalarType) type, isGlobal);
 		}
 		return ArrayVariableDescriptor.create(name, (ArrayType) type, isGlobal);
+	}
+
+	public void numberVariables(OptimizerContext ctx){
+		int num = ctx.incrementVarCount();
+		ctx.getLivIntToVar().put(num, this);
+		ctx.getLivVarToInt().put(this, num);
 	}
 }

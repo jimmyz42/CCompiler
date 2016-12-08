@@ -11,6 +11,7 @@ import java.util.BitSet;
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.AssignStmt;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
 import edu.mit.compilers.lowir.AssemblyContext;
@@ -277,6 +278,15 @@ public class BasicBlock extends CFG {
 		for(Optimizable component : components){
 			if(component instanceof AssignStmt){
 				component.numberDefinitions(ctx);
+			}
+		}
+	}
+
+	public void numberVariables(OptimizerContext ctx){
+		for(Optimizable component : components){
+			if(component instanceof VariableDescriptor){
+				VariableDescriptor var = (VariableDescriptor)component;
+				var.numberVariables(ctx);
 			}
 		}
 	}
