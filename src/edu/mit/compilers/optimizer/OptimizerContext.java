@@ -46,9 +46,9 @@ public class OptimizerContext {
 	private HashMap<AssignStmt, Integer> assignStmtToInt = new HashMap<>();
 	private HashMap<Integer, AssignStmt> intToAssignStmt = new HashMap<>();
 
-	private HashMap<BasicBlock, HashMap<Integer, AssignStmt>> bbIntToAss;
-	private HashMap<BasicBlock, HashMap<AssignStmt, Integer>> bbAssToInt;
-	private HashMap<BasicBlock, HashMap<VariableDescriptor, Set<Integer>>> bbVarToDefs;
+	private HashMap<BasicBlock, HashMap<Integer, AssignStmt>> bbIntToAss = new HashMap<>();
+	private HashMap<BasicBlock, HashMap<AssignStmt, Integer>> bbAssToInt = new HashMap<>();
+	private HashMap<BasicBlock, HashMap<VariableDescriptor, Set<Integer>>> bbVarToDefs = new HashMap<>();;
 	//finding what defs map to a var
 	private HashMap<VariableDescriptor, Set<Integer>> varToDefs = new HashMap<>();
 	//bitsets 

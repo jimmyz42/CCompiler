@@ -162,12 +162,13 @@ public class Optimizer {
 				block.numberVariables(ctx);
 			}
 
-			System.out.println(ctx.getLivVarToInt());
-			System.out.println(ctx.getLivIntToVar());
+			for(BasicBlock block : method){
+				//create USE and DEF
+				block.makeDefSet(ctx); 
+				//block.makeUseSet(ctx);
+			}
 
-			// for(BasicBlock block : method){
-			// 	//create USE and DEF 
-			// }
+			System.out.println(ctx.getLivDef());
 
 			// //calculate IN and OUT
 			// for(BasicBlock block : method){

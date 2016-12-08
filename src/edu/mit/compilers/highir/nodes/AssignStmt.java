@@ -252,6 +252,12 @@ public class AssignStmt extends Statement implements Optimizable {
 		
 	}
 
+	public void makeDefSet(OptimizerContext ctx, BitSet defSet){
+		VariableDescriptor var = location.getVariable();
+		Integer i = ctx.getLivVarToInt().get(var);
+		defSet.set(i);
+	}
+
 	public void makeGenSet(OptimizerContext ctx, BitSet genSet){
 		//have we already set a gen for this variable? if so, 0.
 		Set<Integer> defsForVar = ctx.getVarToDefs().get(this.location.getVariable());
