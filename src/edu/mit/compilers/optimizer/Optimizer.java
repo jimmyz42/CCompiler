@@ -232,14 +232,18 @@ public class Optimizer {
 			//clearing these is not necessary
 			//if we don't clear, then we will have IN and OUT for most bbs
 			//will need to renumber vars to get var->bit
-			ctx.getRdIn().clear();
-			ctx.getRdOut().clear();
-			ctx.getRdGen().clear();
-			ctx.getRdKill().clear();
+			// ctx.getRdIn().clear();
+			// ctx.getRdOut().clear();
+			// ctx.getRdGen().clear();
+			// ctx.getRdKill().clear();
 
 			//number definitions
 			for(BasicBlock block : method){
 				block.numberDefinitions(ctx);
+			}
+
+			for(BasicBlock block : method){
+				ctx.getBbInfo().put(block, ctx.getAssignStmtToInt());
 			}
 
 			//make intToAssignStmt
@@ -250,6 +254,10 @@ public class Optimizer {
 			//create map of variables to numberDefinitions
 			for(BasicBlock block : method){
 				block.findVarToDefs(ctx);
+			}
+
+			for(BasicBlock block : method){
+				ctx.getBbVarToDefs().put(block, ctx.getVarToDefs());
 			}
 
 			// System.out.println("AssignStmtToInt-----------");

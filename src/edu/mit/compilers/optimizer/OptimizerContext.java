@@ -47,6 +47,7 @@ public class OptimizerContext {
 	private HashMap<Integer, AssignStmt> intToAssignStmt = new HashMap<>();
 
 	private HashMap<BasicBlock, HashMap<AssignStmt, Integer>> bbInfo;
+	private HashMap<BasicBlock, HashMap<VariableDescriptor, Set<Integer>>> bbVarToDefs;
 	//finding what defs map to a var
 	private HashMap<VariableDescriptor, Set<Integer>> varToDefs = new HashMap<>();
 	//bitsets 
@@ -71,6 +72,14 @@ public class OptimizerContext {
 
 	//global cp
 	private BasicBlock currentBlock;
+
+	public HashMap<BasicBlock, HashMap<VariableDescriptor, Set<Integer>>> getBbVarToDefs(){
+		return bbVarToDefs;
+	}
+
+	public HashMap<BasicBlock, HashMap<AssignStmt, Integer>> getBbInfo(){
+		return bbInfo;
+	}
 
 	public HashMap<BasicBlock, BitSet> getLivIn(){
 		return livIn;
