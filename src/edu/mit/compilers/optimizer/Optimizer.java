@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +43,10 @@ public class Optimizer {
 	private List<Set<Expression>> cseGenExprs;
 	private List<Set<Location>> cseKillVars;
 	private List<Set<Expression>> availableExpressions;
+
+	// For loop optimizations
+	//maps a bb to the set of bbs that dominate it
+	private HashMap<BasicBlock, Set<BasicBlock>> dominationTree = new HashMap<>();
 	
 	public Optimizer(OptimizerContext ctx, List<BasicBlock> orderedBlocks) {
 		this.optsUsed = new HashSet<>();
@@ -77,8 +82,9 @@ public class Optimizer {
 				}
 				doConstantPropagation();
 			}
+			makeDominationTree();
 			doReachingDefinitions(); // is this for loop invariant code?
-			//doLiveness();
+			doLiveness();
 			if(optsUsed.contains("dce")) {
 				doUnreachableCodeElimination();
 				//doDeadCodeEliminiation();
@@ -127,6 +133,59 @@ public class Optimizer {
 		}
 	}
 
+	public void makeDominationTree(){
+		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
+		for(List<BasicBlock> method : methods){
+			if(method.isEmpty()){
+				continue;
+			}
+			BasicBlock entryBlock = method.get(0);
+			dominationTree.put(entryBlock, new HashSet<>(Arrays.asList(entryBlock)));
+			
+			Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
+			//method is now N - {n0}
+			method.remove(0);
+
+			for(BasicBlock block : method){
+				dominationTree.put(block, new HashSet<>(method));
+			}
+
+			//while d changes
+			boolean isChanging = true;
+			while(isChanging){
+				for(BasicBlock block : method){
+					
+					Set<BasicBlock> domSet = new HashSet<>();
+					BasicBlock previous = block.getPreviousBlock();
+
+					if(block.getPreviousBlocks().size() == 1){
+						if(allBlocksInMethod.contains(previous)){
+							domSet.addAll(dominationTree.get(previous));
+						}
+					} else {
+						if(allBlocksInMethod.contains(block.getPreviousBlocks().get(1))){
+							domSet.addAll(dominationTree.get(block.getPreviousBlocks().get(1)));
+						}
+					}
+
+					for(BasicBlock p : block.getPreviousBlocks()){
+						if(allBlocksInMethod.contains(p)){
+							domSet.retainAll(dominationTree.get(p)); 
+						}
+					}
+
+					domSet.add(block);
+					Set<BasicBlock> old_domSet = dominationTree.put(block, domSet);
+
+					if(old_domSet.equals(domSet)){
+						isChanging = false;
+					}
+				}
+			}
+			//System.out.println(dominationTree);
+		}
+	}
+
 	//takes orderedBlocks and splits it into lists by method
 	private List<List<BasicBlock>> getMethods(List<BasicBlock> orderedBlocks){
 		List<List<BasicBlock>> methods = new ArrayList<>(); 
@@ -155,7 +214,9 @@ public class Optimizer {
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 		for(List<BasicBlock> method : methods){
 			//System.out.println("//////////////// NEW METHOD ////////////");
-
+			if(method.isEmpty()){
+				continue;
+			}
 			//clear everything in ctx that needs to be cleared 
 			ctx.resetVarCount();
 			ctx.getLivVarToInt().clear();
@@ -252,7 +313,9 @@ public class Optimizer {
 		//CTX regains all info PER METHOD. Loses info once new method entered
 		for(List<BasicBlock> method : methods){
 			//System.out.println("//////////////// NEW METHOD ////////////");
-			
+			if(method.isEmpty()){
+				continue;
+			}
 			//clear everything in ctx that needs to be cleared 
 			ctx.resetAssignStmtCount();
 			ctx.getAssignStmtToInt().clear();
