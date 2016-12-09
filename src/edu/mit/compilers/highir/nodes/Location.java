@@ -3,6 +3,7 @@ package edu.mit.compilers.highir.nodes;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
@@ -54,6 +55,14 @@ abstract public class Location extends Expression {
 
     @Override
     public void doCopyPropagation(OptimizerContext ctx) {   
+    }
+
+    @Override
+    public void makeUseSet(OptimizerContext ctx, BitSet use){
+        if(ctx.getLivVarToInt().containsKey(variable)){
+            Integer i = ctx.getLivVarToInt().get(variable);
+            use.set(i);
+        }
     }
 
 	@Override

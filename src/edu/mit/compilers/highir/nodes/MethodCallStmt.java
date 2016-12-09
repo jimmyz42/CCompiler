@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -100,6 +101,11 @@ public class MethodCallStmt extends Statement implements Optimizable {
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){
 		methodCall.doGlobalConstantPropagation(ctx);	
+	}
+
+	@Override
+	public void makeUseSet(OptimizerContext ctx, BitSet use){
+		methodCall.makeUseSet(ctx, use);
 	}
 	
     @Override

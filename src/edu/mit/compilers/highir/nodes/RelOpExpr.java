@@ -3,6 +3,7 @@ package edu.mit.compilers.highir.nodes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -140,12 +141,25 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 	}
 	
 	@Override
+	public void makeUseSet(OptimizerContext ctx, BitSet use){
+		System.out.println("Making USE on RelOpExpr: " + this.toString());
+		lhs.makeUseSet(ctx, use);
+		rhs.makeUseSet(ctx, use);
+	}
+
+	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){
+		//TODO: lhs? 
 		rhs.doGlobalConstantPropagation(ctx);
 	}
 
 	@Override
 	public Expression clone() {
 		return new RelOpExpr(new RelOp(operator.getTerminal()), lhs.clone(), rhs.clone());
+	}
+
+	@Override
+	public String toString(){
+		return lhs.toString() + " " + operator.toString() + " " + rhs.toString();
 	}
 }

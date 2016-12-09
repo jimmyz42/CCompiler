@@ -1,6 +1,7 @@
 package edu.mit.compilers.highir.nodes;
 
 import java.io.PrintWriter;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.cfg.CFGContext;
@@ -71,6 +72,9 @@ abstract public class ExternArg extends Ir implements Storable, CFGAble, Optimiz
 
     @Override
     public void doGlobalConstantPropagation(OptimizerContext ctx){}
+
+    @Override
+    public void makeUseSet(OptimizerContext ctx, BitSet use){}
     
     @Override
     public long getNumStackAllocations() {

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 import java.util.ArrayList;
 
 import edu.mit.compilers.cfg.CFGContext;
@@ -160,6 +161,11 @@ public class ArrayLocation extends Location {
 			}
 		} else
 			index.doConstantPropagation(ctx);
+    }
+
+    @Override
+    public void makeUseSet(OptimizerContext ctx, BitSet use){
+    	index.makeUseSet(ctx, use);
     }
 
     @Override

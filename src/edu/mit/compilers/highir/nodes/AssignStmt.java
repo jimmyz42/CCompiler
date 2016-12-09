@@ -252,10 +252,18 @@ public class AssignStmt extends Statement implements Optimizable {
 		
 	}
 
+	@Override
+	public void makeUseSet(OptimizerContext ctx, BitSet use){
+		expression.makeUseSet(ctx, use);
+	}
+
 	public void makeDefSet(OptimizerContext ctx, BitSet defSet){
 		VariableDescriptor var = location.getVariable();
-		Integer i = ctx.getLivVarToInt().get(var);
-		defSet.set(i);
+		if(ctx.getLivVarToInt().containsKey(var)){
+			Integer i = ctx.getLivVarToInt().get(var);
+			defSet.set(i);
+		}
+
 	}
 
 	public void makeGenSet(OptimizerContext ctx, BitSet genSet){

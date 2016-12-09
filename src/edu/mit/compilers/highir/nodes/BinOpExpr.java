@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
@@ -179,6 +180,12 @@ abstract public class BinOpExpr extends Expression {
 			}
 		} else
 			rhs.doConstantPropagation(ctx);
+	}
+
+	@Override
+	public void makeUseSet(OptimizerContext ctx, BitSet use){
+		lhs.makeUseSet(ctx, use);
+		rhs.makeUseSet(ctx, use);
 	}
 
 	@Override

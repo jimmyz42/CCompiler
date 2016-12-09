@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -156,6 +157,13 @@ public class ReturnStmt extends Statement implements Optimizable {
 	public void doConstantPropagation(OptimizerContext ctx){
 		if(expression != null) {
 			expression.doConstantPropagation(ctx);
+		}
+	}
+
+	@Override
+	public void makeUseSet(OptimizerContext ctx, BitSet use){
+		if(expression != null){
+			expression.makeUseSet(ctx, use);
 		}
 	}
 
