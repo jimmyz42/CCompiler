@@ -154,8 +154,12 @@ public class Optimizer {
 		//list of methods; contain list of basic blocks in methods
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 		for(List<BasicBlock> method : methods){
+			System.out.println("//////////////// NEW METHOD ////////////");
+
 			//clear everything in ctx that needs to be cleared 
 			ctx.resetVarCount();
+			ctx.getLivVarToInt().clear();
+			ctx.getLivIntToVar().clear();
 
 			for(BasicBlock block : method){
 				//number vars
@@ -177,44 +181,55 @@ public class Optimizer {
 			System.out.println("USE -------------------");
 			System.out.println(ctx.getLivUse());
 
-			// //calculate IN and OUT
-			// for(BasicBlock block : method){
-			// 	ctx.getLivIn().put(block, new BitSet(ctx.getVarCount()));
-			// }
-			// BasicBlock exit = method.get(method.size() - 1);
-			// ctx.getLivOut().put(exit, new BitSet(ctx.getVarCount()));
-			// ctx.getLivIn().put(exit, (BitSet)ctx.getLivUse().get(exit).clone());
-			// Set<BasicBlock> changed = new HashSet<>(method);
-			// Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
-			// changed.remove(exit);
+			//calculate IN and OUT
+			for(BasicBlock block : method){
+				ctx.getLivIn().put(block, new BitSet(ctx.getVarCount()));
+			}
+			BasicBlock exit = method.get(method.size() - 1);
+			ctx.getLivOut().put(exit, new BitSet(ctx.getVarCount()));
+			ctx.getLivIn().put(exit, (BitSet)ctx.getLivUse().get(exit).clone());
+			Set<BasicBlock> changed = new HashSet<>(method);
+			Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
+			changed.remove(exit);
 
-			// while(!changed.isEmpty()){
-			// 	BasicBlock n = changed.iterator().next();
-			// 	changed.remove(n);
+			while(!changed.isEmpty()){
+				BasicBlock n = changed.iterator().next();
+				changed.remove(n);
 
-			// 	ctx.getLivOut().put(n, new BitSet(ctx.getVarCount()));
+				ctx.getLivOut().put(n, new BitSet(ctx.getVarCount()));
 
-			// 	for(BasicBlock s : n.getNextBlocks()){
-			// 		BitSet in_s = (BitSet)ctx.getLivIn().get(s).clone();
-			// 		BitSet out_n = (BitSet)ctx.getLivOut().get(n).clone();
-			// 		out_n.or(in_s);
-			// 		ctx.getLivOut().put(n, out_n);
-			// 	}
+				for(BasicBlock s : n.getNextBlocks()){
+					if(allBlocksInMethod.contains(s)){
+						BitSet in_s = (BitSet)ctx.getLivIn().get(s).clone();
+						BitSet out_n = (BitSet)ctx.getLivOut().get(n).clone();
+						out_n.or(in_s);
+						ctx.getLivOut().put(n, out_n);
+					}
+				}
 
-			// 	BitSet use_n = (BitSet)ctx.getLivUse().get(n).clone();
-			// 	BitSet out_n = (BitSet)ctx.getLivOut().get(n).clone();
-			// 	BitSet def_n = (BitSet)ctx.getLivDef().get(n).clone();
-			// 	out_n.andNot(def_n);
-			// 	use_n.or(out_n);
-			// 	BitSet new_in = use_n;
-			// 	BitSet old_in = ctx.getLivIn().put(n, new_in); //IN[n] = use[n] U (out[n] - def[n])
+				BitSet use_n = (BitSet)ctx.getLivUse().get(n).clone();
+				BitSet out_n = (BitSet)ctx.getLivOut().get(n).clone();
+				BitSet def_n = (BitSet)ctx.getLivDef().get(n).clone();
+				out_n.andNot(def_n);
+				use_n.or(out_n);
+				BitSet new_in = use_n;
+				BitSet old_in = ctx.getLivIn().put(n, new_in); //IN[n] = use[n] U (out[n] - def[n])
 
-			// 	if(!old_in.equals(new_in)){
-			// 		for(BasicBlock p : n.getPreviousBlocks()){
-			// 			changed.add(p);
-			// 		}
-			// 	}
-			// }
+				if(!old_in.equals(new_in)){
+					for(BasicBlock p : n.getPreviousBlocks()){
+						if(allBlocksInMethod.contains(p)){
+							changed.add(p);
+						}
+					}
+				}
+			}
+			
+			System.out.println("IN -------------");
+			System.out.println(ctx.getLivIn());
+
+			System.out.println("OUT -------------");
+			System.out.println(ctx.getLivOut());
+
 		}
 	}
 
