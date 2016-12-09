@@ -45,7 +45,7 @@ public class OptimizerContext {
 	private int assignStmtCount = 0;
 	private HashMap<AssignStmt, Integer> assignStmtToInt = new HashMap<>();
 	private HashMap<Integer, AssignStmt> intToAssignStmt = new HashMap<>();
-
+	//info per bb
 	private HashMap<BasicBlock, HashMap<Integer, AssignStmt>> bbIntToAss = new HashMap<>();
 	private HashMap<BasicBlock, HashMap<AssignStmt, Integer>> bbAssToInt = new HashMap<>();
 	private HashMap<BasicBlock, HashMap<VariableDescriptor, Set<Integer>>> bbVarToDefs = new HashMap<>();;
@@ -65,6 +65,9 @@ public class OptimizerContext {
 	private int varCount = 0;
 	private HashMap<VariableDescriptor, Integer> livVarToInt = new HashMap<>();
 	private HashMap<Integer, VariableDescriptor> livIntToVar = new HashMap<>();
+	//info per bb
+	private HashMap<BasicBlock, HashMap<VariableDescriptor, Integer>> bbLivVarToInt = new HashMap<>();
+	private HashMap<BasicBlock, HashMap<Integer, VariableDescriptor>> bbLivIntToVar = new HashMap<>();
 	//bitsets
 	private HashMap<BasicBlock, BitSet> livIn = new HashMap<>();
 	private HashMap<BasicBlock, BitSet> livOut = new HashMap<>();
@@ -73,6 +76,36 @@ public class OptimizerContext {
 
 	//global cp
 	private BasicBlock currentBlock;
+
+
+
+	public HashMap<BasicBlock, HashMap<VariableDescriptor, Integer>> getBbLivVarToInt(){
+		return bbLivVarToInt;
+	}
+
+	public HashMap<BasicBlock, HashMap<Integer, VariableDescriptor>> getBbLivIntToVar(){
+		return bbLivIntToVar;
+	}
+
+	public boolean isLiveIn(BasicBlock bb, VariableDescriptor var){
+		if(bbLivVarToInt.containsKey(bb)){
+			if(bbLivVarToInt.get(bb).containsKey(var)){
+				Integer i = bbLivVarToInt.get(bb).get(var);
+				return livIn.get(bb).get(i);
+			}
+		}
+		return false; //note: will return false if bb is global, enterBlock, or LeaveBlock
+	}
+
+	public boolean isLiveOut(BasicBlock bb, VariableDescriptor var){
+		if(bbLivVarToInt.containsKey(bb)){
+			if(bbLivVarToInt.get(bb).containsKey(var)){
+				Integer i = bbLivVarToInt.get(bb).get(var);
+				return livOut.get(bb).get(i);
+			}
+		}
+		return false; //note: will return false if bb is global, enterBlock, or LeaveBlock
+	}
 
 	public HashMap<BasicBlock, HashMap<VariableDescriptor, Set<Integer>>> getBbVarToDefs(){
 		return bbVarToDefs;
