@@ -3,6 +3,7 @@ package edu.mit.compilers.cfg;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
@@ -22,4 +23,5 @@ public interface Condition {
     public void doCopyPropagation(OptimizerContext ctx);
     public void doConstantPropagation(OptimizerContext ctx);
     public void doGlobalConstantPropagation(OptimizerContext ctx);
+    public void makeUseSet(OptimizerContext ctx, BitSet use);
 }

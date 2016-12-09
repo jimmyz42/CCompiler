@@ -2,6 +2,7 @@ package edu.mit.compilers.optimizer;
 
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGAble;
 import edu.mit.compilers.highir.descriptor.Descriptor;
@@ -20,4 +21,5 @@ public interface Optimizable extends CFGAble {
     public void numberDefinitions(OptimizerContext ctx);
     public void findVarToDefs(OptimizerContext ctx);
     public void doGlobalConstantPropagation(OptimizerContext ctx);
+    public void makeUseSet(OptimizerContext ctx, BitSet use);
 }

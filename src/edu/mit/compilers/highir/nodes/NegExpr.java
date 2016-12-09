@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
@@ -161,6 +162,11 @@ public class NegExpr extends Expression {
 			expression.doConstantPropagation(ctx);
     }
 
+    @Override
+    public void makeUseSet(OptimizerContext ctx, BitSet use){
+    	expression.makeUseSet(ctx,use);
+    }
+    
     @Override
     public void doGlobalConstantPropagation(OptimizerContext ctx){
 		if(expression instanceof Location){

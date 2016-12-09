@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.PrettyPrintable;
 import edu.mit.compilers.cfg.CFGAble;
@@ -101,6 +102,9 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	public void doConstantPropagation(OptimizerContext ctx){
 	}
 
+	@Override
+	public void makeUseSet(OptimizerContext ctx, BitSet use){}
+	
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){}
 	

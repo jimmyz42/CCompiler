@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -277,6 +278,13 @@ public class MethodCallExpr extends Expression {
 		}
 	}	
 
+	@Override
+	public void makeUseSet(OptimizerContext ctx, BitSet use){
+		for(Optimizable arg : arguments){
+			arg.makeUseSet(ctx, use);
+		}
+	}
+	
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){
 		for(int i =0; i < arguments.size(); i++) {

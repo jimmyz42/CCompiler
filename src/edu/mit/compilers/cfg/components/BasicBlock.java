@@ -310,6 +310,17 @@ public class BasicBlock extends CFG {
 		ctx.getLivDef().put(this, livDef);
 	}
 
+	public void makeUseSet(OptimizerContext ctx){
+		BitSet livUse = new BitSet(ctx.getVarCount());
+		for(Optimizable component : components){
+			component.makeUseSet(ctx, livUse);
+		}
+		if (branchCondition != null){
+			branchCondition.makeUseSet(ctx, livUse);
+		}
+		ctx.getLivUse().put(this, livUse);
+	}
+
 	public void makeGenSet(OptimizerContext ctx){
 		BitSet rdGen = new BitSet(ctx.getAssignStmtCount());
 		for(int i = components.size()-1; i>=0; i--){ //go through backwards 

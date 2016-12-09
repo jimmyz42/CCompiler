@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
@@ -147,6 +148,11 @@ public class NotExpr extends Expression {
 		} else {
 			expression.doCopyPropagation(ctx);
 		}
+    }
+
+    @Override
+    public void makeUseSet(OptimizerContext ctx, BitSet use){
+    	expression.makeUseSet(ctx, use);
     }
 
     @Override

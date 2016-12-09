@@ -162,13 +162,20 @@ public class Optimizer {
 				block.numberVariables(ctx);
 			}
 
+			System.out.println("Var to Int Map ---------------");
+			System.out.println(ctx.getLivVarToInt());
+
 			for(BasicBlock block : method){
 				//create USE and DEF
-				block.makeDefSet(ctx); 
-				//block.makeUseSet(ctx);
+				block.makeDefSet(ctx);
+				block.makeUseSet(ctx);
 			}
 
+			System.out.println("DEF --------------------");
 			System.out.println(ctx.getLivDef());
+
+			System.out.println("USE -------------------");
+			System.out.println(ctx.getLivUse());
 
 			// //calculate IN and OUT
 			// for(BasicBlock block : method){
@@ -328,7 +335,7 @@ public class Optimizer {
 				if (!old_out.equals(new_out)){
 					for(BasicBlock s : n.getNextBlocks()){
 						if(allBlocksInMethod.contains(s)){
-							System.out.println("next " + s);
+							//System.out.println("next " + s);
 							changed.add(s);
 						}
 					}
