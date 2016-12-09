@@ -136,6 +136,7 @@ public class Optimizer {
 	public void makeDominationTree(){
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 		for(List<BasicBlock> method : methods){
+			//System.out.println("NEW METHOD //////////////////");
 			if(method.isEmpty()){
 				continue;
 			}
@@ -153,6 +154,7 @@ public class Optimizer {
 			//while d changes
 			boolean isChanging = true;
 			while(isChanging){
+				//System.out.println("isChanging = " + isChanging);
 				for(BasicBlock block : method){
 					
 					Set<BasicBlock> domSet = new HashSet<>();
@@ -180,6 +182,9 @@ public class Optimizer {
 					if(old_domSet.equals(domSet)){
 						isChanging = false;
 					}
+				}
+				if(method.size() <= 1){
+					isChanging = false;
 				}
 			}
 			//System.out.println(dominationTree);
