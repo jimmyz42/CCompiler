@@ -154,7 +154,7 @@ public class Optimizer {
 		//list of methods; contain list of basic blocks in methods
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 		for(List<BasicBlock> method : methods){
-			System.out.println("//////////////// NEW METHOD ////////////");
+			//System.out.println("//////////////// NEW METHOD ////////////");
 
 			//clear everything in ctx that needs to be cleared 
 			ctx.resetVarCount();
@@ -166,8 +166,14 @@ public class Optimizer {
 				block.numberVariables(ctx);
 			}
 
-			System.out.println("Var to Int Map ---------------");
-			System.out.println(ctx.getLivVarToInt());
+			//populating hashmaps for future use
+			for(BasicBlock block : method){
+				ctx.getBbLivVarToInt().put(block, ctx.getLivVarToInt());
+				ctx.getBbLivIntToVar().put(block, ctx.getLivIntToVar());
+			}
+
+			// System.out.println("Var to Int Map ---------------");
+			// System.out.println(ctx.getLivVarToInt());
 
 			for(BasicBlock block : method){
 				//create USE and DEF
@@ -175,11 +181,11 @@ public class Optimizer {
 				block.makeUseSet(ctx);
 			}
 
-			System.out.println("DEF --------------------");
-			System.out.println(ctx.getLivDef());
+			// System.out.println("DEF --------------------");
+			// System.out.println(ctx.getLivDef());
 
-			System.out.println("USE -------------------");
-			System.out.println(ctx.getLivUse());
+			// System.out.println("USE -------------------");
+			// System.out.println(ctx.getLivUse());
 
 			//calculate IN and OUT
 			for(BasicBlock block : method){
@@ -224,11 +230,11 @@ public class Optimizer {
 				}
 			}
 			
-			System.out.println("IN -------------");
-			System.out.println(ctx.getLivIn());
+			// System.out.println("IN -------------");
+			// System.out.println(ctx.getLivIn());
 
-			System.out.println("OUT -------------");
-			System.out.println(ctx.getLivOut());
+			// System.out.println("OUT -------------");
+			// System.out.println(ctx.getLivOut());
 
 		}
 	}
