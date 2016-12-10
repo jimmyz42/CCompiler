@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.LinkedList;
 
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.graph.DefaultEdge;
@@ -119,6 +120,9 @@ public class CFG {
 	}
 	
 	private void orderBlocks() {
+		//TODO: after createPreheader, 
+		// the same block is being put in orderedBlocks twice
+
 		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
 		Stack<BasicBlock> blockStack = new Stack<>();
 		Stack<Stack<BasicBlock>> blockStackStack = new Stack<>();
@@ -136,6 +140,9 @@ public class CFG {
 				blockStackStack.pop();
 
 			orderedBlocks.add(currentBlock);
+
+			System.out.println(currentBlock + " added to orderedBlocks");
+			System.out.println("Visited: " + visited);
 
 			if(currentBlock.getNextBlocks().size() > 1) {
 				blockStack = new Stack<>();
@@ -214,20 +221,54 @@ public class CFG {
 		Queue<BasicBlock> blockQueue = new ArrayDeque<>();
 		blockQueue.add(getEntryBlock());
 
+		//System.out.println("---- in genPrevBlocks() ------");
+
 		while(blockQueue.size() > 0) {
 			BasicBlock currentBlock = blockQueue.poll();
 			if(visited.contains(currentBlock)) continue;
 			else visited.add(currentBlock);
 
+			//System.out.println(currentBlock + " nextBlocks: " + currentBlock.getNextBlocks());
+
 			if(currentBlock.getNextBlocks().size() > 0){
+				//System.out.println(" - next block true: " + currentBlock.getNextBlock(true));
+
 				currentBlock.getNextBlock(true).addPreviousBlock(currentBlock);
 				blockQueue.add(currentBlock.getNextBlock(true));
 			}
 			if(currentBlock.getNextBlocks().size() > 1) {
+				//System.out.println(" - next block true: " + currentBlock.getNextBlock(false));
+
 				currentBlock.getNextBlock(false).addPreviousBlock(currentBlock);
 				blockQueue.add(currentBlock.getNextBlock(false));
 			}
 		}
+	}
+
+	public void barbieOrderBlocks(){
+		HashSet<BasicBlock> visited = new HashSet<BasicBlock>();
+        LinkedList<BasicBlock> blockStack = new LinkedList<>();
+        List<BasicBlock> ordered = new ArrayList<>();
+        blockStack.push(getEntryBlock());
+        int blockNum = 0;
+
+		while(!blockStack.isEmpty()) {
+			BasicBlock currentBlock = blockStack.pop();
+			if(visited.contains(currentBlock)) continue;
+			else visited.add(currentBlock);
+
+			ordered.add(currentBlock);
+
+
+			//push blocks in reverse order to pop in correct order
+			if(currentBlock.getNextBlocks().size() > 1) {
+				blockStack.add(currentBlock.getNextBlock(false));
+			}
+			if(currentBlock.getNextBlocks().size() > 0){
+				blockStack.add(currentBlock.getNextBlock(true));
+			}
+		}
+		this.orderedBlocks = ordered;
 	}
 
 	// Merge basic blocks optimization

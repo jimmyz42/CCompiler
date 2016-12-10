@@ -11,11 +11,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.LinkedList;
 
 import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.EnterBlock;
 import edu.mit.compilers.cfg.components.LeaveBlock;
+import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.descriptor.Descriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.Location;
@@ -82,8 +84,8 @@ public class Optimizer {
 				}
 				doConstantPropagation();
 			}
-			makeDominationTree();
 			doReachingDefinitions(); // is this for loop invariant code?
+			doLoopInvariantMotion();
 			doLiveness();
 			if(optsUsed.contains("dce")) {
 				doUnreachableCodeElimination();
@@ -130,6 +132,127 @@ public class Optimizer {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
 
 			currentBlock.doCopyPropagation(ctx);
+		}
+	}
+
+	public void doLoopInvariantMotion(){
+		System.out.println("doing loop invariant motion");
+		makeDominationTree();
+		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
+
+		System.out.println("Old ordered blocks ----");
+		for(BasicBlock b : orderedBlocks){
+			System.out.println(b);
+		}
+
+
+		for(List<BasicBlock> method : methods){
+			//find back edges 
+			List<Tuple<BasicBlock, BasicBlock>> backedges = findBackEdges(method);
+			//for each back edge, find set of blocks in loop
+			//aka - for each loop, do loop invariant motion
+			for(Tuple<BasicBlock, BasicBlock> edge : backedges){
+				Set<BasicBlock> loop = findLoop(method, edge.x, edge.y);
+				
+				//set/clear necessary ctx things
+				ctx.setCurrentLoop(loop);
+				ctx.getInvariantStmts().clear();
+				
+				for(BasicBlock block : loop){
+					//set ctx current block
+					ctx.setCurrentBlock(block);
+
+					block.detectLoopInvariantCode(ctx);
+				}
+
+				//create pre-header 
+				//note: edge.y is the header
+				removeInvariantCode(loop);
+				createPreheader(edge.y);
+
+				System.out.println("New ordered blocks ----");
+				for(BasicBlock b : orderedBlocks){
+					System.out.println(b);
+				}
+			}
+		}
+	}
+
+	public void removeInvariantCode(Set<BasicBlock> loop){
+		for(BasicBlock block : loop){
+			block.removeInvariantCode(ctx);
+		}
+	}
+
+	public void createPreheader(BasicBlock header){
+		//invariant code is in ctx.getInvariantStmts
+		BasicBlock preheader = new BasicBlock(new ArrayList(ctx.getInvariantStmts()));
+
+		//for all preds for header, point them to preheader insead of header
+		for(BasicBlock p : header.getPreviousBlocks()){
+			//if p is in the loop, don't set it to point to preheader
+			if(ctx.getCurrentLoop().contains(p)){
+				continue;
+			}
+			p.resetNextBlocks(Arrays.asList(preheader)); //TODO: might not work
+			preheader.addPreviousBlock(p);
+		}
+
+		preheader.resetNextBlocks(Arrays.asList(header));
+		header.setPreviousBlocks(Arrays.asList(preheader));
+
+		//recreate CFG with optimizations, and orderedBlocks regenerated 
+		BasicBlock startBlock = orderedBlocks.get(0);
+		BasicBlock endBlock = orderedBlocks.get(orderedBlocks.size() -1);
+
+		//note: preheader might get merged w/ block above it
+		orderedBlocks = CFG.createWithOptimizations(startBlock, endBlock).getOrderedBlocks();
+
+		// System.out.println("NEW CFG ---------------------------");
+		// StringWriter sw = new StringWriter();
+		// this.cfgPrint(new PrintWriter(sw), "");
+		// System.out.println(sw.toString());
+	}
+
+	//returns list of backedges in method as tuples where x: n, y: d
+	public List<Tuple<BasicBlock, BasicBlock>> findBackEdges(List<BasicBlock> method){
+		//make DomTree must be done before this
+		List<Tuple<BasicBlock, BasicBlock>> backEdges = new ArrayList<>();
+		for (BasicBlock n : method){
+			for(BasicBlock d: n.getNextBlocks()){
+				//System.out.println("Does " + d + " dominate " + n + "? " + dominationTree.get(n).contains(d) + " : " + dominationTree.get(n));
+				//does d dominate n?
+				if(dominationTree.get(n).contains(d)){
+					//yes! d is in n's dom set
+					backEdges.add(new Tuple<BasicBlock, BasicBlock>(n, d));
+				}
+			}
+		}
+		return backEdges;
+	}
+
+	//returns set of bbs in the loop contained w/in backedge head ---->? tail
+	public Set<BasicBlock> findLoop(List<BasicBlock> method, BasicBlock head, BasicBlock tail){
+		Set<BasicBlock> loop = new HashSet<>();
+		loop.add(tail);
+		Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
+		LinkedList<BasicBlock> stack = new LinkedList<>();
+		insert(loop, stack, head);
+		while(!stack.isEmpty()){
+			BasicBlock m = stack.pop();
+			for(BasicBlock p : m.getPreviousBlocks()){
+				if(allBlocksInMethod.contains(p)){
+					insert(loop, stack, p);
+				}
+			}
+		}
+		return loop;
+	}
+
+	private void insert(Set<BasicBlock> loop, LinkedList<BasicBlock> stack, BasicBlock m){
+		if(!loop.contains(m)){
+			loop.add(m);
+			stack.push(m);
 		}
 	}
 
@@ -204,10 +327,13 @@ public class Optimizer {
 				//new method
 				methods.add(new ArrayList<BasicBlock>());
 				isGlobal = false;
+				System.out.println("EnterBlock: " + block);
 			} else if (block instanceof LeaveBlock){
 				//end of method
 				methodNum++;
+				System.out.println("LeaveBlock: " + block);
 			} else if(!isGlobal){
+				System.out.println("adding " + block + " to method " + methodNum);
 				methods.get(methodNum).add(block);
 			}
 		}

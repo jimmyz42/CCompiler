@@ -156,6 +156,11 @@ public class NotExpr extends Expression {
     }
 
     @Override
+    public boolean isInvariantStmt(OptimizerContext ctx){
+    	return expression.isInvariantStmt(ctx);
+    }
+    
+    @Override
     public void doGlobalConstantPropagation(OptimizerContext ctx){
 		if(expression instanceof Location){
 			Location indexLoc = (Location)expression;

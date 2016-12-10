@@ -210,6 +210,19 @@ abstract public class BinOpExpr extends Expression {
 	}
 
 	@Override
+	public boolean isInvariantStmt(OptimizerContext ctx){
+		//TODO 
+		//check to see if all locations in expr ctx.areRDsOutsideLoop(var)
+		//OR are constants
+		//if yes - put assignStmt in ctx.invariableStmts
+
+		if(lhs.isInvariantStmt(ctx) && rhs.isInvariantStmt(ctx)){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public void doCSE(OptimizerContext ctx) {
 		Expression origLHS = lhs.clone();
 		if(ctx.getCSEAvailableExprs().contains(lhs) 

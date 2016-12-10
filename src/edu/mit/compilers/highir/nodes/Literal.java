@@ -77,6 +77,10 @@ abstract public class Literal extends Expression {
 		return hashCode() == obj.hashCode();
 	}
 	
+	@Override
+	public boolean isInvariantStmt(OptimizerContext ctx){
+		return true;
+	}
 	
 	@Override
 	public Expression clone() {

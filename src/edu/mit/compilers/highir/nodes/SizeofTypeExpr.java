@@ -88,6 +88,11 @@ public class SizeofTypeExpr extends Expression {
     public void doConstantPropagation(OptimizerContext ctx){
     }
 
+    @Override
+    public boolean isInvariantStmt(OptimizerContext ctx){
+    	return true;
+    }
+
 	@Override
     public int hashCode() {
         return ("sizeoftype" + ImmediateValue.create(this.type.getSize()).hashCode()).hashCode();

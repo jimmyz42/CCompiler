@@ -340,6 +340,10 @@ public class MethodCallExpr extends Expression {
 		}
 	}
 	
+	@Override
+	public boolean isInvariantStmt(OptimizerContext ctx){
+		return false;
+	}
 	
 	@Override
 	public Expression clone() {

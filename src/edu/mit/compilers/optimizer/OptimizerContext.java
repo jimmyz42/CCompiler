@@ -76,8 +76,47 @@ public class OptimizerContext {
 
 	//global cp
 	private BasicBlock currentBlock;
+	//Loop Opt
+	private Set<BasicBlock> currentLoop = new HashSet<>();
+	private Set<AssignStmt> invariantStmts = new HashSet<>();
 
 
+	public Set<AssignStmt> getInvariantStmts(){
+		return invariantStmts;
+	}
+	
+	public void setCurrentLoop(Set<BasicBlock> loop){
+		this.currentLoop = loop;
+	}
+
+	public Set<BasicBlock> getCurrentLoop(){
+		return currentLoop;
+	}
+
+	//for loop invariant motion
+	//note: must set ctx.currentBlock and ctx.currentLoop
+	public boolean areRDsOutsideLoop(VariableDescriptor var){
+		BitSet in = rdIn.get(currentBlock);
+		Set<Integer> defsForVar = bbVarToDefs.get(currentBlock).get(var);
+		for(Integer def : defsForVar){
+			if(in.get(def)){ //this definition reaches loop
+				if(isDefInLoop(def)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public boolean isDefInLoop(Integer def){
+		AssignStmt stmt = bbIntToAss.get(currentBlock).get(def);
+		for(BasicBlock block : currentLoop){
+			if(block.isDefInLoop(stmt)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public HashMap<BasicBlock, HashMap<VariableDescriptor, Integer>> getBbLivVarToInt(){
 		return bbLivVarToInt;

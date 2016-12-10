@@ -99,6 +99,11 @@ public class SizeofIdExpr extends Expression {
     public void doConstantPropagation(OptimizerContext ctx){
     }
 
+    @Override
+    public boolean isInvariantStmt(OptimizerContext ctx){
+    	return ctx.areRDsOutsideLoop(this.variable);
+    }
+
 	@Override
     public int hashCode() {
         return ("sizeofid" + ImmediateValue.create(this.variable.getType().getSize()).hashCode()).hashCode();

@@ -301,6 +301,13 @@ public class AssignStmt extends Statement implements Optimizable {
 		return number;
 	}
 
+	public void detectLoopInvariantCode(OptimizerContext ctx){
+		if (expression.isInvariantStmt(ctx)){
+			//put this is ctx.invariantStmts
+			ctx.getInvariantStmts().add(this);
+		}
+	}
+
 	@Override
 	public void doCSE(OptimizerContext ctx) {
 		// Save original expression since it may be modified by

@@ -113,6 +113,17 @@ public class BasicBlock extends CFG {
 		if(this.nextBlocks.size() == 0) this.nextBlocks = nextBlocks;
 	}
 
+	// //for inserting the preheader for loop optimizations
+	// @Override
+	// public void addPreviousBlock(BasicBlock prevBlock){
+	// 	this.prevBlocks.add(prevBlock);
+	// }
+
+	//for inserting the preheader for loop optimizations
+	public void resetNextBlocks(List<BasicBlock> nextBlocks){
+		this.nextBlocks = nextBlocks;
+	}
+
 	public void setCondition(Condition branchCondition) {
 		this.branchCondition = branchCondition;
 	}
@@ -350,6 +361,32 @@ public class BasicBlock extends CFG {
 			nextBlocks = Collections.singletonList((((BoolLiteral) branchCondition).getValue()? leftBlock:rightBlock));
 			branchCondition = null;
 		}
+	}
+
+	public void removeInvariantCode(OptimizerContext ctx){
+		components.removeAll(ctx.getInvariantStmts());
+	}
+	public void detectLoopInvariantCode(OptimizerContext ctx){
+		//look at each assignStmt
+		for(Optimizable component : components){
+			if(component instanceof AssignStmt){
+				AssignStmt stmt = (AssignStmt)component;
+				stmt.detectLoopInvariantCode(ctx);
+			}
+		}
+		//invariant if:
+		//	lhs and rhs constant
+		//	all reaching defs are outside loop
+		//	has exactly one rd, and that rd is invariant TODO
+	}
+
+	public boolean isDefInLoop(AssignStmt stmt){
+		for(Optimizable component : components){
+			if(component.equals(stmt)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

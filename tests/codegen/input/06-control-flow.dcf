@@ -4,16 +4,24 @@ extern printf();
 void main ( ) {
   int i, sum;
   int j;
+  int x,y;
   sum = 0;
+
+  x=0;
+  y=0;
+
   for ( j = 0; j < 10; j += 1 ) {
     sum += j;
+    x = 5;
   }
   if ( sum != 45 ) {
     printf ( "ERROR: for loop is bad (1)\n" );
   }
   i = 11;
+  y = x+1;
   for ( j = 10; j < 0; j += 1 ) {
     i += 1;
+    x = y + y + 7;
   }
   if ( i != 11 ) {
     printf ( "ERROR: for loop is bad (2)\n" );

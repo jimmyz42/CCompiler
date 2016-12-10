@@ -6,6 +6,7 @@ import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
+import edu.mit.compilers.optimizer.OptimizerContext;
 
 abstract public class Expression extends ExternArg {
     public static Expression create(DecafSemanticChecker checker, DecafParser.ExprContext ctx) {
@@ -24,4 +25,7 @@ abstract public class Expression extends ExternArg {
     public abstract Set<Location> getLocationsUsed();
     
     public abstract Expression clone();
+
+    //for loop invariants
+    public abstract boolean isInvariantStmt(OptimizerContext ctx);
 }

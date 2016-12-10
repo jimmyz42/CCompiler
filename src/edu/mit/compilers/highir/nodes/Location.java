@@ -65,6 +65,14 @@ abstract public class Location extends Expression {
         }
     }
 
+    @Override
+    public boolean isInvariantStmt(OptimizerContext ctx){
+        if(ctx.areRDsOutsideLoop(this.variable)){
+            return true;
+        }
+        return false;
+    }
+
 	@Override
 	public void doCSE(OptimizerContext ctx) {	
 	}
