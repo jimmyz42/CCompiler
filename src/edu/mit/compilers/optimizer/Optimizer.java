@@ -58,6 +58,11 @@ public class Optimizer {
 	
 	public void setOpts(boolean[] opts) {
 		optsUsed.clear();
+		System.out.println("Opts: ");
+		for(boolean b: opts){
+			System.out.println(b);
+		}
+
 		for(int i=0; i<optimizations.length; i++) {
 			if(opts[i]) optsUsed.add(optimizations[i]);
 		}
@@ -74,18 +79,21 @@ public class Optimizer {
 			ctx = new OptimizerContext();
 			if(optsUsed.contains("alg")) {
 				doAlgebraicSimplification(); // includes constant folding
-			} if(optsUsed.contains("cse")) {
+			} 
+			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
+			doLoopInvariantMotion();
+			
+			if(optsUsed.contains("cse")) {
 				generateTemporaries();
 				doGlobalCSE();
 				doLocalCSE();
-			} if(optsUsed.contains("cp")) {
+			} 
+			if(optsUsed.contains("cp")) {
 				for(int j = 0; j < 5; j++) {
 					doCopyPropagation();
 				}
 				doConstantPropagation();
 			}
-			doReachingDefinitions(); // is this for loop invariant code?
-			doLoopInvariantMotion();
 			//doLiveness();
 			if(optsUsed.contains("dce")) {
 				doUnreachableCodeElimination();
@@ -140,10 +148,10 @@ public class Optimizer {
 		makeDominationTree();
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 
-		System.out.println("Old ordered blocks ----");
-		for(BasicBlock b : orderedBlocks){
-			System.out.println(b);
-		}
+		// System.out.println("Old ordered blocks ----");
+		// for(BasicBlock b : orderedBlocks){
+		// 	System.out.println(b);
+		// }
 
 		for(List<BasicBlock> method : methods){
 			//find back edges 
@@ -174,10 +182,10 @@ public class Optimizer {
 				}
 				
 
-				System.out.println("New ordered blocks ----");
-				for(BasicBlock b : orderedBlocks){
-					System.out.println(b);
-				}
+				// System.out.println("New ordered blocks ----");
+				// for(BasicBlock b : orderedBlocks){
+				// 	System.out.println(b);
+				// }
 			}
 		}
 	}

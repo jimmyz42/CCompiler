@@ -116,6 +116,14 @@ public class ArrayLocation extends Location {
 	}
 
 	@Override
+	public boolean isInvariantStmt(OptimizerContext ctx){
+		if(index.isInvariantStmt(ctx)){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public Set<Descriptor> getConsumedDescriptors() {
 		Set<Descriptor> consumed = new HashSet<>();
 		consumed.add(variable);

@@ -302,7 +302,12 @@ public class AssignStmt extends Statement implements Optimizable {
 	}
 
 	public void detectLoopInvariantCode(OptimizerContext ctx){
-		if (expression.isInvariantStmt(ctx)){
+		if(location instanceof ArrayLocation){
+			ArrayLocation loc = (ArrayLocation)location;
+			if(loc.isInvariantStmt(ctx) && expression.isInvariantStmt(ctx)){
+				ctx.getInvariantStmts().add(this);
+			}
+		} else if (expression.isInvariantStmt(ctx)){
 			//put this is ctx.invariantStmts
 			ctx.getInvariantStmts().add(this);
 		}
