@@ -80,6 +80,7 @@ public class OptimizerContext {
 	private AssignStmt currentStmt;
 	private Set<BasicBlock> currentLoop = new HashSet<>();
 	private Set<AssignStmt> invariantStmts = new HashSet<>();
+	private boolean checkingLocation;
 
 
 	public Set<AssignStmt> getInvariantStmts(){
@@ -98,6 +99,10 @@ public class OptimizerContext {
 		return currentStmt;
 	}
 
+	public void setCheckingLocation(boolean checkingLocation){
+		this.checkingLocation = checkingLocation;
+	}
+
 	public Set<BasicBlock> getCurrentLoop(){
 		return currentLoop;
 	}
@@ -106,7 +111,7 @@ public class OptimizerContext {
 	//note: must set ctx.currentBlock and ctx.currentLoop
 	//note: if RD is the current stmt we're evaluating, it does not count
 	public boolean areRDsOutsideLoop(VariableDescriptor var){
-		System.out.println("In OptCtx, checking RDs for " + var + " in " + getCurrentBlock());
+		//System.out.println("In OptCtx, checking RDs for " + var + " in " + getCurrentBlock());
 
 		if(!rdIn.containsKey(currentBlock) || !bbVarToDefs.get(currentBlock).containsKey(var)){
 			return false;
@@ -119,6 +124,11 @@ public class OptimizerContext {
 		for(Integer def : defsForVar){
 
 			//todo: if def corresponds to this.currentStmt, continue
+			//but ONLY if we are checking location of assignStmt, not an expression
+			AssignStmt stmtOfDef = bbIntToAss.get(currentBlock).get(def);
+			if(stmtOfDef.equals(currentStmt) && checkingLocation){
+				continue;
+			}
 
 			if(in.get(def)){ //this definition reaches loop
 				if(isDefInLoop(def)){

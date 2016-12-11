@@ -302,9 +302,15 @@ public class AssignStmt extends Statement implements Optimizable {
 	}
 
 	public void detectLoopInvariantCode(OptimizerContext ctx){
+
+		ctx.setCheckingLocation(true);
+		boolean locIsInvariant = location.isInvariantStmt(ctx);
+		ctx.setCheckingLocation(false);
+
+		boolean exprIsInvariant = expression.isInvariantStmt(ctx);
 		
-		System.out.println(" - expr.isInvariantStmt: " + expression.isInvariantStmt(ctx));
-		System.out.println(" - loc.isInvariantStmt: " + location.isInvariantStmt(ctx));
+		// System.out.println(" - loc.isInvariantStmt: " + locIsInvariant);
+		// System.out.println(" - expr.isInvariantStmt: " + exprIsInvariant);
 
 		// if(location instanceof ArrayLocation){
 		// 	ArrayLocation loc = (ArrayLocation)location;
@@ -316,7 +322,7 @@ public class AssignStmt extends Statement implements Optimizable {
 		// 	ctx.getInvariantStmts().add(this);
 		// }
 
-		if(location.isInvariantStmt(ctx) && expression.isInvariantStmt(ctx)){
+		if(locIsInvariant && exprIsInvariant){
 			ctx.getInvariantStmts().add(this);
 		}
 	}
