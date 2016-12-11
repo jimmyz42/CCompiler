@@ -86,7 +86,7 @@ public class Optimizer {
 			}
 			doReachingDefinitions(); // is this for loop invariant code?
 			doLoopInvariantMotion();
-			doLiveness();
+			//doLiveness();
 			if(optsUsed.contains("dce")) {
 				doUnreachableCodeElimination();
 				//doDeadCodeEliminiation();

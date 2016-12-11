@@ -96,6 +96,9 @@ public class OptimizerContext {
 	//for loop invariant motion
 	//note: must set ctx.currentBlock and ctx.currentLoop
 	public boolean areRDsOutsideLoop(VariableDescriptor var){
+		if(!rdIn.containsKey(currentBlock) || !bbVarToDefs.get(currentBlock).containsKey(var)){
+			return false;
+		}
 		BitSet in = rdIn.get(currentBlock);
 		Set<Integer> defsForVar = bbVarToDefs.get(currentBlock).get(var);
 		for(Integer def : defsForVar){
