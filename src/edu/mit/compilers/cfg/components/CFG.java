@@ -308,7 +308,7 @@ public class CFG {
 		for(int blockNum = 0; blockNum < orderedBlocks.size()-1; blockNum++) {
 			BasicBlock b1 = orderedBlocks.get(blockNum);
 
-			if(b1.isEmpty() && b1.getNextBlocks().size() > 0) {
+			if(b1.isEmpty() && b1.getNextBlocks().size() > 0 && !b1.getDescription().equals("if block")) {
 				BasicBlock b2 = b1.getNextBlock();
 				if(b1 == entryBlock) entryBlock = b2;
 

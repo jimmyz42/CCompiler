@@ -86,7 +86,7 @@ public class Optimizer {
 			}
 			doReachingDefinitions(); // is this for loop invariant code?
 			doLoopInvariantMotion();
-			//doLiveness();
+			doLiveness();
 			if(optsUsed.contains("dce")) {
 				doUnreachableCodeElimination();
 				//doDeadCodeEliminiation();
@@ -140,10 +140,10 @@ public class Optimizer {
 		makeDominationTree();
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 
-		// System.out.println("Old ordered blocks ----");
-		// for(BasicBlock b : orderedBlocks){
-		// 	System.out.println(b);
-		// }
+		System.out.println("Old ordered blocks ----");
+		for(BasicBlock b : orderedBlocks){
+			System.out.println(b);
+		}
 
 		for(List<BasicBlock> method : methods){
 			//find back edges 
@@ -174,10 +174,10 @@ public class Optimizer {
 				}
 				
 
-				// System.out.println("New ordered blocks ----");
-				// for(BasicBlock b : orderedBlocks){
-				// 	System.out.println(b);
-				// }
+				System.out.println("New ordered blocks ----");
+				for(BasicBlock b : orderedBlocks){
+					System.out.println(b);
+				}
 			}
 		}
 	}

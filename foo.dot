@@ -13,9 +13,10 @@ digraph G {
   block11 [ label="block11: 1\ \>\ 2\l" ];
   block12 [ label="block12: printf\(\"ERROR\:\ true\ branch\ is\ bad\ \(2\)\\n\"\)\l\l" ];
   block13 [ label="block13: 1\ \<\ 2\l" ];
-  block17 [ label="block17: printf\(\"control\ flow\ OK\ if\ no\ previous\ output\\n\"\)\l\l" ];
-  block15 [ label="block15: *end\ of\ method*\l" ];
-  block16 [ label="block16: printf\(\"ERROR\:\ else\ branch\ is\ bad\ \(2\)\\n\"\)\l\l" ];
+  block14 [ label="block14: *if\ block*\l\l" ];
+  block16 [ label="block16: printf\(\"control\ flow\ OK\ if\ no\ previous\ output\\n\"\)\l\l" ];
+  block17 [ label="block17: *end\ of\ method*\l" ];
+  block15 [ label="block15: printf\(\"ERROR\:\ else\ branch\ is\ bad\ \(2\)\\n\"\)\l\l" ];
   block0 -> block1;
   block1 -> block2;
   block2 -> block3;
@@ -31,10 +32,11 @@ digraph G {
   block10 -> block11;
   block11 -> block12;
   block12 -> block13;
-  block13 -> block17;
-  block17 -> block15;
-  block13 -> block16;
+  block13 -> block14;
+  block14 -> block16;
   block16 -> block17;
+  block13 -> block15;
+  block15 -> block16;
   block11 -> block13;
   block9 -> block11;
   block4 -> block6;
