@@ -81,22 +81,22 @@ public class Optimizer {
 				doAlgebraicSimplification(); // includes constant folding
 			} 
 			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
-			doLoopInvariantMotion();
-			
+			//doLoopInvariantMotion();
+
 			if(optsUsed.contains("cse")) {
-				generateTemporaries();
-				doGlobalCSE();
-				doLocalCSE();
+				//generateTemporaries();
+				//doGlobalCSE();
+				//doLocalCSE();
 			} 
 			if(optsUsed.contains("cp")) {
 				for(int j = 0; j < 5; j++) {
-					doCopyPropagation();
+					//doCopyPropagation();
 				}
-				doConstantPropagation();
+				//doConstantPropagation();
 			}
 			//doLiveness();
 			if(optsUsed.contains("dce")) {
-				doUnreachableCodeElimination();
+				//doUnreachableCodeElimination();
 				//doDeadCodeEliminiation();
 			}
 		}
@@ -161,6 +161,9 @@ public class Optimizer {
 			for(Tuple<BasicBlock, BasicBlock> edge : backedges){
 				Set<BasicBlock> loop = findLoop(method, edge.x, edge.y);
 				
+				System.out.println("Dealing w loop consising of: ");
+				System.out.println(loop);
+
 				//set/clear necessary ctx things
 				ctx.setCurrentLoop(loop);
 				ctx.getInvariantStmts().clear();
@@ -508,8 +511,8 @@ public class Optimizer {
 				ctx.getBbIntToAss().put(block, ctx.getIntToAssignStmt());
 			}
 
-			// System.out.println("AssignStmtToInt-----------");
-			// System.out.println(ctx.prettyPrintAssignStmtToInt());
+			System.out.println("AssignStmtToInt-----------");
+			System.out.println(ctx.prettyPrintAssignStmtToInt());
 
 			// System.out.println("VarToDefs-----------------");
 			// System.out.println(ctx.prettyPrintVarToDefs());
@@ -520,11 +523,11 @@ public class Optimizer {
 				block.makeKillSet(ctx);
 			}
 
-			// System.out.println("Gen -----------------");
-			// System.out.println(ctx.getRdGen().toString());
+			System.out.println("Gen -----------------");
+			System.out.println(ctx.getRdGen().toString());
 
-			// System.out.println("Kill -----------------");
-			// System.out.println(ctx.getRdKill().toString());
+			System.out.println("Kill -----------------");
+			System.out.println(ctx.getRdKill().toString());
 
 			//calculate in and out sets 
 			for(BasicBlock block : method){

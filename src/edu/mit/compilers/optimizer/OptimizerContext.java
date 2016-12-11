@@ -77,6 +77,7 @@ public class OptimizerContext {
 	//global cp
 	private BasicBlock currentBlock;
 	//Loop Opt
+	private AssignStmt currentStmt;
 	private Set<BasicBlock> currentLoop = new HashSet<>();
 	private Set<AssignStmt> invariantStmts = new HashSet<>();
 
@@ -89,19 +90,36 @@ public class OptimizerContext {
 		this.currentLoop = loop;
 	}
 
+	public void setCurrentStmt(AssignStmt stmt){
+		this.currentStmt = stmt;
+	}
+
+	public AssignStmt getCurrentStmt(){
+		return currentStmt;
+	}
+
 	public Set<BasicBlock> getCurrentLoop(){
 		return currentLoop;
 	}
 
 	//for loop invariant motion
 	//note: must set ctx.currentBlock and ctx.currentLoop
+	//note: if RD is the current stmt we're evaluating, it does not count
 	public boolean areRDsOutsideLoop(VariableDescriptor var){
+		System.out.println("In OptCtx, checking RDs for " + var + " in " + getCurrentBlock());
+
 		if(!rdIn.containsKey(currentBlock) || !bbVarToDefs.get(currentBlock).containsKey(var)){
 			return false;
 		}
 		BitSet in = rdIn.get(currentBlock);
+
+		//System.out.println("rdIn[" + currentBlock + "] =" + in);
+
 		Set<Integer> defsForVar = bbVarToDefs.get(currentBlock).get(var);
 		for(Integer def : defsForVar){
+
+			//todo: if def corresponds to this.currentStmt, continue
+
 			if(in.get(def)){ //this definition reaches loop
 				if(isDefInLoop(def)){
 					return false;

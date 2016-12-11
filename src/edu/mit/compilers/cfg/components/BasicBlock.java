@@ -370,8 +370,11 @@ public class BasicBlock extends CFG {
 		//look at each assignStmt
 		for(Optimizable component : components){
 			if(component instanceof AssignStmt){
+				System.out.println("We got an assignStmt... detectLoopInvariantCode: BasicBlock=" + this + " component=" + component);
 				AssignStmt stmt = (AssignStmt)component;
+				ctx.setCurrentStmt(stmt);
 				stmt.detectLoopInvariantCode(ctx);
+				//TODO: why don't we run detectLoopInvariantCode on Block7 j=0??
 			}
 		}
 		//invariant if:
