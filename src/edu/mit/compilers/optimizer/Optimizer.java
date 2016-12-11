@@ -327,13 +327,13 @@ public class Optimizer {
 				//new method
 				methods.add(new ArrayList<BasicBlock>());
 				isGlobal = false;
-				System.out.println("EnterBlock: " + block);
+				//System.out.println("EnterBlock: " + block);
 			} else if (block instanceof LeaveBlock){
 				//end of method
 				methodNum++;
-				System.out.println("LeaveBlock: " + block);
+				//System.out.println("LeaveBlock: " + block);
 			} else if(!isGlobal){
-				System.out.println("adding " + block + " to method " + methodNum);
+				//System.out.println("adding " + block + " to method " + methodNum);
 				methods.get(methodNum).add(block);
 			}
 		}

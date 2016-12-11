@@ -141,8 +141,7 @@ public class CFG {
 
 			orderedBlocks.add(currentBlock);
 
-			System.out.println(currentBlock + " added to orderedBlocks");
-			System.out.println("Visited: " + visited);
+			//System.out.println(currentBlock + " added to orderedBlocks");
 
 			if(currentBlock.getNextBlocks().size() > 1) {
 				blockStack = new Stack<>();
