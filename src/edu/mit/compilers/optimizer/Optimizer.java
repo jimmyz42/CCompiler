@@ -140,11 +140,10 @@ public class Optimizer {
 		makeDominationTree();
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 
-		System.out.println("Old ordered blocks ----");
-		for(BasicBlock b : orderedBlocks){
-			System.out.println(b);
-		}
-
+		// System.out.println("Old ordered blocks ----");
+		// for(BasicBlock b : orderedBlocks){
+		// 	System.out.println(b);
+		// }
 
 		for(List<BasicBlock> method : methods){
 			//find back edges 
@@ -165,15 +164,20 @@ public class Optimizer {
 					block.detectLoopInvariantCode(ctx);
 				}
 
+				System.out.println("Invariant Code: " + ctx.getInvariantStmts());
+
 				//create pre-header 
 				//note: edge.y is the header
-				removeInvariantCode(loop);
-				createPreheader(edge.y);
-
-				System.out.println("New ordered blocks ----");
-				for(BasicBlock b : orderedBlocks){
-					System.out.println(b);
+				if(!ctx.getInvariantStmts().isEmpty()){
+					removeInvariantCode(loop);
+					createPreheader(edge.y);
 				}
+				
+
+				// System.out.println("New ordered blocks ----");
+				// for(BasicBlock b : orderedBlocks){
+				// 	System.out.println(b);
+				// }
 			}
 		}
 	}
@@ -186,7 +190,7 @@ public class Optimizer {
 
 	public void createPreheader(BasicBlock header){
 		//invariant code is in ctx.getInvariantStmts
-		BasicBlock preheader = new BasicBlock(new ArrayList(ctx.getInvariantStmts()));
+		BasicBlock preheader = new BasicBlock(new ArrayList<Optimizable>(ctx.getInvariantStmts()));
 
 		//for all preds for header, point them to preheader insead of header
 		for(BasicBlock p : header.getPreviousBlocks()){
@@ -199,7 +203,21 @@ public class Optimizer {
 		}
 
 		preheader.resetNextBlocks(Arrays.asList(header));
-		header.setPreviousBlocks(Arrays.asList(preheader));
+
+		//remove pointer(s) from header to blocks that pred(preheader)
+		List<BasicBlock> new_pred = new ArrayList<>();
+		new_pred.add(preheader);
+
+		//create set of pred(preheader)
+		Set<BasicBlock> preheader_pred_set = new HashSet<>(preheader.getPreviousBlocks());
+
+		for(BasicBlock pred : header.getPreviousBlocks()){
+			if(!preheader_pred_set.contains(pred)){
+				new_pred.add(pred);
+			}
+		}
+
+		header.setPreviousBlocks(new_pred);
 
 		//recreate CFG with optimizations, and orderedBlocks regenerated 
 		BasicBlock startBlock = orderedBlocks.get(0);
