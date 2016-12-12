@@ -2,6 +2,7 @@ package edu.mit.compilers.highir.descriptor;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -162,6 +163,56 @@ public class MethodDescriptor extends FunctionDescriptor {
 	public void numberVariables(OptimizerContext ctx){
 		for(VariableDescriptor arg : arguments){
 			arg.numberVariables(ctx);
+		}
+	}
+
+	public void numberDefinitions(OptimizerContext ctx){
+		for(VariableDescriptor arg : arguments){
+			int count = ctx.incrementAssignStmtCount();
+			ctx.getAssignStmtToInt().put(arg, count);
+		}
+	}
+
+	@Override
+	public void findVarToDefs(OptimizerContext ctx){
+		for(VariableDescriptor var : arguments){
+			Integer defNum = ctx.getAssignStmtToInt().get(var);
+			if(ctx.getVarToDefs().containsKey(var)){
+				//already exists, so add num to set
+				ctx.getVarToDefs().get(var).add(defNum);
+			} else {
+				//doesn't exists yet, so put
+				ctx.getVarToDefs().put(var, new HashSet<>(Arrays.asList(defNum)));
+			}
+		}
+	}
+
+	public void makeGenSet(OptimizerContext ctx, BitSet genSet){
+		for(VariableDescriptor var : arguments){
+			//have we already set a gen for this variable? if so, 0.
+			Set<Integer> defsForVar = ctx.getVarToDefs().get(var);
+			for(Integer def : defsForVar){
+				//if another bit for this variable is already set to true, we set this one to zero
+				//because we are iterating backwards through the bb components
+				if(genSet.get(def)){ 
+					return;
+				}
+			}
+			Integer defNum = ctx.getAssignStmtToInt().get(var);
+			genSet.set(defNum);
+		}
+	}
+
+	public void makeKillSet(OptimizerContext ctx, BitSet killSet){
+		for(VariableDescriptor var : arguments){
+			//killset: bit is 1 if def is killed 
+			Set<Integer> defsForVar = ctx.getVarToDefs().get(var);
+			Integer defNum = ctx.getAssignStmtToInt().get(var);
+			for (Integer def : defsForVar){
+				if (def != defNum){ //def is not for THIS statement 
+					killSet.set(def);
+				}
+			}
 		}
 	}
 

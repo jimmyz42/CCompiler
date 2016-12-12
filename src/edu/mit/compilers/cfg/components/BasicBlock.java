@@ -286,9 +286,11 @@ public class BasicBlock extends CFG {
 		}
 	}
 	
+	//Note: each arg in MethodDescriptor counts as a separate defintition
 	public void numberDefinitions(OptimizerContext ctx){
 		for(Optimizable component : components){
-			if(component instanceof AssignStmt){
+			if(component instanceof AssignStmt
+				|| component instanceof MethodDescriptor){
 				component.numberDefinitions(ctx);
 			}
 		}
@@ -308,7 +310,7 @@ public class BasicBlock extends CFG {
 
 	public void findVarToDefs(OptimizerContext ctx){
 		for(Optimizable component : components){
-			if(component instanceof AssignStmt){
+			if(component instanceof AssignStmt || component instanceof MethodDescriptor){
 				component.findVarToDefs(ctx);
 			}
 		}
@@ -345,6 +347,9 @@ public class BasicBlock extends CFG {
 			if(components.get(i) instanceof AssignStmt){
 				AssignStmt stmt = (AssignStmt)components.get(i);
 				stmt.makeGenSet(ctx, rdGen);
+			} else if(components.get(i) instanceof MethodDescriptor){
+				MethodDescriptor meth = (MethodDescriptor)components.get(i);
+				meth.makeGenSet(ctx, rdGen);
 			}
 		}
 		ctx.getRdGen().put(this, rdGen);
@@ -356,6 +361,9 @@ public class BasicBlock extends CFG {
 			if(component instanceof AssignStmt){
 				AssignStmt stmt = (AssignStmt)component;
 				stmt.makeKillSet(ctx, rdKill);
+			} else if(components instanceof MethodDescriptor){
+				MethodDescriptor meth = (MethodDescriptor)component;
+				meth.makeKillSet(ctx, rdKill);
 			}
 		}
 		ctx.getRdKill().put(this, rdKill);
@@ -389,7 +397,7 @@ public class BasicBlock extends CFG {
 		//	has exactly one rd, and that rd is invariant TODO
 	}
 
-	public boolean isDefInLoop(AssignStmt stmt){
+	public boolean isDefInLoop(Optimizable stmt){
 		for(Optimizable component : components){
 			if(component.equals(stmt)){
 				return true;

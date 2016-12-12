@@ -43,11 +43,11 @@ public class OptimizerContext {
 	//reaching definitions:
 	//numbering definitions
 	private int assignStmtCount = 0;
-	private HashMap<AssignStmt, Integer> assignStmtToInt = new HashMap<>();
-	private HashMap<Integer, AssignStmt> intToAssignStmt = new HashMap<>();
+	private HashMap<Optimizable, Integer> assignStmtToInt = new HashMap<>();
+	private HashMap<Integer, Optimizable> intToAssignStmt = new HashMap<>();
 	//info per bb
-	private HashMap<BasicBlock, HashMap<Integer, AssignStmt>> bbIntToAss = new HashMap<>();
-	private HashMap<BasicBlock, HashMap<AssignStmt, Integer>> bbAssToInt = new HashMap<>();
+	private HashMap<BasicBlock, HashMap<Integer, Optimizable>> bbIntToAss = new HashMap<>();
+	private HashMap<BasicBlock, HashMap<Optimizable, Integer>> bbAssToInt = new HashMap<>();
 	private HashMap<BasicBlock, HashMap<VariableDescriptor, Set<Integer>>> bbVarToDefs = new HashMap<>();;
 	//finding what defs map to a var
 	private HashMap<VariableDescriptor, Set<Integer>> varToDefs = new HashMap<>();
@@ -125,7 +125,7 @@ public class OptimizerContext {
 
 			//todo: if def corresponds to this.currentStmt, continue
 			//but ONLY if we are checking location of assignStmt, not an expression
-			AssignStmt stmtOfDef = bbIntToAss.get(currentBlock).get(def);
+			Optimizable stmtOfDef = bbIntToAss.get(currentBlock).get(def);
 			if(stmtOfDef.equals(currentStmt) && checkingLocation){
 				continue;
 			}
@@ -140,7 +140,7 @@ public class OptimizerContext {
 	}
 
 	public boolean isDefInLoop(Integer def){
-		AssignStmt stmt = bbIntToAss.get(currentBlock).get(def);
+		Optimizable stmt = bbIntToAss.get(currentBlock).get(def);
 		for(BasicBlock block : currentLoop){
 			if(block.isDefInLoop(stmt)){
 				return true;
@@ -181,11 +181,11 @@ public class OptimizerContext {
 		return bbVarToDefs;
 	}
 
-	public HashMap<BasicBlock, HashMap<AssignStmt, Integer>> getBbAssToInt(){
+	public HashMap<BasicBlock, HashMap<Optimizable, Integer>> getBbAssToInt(){
 		return bbAssToInt;
 	}
 
-	public HashMap<BasicBlock, HashMap<Integer, AssignStmt>> getBbIntToAss(){
+	public HashMap<BasicBlock, HashMap<Integer, Optimizable>> getBbIntToAss(){
 		return bbIntToAss;
 	}
 
@@ -234,7 +234,7 @@ public class OptimizerContext {
 		return currentBlock;
 	}
 
-	public HashMap<Integer, AssignStmt> getIntToAssignStmt(){
+	public HashMap<Integer, Optimizable> getIntToAssignStmt(){
 		return intToAssignStmt;
 	}
 
@@ -269,14 +269,14 @@ public class OptimizerContext {
 	
 	public String prettyPrintAssignStmtToInt(){
 		String s = "";
-		for(AssignStmt stmt : getAssignStmtToInt().keySet()){
+		for(Optimizable stmt : getAssignStmtToInt().keySet()){
 			s += stmt.toString() + ": ";
 			s += getAssignStmtToInt().get(stmt).toString() + "\n";
 		}
 		return s;
 	}
 
-	public HashMap<AssignStmt, Integer> getAssignStmtToInt(){
+	public HashMap<Optimizable, Integer> getAssignStmtToInt(){
 		return assignStmtToInt;
 	}	
 

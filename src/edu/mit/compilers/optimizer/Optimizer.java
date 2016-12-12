@@ -457,7 +457,7 @@ public class Optimizer {
 
 	// this calculates reachindDefs w/in each method, and does constant/copy propagation
 	public void doReachingDefinitions(){
-		//System.out.println("DOING REACHING DEFS");
+		System.out.println("DOING REACHING DEFS");
 
 		//list of methods; contain list of basic blocks in methods
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
@@ -467,7 +467,7 @@ public class Optimizer {
 
 		//CTX regains all info PER METHOD. Loses info once new method entered
 		for(List<BasicBlock> method : methods){
-			//System.out.println("//////////////// NEW METHOD ////////////");
+			System.out.println("//////////////// NEW METHOD ////////////");
 			if(method.isEmpty()){
 				continue;
 			}
@@ -490,7 +490,7 @@ public class Optimizer {
 			}
 
 			//make intToAssignStmt
-			for(AssignStmt stmt : ctx.getAssignStmtToInt().keySet()){
+			for(Optimizable stmt : ctx.getAssignStmtToInt().keySet()){
 				ctx.getIntToAssignStmt().put(ctx.getAssignStmtToInt().get(stmt), stmt);
 			}
 
@@ -506,11 +506,11 @@ public class Optimizer {
 				ctx.getBbIntToAss().put(block, ctx.getIntToAssignStmt());
 			}
 
-			// System.out.println("AssignStmtToInt-----------");
-			// System.out.println(ctx.prettyPrintAssignStmtToInt());
+			System.out.println("AssignStmtToInt-----------");
+			System.out.println(ctx.prettyPrintAssignStmtToInt());
 
-			// System.out.println("VarToDefs-----------------");
-			// System.out.println(ctx.prettyPrintVarToDefs());
+			System.out.println("VarToDefs-----------------");
+			System.out.println(ctx.prettyPrintVarToDefs());
 
 			//for each basic block, instantiate gen and kill sets
 			for(BasicBlock block : method){
@@ -518,11 +518,11 @@ public class Optimizer {
 				block.makeKillSet(ctx);
 			}
 
-			// System.out.println("Gen -----------------");
-			// System.out.println(ctx.getRdGen().toString());
+			System.out.println("Gen -----------------");
+			System.out.println(ctx.getRdGen().toString());
 
-			// System.out.println("Kill -----------------");
-			// System.out.println(ctx.getRdKill().toString());
+			System.out.println("Kill -----------------");
+			System.out.println(ctx.getRdKill().toString());
 
 			//calculate in and out sets 
 			for(BasicBlock block : method){
@@ -582,11 +582,11 @@ public class Optimizer {
 			}
 
 
-			// System.out.println("In -----------------");
-			// System.out.println(ctx.getRdIn().toString());
+			System.out.println("In -----------------");
+			System.out.println(ctx.getRdIn().toString());
 
-			// System.out.println("Out -----------------");
-			// System.out.println(ctx.getRdOut().toString());
+			System.out.println("Out -----------------");
+			System.out.println(ctx.getRdOut().toString());
 
 			//in/out done! 
 
