@@ -597,7 +597,7 @@ public class Optimizer {
 				//	ctx.getVarToDefs() - which defs reassign var 
 				//	ctx.getAssignStmtToInt()
 				ctx.setCurrentBlock(block);
-				block.doGlobalConstantPropagation(ctx);
+				//block.doGlobalConstantPropagation(ctx);
 			}
 		}
 	}
