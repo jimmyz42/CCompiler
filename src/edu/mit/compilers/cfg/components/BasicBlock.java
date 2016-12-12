@@ -320,6 +320,9 @@ public class BasicBlock extends CFG {
 			if(component instanceof AssignStmt){
 				AssignStmt stmt = (AssignStmt)component;
 				stmt.makeDefSet(ctx, livDef);
+			} else if(component instanceof MethodDescriptor){
+				MethodDescriptor meth = (MethodDescriptor)component;
+				meth.makeDefSet(ctx, livDef);
 			}
 		}
 		ctx.getLivDef().put(this, livDef);

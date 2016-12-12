@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGContext;
 import edu.mit.compilers.cfg.components.BasicBlock;
@@ -161,6 +162,15 @@ public class MethodDescriptor extends FunctionDescriptor {
 	public void numberVariables(OptimizerContext ctx){
 		for(VariableDescriptor arg : arguments){
 			arg.numberVariables(ctx);
+		}
+	}
+
+	public void makeDefSet(OptimizerContext ctx, BitSet defSet){
+		for(VariableDescriptor var : arguments){
+			if(ctx.getLivVarToInt().containsKey(var)){
+				Integer i = ctx.getLivVarToInt().get(var);
+				defSet.set(i);
+			}
 		}
 	}
 
