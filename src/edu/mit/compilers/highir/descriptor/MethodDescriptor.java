@@ -158,6 +158,12 @@ public class MethodDescriptor extends FunctionDescriptor {
 		return Collections.emptySet();
 	}
 
+	public void numberVariables(OptimizerContext ctx){
+		for(VariableDescriptor arg : arguments){
+			arg.numberVariables(ctx);
+		}
+	}
+
 	@Override
 	public List<Optimizable> generateTemporaries(OptimizerContext context, boolean skipGeneration) {
 		context.getCSEDeclaredTemps().clear();
