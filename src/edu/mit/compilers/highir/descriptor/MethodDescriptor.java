@@ -139,7 +139,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 				default:
 					//starting position at 2 because first param is at +16(%rbp)
 					node.setStackPosition(j, PARAMS_IN_REGS - 2 - i, ctx);
-				}	
+				}
 			}
 		}
     }
@@ -148,7 +148,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 	public long getNumStackAllocations() {
 		return Math.min(arguments.size(), 6);
 	}
-	
+
 	@Override
 	public Set<Descriptor> getConsumedDescriptors() {
 		return new HashSet<Descriptor>(arguments);
@@ -156,7 +156,7 @@ public class MethodDescriptor extends FunctionDescriptor {
 
 	@Override
 	public Set<Descriptor> getGeneratedDescriptors() {
-		return Collections.emptySet();
+		return new HashSet<Descriptor>(arguments);
 	}
 
 	public void numberVariables(OptimizerContext ctx){
