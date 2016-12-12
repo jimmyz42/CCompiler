@@ -121,7 +121,7 @@ abstract public class BinOpExpr extends Expression {
 			//check all reaching definitions
 			if(ctx.getVarToDefs().containsKey(var)){
 
-				System.out.println("lhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
+				//System.out.println("lhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
 
 				for(Integer def : ctx.getVarToDefs().get(var)){
 					//is this definition alive?
@@ -165,7 +165,7 @@ abstract public class BinOpExpr extends Expression {
 			//check all reaching definitions
 			if(ctx.getVarToDefs().containsKey(var)){
 
-				System.out.println("rhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
+				//System.out.println("rhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
 
 				for(Integer def : ctx.getVarToDefs().get(var)){
 					//is this definition alive? 

@@ -19,6 +19,7 @@ import edu.mit.compilers.cfg.components.EnterBlock;
 import edu.mit.compilers.cfg.components.LeaveBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.nodes.Expression;
 import edu.mit.compilers.highir.nodes.Location;
 import edu.mit.compilers.highir.nodes.AssignStmt;
@@ -139,7 +140,7 @@ public class Optimizer {
 	}
 
 	public void doLoopInvariantMotion(){
-		System.out.println("doing loop invariant motion");
+		//System.out.println("doing loop invariant motion");
 		makeDominationTree();
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 
@@ -467,13 +468,16 @@ public class Optimizer {
 
 		//CTX regains all info PER METHOD. Loses info once new method entered
 		for(List<BasicBlock> method : methods){
-			//System.out.println("//////////////// NEW METHOD ////////////");
+			// System.out.println("//////////////// NEW METHOD ////////////");
+			// System.out.println("Blocks in method: " + method);
+			
 			if(method.isEmpty()){
 				continue;
 			}
 			//clear everything in ctx that needs to be cleared 
 			ctx.resetAssignStmtCount();
 			ctx.getAssignStmtToInt().clear();
+			ctx.getIntToAssignStmt().clear();
 			ctx.getVarToDefs().clear();
 
 			//clearing these is not necessary
@@ -499,15 +503,31 @@ public class Optimizer {
 				block.findVarToDefs(ctx);
 			}
 
+			//make copies maps to save
+			HashMap<Optimizable, Integer> assignStmtToInt_copy = new HashMap<>();
+			HashMap<Integer, Optimizable> intToAssignStmt_copy = new HashMap<>();
+			HashMap<VariableDescriptor, Set<Integer>> varToDefs_copy = new HashMap<>();
+
+			for(Optimizable key : ctx.getAssignStmtToInt().keySet()){
+				assignStmtToInt_copy.put(key, ctx.getAssignStmtToInt().get(key));
+			}
+			for(Integer key : ctx.getIntToAssignStmt().keySet()){
+				intToAssignStmt_copy.put(key, ctx.getIntToAssignStmt().get(key));
+			}
+			for(VariableDescriptor key : ctx.getVarToDefs().keySet()){
+				varToDefs_copy.put(key, ctx.getVarToDefs().get(key));
+			}
+
 			//populate maps for RD use outside this function
 			for(BasicBlock block : method){
-				ctx.getBbVarToDefs().put(block, ctx.getVarToDefs());
-				ctx.getBbAssToInt().put(block, ctx.getAssignStmtToInt());
-				ctx.getBbIntToAss().put(block, ctx.getIntToAssignStmt());
+				ctx.getBbVarToDefs().put(block, varToDefs_copy);
+				ctx.getBbAssToInt().put(block, assignStmtToInt_copy);
+				ctx.getBbIntToAss().put(block, intToAssignStmt_copy);
 			}
 
 			// System.out.println("AssignStmtToInt-----------");
 			// System.out.println(ctx.prettyPrintAssignStmtToInt());
+			// System.out.println("bbAssToInt: " + ctx.getBbAssToInt());
 
 			// System.out.println("VarToDefs-----------------");
 			// System.out.println(ctx.prettyPrintVarToDefs());
