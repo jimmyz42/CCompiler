@@ -202,7 +202,50 @@ public class AssignStmt extends Statement implements Optimizable {
 
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){
-		expression.doGlobalConstantPropagation(ctx);
+		if(expression instanceof Location){
+			Location lhsLoc = (Location)expression;
+			VariableDescriptor var = lhsLoc.getVariable();
+			List<Long> consts = new ArrayList<>();
+			boolean allConst = true;
+			//TODO: also check w/ gen in block
+			//check all reaching definitions
+			if(ctx.getVarToDefs().containsKey(var)){
+
+				System.out.println("lhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
+
+				for(Integer def : ctx.getVarToDefs().get(var)){
+					//is this definition alive?
+					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
+						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
+							//does it assign var to const?
+							Optimizable stmt = ctx.getIntToAssignStmt().get(def);
+							//if it was a method arg
+							if(stmt instanceof VariableDescriptor){
+								continue;
+							}
+
+							AssignStmt assignStmt = (AssignStmt)stmt;
+
+							if(assignStmt.assignsToConstant()){
+								consts.add(assignStmt.whatConst());
+							} else {
+								allConst = false;
+							}
+						}						
+					}
+				}
+			}
+
+			//if all assign var to same const
+			//replace with constant
+			if(allConst){
+				if(consts.size() == 1){
+					expression = new IntLiteral(consts.get(0));
+				}
+			}
+		}else{
+			expression.doGlobalConstantPropagation(ctx);
+		}
 	}
 
 	@Override

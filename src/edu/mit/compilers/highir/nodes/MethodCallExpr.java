@@ -329,7 +329,7 @@ public class MethodCallExpr extends Expression {
 					}
 				}
 			} else
-				arguments.get(i).doConstantPropagation(ctx);
+				arguments.get(i).doGlobalConstantPropagation(ctx);
 		}
 	}
 

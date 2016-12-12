@@ -69,32 +69,37 @@ public class Optimizer {
 		//modifications have been made in Optimizer Context
 		//using a constant like this is a dirty Hack
 
-		for(int i = 0; i < 1; i++) {
-			// reset optimizer to clear set/maps from prev iteration
-			ctx = new OptimizerContext();
-			if(optsUsed.contains("alg")) {
-				doAlgebraicSimplification(); // includes constant folding
-			} 
-			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
-			doLoopInvariantMotion();
+		doAlgebraicSimplification();
+		doReachingDefinitions();
+		doConstantPropagation();
 
-			if(optsUsed.contains("cse")) {
-				//generateTemporaries();
-				//doGlobalCSE();
-				//doLocalCSE();
-			} 
-			if(optsUsed.contains("cp")) {
-				for(int j = 0; j < 5; j++) {
-					//doCopyPropagation();
-				}
-				//doConstantPropagation();
-			}
-			//doLiveness();
-			if(optsUsed.contains("dce")) {
-				//doUnreachableCodeElimination();
-				//doDeadCodeEliminiation();
-			}
-		}
+
+		// for(int i = 0; i < 1; i++) {
+		// 	// reset optimizer to clear set/maps from prev iteration
+		// 	ctx = new OptimizerContext();
+		// 	if(optsUsed.contains("alg")) {
+		// 		doAlgebraicSimplification(); // includes constant folding
+		// 	} 
+		// 	doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
+		// 	doLoopInvariantMotion();
+
+		// 	if(optsUsed.contains("cse")) {
+		// 		//generateTemporaries();
+		// 		//doGlobalCSE();
+		// 		//doLocalCSE();
+		// 	} 
+		// 	if(optsUsed.contains("cp")) {
+		// 		for(int j = 0; j < 5; j++) {
+		// 			//doCopyPropagation();
+		// 		}
+		// 		doConstantPropagation();
+		// 	}
+		// 	//doLiveness();
+		// 	if(optsUsed.contains("dce")) {
+		// 		//doUnreachableCodeElimination();
+		// 		//doDeadCodeEliminiation();
+		// 	}
+		// }
 	}
 
 	public void doAlgebraicSimplification() {
@@ -597,7 +602,8 @@ public class Optimizer {
 				//	ctx.getVarToDefs() - which defs reassign var 
 				//	ctx.getAssignStmtToInt()
 				ctx.setCurrentBlock(block);
-				//block.doGlobalConstantPropagation(ctx);
+				System.out.println("Current Block = " + block + " -------");
+				block.doGlobalConstantPropagation(ctx);
 			}
 		}
 	}

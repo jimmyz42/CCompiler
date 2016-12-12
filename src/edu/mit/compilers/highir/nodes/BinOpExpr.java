@@ -120,6 +120,9 @@ abstract public class BinOpExpr extends Expression {
 			//TODO: also check w/ gen in block
 			//check all reaching definitions
 			if(ctx.getVarToDefs().containsKey(var)){
+
+				System.out.println("lhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
+
 				for(Integer def : ctx.getVarToDefs().get(var)){
 					//is this definition alive?
 					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
@@ -151,7 +154,7 @@ abstract public class BinOpExpr extends Expression {
 				}
 			}
 		} else
-			lhs.doConstantPropagation(ctx);
+			lhs.doGlobalConstantPropagation(ctx);
 		
 		if(rhs instanceof Location){
 			Location rhsLoc = (Location)rhs;
@@ -161,6 +164,9 @@ abstract public class BinOpExpr extends Expression {
 
 			//check all reaching definitions
 			if(ctx.getVarToDefs().containsKey(var)){
+
+				System.out.println("rhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
+
 				for(Integer def : ctx.getVarToDefs().get(var)){
 					//is this definition alive? 
 					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
@@ -193,7 +199,7 @@ abstract public class BinOpExpr extends Expression {
 				}
 			}
 		} else
-			rhs.doConstantPropagation(ctx);
+			rhs.doGlobalConstantPropagation(ctx);
 	}
 
 	@Override
