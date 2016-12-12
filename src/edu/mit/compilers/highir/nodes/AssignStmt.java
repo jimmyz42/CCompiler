@@ -202,7 +202,7 @@ public class AssignStmt extends Statement implements Optimizable {
 
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){
-		if(expression instanceof Location){
+		if(expression instanceof IdLocation){
 			Location lhsLoc = (Location)expression;
 			VariableDescriptor var = lhsLoc.getVariable();
 			List<Long> consts = new ArrayList<>();
