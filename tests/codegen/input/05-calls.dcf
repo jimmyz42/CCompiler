@@ -2,6 +2,7 @@
 
 extern printf();
 int add ( int a, int b ) {
+  a = 0;
   a = a + b;
   return ( a + b );
 }
