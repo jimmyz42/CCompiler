@@ -1,0 +1,35 @@
+
+#define int long long
+
+extern printf();
+// test as many operators as we can
+void main ( ) {
+  int a, b, c;
+  a = 0;
+  b = 0;
+  c = 0;
+  a = 1;
+  b = 2;
+  c = 2;
+  if ( a < b ) {
+    printf ( "a < b is correct\n" );
+  }
+  if ( a <= b ) {
+    printf ( "a <= b is correct\n" );
+  }
+  if ( a > b ) {
+    printf ( "a > b is incorrect\n" );
+  }
+  if ( a >= b ) {
+    printf ( "a >= b is incorrect\n" );
+  }
+  if ( c < b ) {
+    printf ( "c < b is incorrect\n" );
+  }
+  if ( c <= b ) {
+    printf ( "c <= b is correct\n" );
+  }
+  if ( c > b ) {
+    printf ( "c > b is incorrect\n" );
+  }
+}

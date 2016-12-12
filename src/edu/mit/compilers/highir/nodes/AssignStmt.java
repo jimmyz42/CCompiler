@@ -268,14 +268,14 @@ public class AssignStmt extends Statement implements Optimizable {
 
 	public void makeGenSet(OptimizerContext ctx, BitSet genSet){
 		//have we already set a gen for this variable? if so, 0.
-		// Set<Integer> defsForVar = ctx.getVarToDefs().get(this.location.getVariable());
-		// for(Integer def : defsForVar){
-		// 	//if another bit for this variable is already set to true, we set this one to zero
-		// 	//because we are iterating backwards through the bb components
-		// 	if(genSet.get(def)){ 
-		// 		return;
-		// 	}
-		// }
+		Set<Integer> defsForVar = ctx.getVarToDefs().get(this.location.getVariable());
+		for(Integer def : defsForVar){
+			//if another bit for this variable is already set to true, we set this one to zero
+			//because we are iterating backwards through the bb components
+			if(genSet.get(def)){ 
+				return;
+			}
+		}
 
 		genSet.set(this.number);
 	}
