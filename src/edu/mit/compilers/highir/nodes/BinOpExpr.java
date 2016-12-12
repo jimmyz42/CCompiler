@@ -125,9 +125,16 @@ abstract public class BinOpExpr extends Expression {
 					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
 						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
 							//does it assign var to const?
-							AssignStmt stmt = ctx.getIntToAssignStmt().get(def);
-							if(stmt.assignsToConstant()){
-								consts.add(stmt.whatConst());
+							Optimizable stmt = ctx.getIntToAssignStmt().get(def);
+							//if it was a method arg
+							if(stmt instanceof VariableDescriptor){
+								continue;
+							}
+
+							AssignStmt assignStmt = (AssignStmt)stmt;
+
+							if(assignStmt.assignsToConstant()){
+								consts.add(assignStmt.whatConst());
 							} else {
 								allConst = false;
 							}
@@ -159,10 +166,17 @@ abstract public class BinOpExpr extends Expression {
 					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
 						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
 							//does it assign var to const?
-							AssignStmt stmt = ctx.getIntToAssignStmt().get(def);
-							if(stmt.assignsToConstant()){
-								consts.add(stmt.whatConst());
-							}else{
+							Optimizable stmt = ctx.getIntToAssignStmt().get(def);
+							//if it was a method arg
+							if(stmt instanceof VariableDescriptor){
+								continue;
+							}
+
+							AssignStmt assignStmt = (AssignStmt)stmt;
+
+							if(assignStmt.assignsToConstant()){
+								consts.add(assignStmt.whatConst());
+							} else {
 								allConst = false;
 							}
 						}						

@@ -21,6 +21,12 @@ public abstract class VariableDescriptor extends Descriptor {
 		this.isTemp = false;
 	}
 
+	public Boolean assignsToConstant(){
+		//this gets called when VarDesc is an argument in a method
+		//we have no idea what it's assigned
+		return false;
+	}
+
 	public void setToTemp(){
 		this.isTemp = true;
 	}
