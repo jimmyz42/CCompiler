@@ -75,10 +75,12 @@ public class Optimizer {
 			ctx = new OptimizerContext();
 			if(optsUsed.contains("alg")) {
 				doAlgebraicSimplification(); // includes constant folding
-			} 
+			}
+			generateTemporaries();
 			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
 			doGlobalConstantPropagation();
 			doLoopInvariantMotion();
+			//doConstantPropagation();
 
 			if(optsUsed.contains("cse")) {
 				//generateTemporaries();
@@ -86,6 +88,7 @@ public class Optimizer {
 				//doLocalCSE();
 			} 
 			if(optsUsed.contains("cp")) {
+				System.out.println("OptsUse cp=1");
 				for(int j = 0; j < 5; j++) {
 					//doCopyPropagation();
 				}
@@ -341,6 +344,7 @@ public class Optimizer {
 	}
 
 	//takes orderedBlocks and splits it into lists by method
+	//note: puts global blocks in list ctx.getGlobalBlocks()
 	private List<List<BasicBlock>> getMethods(List<BasicBlock> orderedBlocks){
 		List<List<BasicBlock>> methods = new ArrayList<>(); 
 		int methodNum = 0;
@@ -361,6 +365,8 @@ public class Optimizer {
 			} else if(!isGlobal){
 				//System.out.println("adding " + block + " to method " + methodNum);
 				methods.get(methodNum).add(block);
+			} else {
+				ctx.getGlobalBlocks().add(block);
 			}
 		}
 		return methods;
@@ -457,6 +463,169 @@ public class Optimizer {
 		}
 	}
 
+	public void reachingDefsHelper(List<BasicBlock> method, boolean isGlobal){
+		// System.out.println("//////////////// NEW METHOD ////////////");
+		// System.out.println("Blocks in method: " + method);
+		
+		if(method.isEmpty()){
+			return;
+		}
+		//clear everything in ctx that needs to be cleared 
+		ctx.resetAssignStmtCount(); //reset AssignStmtCount sets it to = globalAssCount
+		ctx.getAssignStmtToInt().clear();
+		ctx.getIntToAssignStmt().clear();
+		ctx.getVarToDefs().clear();
+
+		//clearing these is not necessary
+		//if we don't clear, then we will have IN and OUT for most bbs
+		//will need to renumber vars to get var->bit
+		// ctx.getRdIn().clear();
+		// ctx.getRdOut().clear();
+		// ctx.getRdGen().clear();
+		// ctx.getRdKill().clear();
+
+		if(!isGlobal){
+			//if its not global
+			//initialize all the maps w/ global defs and variables
+			ctx.getAssignStmtToInt().putAll(ctx.getGlobalAssignStmtToInt());
+			ctx.getIntToAssignStmt().putAll(ctx.getGlobalIntToAssignStmt());
+			ctx.getVarToDefs().putAll(ctx.getGlobalVarToDefs());
+		}
+
+		//number definitions
+		for(BasicBlock block : method){
+			block.numberDefinitions(ctx);
+		}
+		if(isGlobal){
+			//save number of global definitions
+			ctx.setGlobalAssignStmtCount(ctx.getAssignStmtCount());
+		}
+
+		//make intToAssignStmt
+		for(Optimizable stmt : ctx.getAssignStmtToInt().keySet()){
+			ctx.getIntToAssignStmt().put(ctx.getAssignStmtToInt().get(stmt), stmt);
+		}
+
+		//create map of variables to numberDefinitions
+		for(BasicBlock block : method){
+			block.findVarToDefs(ctx);
+		}
+
+		//make copies maps to save
+		HashMap<Optimizable, Integer> assignStmtToInt_copy = new HashMap<>();
+		HashMap<Integer, Optimizable> intToAssignStmt_copy = new HashMap<>();
+		HashMap<VariableDescriptor, Set<Integer>> varToDefs_copy = new HashMap<>();
+
+		for(Optimizable key : ctx.getAssignStmtToInt().keySet()){
+			assignStmtToInt_copy.put(key, ctx.getAssignStmtToInt().get(key));
+		}
+		for(Integer key : ctx.getIntToAssignStmt().keySet()){
+			intToAssignStmt_copy.put(key, ctx.getIntToAssignStmt().get(key));
+		}
+		for(VariableDescriptor key : ctx.getVarToDefs().keySet()){
+			varToDefs_copy.put(key, ctx.getVarToDefs().get(key));
+		}
+
+		//populate maps for RD use outside this function
+		for(BasicBlock block : method){
+			ctx.getBbVarToDefs().put(block, varToDefs_copy);
+			ctx.getBbAssToInt().put(block, assignStmtToInt_copy);
+			ctx.getBbIntToAss().put(block, intToAssignStmt_copy);
+		}
+
+		//if it is global, save map clones also in ctx.global*
+		if(isGlobal){
+			ctx.getGlobalAssignStmtToInt().putAll(assignStmtToInt_copy);
+			ctx.getGlobalIntToAssignStmt().putAll(intToAssignStmt_copy);
+			ctx.getGlobalVarToDefs().putAll(varToDefs_copy);
+		}
+
+		// System.out.println("AssignStmtToInt-----------");
+		// System.out.println(ctx.prettyPrintAssignStmtToInt());
+		// System.out.println("bbAssToInt: " + ctx.getBbAssToInt());
+
+		// System.out.println("VarToDefs-----------------");
+		// System.out.println(ctx.prettyPrintVarToDefs());
+
+		//for each basic block, instantiate gen and kill sets
+		for(BasicBlock block : method){
+			block.makeGenSet(ctx);
+			block.makeKillSet(ctx);
+		}
+
+		// System.out.println("Gen -----------------");
+		// System.out.println(ctx.getRdGen().toString());
+
+		// System.out.println("Kill -----------------");
+		// System.out.println(ctx.getRdKill().toString());
+
+		//calculate in and out sets 
+		for(BasicBlock block : method){
+			ctx.getRdOut().put(block, new BitSet(ctx.getAssignStmtCount()));
+		}
+		BasicBlock entryBlock = method.get(0);
+		ctx.getRdIn().put(entryBlock, new BitSet(ctx.getAssignStmtCount()));
+		ctx.getRdOut().put(entryBlock, ctx.getRdGen().get(entryBlock));
+
+		Set<BasicBlock> changed = new HashSet<>(method);
+		Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
+		changed.remove(entryBlock);
+
+		while(!changed.isEmpty()){
+			BasicBlock n = changed.iterator().next();
+
+			// System.out.println("________________________________");
+			// System.out.println("currentBlock: " + n.toString());
+
+			changed.remove(n);
+			
+			ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
+
+			for (BasicBlock p : n.getPreviousBlocks()){
+				if(allBlocksInMethod.contains(p)){
+					//System.out.println("previous " + p);
+					BitSet in_n = (BitSet)ctx.getRdIn().get(n).clone();
+					BitSet out_p = (BitSet)ctx.getRdOut().get(p).clone();
+					in_n.or(out_p);
+					ctx.getRdIn().put(n, in_n);
+				}
+			}
+
+			BitSet in = (BitSet)ctx.getRdIn().get(n).clone();
+			BitSet kill = (BitSet)ctx.getRdKill().get(n).clone();
+			BitSet gen = (BitSet)ctx.getRdGen().get(n).clone();
+
+			// System.out.println("in: " + in);
+			// System.out.println("gen: " + gen);
+			// System.out.println("kill: " + kill);
+
+			in.andNot(kill);
+			gen.or(in);
+			BitSet new_out = gen;
+
+			BitSet old_out = ctx.getRdOut().get(n);
+			ctx.getRdOut().put(n, new_out);
+
+			if (!old_out.equals(new_out)){
+				for(BasicBlock s : n.getNextBlocks()){
+					if(allBlocksInMethod.contains(s)){
+						//System.out.println("next " + s);
+						changed.add(s);
+					}
+				}
+			}
+		}
+
+
+		// System.out.println("In -----------------");
+		// System.out.println(ctx.getRdIn().toString());
+
+		// System.out.println("Out -----------------");
+		// System.out.println(ctx.getRdOut().toString());
+
+		//in/out done! 
+	}
+
 	// this calculates reachindDefs w/in each method, and does constant/copy propagation
 	public void doReachingDefinitions(){
 		//System.out.println("DOING REACHING DEFS");
@@ -464,152 +633,160 @@ public class Optimizer {
 		//list of methods; contain list of basic blocks in methods
 		List<List<BasicBlock>> methods = getMethods(orderedBlocks);
 
+		//do thing with global blocks 
+		//(if there are no global blocks, it does nothing)
+		reachingDefsHelper(ctx.getGlobalBlocks(), true);
+
+
 		//for each method, instantiate bit vecotrs
 		//then, do propagation 
 
 		//CTX regains all info PER METHOD. Loses info once new method entered
 		for(List<BasicBlock> method : methods){
-			// System.out.println("//////////////// NEW METHOD ////////////");
-			// System.out.println("Blocks in method: " + method);
+
+			reachingDefsHelper(method, false);
+
+			// // System.out.println("//////////////// NEW METHOD ////////////");
+			// // System.out.println("Blocks in method: " + method);
 			
-			if(method.isEmpty()){
-				continue;
-			}
-			//clear everything in ctx that needs to be cleared 
-			ctx.resetAssignStmtCount();
-			ctx.getAssignStmtToInt().clear();
-			ctx.getIntToAssignStmt().clear();
-			ctx.getVarToDefs().clear();
+			// if(method.isEmpty()){
+			// 	continue;
+			// }
+			// //clear everything in ctx that needs to be cleared 
+			// ctx.resetAssignStmtCount();
+			// ctx.getAssignStmtToInt().clear();
+			// ctx.getIntToAssignStmt().clear();
+			// ctx.getVarToDefs().clear();
 
-			//clearing these is not necessary
-			//if we don't clear, then we will have IN and OUT for most bbs
-			//will need to renumber vars to get var->bit
-			// ctx.getRdIn().clear();
-			// ctx.getRdOut().clear();
-			// ctx.getRdGen().clear();
-			// ctx.getRdKill().clear();
+			// //clearing these is not necessary
+			// //if we don't clear, then we will have IN and OUT for most bbs
+			// //will need to renumber vars to get var->bit
+			// // ctx.getRdIn().clear();
+			// // ctx.getRdOut().clear();
+			// // ctx.getRdGen().clear();
+			// // ctx.getRdKill().clear();
 
-			//number definitions
-			for(BasicBlock block : method){
-				block.numberDefinitions(ctx);
-			}
+			// //number definitions
+			// for(BasicBlock block : method){
+			// 	block.numberDefinitions(ctx);
+			// }
 
-			//make intToAssignStmt
-			for(Optimizable stmt : ctx.getAssignStmtToInt().keySet()){
-				ctx.getIntToAssignStmt().put(ctx.getAssignStmtToInt().get(stmt), stmt);
-			}
+			// //make intToAssignStmt
+			// for(Optimizable stmt : ctx.getAssignStmtToInt().keySet()){
+			// 	ctx.getIntToAssignStmt().put(ctx.getAssignStmtToInt().get(stmt), stmt);
+			// }
 
-			//create map of variables to numberDefinitions
-			for(BasicBlock block : method){
-				block.findVarToDefs(ctx);
-			}
+			// //create map of variables to numberDefinitions
+			// for(BasicBlock block : method){
+			// 	block.findVarToDefs(ctx);
+			// }
 
-			//make copies maps to save
-			HashMap<Optimizable, Integer> assignStmtToInt_copy = new HashMap<>();
-			HashMap<Integer, Optimizable> intToAssignStmt_copy = new HashMap<>();
-			HashMap<VariableDescriptor, Set<Integer>> varToDefs_copy = new HashMap<>();
+			// //make copies maps to save
+			// HashMap<Optimizable, Integer> assignStmtToInt_copy = new HashMap<>();
+			// HashMap<Integer, Optimizable> intToAssignStmt_copy = new HashMap<>();
+			// HashMap<VariableDescriptor, Set<Integer>> varToDefs_copy = new HashMap<>();
 
-			for(Optimizable key : ctx.getAssignStmtToInt().keySet()){
-				assignStmtToInt_copy.put(key, ctx.getAssignStmtToInt().get(key));
-			}
-			for(Integer key : ctx.getIntToAssignStmt().keySet()){
-				intToAssignStmt_copy.put(key, ctx.getIntToAssignStmt().get(key));
-			}
-			for(VariableDescriptor key : ctx.getVarToDefs().keySet()){
-				varToDefs_copy.put(key, ctx.getVarToDefs().get(key));
-			}
+			// for(Optimizable key : ctx.getAssignStmtToInt().keySet()){
+			// 	assignStmtToInt_copy.put(key, ctx.getAssignStmtToInt().get(key));
+			// }
+			// for(Integer key : ctx.getIntToAssignStmt().keySet()){
+			// 	intToAssignStmt_copy.put(key, ctx.getIntToAssignStmt().get(key));
+			// }
+			// for(VariableDescriptor key : ctx.getVarToDefs().keySet()){
+			// 	varToDefs_copy.put(key, ctx.getVarToDefs().get(key));
+			// }
 
-			//populate maps for RD use outside this function
-			for(BasicBlock block : method){
-				ctx.getBbVarToDefs().put(block, varToDefs_copy);
-				ctx.getBbAssToInt().put(block, assignStmtToInt_copy);
-				ctx.getBbIntToAss().put(block, intToAssignStmt_copy);
-			}
+			// //populate maps for RD use outside this function
+			// for(BasicBlock block : method){
+			// 	ctx.getBbVarToDefs().put(block, varToDefs_copy);
+			// 	ctx.getBbAssToInt().put(block, assignStmtToInt_copy);
+			// 	ctx.getBbIntToAss().put(block, intToAssignStmt_copy);
+			// }
 
-			// System.out.println("AssignStmtToInt-----------");
-			// System.out.println(ctx.prettyPrintAssignStmtToInt());
-			// System.out.println("bbAssToInt: " + ctx.getBbAssToInt());
+			// // System.out.println("AssignStmtToInt-----------");
+			// // System.out.println(ctx.prettyPrintAssignStmtToInt());
+			// // System.out.println("bbAssToInt: " + ctx.getBbAssToInt());
 
-			// System.out.println("VarToDefs-----------------");
-			// System.out.println(ctx.prettyPrintVarToDefs());
+			// // System.out.println("VarToDefs-----------------");
+			// // System.out.println(ctx.prettyPrintVarToDefs());
 
-			//for each basic block, instantiate gen and kill sets
-			for(BasicBlock block : method){
-				block.makeGenSet(ctx);
-				block.makeKillSet(ctx);
-			}
+			// //for each basic block, instantiate gen and kill sets
+			// for(BasicBlock block : method){
+			// 	block.makeGenSet(ctx);
+			// 	block.makeKillSet(ctx);
+			// }
 
-			// System.out.println("Gen -----------------");
-			// System.out.println(ctx.getRdGen().toString());
+			// // System.out.println("Gen -----------------");
+			// // System.out.println(ctx.getRdGen().toString());
 
-			// System.out.println("Kill -----------------");
-			// System.out.println(ctx.getRdKill().toString());
+			// // System.out.println("Kill -----------------");
+			// // System.out.println(ctx.getRdKill().toString());
 
-			//calculate in and out sets 
-			for(BasicBlock block : method){
-				ctx.getRdOut().put(block, new BitSet(ctx.getAssignStmtCount()));
-			}
-			BasicBlock entryBlock = method.get(0);
-			ctx.getRdIn().put(entryBlock, new BitSet(ctx.getAssignStmtCount()));
-			ctx.getRdOut().put(entryBlock, ctx.getRdGen().get(entryBlock));
+			// //calculate in and out sets 
+			// for(BasicBlock block : method){
+			// 	ctx.getRdOut().put(block, new BitSet(ctx.getAssignStmtCount()));
+			// }
+			// BasicBlock entryBlock = method.get(0);
+			// ctx.getRdIn().put(entryBlock, new BitSet(ctx.getAssignStmtCount()));
+			// ctx.getRdOut().put(entryBlock, ctx.getRdGen().get(entryBlock));
 
-			Set<BasicBlock> changed = new HashSet<>(method);
-			Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
-			changed.remove(entryBlock);
+			// Set<BasicBlock> changed = new HashSet<>(method);
+			// Set<BasicBlock> allBlocksInMethod = new HashSet<>(method);
+			// changed.remove(entryBlock);
 
-			while(!changed.isEmpty()){
-				BasicBlock n = changed.iterator().next();
+			// while(!changed.isEmpty()){
+			// 	BasicBlock n = changed.iterator().next();
 
-				// System.out.println("________________________________");
-				// System.out.println("currentBlock: " + n.toString());
+			// 	// System.out.println("________________________________");
+			// 	// System.out.println("currentBlock: " + n.toString());
 
-				changed.remove(n);
+			// 	changed.remove(n);
 				
-				ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
+			// 	ctx.getRdIn().put(n, new BitSet(ctx.getAssignStmtCount())); //IN[n] = emptyset
 
-				for (BasicBlock p : n.getPreviousBlocks()){
-					if(allBlocksInMethod.contains(p)){
-						//System.out.println("previous " + p);
-						BitSet in_n = (BitSet)ctx.getRdIn().get(n).clone();
-						BitSet out_p = (BitSet)ctx.getRdOut().get(p).clone();
-						in_n.or(out_p);
-						ctx.getRdIn().put(n, in_n);
-					}
-				}
+			// 	for (BasicBlock p : n.getPreviousBlocks()){
+			// 		if(allBlocksInMethod.contains(p)){
+			// 			//System.out.println("previous " + p);
+			// 			BitSet in_n = (BitSet)ctx.getRdIn().get(n).clone();
+			// 			BitSet out_p = (BitSet)ctx.getRdOut().get(p).clone();
+			// 			in_n.or(out_p);
+			// 			ctx.getRdIn().put(n, in_n);
+			// 		}
+			// 	}
 
-				BitSet in = (BitSet)ctx.getRdIn().get(n).clone();
-				BitSet kill = (BitSet)ctx.getRdKill().get(n).clone();
-				BitSet gen = (BitSet)ctx.getRdGen().get(n).clone();
+			// 	BitSet in = (BitSet)ctx.getRdIn().get(n).clone();
+			// 	BitSet kill = (BitSet)ctx.getRdKill().get(n).clone();
+			// 	BitSet gen = (BitSet)ctx.getRdGen().get(n).clone();
 
-				// System.out.println("in: " + in);
-				// System.out.println("gen: " + gen);
-				// System.out.println("kill: " + kill);
+			// 	// System.out.println("in: " + in);
+			// 	// System.out.println("gen: " + gen);
+			// 	// System.out.println("kill: " + kill);
 
-				in.andNot(kill);
-				gen.or(in);
-				BitSet new_out = gen;
+			// 	in.andNot(kill);
+			// 	gen.or(in);
+			// 	BitSet new_out = gen;
 
-				BitSet old_out = ctx.getRdOut().get(n);
-				ctx.getRdOut().put(n, new_out);
+			// 	BitSet old_out = ctx.getRdOut().get(n);
+			// 	ctx.getRdOut().put(n, new_out);
 
-				if (!old_out.equals(new_out)){
-					for(BasicBlock s : n.getNextBlocks()){
-						if(allBlocksInMethod.contains(s)){
-							//System.out.println("next " + s);
-							changed.add(s);
-						}
-					}
-				}
-			}
+			// 	if (!old_out.equals(new_out)){
+			// 		for(BasicBlock s : n.getNextBlocks()){
+			// 			if(allBlocksInMethod.contains(s)){
+			// 				//System.out.println("next " + s);
+			// 				changed.add(s);
+			// 			}
+			// 		}
+			// 	}
+			// }
 
 
-			// System.out.println("In -----------------");
-			// System.out.println(ctx.getRdIn().toString());
+			// // System.out.println("In -----------------");
+			// // System.out.println(ctx.getRdIn().toString());
 
-			// System.out.println("Out -----------------");
-			// System.out.println(ctx.getRdOut().toString());
+			// // System.out.println("Out -----------------");
+			// // System.out.println(ctx.getRdOut().toString());
 
-			//in/out done! 
+			// //in/out done! 
 		}
 	}
 

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.BitSet;
+import java.util.List;
+import java.util.ArrayList;
 
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.highir.descriptor.VariableDescriptor;
@@ -42,6 +44,12 @@ public class OptimizerContext {
 
 	//reaching definitions:
 	//numbering definitions
+	private int globalAssignStmtCount = 0;
+	private List<BasicBlock> globalBlocks = new ArrayList<>();
+	private HashMap<Optimizable, Integer> globalAssignStmtToInt = new HashMap<>();
+	private HashMap<Integer, Optimizable> globalIntToAssignStmt = new HashMap<>();
+	private HashMap<VariableDescriptor, Set<Integer>> globalVarToDefs = new HashMap<>();
+
 	private int assignStmtCount = 0;
 	private HashMap<Optimizable, Integer> assignStmtToInt = new HashMap<>();
 	private HashMap<Integer, Optimizable> intToAssignStmt = new HashMap<>();
@@ -83,6 +91,27 @@ public class OptimizerContext {
 	private boolean checkingLocation;
 
 
+	public int getGlobalAssignStmtCount(){
+		return globalAssignStmtCount;
+	}
+
+	public int incrementGlobalAssignStmtCount(){
+		globalAssignStmtCount++;
+		return globalAssignStmtCount;
+	}
+
+	public HashMap<Optimizable, Integer> getGlobalAssignStmtToInt(){
+		return globalAssignStmtToInt;
+	}
+
+	public HashMap<Integer, Optimizable> getGlobalIntToAssignStmt(){
+		return globalIntToAssignStmt;
+	}
+
+	public HashMap<VariableDescriptor, Set<Integer>> getGlobalVarToDefs(){
+		return globalVarToDefs;
+	}
+
 	public Set<AssignStmt> getInvariantStmts(){
 		return invariantStmts;
 	}
@@ -105,6 +134,10 @@ public class OptimizerContext {
 
 	public Set<BasicBlock> getCurrentLoop(){
 		return currentLoop;
+	}
+
+	public List<BasicBlock> getGlobalBlocks(){
+		return globalBlocks;
 	}
 
 	//for global cp 
@@ -329,7 +362,11 @@ public class OptimizerContext {
 	}
 
 	public void resetAssignStmtCount(){
-		assignStmtCount = 0;
+		assignStmtCount = globalAssignStmtCount;
+	}
+
+	public void setGlobalAssignStmtCount(int count){
+		globalAssignStmtCount = count;
 	}
 
 	public HashMap<Location, Literal> getVarToConst(){
