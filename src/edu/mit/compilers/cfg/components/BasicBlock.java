@@ -246,9 +246,14 @@ public class BasicBlock extends CFG {
 	}
 
 	public void doCSE(OptimizerContext ctx) {
+		List<Optimizable> redundant = new ArrayList<Optimizable>();
 		for(Optimizable component: components) {
 			component.doCSE(ctx);
+			if(component instanceof AssignStmt && ((AssignStmt)component).isReflexive()) {
+				redundant.add(component);
+			}
 		}
+		components.removeAll(redundant);
 		if(branchCondition != null) {
 			branchCondition.doCSE(ctx);
 		}
