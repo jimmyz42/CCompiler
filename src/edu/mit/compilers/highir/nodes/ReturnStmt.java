@@ -13,6 +13,7 @@ import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.highir.descriptor.Descriptor;
+import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
 import edu.mit.compilers.lowir.Storage;
@@ -170,7 +171,18 @@ public class ReturnStmt extends Statement implements Optimizable {
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){
 		if(expression != null) {
-			expression.doGlobalConstantPropagation(ctx);
+			if(expression instanceof IdLocation){
+				Location exprLoc = (Location)expression;
+				VariableDescriptor var = exprLoc.getVariable();
+				Set<Long> constants = ctx.getReachingConstants(var);
+
+				//if all assign var to same const
+				//replace with constant
+				if(constants.size() == 1){
+					expression = new IntLiteral(constants.iterator().next());
+				}
+			} else
+				expression.doGlobalConstantPropagation(ctx);
 		}
 	}
 

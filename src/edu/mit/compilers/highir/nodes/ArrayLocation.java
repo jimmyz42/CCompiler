@@ -161,7 +161,7 @@ public class ArrayLocation extends Location {
 
     @Override
     public void doConstantPropagation(OptimizerContext ctx){
-		if(index instanceof Location){
+		if(index instanceof IdLocation){
 			Location loc = (Location) index;
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(loc)){
@@ -178,43 +178,15 @@ public class ArrayLocation extends Location {
 
     @Override
     public void doGlobalConstantPropagation(OptimizerContext ctx){
-    	if(index instanceof Location){
+    	if(index instanceof IdLocation){
 			Location indexLoc = (Location)index;
 			VariableDescriptor var = indexLoc.getVariable();
-			List<Long> consts = new ArrayList<>();
-			boolean allConst = true;
-			//TODO: also check w/ gen in block
-			//check all reaching definitions
-			if(ctx.getVarToDefs().containsKey(var)){
-				for(Integer def : ctx.getVarToDefs().get(var)){
-					//is this definition alive?
-					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
-						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
-							//does it assign var to const?
-							Optimizable stmt = ctx.getIntToAssignStmt().get(def);
-							//if it was a method arg
-							if(stmt instanceof VariableDescriptor){
-								continue;
-							}
-
-							AssignStmt assignStmt = (AssignStmt)stmt;
-
-							if(assignStmt.assignsToConstant()){
-								consts.add(assignStmt.whatConst());
-							} else {
-								allConst = false;
-							}
-						}						
-					}
-				}
-			}
+			Set<Long> constants = ctx.getReachingConstants(var);
 
 			//if all assign var to same const
 			//replace with constant
-			if(allConst){
-				if(consts.size() == 1){
-					index = new IntLiteral(consts.get(0));
-				}
+			if(constants.size() == 1){
+				index = new IntLiteral(constants.iterator().next());
 			}
     	} else {
     		index.doGlobalConstantPropagation(ctx);

@@ -162,43 +162,15 @@ public class NotExpr extends Expression {
     
     @Override
     public void doGlobalConstantPropagation(OptimizerContext ctx){
-		if(expression instanceof Location){
+		if(expression instanceof IdLocation){
 			Location indexLoc = (Location)expression;
 			VariableDescriptor var = indexLoc.getVariable();
-			List<Long> consts = new ArrayList<>();
-			boolean allConst = true;
-			//TODO: also check w/ gen in block
-			//check all reaching definitions
-			if(ctx.getVarToDefs().containsKey(var)){
-				for(Integer def : ctx.getVarToDefs().get(var)){
-					//is this definition alive?
-					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
-						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
-							//does it assign var to const?
-							Optimizable stmt = ctx.getIntToAssignStmt().get(def);
-							//if it was a method arg
-							if(stmt instanceof VariableDescriptor){
-								continue;
-							}
-
-							AssignStmt assignStmt = (AssignStmt)stmt;
-
-							if(assignStmt.assignsToConstant()){
-								consts.add(assignStmt.whatConst());
-							} else {
-								allConst = false;
-							}
-						}						
-					}
-				}
-			}
+			Set<Long> constants = ctx.getReachingConstants(var);
 
 			//if all assign var to same const
 			//replace with constant
-			if(allConst){
-				if(consts.size() == 1){
-					expression = new IntLiteral(consts.get(0));
-				}
+			if(constants.size() == 1){
+				expression = new IntLiteral(constants.iterator().next());
 			}
 		} else
 			expression.doGlobalConstantPropagation(ctx);
@@ -206,7 +178,7 @@ public class NotExpr extends Expression {
 
     @Override
     public void doConstantPropagation(OptimizerContext ctx){
-		if(expression instanceof Location){
+		if(expression instanceof IdLocation){
 			Location loc = (Location) expression;
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(loc)){

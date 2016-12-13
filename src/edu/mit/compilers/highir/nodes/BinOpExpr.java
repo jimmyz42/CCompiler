@@ -91,7 +91,7 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doConstantPropagation(OptimizerContext ctx) {
-		if(lhs instanceof Location){
+		if(lhs instanceof IdLocation){
 			Location lhsLoc = (Location)lhs;
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(lhsLoc)){
@@ -100,7 +100,7 @@ abstract public class BinOpExpr extends Expression {
 		} else
 			lhs.doConstantPropagation(ctx);
 		
-		if(rhs instanceof Location){
+		if(rhs instanceof IdLocation){
 			Location rhsLoc = (Location)rhs;
 			//is it in the map?
 			if(ctx.getVarToConst().containsKey(rhsLoc)){
@@ -112,91 +112,29 @@ abstract public class BinOpExpr extends Expression {
 
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx) {
-		if(lhs instanceof Location){
+		if(lhs instanceof IdLocation){
 			Location lhsLoc = (Location)lhs;
 			VariableDescriptor var = lhsLoc.getVariable();
-			List<Long> consts = new ArrayList<>();
-			boolean allConst = true;
-			//TODO: also check w/ gen in block
-			//check all reaching definitions
-			if(ctx.getVarToDefs().containsKey(var)){
-
-				//System.out.println("lhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
-
-				for(Integer def : ctx.getVarToDefs().get(var)){
-					//is this definition alive?
-					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
-						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
-							//does it assign var to const?
-							Optimizable stmt = ctx.getIntToAssignStmt().get(def);
-							//if it was a method arg
-							if(stmt instanceof VariableDescriptor){
-								continue;
-							}
-
-							AssignStmt assignStmt = (AssignStmt)stmt;
-
-							if(assignStmt.assignsToConstant()){
-								consts.add(assignStmt.whatConst());
-							} else {
-								allConst = false;
-							}
-						}						
-					}
-				}
-			}
+			Set<Long> constants = ctx.getReachingConstants(var);
 
 			//if all assign var to same const
 			//replace with constant
-			if(allConst){
-				if(consts.size() == 1){
-					lhs = new IntLiteral(consts.get(0));
-				}
+			if(constants.size() == 1){
+				lhs = new IntLiteral(constants.iterator().next());
 			}
+			
 		} else
 			lhs.doGlobalConstantPropagation(ctx);
 		
-		if(rhs instanceof Location){
+		if(rhs instanceof IdLocation){
 			Location rhsLoc = (Location)rhs;
 			VariableDescriptor var = rhsLoc.getVariable();
-			List<Long> consts = new ArrayList<>();
-			boolean allConst = true;
-
-			//check all reaching definitions
-			if(ctx.getVarToDefs().containsKey(var)){
-
-				//System.out.println("rhs " + var + " has defs: " + ctx.getVarToDefs().get(var));
-
-				for(Integer def : ctx.getVarToDefs().get(var)){
-					//is this definition alive? 
-					if(ctx.getRdIn().containsKey(ctx.getCurrentBlock())){
-						if(ctx.getRdIn().get(ctx.getCurrentBlock()).get(def)){
-							//does it assign var to const?
-							Optimizable stmt = ctx.getIntToAssignStmt().get(def);
-							//if it was a method arg
-							if(stmt instanceof VariableDescriptor){
-								continue;
-							}
-
-							AssignStmt assignStmt = (AssignStmt)stmt;
-
-							if(assignStmt.assignsToConstant()){
-								consts.add(assignStmt.whatConst());
-							} else {
-								allConst = false;
-							}
-						}						
-					}
-				}
-			}
-
+			Set<Long> constants = ctx.getReachingConstants(var);
 
 			//if all assign var to same const
 			//replace with constant
-			if(allConst){
-				if(consts.size() == 1){
-					rhs = new IntLiteral(consts.get(0));
-				}
+			if(constants.size() == 1){
+				rhs = new IntLiteral(constants.iterator().next());
 			}
 		} else
 			rhs.doGlobalConstantPropagation(ctx);

@@ -77,6 +77,7 @@ public class Optimizer {
 				doAlgebraicSimplification(); // includes constant folding
 			} 
 			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
+			doGlobalConstantPropagation();
 			doLoopInvariantMotion();
 
 			if(optsUsed.contains("cse")) {
@@ -609,16 +610,14 @@ public class Optimizer {
 			// System.out.println(ctx.getRdOut().toString());
 
 			//in/out done! 
+		}
+	}
 
-			//do constant propagation
-			for(BasicBlock block : orderedBlocks){
-				//important info in ctx:
-				//	ctx.getRdIn() - which defs get passed in to this bb
-				//	ctx.getVarToDefs() - which defs reassign var 
-				//	ctx.getAssignStmtToInt()
-				ctx.setCurrentBlock(block);
-				block.doGlobalConstantPropagation(ctx);
-			}
+	public void doGlobalConstantPropagation(){
+		//do constant propagation
+		for(BasicBlock block : orderedBlocks){
+			ctx.setCurrentBlock(block);
+			block.doGlobalConstantPropagation(ctx);
 		}
 	}
 

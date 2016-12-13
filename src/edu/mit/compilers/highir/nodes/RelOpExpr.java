@@ -149,7 +149,7 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 
 	@Override
 	public void doGlobalConstantPropagation(OptimizerContext ctx){
-		//TODO: lhs? 
+		lhs.doGlobalConstantPropagation(ctx);
 		rhs.doGlobalConstantPropagation(ctx);
 	}
 

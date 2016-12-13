@@ -107,8 +107,47 @@ public class OptimizerContext {
 		return currentLoop;
 	}
 
+	//for global cp 
+	public Set<Long> getReachingConstants(VariableDescriptor var){
+		Set<Long> consts = new HashSet<>();
+
+		//do we have info on this block?
+		if(!getBbVarToDefs().containsKey(getCurrentBlock())){
+			return new HashSet<>(); //if we don't, we can't do anything
+		}
+
+		//do we have info about this variable?
+		if(getBbVarToDefs().get(getCurrentBlock()).containsKey(var)){
+
+			for(Integer def : getBbVarToDefs().get(getCurrentBlock()).get(var)){
+				//is this definition alive?
+				if(getRdIn().containsKey(getCurrentBlock())){
+					if(getRdIn().get(getCurrentBlock()).get(def)){
+						//does it assign var to const?
+						Optimizable stmt = getBbIntToAss().get(getCurrentBlock()).get(def);
+						//if it was a method arg
+						if(stmt instanceof VariableDescriptor){
+							continue;
+						}
+
+						AssignStmt assignStmt = (AssignStmt)stmt;
+
+						if(assignStmt.assignsToConstant()){
+							consts.add(assignStmt.whatConst());
+						} else {
+							//NOT ALL ARE CONSTANTS! Return empty set
+							return new HashSet<>();
+						}
+					}						
+				}
+			}
+		}
+
+		return consts;
+	}
+
 	//for loop invariant motion
-	//note: must set ctx.currentBlock and ctx.currentLoop
+	//note: must set currentBlock and currentLoop
 	//note: if RD is the current stmt we're evaluating, it does not count
 	public boolean areRDsOutsideLoop(VariableDescriptor var){
 		//System.out.println("In OptCtx, checking RDs for " + var + " in " + getCurrentBlock());
