@@ -72,33 +72,33 @@ public class Optimizer {
 
 		for(int i = 0; i < 1; i++) {
 			// reset optimizer to clear set/maps from prev iteration
-			ctx = new OptimizerContext();
-			if(optsUsed.contains("alg")) {
+//			ctx = new OptimizerContext();
+//			if(optsUsed.contains("alg")) {
 				doAlgebraicSimplification(); // includes constant folding
-			}
-			generateTemporaries();
-			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
-			doGlobalConstantPropagation();
-			doLoopInvariantMotion();
-			//doConstantPropagation();
+//			}
+//			generateTemporaries();
+//			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
+//			doGlobalConstantPropagation();
+//			doLoopInvariantMotion();
+//			//doConstantPropagation();
 
-			if(optsUsed.contains("cse")) {
-				//generateTemporaries();
-				//doGlobalCSE();
-				//doLocalCSE();
-			} 
-			if(optsUsed.contains("cp")) {
-				System.out.println("OptsUse cp=1");
-				for(int j = 0; j < 5; j++) {
-					//doCopyPropagation();
-				}
-				doConstantPropagation();
-			}
-			//doLiveness();
-			if(optsUsed.contains("dce")) {
-				//doUnreachableCodeElimination();
-				//doDeadCodeEliminiation();
-			}
+//			if(optsUsed.contains("cse")) {
+//				generateTemporaries();
+//				doGlobalCSE();
+//				doLocalCSE();
+//			} 
+//			if(optsUsed.contains("cp")) {
+//				System.out.println("OptsUse cp=1");
+//				for(int j = 0; j < 5; j++) {
+//					doCopyPropagation();
+//				}
+//				doConstantPropagation();
+//			}
+//			//doLiveness();
+//			if(optsUsed.contains("dce")) {
+//				doUnreachableCodeElimination();
+//				doDeadCodeEliminiation();
+//			}
 		}
 	}
 
@@ -913,11 +913,12 @@ public class Optimizer {
 			newBlocks.add(currentBlock);
 		}
 		
-		this.orderedBlocks = newBlocks;
+		this.orderedBlocks = CFG.createWithOptimizations(newBlocks.get(0), 
+				newBlocks.get(newBlocks.size()-1)).getOrderedBlocks();
 
-		clearPrevBlocks();
-		genPrevBlocks();
-		giveAllBlocksIds();
+//		clearPrevBlocks();
+//		genPrevBlocks();
+//		giveAllBlocksIds();
 	}
 
 	private void giveAllBlocksIds(){
@@ -1019,6 +1020,10 @@ public class Optimizer {
 		ctx.addInstruction(Mov.create(ImmediateValue.create(60), Register.create("%rax")));
 		ctx.addInstruction(Mov.create(ImmediateValue.create(-2), Register.create("%rdi")));
 		ctx.addInstruction(Syscall.create());
+	}
+	
+	public CFG getCFG() {
+		return new CFG(orderedBlocks.get(0), orderedBlocks.get(orderedBlocks.size()-1));
 	}
 
 	@Override

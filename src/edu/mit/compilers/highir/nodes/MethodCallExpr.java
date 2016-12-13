@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.BitSet;
 
 import edu.mit.compilers.cfg.CFGContext;
+import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.Extern_argContext;
@@ -35,7 +36,7 @@ import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.MethodCallException;
 import exceptions.UndeclaredIdentifierError;
 
-public class MethodCallExpr extends Expression {
+public class MethodCallExpr extends Expression implements Condition {
 	private final FunctionDescriptor function;
 	private final List<ExternArg> arguments;
 

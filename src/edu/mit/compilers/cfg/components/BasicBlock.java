@@ -15,6 +15,8 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.highir.descriptor.MethodDescriptor;
 import edu.mit.compilers.highir.nodes.AssignStmt;
 import edu.mit.compilers.highir.nodes.BoolLiteral;
+import edu.mit.compilers.highir.nodes.IdLocation;
+import edu.mit.compilers.highir.nodes.Location;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
@@ -200,9 +202,9 @@ public class BasicBlock extends CFG {
 		for(int i=0;i<components.size();i++) {
 			components.set(i, components.get(i).doAlgebraicSimplification());
 		}
-//		if(branchCondition != null) {
-//			branchCondition = (Condition) branchCondition.doAlgebraicSimplification();
-//		}
+		if(branchCondition != null) {
+			branchCondition = (Condition) branchCondition.doAlgebraicSimplification();
+		}
 	}
 
 	public void generateTemporaries(OptimizerContext octx) {
@@ -275,7 +277,14 @@ public class BasicBlock extends CFG {
 			component.doConstantPropagation(ctx);
 		}
 		if(branchCondition != null) {
-			branchCondition.doConstantPropagation(ctx);
+			if(branchCondition instanceof IdLocation){
+				Location branchConditionLoc = (Location)branchCondition;
+				//is it in the map?
+				if(ctx.getVarToConst().containsKey(branchConditionLoc)){
+					branchCondition = (Condition) ctx.getVarToConst().get(branchConditionLoc); //replace var with const
+				}
+			} else
+				branchCondition.doConstantPropagation(ctx);
 		}
 	}
 

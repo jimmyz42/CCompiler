@@ -146,7 +146,7 @@ class Main {
 						System.out.println(sw.toString());
 						if(CLI.debug){
 							//pretty graphics!
-							cfg.exportDOT("foo.dot");
+							optimizer.getCFG().exportDOT("foo.dot");
 						}
 					} else if (CLI.target == Action.ASSEMBLY) {
 						DecafScanner scanner = new DecafScanner(inputStream);

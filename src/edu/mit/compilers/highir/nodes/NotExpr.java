@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.BitSet;
 
+import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser;
@@ -21,7 +22,7 @@ import edu.mit.compilers.optimizer.Optimizable;
 import edu.mit.compilers.optimizer.OptimizerContext;
 import exceptions.TypeMismatchError;
 
-public class NotExpr extends Expression {
+public class NotExpr extends Expression implements Condition {
     private Expression expression;
 
     public NotExpr(Expression expression) {

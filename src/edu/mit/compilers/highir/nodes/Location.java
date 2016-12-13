@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.BitSet;
 
+import edu.mit.compilers.cfg.Condition;
 import edu.mit.compilers.cfg.components.BasicBlock;
 import edu.mit.compilers.cfg.components.CFG;
 import edu.mit.compilers.grammar.DecafParser.LocationContext;
@@ -13,7 +14,7 @@ import edu.mit.compilers.highir.descriptor.VariableDescriptor;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.optimizer.OptimizerContext;
 
-abstract public class Location extends Expression {
+abstract public class Location extends Expression implements Condition {
     protected VariableDescriptor variable;
 
     Location(VariableDescriptor variable) {
