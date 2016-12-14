@@ -72,33 +72,31 @@ public class Optimizer {
 
 		for(int i = 0; i < 1; i++) {
 			// reset optimizer to clear set/maps from prev iteration
-//			ctx = new OptimizerContext();
-//			if(optsUsed.contains("alg")) {
+			ctx = new OptimizerContext();
+			if(optsUsed.contains("alg")) {
 				doAlgebraicSimplification(); // includes constant folding
-//			}
-//			generateTemporaries();
-//			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
-//			doGlobalConstantPropagation();
-//			doLoopInvariantMotion();
-//			//doConstantPropagation();
+			}
+			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
+			doGlobalConstantPropagation();
+			doLoopInvariantMotion();
 
-//			if(optsUsed.contains("cse")) {
-//				generateTemporaries();
-//				doGlobalCSE();
-//				doLocalCSE();
-//			} 
-//			if(optsUsed.contains("cp")) {
-//				System.out.println("OptsUse cp=1");
-//				for(int j = 0; j < 5; j++) {
-//					doCopyPropagation();
-//				}
-//				doConstantPropagation();
-//			}
-//			//doLiveness();
-//			if(optsUsed.contains("dce")) {
-//				doUnreachableCodeElimination();
-//				doDeadCodeEliminiation();
-//			}
+			if(optsUsed.contains("cse")) {
+				generateTemporaries();
+				doGlobalCSE();
+				doLocalCSE();
+			} 
+			if(optsUsed.contains("cp")) {
+				System.out.println("OptsUse cp=1");
+				for(int j = 0; j < 5; j++) {
+					doCopyPropagation();
+				}
+				doConstantPropagation();
+			}
+			//doLiveness();
+			if(optsUsed.contains("dce")) {
+				//doUnreachableCodeElimination();
+				//doDeadCodeEliminiation();
+			}
 		}
 	}
 
@@ -191,6 +189,9 @@ public class Optimizer {
 				// }
 			}
 		}
+
+		//must do reaching definitions again because assignStmts change bbs
+		doReachingDefinitions();
 	}
 
 	public void removeInvariantCode(Set<BasicBlock> loop){
@@ -915,6 +916,8 @@ public class Optimizer {
 		
 		this.orderedBlocks = CFG.createWithOptimizations(newBlocks.get(0), 
 				newBlocks.get(newBlocks.size()-1)).getOrderedBlocks();
+
+
 
 //		clearPrevBlocks();
 //		genPrevBlocks();
