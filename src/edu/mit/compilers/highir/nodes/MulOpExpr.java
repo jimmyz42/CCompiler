@@ -7,6 +7,7 @@ import edu.mit.compilers.grammar.DecafParser;
 import edu.mit.compilers.highir.DecafSemanticChecker;
 import edu.mit.compilers.lowir.AssemblyContext;
 import edu.mit.compilers.lowir.Register;
+import edu.mit.compilers.lowir.instructions.Cqo;
 import edu.mit.compilers.lowir.instructions.Idiv;
 import edu.mit.compilers.lowir.instructions.Imul;
 import edu.mit.compilers.lowir.instructions.Instruction;
@@ -58,23 +59,21 @@ public class MulOpExpr extends BinOpExpr {
             expression.add(new Imul(src, result));
 			break;
 		case "/":
-            expression.add(new Xor(rdx, rdx));
             expression.add(new Mov(result, rax));
+            expression.add(new Cqo());
             expression.add(new Idiv(src));
             expression.add(new Mov(rax, result));
 			break;
 		case "%":
-            expression.add(new Xor(rdx, rdx));
             expression.add(new Mov(result, rax));
+            expression.add(new Cqo());
             expression.add(new Idiv(src));
             expression.add(new Mov(rdx, result));
 			break;
 		default:
 
 		}
-        if(operator.getTerminal().equals("*")) {
-        } else {
-        }
+        
         ctx.addInstructions(expression);
 
 		ctx.storeStack(getStorageTuple(), result);
