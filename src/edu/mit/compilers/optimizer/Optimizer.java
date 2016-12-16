@@ -122,28 +122,33 @@ public class Optimizer {
 	}
 
 	public void doDeadCodeEliminiation() {
-//		HashSet<Descriptor> consumed = new HashSet<>();
-//		
-//		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
-//			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-//			if(currentBlock.getPreviousBlock() != null) {
-//				Condition branchCondition = currentBlock.getPreviousBlock().getCondition();
-//				if(branchCondition != null)
-//					consumed.addAll(branchCondition.getConsumedDescriptors());
-//			}
-//			consumed = currentBlock.doDeadCodeEliminiation(consumed);
-//		}
-		for(BasicBlock block: orderedBlocks) {
-			HashMap<Integer, VariableDescriptor> intToVar = ctx.getBbLivIntToVar().get(block);
-			BitSet liveOut = ctx.getLivOut().get(block);
-			if(intToVar == null || liveOut == null) continue;
-			
-			HashSet<Descriptor> consumed = new HashSet<>();
-			for(int i = 0; i<liveOut.size(); i++) {
-				if(liveOut.get(i)) consumed.add(intToVar.get(i));
+		HashSet<Descriptor> consumed = new HashSet<>();
+		
+		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
+			BasicBlock currentBlock = orderedBlocks.get(blockNum);
+			if(currentBlock.getPreviousBlock() != null) {
+				Condition branchCondition = currentBlock.getPreviousBlock().getCondition();
+				if(branchCondition != null)
+					consumed.addAll(branchCondition.getConsumedDescriptors());
 			}
-			block.doDeadCodeEliminiation(consumed);
+			consumed = currentBlock.doDeadCodeEliminiation(consumed);
 		}
+//		for(BasicBlock block: orderedBlocks) {
+//			HashMap<Integer, VariableDescriptor> intToVar = ctx.getBbLivIntToVar().get(block);
+//			BitSet liveOut = ctx.getLivOut().get(block);
+//			System.out.println(liveOut);
+//			if(intToVar == null || liveOut == null) continue;
+//			
+//			HashSet<Descriptor> consumed = new HashSet<>();
+//			for(int i = 0; i<liveOut.size(); i++) {
+//				if(liveOut.get(i)) consumed.add(intToVar.get(i));
+//			}
+//			for(Descriptor desc: consumed) {
+//				System.out.println(desc);
+//			}
+//			System.out.println("***********************");
+//			block.doDeadCodeEliminiation(consumed);
+//		}
 	}
 
 	public void doCopyPropagation(){

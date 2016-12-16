@@ -82,7 +82,7 @@ public class IdLocation extends Location {
     
 	@Override
 	public boolean canEliminate() {
-		return true;
+		return !this.variable.isGlobal();
 	}
 
 	@Override
