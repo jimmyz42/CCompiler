@@ -185,6 +185,11 @@ public class ReturnStmt extends Statement implements Optimizable {
 				expression.doGlobalConstantPropagation(ctx);
 		}
 	}
+	
+	@Override
+    public boolean canEliminate() {
+    	return false;
+    }
 
 	@Override
     public void findVarToDefs(OptimizerContext ctx){}

@@ -103,6 +103,11 @@ public class SizeofIdExpr extends Expression {
     public boolean isInvariantStmt(OptimizerContext ctx){
     	return ctx.areRDsOutsideLoop(this.variable);
     }
+    
+	@Override
+	public boolean canEliminate() {
+		return true;
+	}
 
 	@Override
     public int hashCode() {

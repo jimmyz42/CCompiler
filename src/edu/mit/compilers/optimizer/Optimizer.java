@@ -94,7 +94,7 @@ public class Optimizer {
 				}
 				doConstantPropagation();
 			}
-			//doLiveness();
+			doLiveness();
 			if(optsUsed.contains("dce")) {
 				//doUnreachableCodeElimination();
 				doDeadCodeEliminiation();
@@ -122,16 +122,27 @@ public class Optimizer {
 	}
 
 	public void doDeadCodeEliminiation() {
-		HashSet<Descriptor> consumed = new HashSet<>();
-		
-		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
-			BasicBlock currentBlock = orderedBlocks.get(blockNum);
-			if(currentBlock.getPreviousBlock() != null) {
-				Condition branchCondition = currentBlock.getPreviousBlock().getCondition();
-				if(branchCondition != null)
-					consumed.addAll(branchCondition.getConsumedDescriptors());
+//		HashSet<Descriptor> consumed = new HashSet<>();
+//		
+//		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
+//			BasicBlock currentBlock = orderedBlocks.get(blockNum);
+//			if(currentBlock.getPreviousBlock() != null) {
+//				Condition branchCondition = currentBlock.getPreviousBlock().getCondition();
+//				if(branchCondition != null)
+//					consumed.addAll(branchCondition.getConsumedDescriptors());
+//			}
+//			consumed = currentBlock.doDeadCodeEliminiation(consumed);
+//		}
+		for(BasicBlock block: orderedBlocks) {
+			HashMap<Integer, VariableDescriptor> intToVar = ctx.getBbLivIntToVar().get(block);
+			BitSet liveOut = ctx.getLivOut().get(block);
+			if(intToVar == null || liveOut == null) continue;
+			
+			HashSet<Descriptor> consumed = new HashSet<>();
+			for(int i = 0; i<liveOut.size(); i++) {
+				if(liveOut.get(i)) consumed.add(intToVar.get(i));
 			}
-			consumed = currentBlock.doDeadCodeEliminiation(consumed);
+			block.doDeadCodeEliminiation(consumed);
 		}
 	}
 
@@ -395,8 +406,8 @@ public class Optimizer {
 
 			//populating hashmaps for future use
 			for(BasicBlock block : method){
-				ctx.getBbLivVarToInt().put(block, ctx.getLivVarToInt());
-				ctx.getBbLivIntToVar().put(block, ctx.getLivIntToVar());
+				ctx.getBbLivVarToInt().put(block, (HashMap<VariableDescriptor, Integer>)ctx.getLivVarToInt().clone());
+				ctx.getBbLivIntToVar().put(block, (HashMap<Integer, VariableDescriptor>)ctx.getLivIntToVar().clone());
 			}
 
 			// System.out.println("Var to Int Map ---------------");

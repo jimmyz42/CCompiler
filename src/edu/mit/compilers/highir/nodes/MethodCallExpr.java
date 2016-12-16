@@ -326,6 +326,11 @@ public class MethodCallExpr extends Expression implements Condition {
 	}
 	
 	@Override
+	public boolean canEliminate() {
+		return false;
+	}
+	
+	@Override
 	public Expression clone() {
 		List<ExternArg> argumentsCopy = new ArrayList<ExternArg>();
 		for(int i=0; i < arguments.size(); i++) {

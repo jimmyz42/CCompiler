@@ -92,6 +92,11 @@ public class StringLiteral extends ExternArg {
     @Override
     public void doConstantPropagation(OptimizerContext ctx){
     }
+    
+	@Override
+    public boolean canEliminate() {
+    	return true;
+    }
 
 	@Override
 	public int hashCode() {

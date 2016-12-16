@@ -239,7 +239,7 @@ public class BasicBlock extends CFG {
 					!Collections.disjoint(consumed, compGen) ||
 					!Collections.disjoint(compGen, compCon)) {
 				consumed.addAll(compCon);
-			} else
+			} else if(component.canEliminate())
 				deadComponents.add(component);
 		}
 
