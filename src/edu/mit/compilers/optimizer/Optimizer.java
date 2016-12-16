@@ -75,10 +75,13 @@ public class Optimizer {
 			ctx = new OptimizerContext();
 			if(optsUsed.contains("alg")) {
 				doAlgebraicSimplification(); // includes constant folding
+				
+				//putting these in here, so they aren't run for Unoptimized Code Gen
+				doReachingDefinitions(); 
+				doGlobalConstantPropagation();
+				doLoopInvariantMotion();
+
 			}
-			doReachingDefinitions(); // is this for loop invariant code? yes - and globalConstProp
-			doGlobalConstantPropagation();
-			doLoopInvariantMotion();
 
 			if(optsUsed.contains("cse")) {
 				generateTemporaries();
@@ -86,7 +89,6 @@ public class Optimizer {
 				doLocalCSE();
 			} 
 			if(optsUsed.contains("cp")) {
-				System.out.println("OptsUse cp=1");
 				for(int j = 0; j < 5; j++) {
 					doCopyPropagation();
 				}
@@ -95,7 +97,7 @@ public class Optimizer {
 			//doLiveness();
 			if(optsUsed.contains("dce")) {
 				//doUnreachableCodeElimination();
-				//doDeadCodeEliminiation();
+				doDeadCodeEliminiation();
 			}
 		}
 	}

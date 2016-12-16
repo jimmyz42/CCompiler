@@ -26,7 +26,7 @@ public class StringLiteral extends ExternArg {
     public StringLiteral(String terminal) {
         this.terminal = terminal;
         this.label = terminal.split(" ")[0].replaceAll("[^a-zA-Z0-9]", "");
-        this.label += Integer.toString(ThreadLocalRandom.current().nextInt(0, 100000));
+        //this.label += Integer.toString(ThreadLocalRandom.current().nextInt(0, 100000));
         //TODO: BREAKING make the list of numbers deterministic
     }
 
@@ -47,6 +47,9 @@ public class StringLiteral extends ExternArg {
 
     @Override
     public void generateAssembly(AssemblyContext ctx) {
+        int stringNum = ctx.getStringNum();
+        label = label + Integer.toString(stringNum);
+        ctx.setStringNum(stringNum +1);
         Instruction stringInstruction = new StringInstruction(label, terminal);
         ctx.addInstruction(Lea.create(Memory.create("."+label+"(%rip)"), Register.create("%rdx")));
         ctx.storeStack(getStorageTuple(), Register.create("%rdx"));

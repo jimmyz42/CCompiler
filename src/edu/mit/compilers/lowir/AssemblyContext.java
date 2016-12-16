@@ -29,10 +29,20 @@ public class AssemblyContext {
 	private List<Instruction> instructions = new ArrayList<>();
 	private List<Instruction> footerInstructions = new ArrayList<>();
 
+	private int stringNum = 0;
+
 	public AssemblyContext() {
 		for (int i = 10; i <= 15; i++) {
 			registers.push(Register.create("%r" + i));
 		}
+	}
+
+	public int getStringNum(){
+		return stringNum;
+	}
+
+	public void setStringNum(int num){
+		stringNum = num;
 	}
 
 	public void setStackPosition(StorageTuple node, int position) {

@@ -142,7 +142,6 @@ public class RelOpExpr extends BinOpExpr implements Condition {
 	
 	@Override
 	public void makeUseSet(OptimizerContext ctx, BitSet use){
-		System.out.println("Making USE on RelOpExpr: " + this.toString());
 		lhs.makeUseSet(ctx, use);
 		rhs.makeUseSet(ctx, use);
 	}
