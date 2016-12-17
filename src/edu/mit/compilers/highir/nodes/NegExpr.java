@@ -194,6 +194,11 @@ public class NegExpr extends Expression {
     	}
     	return this;
     }
+	
+	@Override
+	public boolean canEliminate() {
+		return expression.canEliminate();
+	}
 
 	@Override
 	public int hashCode() {

@@ -1,7 +1,23 @@
 digraph G {
-  block0 [ label="block0: *start\ of\ method*\l" ];
-  block1 [ label="block1: void\ main\lint\ a\lint\ b\lint\ c\la\ =\ 167\la\ =\ 0\la\ =\ b\la\ =\ b\la\ =\ 14\l\l" ];
-  block2 [ label="block2: *end\ of\ method*\l" ];
+  block0 [ label="block0: int[10]\ array\l\l" ];
+  block1 [ label="block1: *start\ of\ method*\l" ];
+  block2 [ label="block2: void\ main\lint\ j\lprintf\(\"below\ output\ should\ be\ 18\ 16\ 14\ 12\ 10\ 8\ 6\ 4\ 2\ 0\\n\"\)\lj\ =\ 0\l\l" ];
+  block3 [ label="block3: j\ \<\ 10\l" ];
+  block4 [ label="block4: array[j]\ =\ j\ *\ 2\lj\ =\ j\ +\ 1\l\l" ];
+  block5 [ label="block5: j\ =\ 0\l\l" ];
+  block6 [ label="block6: j\ \<\ 10\l" ];
+  block7 [ label="block7: printf\(\"%d\ \"\,\ array[9\ -\ j]\)\lj\ =\ j\ +\ 1\l\l" ];
+  block8 [ label="block8: printf\(\"\\n\"\)\l\l" ];
+  block9 [ label="block9: *end\ of\ method*\l" ];
   block0 -> block1;
   block1 -> block2;
+  block2 -> block3;
+  block3 -> block4;
+  block4 -> block3;
+  block3 -> block5;
+  block5 -> block6;
+  block6 -> block7;
+  block7 -> block6;
+  block6 -> block8;
+  block8 -> block9;
 }

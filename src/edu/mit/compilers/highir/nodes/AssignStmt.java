@@ -353,4 +353,10 @@ public class AssignStmt extends Statement implements Optimizable {
 		ctx.getCSEAvailableExprs().removeAll(ctx.getExprsContainingVar(location));
 		ctx.getCSEAvailableExprs().add(origExpr);
 	}
+	
+	@Override
+    public boolean canEliminate() {
+		if(location.getVariable().isTemp()) return true;
+    	return location.canEliminate() && expression.canEliminate();
+    }
 }

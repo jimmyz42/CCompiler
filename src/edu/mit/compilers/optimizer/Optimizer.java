@@ -70,7 +70,7 @@ public class Optimizer {
 		//modifications have been made in Optimizer Context
 		//using a constant like this is a dirty Hack
 
-		for(int i = 0; i < 1; i++) {
+		for(int i = 0; i < 5; i++) {
 			// reset optimizer to clear set/maps from prev iteration
 			ctx = new OptimizerContext();
 			if(optsUsed.contains("alg")) {
@@ -94,7 +94,7 @@ public class Optimizer {
 				}
 				doConstantPropagation();
 			}
-			//doLiveness();
+			doLiveness();
 			if(optsUsed.contains("dce")) {
 				//doUnreachableCodeElimination();
 				doDeadCodeEliminiation();
@@ -122,7 +122,7 @@ public class Optimizer {
 	}
 
 	public void doDeadCodeEliminiation() {
-		HashSet<Descriptor> consumed = new HashSet<>();
+		/*HashSet<Descriptor> consumed = new HashSet<>();
 		
 		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
@@ -132,6 +132,38 @@ public class Optimizer {
 					consumed.addAll(branchCondition.getConsumedDescriptors());
 			}
 			consumed = currentBlock.doDeadCodeEliminiation(consumed);
+		}*/
+		for(BasicBlock block: orderedBlocks) {
+			HashMap<Integer, VariableDescriptor> intToVar = ctx.getBbLivIntToVar().get(block);
+			BitSet liveOut = ctx.getLivOut().get(block);
+			if(intToVar == null || liveOut == null) continue;
+			
+			HashSet<Descriptor> consumed = new HashSet<>();
+			for(int i = 0; i<liveOut.size(); i++) {
+				if(liveOut.get(i)) consumed.add(intToVar.get(i));
+			}
+			block.doDeadCodeEliminiation(consumed);
+		}
+		// remove unused descriptors 
+		// (descriptors must be handled separately after statements)
+		Set<Descriptor> globalDesc = new HashSet<>();
+		List<List<BasicBlock>> methodBlocks = getMethods(orderedBlocks);
+		for(List<BasicBlock> method: methodBlocks) {
+			Set<Descriptor> methodDesc = new HashSet<>();
+			for(BasicBlock block: method) {
+				methodDesc.addAll(block.getAllDescriptors());
+			}
+			for(BasicBlock block: method) {
+				block.eliminateDeadDescriptors(methodDesc);
+			}
+			globalDesc.addAll(methodDesc);
+		}
+		List<BasicBlock> globalBlocks = ctx.getGlobalBlocks();
+		for(BasicBlock block: globalBlocks) {
+			globalDesc.addAll(block.getAllDescriptors());
+		}
+		for(BasicBlock block: globalBlocks) {
+			block.eliminateDeadDescriptors(globalDesc);
 		}
 	}
 
@@ -395,8 +427,8 @@ public class Optimizer {
 
 			//populating hashmaps for future use
 			for(BasicBlock block : method){
-				ctx.getBbLivVarToInt().put(block, ctx.getLivVarToInt());
-				ctx.getBbLivIntToVar().put(block, ctx.getLivIntToVar());
+				ctx.getBbLivVarToInt().put(block, (HashMap<VariableDescriptor, Integer>)ctx.getLivVarToInt().clone());
+				ctx.getBbLivIntToVar().put(block, (HashMap<Integer, VariableDescriptor>)ctx.getLivIntToVar().clone());
 			}
 
 			// System.out.println("Var to Int Map ---------------");
