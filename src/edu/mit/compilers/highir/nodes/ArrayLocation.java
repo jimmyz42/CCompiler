@@ -192,6 +192,11 @@ public class ArrayLocation extends Location {
     		index.doGlobalConstantPropagation(ctx);
     	}
     }
+    
+	@Override
+	public boolean canEliminate() {
+		return false;
+	}
 
 	@Override
 	public int hashCode() {

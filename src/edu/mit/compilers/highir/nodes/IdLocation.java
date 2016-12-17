@@ -79,6 +79,11 @@ public class IdLocation extends Location {
     @Override
     public void doConstantPropagation(OptimizerContext ctx){
     }
+    
+	@Override
+	public boolean canEliminate() {
+		return !this.variable.isGlobal();
+	}
 
 	@Override
     public int hashCode() {

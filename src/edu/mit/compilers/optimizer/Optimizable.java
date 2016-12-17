@@ -22,4 +22,6 @@ public interface Optimizable extends CFGAble {
     public void findVarToDefs(OptimizerContext ctx);
     public void doGlobalConstantPropagation(OptimizerContext ctx);
     public void makeUseSet(OptimizerContext ctx, BitSet use);
+    //for DCE, globals, arrays, method calls cannot be eliminated
+    public abstract boolean canEliminate();
 }

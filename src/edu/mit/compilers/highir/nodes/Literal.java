@@ -83,6 +83,11 @@ abstract public class Literal extends Expression {
 	}
 	
 	@Override
+	public boolean canEliminate() {
+		return true;
+	}
+	
+	@Override
 	public Expression clone() {
 		return this;
 	}

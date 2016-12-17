@@ -109,6 +109,11 @@ public class SizeofTypeExpr extends Expression {
 	}
 	
 	@Override
+	public boolean canEliminate() {
+		return true;
+	}
+	
+	@Override
 	public Expression clone() {
 		return this;
 	}

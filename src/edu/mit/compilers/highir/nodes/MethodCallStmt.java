@@ -108,6 +108,11 @@ public class MethodCallStmt extends Statement implements Optimizable {
 		methodCall.makeUseSet(ctx, use);
 	}
 	
+	@Override
+    public boolean canEliminate() {
+    	return false;
+    }
+	
     @Override
     public void findVarToDefs(OptimizerContext ctx){}
     @Override

@@ -188,6 +188,11 @@ public class NotExpr extends Expression implements Condition {
 		} else
 			expression.doConstantPropagation(ctx);
     }
+    
+	@Override
+	public boolean canEliminate() {
+		return expression.canEliminate();
+	}
 
 	@Override
     public int hashCode() {

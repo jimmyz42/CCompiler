@@ -200,6 +200,11 @@ abstract public class BinOpExpr extends Expression {
 		}
 		ctx.getCSEAvailableExprs().add(origRHS);
 	}
+	
+	@Override
+	public boolean canEliminate() {
+		return lhs.canEliminate() && rhs.canEliminate();
+	}
 
 	@Override
 	public int hashCode() {
