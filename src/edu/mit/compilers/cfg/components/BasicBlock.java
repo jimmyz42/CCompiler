@@ -219,7 +219,31 @@ public class BasicBlock extends CFG {
 
 		this.components = newComponents;
 	}
-
+	
+	// all descriptors that are used in statements (not Descriptor)
+	// generated or consumed
+	public Set<Descriptor> getAllDescriptors() {
+		Set<Descriptor> desc = new HashSet<>();
+		for(Optimizable component: components) {
+			if(component instanceof Descriptor) continue;
+			desc.addAll(component.getGeneratedDescriptors());
+			desc.addAll(component.getConsumedDescriptors());
+		}
+		if(branchCondition != null) {
+			desc.addAll(branchCondition.getConsumedDescriptors());
+		}
+		return desc;
+	}
+	
+	public void eliminateDeadDescriptors(Set<Descriptor> liveDescriptors) {
+		List<Optimizable> deadComponents = new ArrayList<>();
+		for(Optimizable comp: components) {
+			if(comp instanceof VariableDescriptor && !liveDescriptors.contains(comp)) {
+				deadComponents.add(comp);
+			}
+		}
+		this.components.removeAll(deadComponents);
+	}
 
 	public HashSet<Descriptor> doDeadCodeEliminiation(HashSet<Descriptor> consumed) {
 		List<Optimizable> deadComponents = new ArrayList<>();

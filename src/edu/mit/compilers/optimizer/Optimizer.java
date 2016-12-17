@@ -122,7 +122,7 @@ public class Optimizer {
 	}
 
 	public void doDeadCodeEliminiation() {
-		HashSet<Descriptor> consumed = new HashSet<>();
+		/*HashSet<Descriptor> consumed = new HashSet<>();
 		
 		for(int blockNum = orderedBlocks.size() -1; blockNum >= 0; blockNum--) {
 			BasicBlock currentBlock = orderedBlocks.get(blockNum);
@@ -132,23 +132,39 @@ public class Optimizer {
 					consumed.addAll(branchCondition.getConsumedDescriptors());
 			}
 			consumed = currentBlock.doDeadCodeEliminiation(consumed);
+		}*/
+		for(BasicBlock block: orderedBlocks) {
+			HashMap<Integer, VariableDescriptor> intToVar = ctx.getBbLivIntToVar().get(block);
+			BitSet liveOut = ctx.getLivOut().get(block);
+			if(intToVar == null || liveOut == null) continue;
+			
+			HashSet<Descriptor> consumed = new HashSet<>();
+			for(int i = 0; i<liveOut.size(); i++) {
+				if(liveOut.get(i)) consumed.add(intToVar.get(i));
+			}
+			block.doDeadCodeEliminiation(consumed);
 		}
-//		for(BasicBlock block: orderedBlocks) {
-//			HashMap<Integer, VariableDescriptor> intToVar = ctx.getBbLivIntToVar().get(block);
-//			BitSet liveOut = ctx.getLivOut().get(block);
-//			System.out.println(liveOut);
-//			if(intToVar == null || liveOut == null) continue;
-//			
-//			HashSet<Descriptor> consumed = new HashSet<>();
-//			for(int i = 0; i<liveOut.size(); i++) {
-//				if(liveOut.get(i)) consumed.add(intToVar.get(i));
-//			}
-//			for(Descriptor desc: consumed) {
-//				System.out.println(desc);
-//			}
-//			System.out.println("***********************");
-//			block.doDeadCodeEliminiation(consumed);
-//		}
+		// remove unused descriptors 
+		// (descriptors must be handled separately after statements)
+		Set<Descriptor> globalDesc = new HashSet<>();
+		List<List<BasicBlock>> methodBlocks = getMethods(orderedBlocks);
+		for(List<BasicBlock> method: methodBlocks) {
+			Set<Descriptor> methodDesc = new HashSet<>();
+			for(BasicBlock block: method) {
+				methodDesc.addAll(block.getAllDescriptors());
+			}
+			for(BasicBlock block: method) {
+				block.eliminateDeadDescriptors(methodDesc);
+			}
+			globalDesc.addAll(methodDesc);
+		}
+		List<BasicBlock> globalBlocks = ctx.getGlobalBlocks();
+		for(BasicBlock block: globalBlocks) {
+			globalDesc.addAll(block.getAllDescriptors());
+		}
+		for(BasicBlock block: globalBlocks) {
+			block.eliminateDeadDescriptors(globalDesc);
+		}
 	}
 
 	public void doCopyPropagation(){

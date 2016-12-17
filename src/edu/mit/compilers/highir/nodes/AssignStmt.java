@@ -356,6 +356,7 @@ public class AssignStmt extends Statement implements Optimizable {
 	
 	@Override
     public boolean canEliminate() {
+		if(location.getVariable().isTemp()) return true;
     	return location.canEliminate() && expression.canEliminate();
     }
 }

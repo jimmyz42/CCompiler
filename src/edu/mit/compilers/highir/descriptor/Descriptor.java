@@ -122,7 +122,7 @@ public abstract class Descriptor implements PrettyPrintable, CFGAble, Storable, 
 	
 	@Override
     public boolean canEliminate() {
-    	return true;
+    	return false;
     }
 	
 	@Override
