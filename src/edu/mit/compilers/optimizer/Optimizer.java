@@ -863,7 +863,9 @@ public class Optimizer {
 			} else {
 				for(Location loc: cseKillVars.get(i)) {
 					for(Expression expr: ctx.getExprsContainingVar(loc)) {
-						curKill.set(exprToVal.get(expr));
+						if(exprToVal.containsKey(expr)) {
+							curKill.set(exprToVal.get(expr));
+						}
 					}
 				}
 				for(Expression expr: cseGenExprs.get(i)) {
