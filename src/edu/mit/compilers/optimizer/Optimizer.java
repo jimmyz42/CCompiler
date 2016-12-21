@@ -70,7 +70,7 @@ public class Optimizer {
 		//modifications have been made in Optimizer Context
 		//using a constant like this is a dirty Hack
 
-		for(int i = 0; i < 1; i++) {
+		for(int i = 0; i < 5; i++) {
 			// reset optimizer to clear set/maps from prev iteration
 			ctx = new OptimizerContext();
 			if(optsUsed.contains("alg")) {
